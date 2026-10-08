@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Dashboard — Natural Disasters</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>
+:root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;
+--primary:#4a7fc8;--accent:#ff8a5b;--success:#4caf7d;--warn:#ffb74d;--error:#ef5468;--border:#2a3346;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px}
+.wrap{max-width:1200px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:var(--panel);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);flex-wrap:wrap;gap:14px}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-left .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#d94a15);display:flex;align-items:center;justify-content:center;font-size:22px}
+.header-left h1{font-size:20px}
+.header-left .sub{font-size:12px;color:var(--ink-soft);margin-top:2px}
+.session-box{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--panel-2);border-radius:12px;border:1px solid var(--border)}
+.session-box .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase}
+.session-box input{padding:8px 12px;border:2px solid var(--border);border-radius:8px;background:var(--bg);color:var(--accent);font-family:inherit;font-size:14px;font-weight:800;outline:none;text-transform:uppercase;letter-spacing:1.5px;width:130px}
+.session-box input:focus{border-color:var(--accent)}
+.session-box input::placeholder{color:var(--ink-soft);font-weight:500;letter-spacing:0;text-transform:none}
+.connection{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:20px;background:var(--panel-2);font-size:12px;font-weight:700}
+.connection .dot{width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}
+.connection.live .dot{background:var(--success);animation:pulse 1.5s infinite}
+.connection.stale .dot{background:var(--warn);animation:none}
+.connection.off .dot{background:var(--error);animation:none}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,125,.7)}50%{box-shadow:0 0 0 8px rgba(76,175,125,0)}}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#d94a15}
+.btn.danger:hover{border-color:var(--error);color:var(--error)}
+.btn.success{background:var(--success);color:#fff;border-color:var(--success)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:900px){.grid,.grid-3{grid-template-columns:1fr}}
+.card{background:var(--panel);border-radius:16px;padding:22px 24px;border:1px solid var(--border)}
+.card h2{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.card h2 .live-tag{padding:3px 8px;background:rgba(76,175,125,.2);color:var(--success);border-radius:10px;font-size:10px;letter-spacing:1px}
+.card h2 .live-tag.off{background:rgba(239,84,104,.2);color:var(--error)}
+.big-stat{text-align:center;padding:18px 0}
+.big-stat .num{font-size:56px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px}
+.big-stat .lbl{color:var(--ink-soft);font-size:13px;font-weight:600}
+.stage-vis{display:flex;gap:4px;margin-top:16px;flex-wrap:wrap}
+.stage-chip{padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;background:var(--panel-2);color:var(--ink-soft);border:1px solid var(--border);transition:all .3s}
+.stage-chip.current{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;border-color:var(--accent);transform:scale(1.05);box-shadow:0 4px 12px rgba(255,138,91,.4)}
+.stage-chip.done{background:rgba(76,175,125,.2);color:var(--success);border-color:var(--success)}
+.stage-chip.done.current{background:linear-gradient(135deg,var(--success),#2e7d5b);color:#fff}
+.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.info-row:last-child{border-bottom:none}
+.info-row .k{color:var(--ink-soft);font-weight:600}
+.info-row .v{font-weight:700}
+.activity-feed{max-height:480px;overflow-y:auto;margin:-4px;padding:4px}
+.activity-feed::-webkit-scrollbar{width:6px}
+.activity-feed::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+.feed-item{padding:10px 14px;border-radius:10px;background:var(--panel-2);margin-bottom:8px;font-size:13px;display:flex;align-items:flex-start;gap:10px;animation:feedIn .4s;border-left:3px solid var(--border)}
+@keyframes feedIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.feed-item.correct{border-left-color:var(--success)}
+.feed-item.wrong{border-left-color:var(--error)}
+.feed-item.info{border-left-color:var(--primary)}
+.feed-item.action{border-left-color:var(--accent)}
+.feed-item .time{font-size:10px;color:var(--ink-soft);font-weight:700;white-space:nowrap;padding-top:2px}
+.feed-item .msg{flex:1;line-height:1.4}
+.feed-item .msg strong{color:var(--accent)}
+.no-data{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px}
+.no-data .icon{font-size:48px;margin-bottom:10px;opacity:.5}
+.notes-view{background:var(--panel-2);border-radius:10px;padding:14px 16px;font-family:'Courier New',monospace;font-size:13px;line-height:1.6;color:var(--ink);min-height:120px;white-space:pre-wrap;word-break:break-word}
+.typing-live{background:rgba(76,175,125,.1);border:1px dashed var(--success);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--ink);margin-top:10px;min-height:44px;display:none}
+.typing-live.show{display:block}
+.typing-live .lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--success);text-transform:uppercase;display:block;margin-bottom:4px}
+.typing-live .txt{font-family:'Courier New',monospace;color:var(--accent);font-weight:700}
+.control-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.ctrl-btn{padding:12px 10px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.ctrl-btn.current{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;border-color:var(--accent)}
+.ctrl-btn .num{font-size:10px;opacity:.65;display:block;margin-bottom:2px;letter-spacing:1px}
+@media(max-width:600px){.session-box input{width:90px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-left">
+      <div class="mark">📊</div>
+      <div>
+        <h1>Teacher Dashboard</h1>
+        <div class="sub">Live view of the student's progress — opens in any browser on any device</div>
+      </div>
+    </div>
+    <div class="session-box">
+      <span class="lbl">Session:</span>
+      <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" onchange="changeSessionCode()">
+    </div>
+    <div class="connection" id="conn">
+      <div class="dot"></div>
+      <span id="connText">Set code above</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="clearFeed()">Clear feed</button>
+      <button class="btn danger" onclick="sendReset()">Reset student</button>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <h2>Live Score <span class="live-tag" id="liveTag">OFFLINE</span></h2>
+      <div class="big-stat">
+        <div class="num" id="scoreBig">0</div>
+        <div class="lbl">Total points (out of 80)</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Session Info</h2>
+      <div class="info-row"><span class="k">Current stage</span><span class="v" id="currentStage">—</span></div>
+      <div class="info-row"><span class="k">Elapsed</span><span class="v" id="elapsedTime">00:00</span></div>
+      <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 10</span></div>
+      <div class="info-row"><span class="k">Streak</span><span class="v" id="streakVal">0 🔥</span></div>
+      <div class="info-row"><span class="k">Last activity</span><span class="v" id="lastActivity">—</span></div>
+    </div>
+    <div class="card">
+      <h2>Stage Map</h2>
+      <div class="stage-vis" id="stageVis"></div>
+      <div style="margin-top:16px;font-size:12px;color:var(--ink-soft);line-height:1.6;">
+        <div>🟩 Green = completed</div>
+        <div>🟧 Orange = current stage</div>
+        <div>⬛ Grey = not started</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <h2>Send Command to Student</h2>
+    <div class="control-grid" id="controlGrid"></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Live Activity Feed <span class="live-tag" id="feedLive">LIVE</span></h2>
+      <div class="activity-feed" id="feed">
+        <div class="no-data">
+          <div class="icon">📡</div>
+          <div>Waiting for the student to begin.<br>
+          <b>1.</b> Open <b>lesson.html</b> on the student's device<br>
+          <b>2.</b> Enter the <b>same code</b> in both session boxes<br>
+          <b>3.</b> Activity will appear here instantly</div>
+        </div>
+      </div>
+      <div class="typing-live" id="typingLive">
+        <span class="lbl">⌨️ Student typing now</span>
+        <span class="txt" id="typingText"></span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Student's Notes</h2>
+      <div class="notes-view" id="notesView">— No notes yet —</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
+  authDomain: "sabina-s-workspace.firebaseapp.com",
+  databaseURL: "https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sabina-s-workspace",
+  storageBucket: "sabina-s-workspace.firebasestorage.app",
+  messagingSenderId: "64645562064",
+  appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
+};
+
+let fbApp=null,fbDb=null,sessionRef=null,stateRef=null,activityRef=null,commandRef=null;
+let state={connected:false,lastPing:0,score:0,stage:0,done:{},notes:'',elapsed:0,streak:0,lastActivity:'—'};
+const STAGE_NAMES=['Vocabulary','Word Match','Reading','Cloze','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
+
+function initFirebase(){
+  try{
+    fbApp=firebase.initializeApp(firebaseConfig);
+    fbDb=firebase.database();
+    const code=getSessionCode();
+    if(code)attachSession(code);
+    else updateConnUI('nocode');
+  }catch(e){console.error('FB init error:',e);updateConnUI('error')}
+}
+function getSessionCode(){return (localStorage.getItem('nd_teacher_code')||'').toUpperCase()}
+function changeSessionCode(){
+  const input=document.getElementById('sessionCodeInput');
+  const code=(input.value||'').toUpperCase().trim();
+  if(!code){localStorage.removeItem('nd_teacher_code');detachSession();updateConnUI('nocode');return}
+  localStorage.setItem('nd_teacher_code',code);
+  if(!fbDb){initFirebase();return}
+  detachSession();
+  attachSession(code);
+}
+function attachSession(code){
+  sessionRef=fbDb.ref('sessions/'+code);
+  stateRef=sessionRef.child('state');
+  activityRef=sessionRef.child('activity');
+  commandRef=sessionRef.child('command');
+  stateRef.on('value',function(snap){
+    const p=snap.val();if(!p)return;
+    state.connected=true;state.lastPing=Date.now();
+    state.score=p.score||0;state.stage=p.stage||0;
+    state.done=p.done||{};state.notes=p.notes||'';
+    state.elapsed=p.elapsed||0;state.streak=p.streak||0;
+    renderAll();
+  });
+  activityRef.limitToLast(100).on('child_added',function(snap){
+    const p=snap.val();if(!p)return;
+    state.lastPing=Date.now();state.connected=true;
+    addFeedItem(p);
+    if(p.type!=='typing')renderStatus();
+  });
+  updateConnUI('live');
+  document.getElementById('feed').innerHTML='';
+}
+function detachSession(){
+  if(sessionRef)sessionRef.off();
+  if(stateRef)stateRef.off();
+  if(activityRef)activityRef.off();
+}
+function sendCommand(action,extra){
+  if(!commandRef){alert('No session code set!');return}
+  const payload=Object.assign({action:action,ts:Date.now()},extra||{});
+  commandRef.set(payload);
+}
+function sendReset(){
+  if(!confirm('Send reset command to student? All their progress will be cleared.'))return;
+  sendCommand('reset');
+  state.score=0;state.stage=0;state.done={};state.notes='';state.streak=0;
+  renderAll();
+  clearFeed();
+}
+function jumpToStage(n){sendCommand('goto',{stage:n})}
+function clearFeed(){
+  document.getElementById('feed').innerHTML='<div class="no-data"><div class="icon">📡</div><div>Feed cleared. Waiting for new activity…</div></div>';
+}
+function updateConnUI(status){
+  const el=document.getElementById('conn');
+  const txt=document.getElementById('connText');
+  el.classList.remove('live','stale','off');
+  const tag=document.getElementById('liveTag');
+  const feedLive=document.getElementById('feedLive');
+  if(status==='nocode'){txt.textContent='Set code above';tag.textContent='OFFLINE';tag.classList.add('off');feedLive.textContent='—';return}
+  if(status==='error'){txt.textContent='Connection error';tag.textContent='ERROR';tag.classList.add('off');return}
+  if(status==='live'){
+    el.classList.add('live');txt.textContent='Live · Synced';
+    tag.textContent='LIVE';tag.classList.remove('off');feedLive.textContent='LIVE';
+  }
+}
+function renderAll(){renderStatus();renderStageVis();renderNotes()}
+function renderStatus(){
+  document.getElementById('scoreBig').textContent=state.score;
+  document.getElementById('currentStage').textContent=state.stage?('Stage '+state.stage+' — '+STAGE_NAMES[state.stage-1]):'—';
+  document.getElementById('stagesDone').textContent=Object.values(state.done).filter(Boolean).length+' / 10';
+  document.getElementById('streakVal').textContent=state.streak+' 🔥';
+  document.getElementById('lastActivity').textContent=state.lastActivity;
+  const m=String(Math.floor(state.elapsed/60)).padStart(2,'0');
+  const s=String(state.elapsed%60).padStart(2,'0');
+  document.getElementById('elapsedTime').textContent=m+':'+s;
+  renderStageVis();
+  renderControls();
+}
+function renderStageVis(){
+  const el=document.getElementById('stageVis');el.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const chip=document.createElement('div');chip.className='stage-chip';
+    if(state.stage===i)chip.classList.add('current');
+    if(state.done[i])chip.classList.add('done');
+    chip.textContent=i+'. '+STAGE_NAMES[i-1].substring(0,14);
+    el.appendChild(chip);
+  }
+}
+function renderControls(){
+  const grid=document.getElementById('controlGrid');grid.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const b=document.createElement('button');
+    b.className='ctrl-btn'+(state.stage===i?' current':'');
+    b.innerHTML='<span class="num">STAGE '+i+'</span>'+STAGE_NAMES[i-1];
+    b.onclick=function(){jumpToStage(i)};
+    grid.appendChild(b);
+  }
+}
+function renderNotes(){document.getElementById('notesView').textContent=state.notes||'— No notes yet —'}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+function addFeedItem(p){
+  const feed=document.getElementById('feed');
+  const ph=feed.querySelector('.no-data');if(ph)ph.remove();
+  if(p.type==='typing'){
+    const typingLive=document.getElementById('typingLive');
+    const typingText=document.getElementById('typingText');
+    typingLive.classList.add('show');
+    typingText.textContent=p.detail;
+    clearTimeout(window.__typingTimer);
+    window.__typingTimer=setTimeout(function(){typingLive.classList.remove('show')},3000);
+    return;
+  }
+  const item=document.createElement('div');
+  let cls='info';let msg='';
+  const timeStr=new Date().toLocaleTimeString().substring(0,8);
+  switch(p.type){
+    case 'flashcard_open':cls='info';msg='📚 Opened flashcard: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'know':cls='correct';msg='✓ Knows: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'practise':cls='info';msg='↻ Practising: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'vocab_lookup':cls='info';msg='📖 Looked up: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'match_correct':cls='correct';msg='🔗 Matched: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'match_wrong':cls='wrong';msg='✗ Wrong match: '+escapeHtml(p.detail);break;
+    case 'cloze_correct':cls='correct';msg='✏️ Cloze correct: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'cloze_wrong':cls='wrong';msg='✗ Cloze wrong: '+escapeHtml(p.detail);break;
+    case 'comp_correct':cls='correct';msg='✅ Comprehension correct: '+escapeHtml(p.detail)+'…';break;
+    case 'comp_wrong':cls='wrong';msg='✗ Comprehension wrong: '+escapeHtml(p.detail)+'…';break;
+    case 'answer_correct':cls='correct';msg='✓ '+escapeHtml(p.detail);break;
+    case 'answer_wrong':cls='wrong';msg='✗ '+escapeHtml(p.detail);break;
+    case 'sb_correct':cls='correct';msg='🧩 Sentence: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'sb_wrong':cls='wrong';msg='✗ Sentence wrong: '+escapeHtml(p.detail);break;
+    case 'speed_start':cls='action';msg='⚡ '+escapeHtml(p.detail);break;
+    case 'speed_correct':cls='correct';msg='⚡ Speed correct: '+escapeHtml(p.detail);break;
+    case 'speed_wrong':cls='wrong';msg='⚡ Speed wrong: '+escapeHtml(p.detail);break;
+    case 'speed_end':cls='action';msg='🏁 '+escapeHtml(p.detail);break;
+    case 'stage_open':cls='info';msg='➡️ '+escapeHtml(p.detail);break;
+    case 'stage_complete':cls='correct';msg='🎉 '+escapeHtml(p.detail);break;
+    case 'stage_done':cls='correct';msg='✓ '+escapeHtml(p.detail);break;
+    default:msg=escapeHtml(p.type)+': '+escapeHtml(p.detail||'');
+  }
+  item.className='feed-item '+cls;
+  item.innerHTML='<span class="time">'+timeStr+'</span><span class="msg">'+msg+'</span>';
+  feed.insertBefore(item,feed.firstChild);
+  state.lastActivity=timeStr+' — '+msg.replace(/<[^>]+>/g,'');
+  while(feed.children.length>100)feed.removeChild(feed.lastChild);
+}
+setInterval(function(){
+  if(!state.connected){return}
+  const diff=Date.now()-state.lastPing;
+  const el=document.getElementById('conn');
+  const txt=document.getElementById('connText');
+  if(diff>20000){
+    el.classList.remove('live');el.classList.add('stale');
+    txt.textContent='No signal ('+Math.round(diff/1000)+'s)';
+  }else{
+    el.classList.remove('stale');el.classList.add('live');
+    txt.textContent='Live · Synced';
+  }
+},2000);
+setInterval(function(){
+  const m=String(Math.floor(state.elapsed/60)).padStart(2,'0');
+  const s=String(state.elapsed%60).padStart(2,'0');
+  document.getElementById('elapsedTime').textContent=m+':'+s;
+},1000);
+const savedCode=getSessionCode();
+if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
+renderControls();
+renderStageVis();
+initFirebase();
+</script>
+</body>
+</html>

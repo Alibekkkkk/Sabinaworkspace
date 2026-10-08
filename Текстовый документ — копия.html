@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natural Disasters — Learning Studio</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>
+:root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
+html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);transition:background .3s,color .3s;overflow:hidden}
+body{display:flex;flex-direction:column}
+.topbar{height:60px;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:14px;flex-shrink:0;z-index:100;box-shadow:var(--shadow-sm)}
+.logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;color:var(--primary);white-space:nowrap}
+.logo .mark{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 8px rgba(238,90,36,.35)}
+.stat-pill{display:flex;align-items:center;gap:6px;background:var(--bg);padding:6px 12px;border-radius:20px;font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+.stat-pill .val{color:var(--accent);font-size:15px}
+.stat-pill .val.green{color:var(--success)}
+.stat-pill .val.bump{animation:bump .5s}
+@keyframes bump{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.spacer{flex:1}
+.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--panel);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--ink-soft);transition:all .15s;position:relative}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.icon-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);margin-right:4px;animation:syncPulse 2s ease-in-out infinite}
+.sync-dot.warn{background:var(--warn);animation:none}
+.sync-dot.off{background:var(--error);animation:none}
+@keyframes syncPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.session-input{display:flex;align-items:center;gap:6px;background:var(--bg);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.session-input input{border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:800;color:var(--accent);outline:none;width:90px;text-transform:uppercase;letter-spacing:.5px}
+.session-input input::placeholder{color:var(--ink-soft);font-weight:600;text-transform:none;letter-spacing:0}
+.session-input .lbl{color:var(--ink-soft);font-weight:600}
+.layout{flex:1;display:flex;overflow:hidden}
+.sidebar{width:250px;background:var(--panel);border-right:1px solid var(--border);padding:18px 14px;overflow-y:auto;flex-shrink:0}
+.sidebar-header{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;padding:0 10px 10px;display:flex;justify-content:space-between;align-items:center}
+.sidebar-header .pct{color:var(--accent);font-size:13px}
+.progress-rail{height:6px;background:var(--bg);border-radius:6px;margin:0 10px 18px;overflow:hidden}
+.progress-rail-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .5s ease;border-radius:6px}
+.stage-list{display:flex;flex-direction:column;gap:4px}
+.stage-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-soft);transition:all .15s;border:1px solid transparent;background:transparent;text-align:left;width:100%;font-family:inherit}
+.stage-item:hover{background:var(--bg);color:var(--ink)}
+.stage-item.active{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 4px 12px rgba(238,90,36,.3)}
+.stage-item.done{color:var(--success)}
+.stage-item.done.active{color:#fff}
+.stage-item .icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--bg);flex-shrink:0}
+.stage-item.active .icon{background:rgba(255,255,255,.22)}
+.stage-item.done .icon{background:var(--success-soft);color:var(--success)}
+.stage-item.active.done .icon{background:rgba(255,255,255,.22);color:#fff}
+.stage-item .num{font-size:10px;font-weight:800;letter-spacing:.5px;opacity:.65;display:block;margin-bottom:1px}
+.stage-item .label{line-height:1.25}
+.stage-item .check{margin-left:auto;font-size:14px;opacity:0;transition:opacity .2s}
+.stage-item.done .check{opacity:1}
+.main{flex:1;overflow-y:auto;padding:30px 40px 40px;scroll-behavior:smooth}
+.main::-webkit-scrollbar{width:10px}
+.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+.stage-view{display:none;animation:fadeSlide .4s ease;max-width:900px;margin:0 auto}
+.stage-view.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.stage-view h2{font-size:26px;color:var(--ink);margin-bottom:6px;font-weight:800}
+.stage-view .eyebrow{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.stage-view .lead{font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:22px;padding:14px 18px;background:var(--panel);border-left:4px solid var(--primary);border-radius:10px}
+.stage-view .lead .ru{display:block;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-style:italic;font-size:13px;color:var(--ink-soft)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 3px 0 var(--accent-dark)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 0 var(--accent-dark)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--accent-dark)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--border);box-shadow:0 2px 0 var(--border)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn.success{background:var(--success);box-shadow:0 3px 0 #1e7e34}
+.btn.small{padding:7px 14px;font-size:12px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.flash-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:14px 18px;background:var(--panel);border-radius:12px;border:1px solid var(--border)}
+.flash-toolbar .filt{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink-soft);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.flash-toolbar .filt.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.flash-stats{margin-left:auto;font-size:13px;font-weight:700;color:var(--ink-soft)}
+.flash-stats b{color:var(--success)}
+.flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.flashcard{background:var(--panel);border:2px solid var(--border);border-radius:14px;cursor:pointer;transition:all .2s;overflow:hidden;position:relative;aspect-ratio:1/1.05;display:flex;flex-direction:column;box-shadow:var(--shadow-sm)}
+.flashcard:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 28px rgba(238,90,36,.18)}
+.flashcard.known{border-color:var(--success)}
+.flashcard.known::before{content:'✓';position:absolute;top:8px;right:8px;width:26px;height:26px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;z-index:4;box-shadow:0 3px 8px rgba(46,158,91,.4)}
+.flashcard-img{flex:1;display:flex;align-items:center;justify-content:center;font-size:64px;background:linear-gradient(135deg,rgba(42,82,152,.06),rgba(238,90,36,.06));position:relative;overflow:hidden;min-height:100px}
+.flashcard-img img{width:100%;height:100%;object-fit:cover}
+.flashcard-word{padding:10px 8px;text-align:center;font-size:14px;font-weight:800;color:var(--ink);border-top:1px solid var(--border);background:var(--panel)}
+.fc-modal-backdrop{position:fixed;inset:0;background:rgba(20,25,40,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.fc-modal-backdrop.open{display:flex}
+.fc-modal{background:var(--panel);border-radius:22px;max-width:720px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg);position:relative}
+.fc-modal-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.08);border:none;cursor:pointer;font-size:18px;color:var(--ink);z-index:10}
+.fc-modal-img{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;font-size:180px;background:linear-gradient(135deg,#e8eef8,#f8eee8);border-radius:22px 22px 0 0;position:relative;overflow:hidden}
+html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
+.fc-modal-img img{width:100%;height:100%;object-fit:contain;padding:20px}
+.fc-modal-img .label{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.9);color:var(--ink);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.fc-modal-body{padding:24px 28px 28px;text-align:center}
+.fc-modal-word{font-size:32px;font-weight:800;color:var(--primary);margin-bottom:6px}
+.fc-modal-translation{font-size:18px;color:var(--accent);font-weight:700;margin-bottom:20px;min-height:26px;transition:opacity .3s}
+.fc-modal-translation.hidden{opacity:0}
+.fc-modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fc-modal-actions .btn{min-width:130px;justify-content:center}
+.fc-modal-tools{display:flex;gap:8px;justify-content:center;margin-top:18px;padding-top:18px;border-top:1px dashed var(--border);flex-wrap:wrap}
+.fc-modal-tools .tool{padding:8px 14px;font-size:12px;font-weight:700;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:inherit;color:var(--ink-soft)}
+.fc-modal-tools .tool:hover{border-color:var(--accent);color:var(--accent)}
+.fc-modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.fc-modal-nav button{background:transparent;border:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-soft);padding:8px 14px;border-radius:8px;font-family:inherit}
+.fc-modal-nav .counter{font-size:12px;color:var(--ink-soft);font-weight:700}
+.dd-area{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.dd-col-title{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:2px dashed var(--border)}
+.dd-words,.dd-slots{display:flex;flex-direction:column;gap:10px}
+.dd-word{padding:12px 16px;background:var(--panel);border:2px solid var(--border);border-radius:10px;font-size:14px;font-weight:700;color:var(--ink);cursor:grab;user-select:none;display:flex;align-items:center;gap:10px}
+.dd-word:hover:not(.used){border-color:var(--accent);transform:translateX(3px)}
+.dd-word.used{opacity:.25;cursor:default;pointer-events:none}
+.dd-word::before{content:'⠿';color:var(--ink-soft);font-size:15px;letter-spacing:-2px}
+.dd-slot{min-height:52px;padding:12px 16px;background:var(--bg);border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft)}
+.dd-slot.over{border-color:var(--accent);background:rgba(238,90,36,.08)}
+.dd-slot.correct{background:var(--success-soft);border:2px solid var(--success);color:var(--success)}
+.dd-slot.wrong{background:var(--error-soft);border:2px solid var(--error);animation:shake .4s}
+.dd-slot .slot-label{flex:1}
+.dd-slot .dropped-word{padding:6px 12px;background:var(--accent);color:#fff;border-radius:8px;font-weight:700;font-size:13px}
+.dd-slot .dropped-word.ok{background:var(--success)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:16.5px;line-height:1.85;color:var(--ink);box-shadow:var(--shadow-sm);font-family:Georgia,serif}
+.passage h3{color:var(--accent);font-size:19px;font-family:'Segoe UI',sans-serif;font-weight:800;margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border)}
+.passage h3:first-child{margin-top:0}
+.passage p{margin-bottom:14px}
+.v-word{background:rgba(238,90,36,.12);color:var(--accent-dark);font-weight:700;cursor:pointer;padding:1px 5px;border-radius:5px;border-bottom:2px dotted var(--accent);font-family:'Segoe UI',sans-serif}
+.v-word:hover{background:var(--accent);color:#fff}
+.v-word.learned{background:var(--success-soft);color:var(--success);border-bottom-color:var(--success)}
+.q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.q-num{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.q-prompt{font-size:16px;line-height:1.6;color:var(--ink);font-weight:600;margin-bottom:14px}
+.q-prompt .bracket{display:inline-block;font-size:12px;color:var(--accent);background:rgba(238,90,36,.1);padding:2px 8px;border-radius:6px;font-weight:700;margin-left:4px}
+.q-opts{display:flex;gap:10px;flex-wrap:wrap}
+.q-opt{padding:11px 20px;background:var(--bg);border:2px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer}
+.q-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.q-opt.correct{background:var(--success-soft);border-color:var(--success);color:var(--success)}
+.q-opt.wrong{background:var(--error-soft);border-color:var(--error);color:var(--error);animation:shake .4s}
+.q-input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.q-input{flex:1;min-width:200px;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);background:var(--bg);outline:none}
+.q-input:focus{border-color:var(--accent);background:var(--panel)}
+.q-input.correct{border-color:var(--success);background:var(--success-soft);color:var(--success)}
+.q-input.wrong{border-color:var(--error);background:var(--error-soft);color:var(--error);animation:shake .4s}
+.q-feedback{margin-top:12px;padding:11px 16px;border-radius:10px;font-size:14px;font-weight:600;display:none}
+.q-feedback.correct{background:var(--success-soft);color:var(--success);display:block;border-left:4px solid var(--success)}
+.q-feedback.wrong{background:var(--error-soft);color:var(--error);display:block;border-left:4px solid var(--error)}
+.q-feedback .exp{display:block;font-weight:500;font-size:13px;color:var(--ink-soft);margin-top:6px}
+.g-box{background:linear-gradient(135deg,rgba(46,158,91,.08),rgba(46,158,91,.03));border:1px solid rgba(46,158,91,.35);border-radius:14px;padding:20px 24px;margin-bottom:22px}
+.g-box h3{color:var(--success);font-size:17px;margin-bottom:12px;font-weight:800}
+.g-formula{background:var(--panel);padding:14px 18px;border-radius:10px;margin:10px 0;font-family:'Courier New',monospace;font-size:15px;font-weight:700;color:var(--success);border-left:4px solid var(--success)}
+.g-box ul{margin-left:22px;margin-top:8px}
+.g-box li{font-size:14px;line-height:1.7;margin-bottom:4px;color:var(--ink)}
+.ru-note{display:block;margin-top:14px;padding:12px 16px;background:rgba(255,152,0,.1);border-left:4px solid var(--warn);border-radius:8px;font-size:13.5px;color:var(--ink);line-height:1.6;font-style:italic}
+.ru-note b{color:var(--accent);font-style:normal}
+.sb-chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:var(--bg);border-radius:10px;margin-bottom:12px;min-height:60px}
+.sb-chip{padding:9px 16px;background:var(--panel);border:2px solid var(--border);border-radius:8px;font-weight:700;font-size:14px;color:var(--ink);cursor:pointer;user-select:none}
+.sb-chip:hover:not(.used){border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.sb-area{min-height:62px;padding:14px;background:var(--paper);border:2px dashed var(--border);border-radius:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.sb-area.filled{border-style:solid;border-color:var(--accent)}
+.sb-area .sb-chip{background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-color:var(--accent-dark);color:#fff}
+.sb-area .placeholder{color:var(--ink-soft);font-style:italic;font-size:13.5px}
+.sr-hud{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:14px;margin-bottom:16px;box-shadow:var(--shadow-md)}
+.sr-hud .sr-hud-item{text-align:center}
+.sr-hud .sr-hud-item .lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;opacity:.7;text-transform:uppercase;display:block;margin-bottom:2px}
+.sr-hud .sr-hud-item .val{font-size:22px;font-weight:800;display:block}
+.sr-hud .timer.warn{color:#ffcc80}
+.sr-hud .timer.danger{color:#ff8a5b}
+.notes-panel{position:fixed;top:60px;right:0;width:340px;height:calc(100vh - 60px);background:var(--panel);border-left:1px solid var(--border);box-shadow:-10px 0 30px rgba(0,0,0,.08);padding:22px;transform:translateX(100%);transition:transform .3s;z-index:200;display:flex;flex-direction:column}
+.notes-panel.open{transform:translateX(0)}
+.notes-panel h3{font-size:15px;margin-bottom:6px;color:var(--ink)}
+.notes-panel .sub{font-size:12px;color:var(--ink-soft);margin-bottom:14px}
+.notes-panel textarea{flex:1;width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;line-height:1.55;background:var(--bg);color:var(--ink);resize:none;outline:none}
+.notes-panel .close-note{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--panel);cursor:pointer;color:var(--ink-soft)}
+.stage-footer{display:flex;justify-content:space-between;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.complete-banner{text-align:center;padding:40px 20px;background:linear-gradient(135deg,rgba(46,158,91,.1),rgba(46,158,91,.03));border:2px dashed var(--success);border-radius:16px;margin-bottom:20px}
+.complete-banner .trophy{font-size:64px;margin-bottom:10px}
+.complete-banner h3{font-size:22px;color:var(--success);margin-bottom:6px;font-weight:800}
+.complete-banner p{font-size:14px;color:var(--ink-soft)}
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@media (max-width:900px){.sidebar{width:200px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
+@media (max-width:640px){.topbar{padding:0 14px;gap:8px}.logo .text{display:none}.session-input{display:none}.sidebar{position:fixed;left:-220px;top:60px;height:calc(100vh - 60px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}}
+::selection{background:var(--accent);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><div class="mark">🌍</div><span class="text">Learning Studio</span></div>
+  <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
+  <div class="session-input"><span class="lbl">Code:</span>
+    <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" onchange="changeSessionCode()"></div>
+  <div class="stat-pill">⏱ <span class="val" id="timerDisplay">00:00</span></div>
+  <div class="stat-pill">🏆 <span class="val" id="scoreDisplay">0</span><span style="opacity:.6;"> / 80</span></div>
+  <div class="stat-pill"><span id="streakDisplay" class="val green">0</span> 🔥</div>
+  <div class="spacer"></div>
+  <button class="icon-btn" id="soundToggle" onclick="toggleSound()" title="Sound">🔊</button>
+  <button class="icon-btn" id="darkToggle" onclick="toggleDark()" title="Dark">🌙</button>
+  <button class="icon-btn" onclick="toggleNotes()" title="Notes">📝</button>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header"><span>Your Progress</span><span class="pct" id="progressPct">0%</span></div>
+    <div class="progress-rail"><div class="progress-rail-fill" id="progressFill"></div></div>
+    <div class="stage-list" id="stageList"></div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<aside class="notes-panel" id="notesPanel">
+  <button class="close-note" onclick="toggleNotes()">×</button>
+  <h3>📝 My Notes</h3>
+  <p class="sub">Jot down words, questions, or your own examples.</p>
+  <textarea id="notesArea" placeholder="Type your notes here..."></textarea>
+</aside>
+
+<div class="fc-modal-backdrop" id="fcModal" onclick="if(event.target===this)closeFCModal()">
+  <div class="fc-modal">
+    <button class="fc-modal-close" onclick="closeFCModal()">×</button>
+    <div class="fc-modal-img" id="fcModalImg"></div>
+    <div class="fc-modal-body">
+      <div class="fc-modal-word" id="fcModalWord"></div>
+      <div class="fc-modal-translation hidden" id="fcModalTrans"></div>
+      <div class="fc-modal-actions">
+        <button class="btn success" onclick="fcMarkKnow()">✓ I know it</button>
+        <button class="btn ghost" onclick="fcMarkAgain()">↻ Practise again</button>
+      </div>
+      <div class="fc-modal-tools">
+        <button class="tool" onclick="fcSpeak()">🔊 Listen</button>
+        <button class="tool" onclick="fcEditImage()">🖼️ Custom image</button>
+        <button class="tool" onclick="fcRevealTrans()">👁️ Reveal</button>
+        <button class="tool" onclick="fcClearImage()">🗑️ Remove</button>
+      </div>
+      <div class="fc-modal-nav">
+        <button onclick="fcPrev()">← Previous</button>
+        <span class="counter" id="fcCounter">1 / 40</span>
+        <button onclick="fcNext()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== FIREBASE CONFIG ========== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
+  authDomain: "sabina-s-workspace.firebaseapp.com",
+  databaseURL: "https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sabina-s-workspace",
+  storageBucket: "sabina-s-workspace.firebasestorage.app",
+  messagingSenderId: "64645562064",
+  appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
+};
+let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
+
+function initFirebase(){
+  try{
+    fbApp=firebase.initializeApp(firebaseConfig);
+    fbDb=firebase.database();
+    const code=getSessionCode();
+    if(!code){updateSyncUI('nocode');return;}
+    sessionRef=fbDb.ref('sessions/'+code);
+    activityRef=sessionRef.child('activity');
+    commandRef=sessionRef.child('command');
+    commandRef.on('value',function(snap){
+      const cmd=snap.val();if(!cmd)return;
+      if(cmd.action==='reset'&&cmd.ts>Date.now()-10000)teacherReset();
+      if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
+    });
+    fbConnected=true;updateSyncUI('live');pushFullState();
+  }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
+}
+function getSessionCode(){return (localStorage.getItem('nd_session_code')||'').toUpperCase()}
+function changeSessionCode(){
+  const input=document.getElementById('sessionCodeInput');
+  const code=(input.value||'').toUpperCase().trim();
+  if(!code){localStorage.removeItem('nd_session_code');updateSyncUI('nocode');return}
+  localStorage.setItem('nd_session_code',code);
+  if(!fbDb){initFirebase();return}
+  if(sessionRef)sessionRef.off();
+  if(commandRef)commandRef.off();
+  sessionRef=fbDb.ref('sessions/'+code);
+  activityRef=sessionRef.child('activity');
+  commandRef=sessionRef.child('command');
+  commandRef.on('value',function(snap){
+    const cmd=snap.val();if(!cmd)return;
+    if(cmd.action==='reset'&&cmd.ts>Date.now()-10000)teacherReset();
+    if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
+  });
+  fbConnected=true;updateSyncUI('live');pushFullState();
+}
+function updateSyncUI(status){
+  const dot=document.getElementById('syncDot');
+  const txt=document.getElementById('syncStatus');
+  dot.classList.remove('warn','off');
+  if(status==='live'){txt.textContent='Live · Connected'}
+  else if(status==='nocode'){dot.classList.add('warn');txt.textContent='Set code above'}
+  else if(status==='error'){dot.classList.add('off');txt.textContent='Error'}
+}
+function teacherReset(){
+  if(!confirm('Teacher requested reset. Clear all progress?'))return;
+  Object.keys(state.scores).forEach(function(k){state.scores[k]=0});
+  Object.keys(state.done).forEach(function(k){state.done[k]=false});
+  s1Known={};s3Looked={};customImages={};
+  document.getElementById('notesArea').value='';
+  updateHUD();renderSidebar();renderStage();saveState();
+}
+
+/* ========== AUDIO ========== */
+let audioCtx=null,soundOn=true;
+function playTone(f,d,t,v){
+  if(!soundOn)return;t=t||'sine';v=v||.12;
+  try{
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type=t;o.frequency.value=f;
+    g.gain.setValueAtTime(v,audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);
+    o.connect(g);g.connect(audioCtx.destination);
+    o.start();o.stop(audioCtx.currentTime+d);
+  }catch(e){}
+}
+function sCorrect(){playTone(660,.12);setTimeout(function(){playTone(880,.18)},100)}
+function sWrong(){playTone(180,.25,'sawtooth',.08)}
+function sWin(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){playTone(f,.2)},i*110)})}
+function sFlip(){playTone(500,.08,'sine',.06)}
+function sPop(){playTone(700,.06,'sine',.05)}
+function confetti(){
+  const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.top='-20px';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=Math.random()*.5+'s';
+    c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';
+    if(Math.random()>.5)c.style.borderRadius='50%';
+    document.body.appendChild(c);setTimeout(function(){c.remove()},3600);
+  }
+}
+function speak(text){
+  if(!soundOn)return;
+  if(!('speechSynthesis'in window))return;
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=.9;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ========== SYNC ========== */
+const CHANNEL='nd_lesson_live_v1';
+let bc=null;
+try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
+function broadcast(type,payload){
+  if(fbConnected&&sessionRef){
+    try{
+      if(type==='state')sessionRef.child('state').set(payload);
+      else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}
+      else if(type==='notes')sessionRef.child('state').update({notes:payload.text});
+    }catch(e){console.error('FB write failed:',e)}
+  }
+  const msg={type:type,payload:payload,ts:Date.now()};
+  if(bc){try{bc.postMessage(msg)}catch(e){}}
+  try{localStorage.setItem('nd_broadcast',JSON.stringify(msg));setTimeout(function(){localStorage.removeItem('nd_broadcast')},100)}catch(e){}
+}
+function pushFullState(){
+  if(!fbConnected||!sessionRef)return;
+  broadcast('state',{
+    stage:state.currentStage,score:totalScore(),streak:state.streak,
+    done:state.done,scores:state.scores,
+    notes:document.getElementById('notesArea').value,
+    elapsed:Math.floor((Date.now()-state.sessionStart)/1000)
+  });
+}
+
+/* ========== STATE ========== */
+const STAGES=[
+  {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
+  {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
+  {id:3,label:'Reading',sub:'Passage',icon:'📖'},
+  {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
+  {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
+  {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
+  {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
+  {id:8,label:'Present Perfect',sub:'New!',icon:'🟢'},
+  {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
+  {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+];
+const state={
+  currentStage:1,
+  scores:{1:0,2:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0},
+  done:{1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false,9:false,10:false},
+  sessionStart:Date.now(),streak:0,currentQuestion:0,lastAction:''
+};
+function totalScore(){return Object.values(state.scores).reduce(function(a,b){return a+b},0)}
+function saveState(){
+  try{localStorage.setItem('nd_state',JSON.stringify({
+    scores:state.scores,done:state.done,
+    notes:document.getElementById('notesArea').value,
+    dark:document.documentElement.classList.contains('dark'),
+    soundOn:soundOn,customImages:customImages
+  }))}catch(e){}
+  broadcast('state',{
+    stage:state.currentStage,score:totalScore(),streak:state.streak,
+    done:state.done,scores:state.scores,
+    notes:document.getElementById('notesArea').value,
+    elapsed:Math.floor((Date.now()-state.sessionStart)/1000)
+  });
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem('nd_state');if(!raw)return;
+    const p=JSON.parse(raw);
+    if(p.scores)Object.assign(state.scores,p.scores);
+    if(p.done)Object.assign(state.done,p.done);
+    if(p.notes)document.getElementById('notesArea').value=p.notes;
+    if(p.dark)document.documentElement.classList.add('dark');
+    if(p.soundOn!==undefined)soundOn=p.soundOn;
+    if(p.customImages)customImages=p.customImages;
+  }catch(e){}
+}
+let customImages={};
+function broadcastAction(type,detail){
+  state.lastAction=detail;
+  broadcast('action',{stage:state.currentStage,type:type,detail:detail,score:totalScore(),ts:Date.now()});
+}
+
+/* ========== VOCAB ========== */
+const VOCAB=[
+  {en:'blizzard',ru:'снежная буря, пурга',emoji:'❄️',img:'https://upload.wikimedia.org/wikipedia/commons/f/fa/Blizzard1_-_NOAA.jpg'},
+  {en:'drought',ru:'засуха',emoji:'🏜️',img:'https://upload.wikimedia.org/wikipedia/commons/8/87/Drought_in_the_United_States_2012.jpg'},
+  {en:'earthquake',ru:'землетрясение',emoji:'🏚️',img:'https://upload.wikimedia.org/wikipedia/commons/8/8a/Haiti_Earthquake_building_damage.jpg'},
+  {en:'flood',ru:'наводнение, потоп',emoji:'🌊',img:'https://upload.wikimedia.org/wikipedia/commons/6/6b/Katrina-new-orleans-flooding-2005.jpg'},
+  {en:'heat wave',ru:'волна жары',emoji:'🥵',img:'https://upload.wikimedia.org/wikipedia/commons/5/5a/Heat_wave_China_June2023.jpg'},
+  {en:'hurricane',ru:'ураган',emoji:'🌀',img:'https://upload.wikimedia.org/wikipedia/commons/2/24/Hurricane_Katrina_August_28_2005_NASA.jpg'},
+  {en:'thunderstorm',ru:'гроза',emoji:'⛈️',img:'https://upload.wikimedia.org/wikipedia/commons/d/da/Rolling_thunder_cloud.jpg'},
+  {en:'tornado',ru:'торнадо, смерч',emoji:'🌪️',img:'https://upload.wikimedia.org/wikipedia/commons/d/d1/Binger_Oklahoma_Tornado.jpg'},
+  {en:'tsunami',ru:'цунами',emoji:'🌊',img:'https://upload.wikimedia.org/wikipedia/commons/2/24/2004-tsunami.jpg'},
+  {en:'wildfire',ru:'лесной пожар',emoji:'🔥',img:'https://upload.wikimedia.org/wikipedia/commons/3/36/Large_bonfire.jpg'},
+  {en:'landslide',ru:'оползень',emoji:'🏔️',img:'https://upload.wikimedia.org/wikipedia/commons/b/b2/Landslide_in_Cusco%2C_Peru_2018.jpg'},
+  {en:'avalanche',ru:'лавина',emoji:'🏔️',img:'https://upload.wikimedia.org/wikipedia/commons/7/74/Avalanche_in_Bia%C5%82y_Jar.jpg'},
+  {en:'volcano',ru:'вулкан',emoji:'🌋',img:'https://upload.wikimedia.org/wikipedia/commons/0/0e/MSH80_eruption_mount_st_helens_05-18-80.jpg'},
+  {en:'eruption',ru:'извержение',emoji:'💥',img:'https://upload.wikimedia.org/wikipedia/commons/9/94/Eruption_of_Mount_St._Helens.jpg'},
+  {en:'lava',ru:'лава',emoji:'🟠',img:'https://upload.wikimedia.org/wikipedia/commons/1/1e/P%C4%81hoehoe_Lava_flow.JPG'},
+  {en:'ash',ru:'пепел, зола',emoji:'🌫️',img:'https://upload.wikimedia.org/wikipedia/commons/2/2b/Ubinas_ash_cloud_-_ISS.jpg'},
+  {en:'hail',ru:'град',emoji:'🧊',img:'https://upload.wikimedia.org/wikipedia/commons/0/0c/Hail_clouds.jpg'},
+  {en:'sleet',ru:'мокрый снег',emoji:'🌧️',img:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Sleet_%28ice_pellets%29.jpg'},
+  {en:'humid',ru:'влажный',emoji:'💧',img:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Relative_Humidity.png'},
+  {en:'crust',ru:'земная кора',emoji:'🪨',img:'https://upload.wikimedia.org/wikipedia/commons/7/7b/Earth-crust-cutaway-english.png'},
+  {en:'tremor',ru:'толчок, дрожь',emoji:'📳',img:'https://upload.wikimedia.org/wikipedia/commons/0/0b/Seismic_activity_2011_Tohoku.jpg'},
+  {en:'magnitude',ru:'магнитуда',emoji:'📊',img:'https://upload.wikimedia.org/wikipedia/commons/6/6b/Richter_Scale.jpg'},
+  {en:'to topple',ru:'опрокидывать',emoji:'🏚️',img:'https://upload.wikimedia.org/wikipedia/commons/4/4c/Toppled_building_after_earthquake.jpg'},
+  {en:'to overflow',ru:'выходить из берегов',emoji:'🌊',img:'https://upload.wikimedia.org/wikipedia/commons/2/2b/Overflowing_river.jpg'},
+  {en:'to surge',ru:'нахлынуть',emoji:'🌊',img:'https://upload.wikimedia.org/wikipedia/commons/4/4e/Tsunami_wave.jpg'},
+  {en:'funnel',ru:'воронка',emoji:'🌪️',img:'https://upload.wikimedia.org/wikipedia/commons/e/e6/Funnel_cloud_approaching_the_ground_-_NOAA.jpg'},
+  {en:'column',ru:'столб',emoji:'🏛️',img:'https://upload.wikimedia.org/wikipedia/commons/2/2e/Column_of_steam.jpg'},
+  {en:'to erupt',ru:'извергаться',emoji:'💥',img:'https://upload.wikimedia.org/wikipedia/commons/0/0a/Volcano_eruption.jpg'},
+  {en:'atmosphere',ru:'атмосфера',emoji:'🌍',img:'https://upload.wikimedia.org/wikipedia/commons/9/94/Atmosphere_layers-en.svg'},
+  {en:'pressure',ru:'давление',emoji:'📊',img:'https://upload.wikimedia.org/wikipedia/commons/1/1a/Pressure_guage.jpg'},
+  {en:'region',ru:'регион',emoji:'🗺️',img:'https://upload.wikimedia.org/wikipedia/commons/7/7e/Regions_map.jpg'},
+  {en:'deforestation',ru:'вырубка лесов',emoji:'🪓',img:'https://upload.wikimedia.org/wikipedia/commons/4/4e/Hillside_deforestation_in_Rio_de_Janeiro.jpg'},
+  {en:'unpredictable',ru:'непредсказуемый',emoji:'❓',img:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Aprilwetter.jpg'},
+  {en:'structure',ru:'сооружение',emoji:'🏢',img:'https://upload.wikimedia.org/wikipedia/commons/3/3e/Energy_Plaza.jpg'},
+  {en:'brush fire',ru:'пожар в кустарнике',emoji:'🔥',img:'https://upload.wikimedia.org/wikipedia/commons/1/1c/Highbridge_Park_brush_fire_26.jpg'},
+  {en:'soil',ru:'почва',emoji:'🟫',img:'https://upload.wikimedia.org/wikipedia/commons/0/0e/Soil_profile.png'},
+  {en:'to collide',ru:'сталкиваться',emoji:'💥',img:'https://upload.wikimedia.org/wikipedia/commons/6/6b/Collision_of_clouds.jpg'},
+  {en:'to disrupt',ru:'нарушать',emoji:'⚡',img:'https://upload.wikimedia.org/wikipedia/commons/4/4e/Disruption_of_water.jpg'},
+  {en:'vibration',ru:'вибрация',emoji:'📳',img:'https://upload.wikimedia.org/wikipedia/commons/1/1e/Vibration_of_earthquake.jpg'},
+  {en:'to swirl',ru:'кружиться',emoji:'🌀',img:'https://upload.wikimedia.org/wikipedia/commons/7/7b/Swirling_clouds.jpg'}
+];
+
+/* ========== HELPERS ========== */
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+function escapeAttr(s){return escapeHtml(s)}
+
+/* ========== STAGE 1 ========== */
+let s1Filter='all',s1Known={},s1CurrentIdx=0,s1VisibleList=[];
+function renderStage1(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 1 — Vocabulary</div><h2>📚 Meet the New Words</h2>'+
+  '<div class="lead">Click any card to <b>open it large</b> and see the picture hint. Mark each word as <b>✓ I know it</b> or <b>↻ Practise</b>.<span class="ru">Нажмите на карточку — она откроется с картинкой.</span></div>'+
+  '<div class="flash-toolbar">'+
+  '<button class="filt active" data-f="all" onclick="setFilter(\'all\')">All ('+VOCAB.length+')</button>'+
+  '<button class="filt" data-f="known" onclick="setFilter(\'known\')">✓ Known</button>'+
+  '<button class="filt" data-f="again" onclick="setFilter(\'again\')">↻ Practise</button>'+
+  '<div class="flash-stats"><b id="s1KnowCount">0</b> known · <span id="s1AgainCount">0</span> to practise</div>'+
+  '</div><div class="flash-grid" id="flashGrid"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(null,2));renderFlashcards();
+}
+function setFilter(f){s1Filter=f;document.querySelectorAll('.flash-toolbar .filt').forEach(function(b){b.classList.toggle('active',b.dataset.f===f)});renderFlashcards()}
+function renderFlashcards(){
+  const grid=document.getElementById('flashGrid');if(!grid)return;
+  grid.innerHTML='';
+  const list=VOCAB.filter(function(v){
+    if(s1Filter==='known')return s1Known[v.en]===true;
+    if(s1Filter==='again')return s1Known[v.en]===false;
+    return true;
+  });
+  s1VisibleList=list;
+  list.forEach(function(v,idx){
+    const card=document.createElement('div');card.className='flashcard';
+    if(s1Known[v.en]===true)card.classList.add('known');
+    const customURL=customImages[v.en];
+    const imgURL=customURL||v.img;
+    card.innerHTML='<div class="flashcard-img">'+
+      '<img src="'+escapeAttr(imgURL)+'" alt="'+escapeAttr(v.en)+'" loading="lazy" onerror="this.parentNode.innerHTML=\''+v.emoji+'\'">'+
+      '</div><div class="flashcard-word">'+escapeHtml(v.en)+'</div>';
+    card.onclick=function(){openFCModal(idx)};
+    grid.appendChild(card);
+  });
+  updateS1Stats();
+}
+function updateS1Stats(){
+  const known=Object.values(s1Known).filter(function(x){return x===true}).length;
+  const again=Object.values(s1Known).filter(function(x){return x===false}).length;
+  const kEl=document.getElementById('s1KnowCount');const aEl=document.getElementById('s1AgainCount');
+  if(kEl)kEl.textContent=known;if(aEl)aEl.textContent=again;
+}
+function checkS1Complete(){
+  const known=Object.values(s1Known).filter(function(x){return x===true}).length;
+  if(known>=30&&!state.done[1]){setScore(1,10);markDone(1)}
+  else{setScore(1,Math.min(10,Math.floor(known/3)))}
+}
+function openFCModal(idx){s1CurrentIdx=idx;renderFCModal();document.getElementById('fcModal').classList.add('open');sFlip();broadcastAction('flashcard_open',s1VisibleList[idx]?s1VisibleList[idx].en:'')}
+function closeFCModal(){document.getElementById('fcModal').classList.remove('open')}
+function renderFCModal(){
+  const v=s1VisibleList[s1CurrentIdx];if(!v)return;
+  const customURL=customImages[v.en];const imgURL=customURL||v.img;
+  const img=document.getElementById('fcModalImg');
+  img.innerHTML='<img src="'+escapeAttr(imgURL)+'" alt="'+escapeAttr(v.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+v.emoji+'</div>\'"><div class="label">'+(v.en.startsWith('to ')?'VERB':'WORD')+'</div>';
+  document.getElementById('fcModalWord').textContent=v.en;
+  const tr=document.getElementById('fcModalTrans');tr.textContent=v.ru;tr.classList.add('hidden');
+  document.getElementById('fcCounter').textContent=(s1CurrentIdx+1)+' / '+s1VisibleList.length;
+}
+function fcRevealTrans(){document.getElementById('fcModalTrans').classList.remove('hidden')}
+function fcSpeak(){const v=s1VisibleList[s1CurrentIdx];if(v)speak(v.en.replace(/^to /,''))}
+function fcMarkKnow(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=true;sPop();updateS1Stats();checkS1Complete();saveState();broadcastAction('know',v.en);fcNext()}
+function fcMarkAgain(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=false;sPop();updateS1Stats();saveState();broadcastAction('practise',v.en);fcNext()}
+function fcNext(){if(s1CurrentIdx<s1VisibleList.length-1){s1CurrentIdx++;renderFCModal()}else{closeFCModal();renderFlashcards()}}
+function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
+function fcEditImage(){
+  const v=s1VisibleList[s1CurrentIdx];if(!v)return;
+  const current=customImages[v.en]||'';
+  const url=prompt('Paste an image URL for "'+v.en+'":',current);
+  if(url===null)return;
+  if(url.trim()==='')delete customImages[v.en];else customImages[v.en]=url.trim();
+  saveState();renderFCModal();renderFlashcards();sPop();
+}
+function fcClearImage(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;delete customImages[v.en];saveState();renderFCModal();renderFlashcards()}
+
+/* ========== STAGE 2 ========== */
+const MATCH_DATA=[
+  {word:'blizzard',meaning:'снежная буря'},{word:'drought',meaning:'засуха'},
+  {word:'earthquake',meaning:'землетрясение'},{word:'flood',meaning:'наводнение'},
+  {word:'heat wave',meaning:'волна жары'},{word:'hurricane',meaning:'ураган'},
+  {word:'thunderstorm',meaning:'гроза'},{word:'tornado',meaning:'торнадо'},
+  {word:'tsunami',meaning:'цунами'},{word:'wildfire',meaning:'лесной пожар'},
+  {word:'landslide',meaning:'оползень'},{word:'avalanche',meaning:'лавина'},
+  {word:'volcano',meaning:'вулкан'},{word:'eruption',meaning:'извержение'},
+  {word:'lava',meaning:'лава'},{word:'ash',meaning:'пепел'},
+  {word:'hail',meaning:'град'},{word:'humid',meaning:'влажный'},
+  {word:'crust',meaning:'земная кора'},{word:'tremor',meaning:'толчок'}
+];
+function renderStage2(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 2 — Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
+  '<div class="lead">Drag each English word onto its Russian translation.<span class="ru">Перетащите слово на его перевод.</span></div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
+  '<div style="font-size:14px;font-weight:700;color:var(--ink-soft);">Matched: <span id="s2count" style="color:var(--accent);font-size:18px;">0</span> / '+MATCH_DATA.length+'</div>'+
+  '<button class="btn ghost small" onclick="resetStage2()">↻ Reset</button></div>'+
+  '<div class="dd-area"><div><div class="dd-col-title">English Words</div><div class="dd-words" id="ddWords"></div></div>'+
+  '<div><div class="dd-col-title">Русский перевод</div><div class="dd-slots" id="ddSlots"></div></div></div>';
+  main.appendChild(v);main.appendChild(stageFooter(1,3,'<button class="btn ghost small" onclick="resetStage2()">↻ Reset</button>'));
+  renderDD();
+}
+function renderDD(){
+  const wordsEl=document.getElementById('ddWords'),slotsEl=document.getElementById('ddSlots');
+  if(!wordsEl||!slotsEl)return;wordsEl.innerHTML='';slotsEl.innerHTML='';
+  const words=MATCH_DATA.slice().sort(function(){return Math.random()-.5});
+  const meanings=MATCH_DATA.slice().sort(function(){return Math.random()-.5});
+  words.forEach(function(item){
+    const d=document.createElement('div');d.className='dd-word';d.draggable=true;
+    d.dataset.word=item.word;d.textContent=item.word;
+    d.addEventListener('dragstart',function(e){if(d.classList.contains('used')){e.preventDefault();return}e.dataTransfer.setData('text/plain',item.word)});
+    d.addEventListener('click',function(){
+      if(d.classList.contains('used'))return;
+      document.querySelectorAll('.dd-word').forEach(function(x){x.style.outline=''});
+      d.style.outline='3px solid var(--accent)';d.style.outlineOffset='2px';
+      window.__selectedDDWord=item.word;
+    });
+    wordsEl.appendChild(d);
+  });
+  meanings.forEach(function(item){
+    const slot=document.createElement('div');slot.className='dd-slot';slot.dataset.answer=item.word;
+    slot.innerHTML='<span class="slot-label">'+escapeHtml(item.meaning)+'</span>';
+    slot.addEventListener('dragover',function(e){e.preventDefault();if(!slot.classList.contains('correct'))slot.classList.add('over')});
+    slot.addEventListener('dragleave',function(){slot.classList.remove('over')});
+    slot.addEventListener('drop',function(e){e.preventDefault();slot.classList.remove('over');tryPlace(e.dataTransfer.getData('text/plain'),slot)});
+    slot.addEventListener('click',function(){
+      if(slot.classList.contains('correct'))return;
+      if(window.__selectedDDWord){tryPlace(window.__selectedDDWord,slot);window.__selectedDDWord=null;
+        document.querySelectorAll('.dd-word').forEach(function(x){x.style.outline=''})}
+    });
+    slotsEl.appendChild(slot);
+  });
+}
+function tryPlace(word,slot){
+  if(!word||slot.classList.contains('correct'))return;
+  if(slot.dataset.answer===word){
+    slot.classList.add('correct');
+    slot.innerHTML='<span class="slot-label">'+slot.querySelector('.slot-label').textContent+'</span><span class="dropped-word ok">'+escapeHtml(word)+'</span>';
+    document.querySelectorAll('.dd-word').forEach(function(d){if(d.dataset.word===word)d.classList.add('used')});
+    sCorrect();updateDDCount();checkDDComplete();broadcastAction('match_correct',word);
+  }else{
+    slot.classList.add('wrong');sWrong();
+    setTimeout(function(){slot.classList.remove('wrong')},500);
+    broadcastAction('match_wrong',word+' → '+slot.dataset.answer);
+  }
+}
+function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').length;const el=document.getElementById('s2count');if(el)el.textContent=c}
+function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
+function resetStage2(){setScore(2,0);state.done[2]=false;renderSidebar();renderStage2();updateHUD()}
+
+/* ========== STAGE 3 ========== */
+function buildPassageHTML(){
+  function vw(word){return '<span class="v-word" data-en="'+word+'">'+word+'</span>'}
+  return ['<h3>Introduction</h3>','<p>Our world is full of incredible natural events. Some are beautiful, some are dangerous. Today we will learn about ten of the most common natural disasters: '+vw('blizzards')+', '+vw('droughts')+', '+vw('earthquakes')+', '+vw('floods')+', '+vw('heat waves')+', '+vw('hurricanes')+', '+vw('thunderstorms')+', '+vw('tornadoes')+', '+vw('tsunamis')+', and '+vw('wildfires')+'.</p>',
+    '<h3>Blizzards</h3>','<p>A '+vw('blizzard')+' is a long snowstorm with very strong winds. It usually lasts for three hours or more. Blizzards are caused by cold air that '+vw('collides')+' with warm air.</p>',
+    '<h3>Droughts</h3>','<p>A '+vw('drought')+' is a long period with very little or no rain. Droughts are caused by a lack of rain over many months. Human activity, such as '+vw('deforestation')+', can also cause droughts. The '+vw('soil')+' becomes dry.</p>',
+    '<h3>Earthquakes</h3>','<p>An '+vw('earthquake')+' happens when the Earth\'s '+vw('crust')+' moves suddenly. The Earth starts shaking, and sometimes buildings and other '+vw('structures')+' fall down. The '+vw('magnitude')+' can be minor, with only a few small '+vw('tremors')+', or major, '+vw('toppling')+' entire cities.</p>',
+    '<h3>Floods</h3>','<p>'+vw('Floods')+' happen when heavy rain or melting ice and snow '+vw('overflow')+' rivers. Floods are the most common type of natural disaster in the United States.</p>',
+    '<h3>Heat Waves</h3>','<p>A '+vw('heat wave')+' is not just a normal hot summer day. It happens when there are much higher temperatures than normal in a '+vw('region')+'. This occurs when high '+vw('pressure')+' in the Earth\'s '+vw('atmosphere')+' builds up.</p>',
+    '<h3>Hurricanes</h3>','<p>'+vw('Hurricanes')+' are giant '+vw('swirling')+' storms with severe thunderstorms and winds of up to 160 miles per hour.</p>',
+    '<h3>Thunderstorms</h3>','<p>'+vw('Thunderstorms')+' include lightning, high winds, and usually heavy rain. Sometimes they bring '+vw('hail')+', '+vw('sleet')+', or snow instead. Thunderstorms happen when warm, '+vw('humid')+' air rises quickly.</p>',
+    '<h3>Tornadoes</h3>','<p>A '+vw('tornado')+' is a destructive '+vw('column')+' of air that spins very fast. Most look like a '+vw('funnel')+'.</p>',
+    '<h3>Tsunamis</h3>','<p>A '+vw('tsunami')+' is a giant ocean wave. Tsunamis '+vw('surge')+' onto the land. They are usually caused by underwater earthquakes. The '+vw('vibrations')+' '+vw('disrupt')+' the water.</p>',
+    '<h3>Wildfires</h3>','<p>'+vw('Wildfires')+' are dangerous and very '+vw('unpredictable')+'. Most wildfires are started by people, but dry weather and strong winds can cause them to spread quickly.</p>',
+    '<h3>Other Natural Disasters</h3>','<p>Other natural disasters include '+vw('landslides')+' and '+vw('avalanches')+'. Active '+vw('volcanoes')+' are also dangerous. When they '+vw('erupt')+', they send '+vw('ash')+' clouds into the air and '+vw('lava')+' onto the ground.</p>'].join('');
+}
+function renderStage3(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 3 — Reading</div><h2>📖 Read the Passage</h2>'+
+  '<div class="lead">Click any <span class="v-word" style="cursor:default;">orange</span> word to see its translation.<span class="ru">Нажмите на оранжевое слово — увидите перевод.</span></div>'+
+  '<div class="card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
+  '<button class="btn small" onclick="speakPassage()">🔊 Listen</button>'+
+  '<button class="btn ghost small" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>'+
+  '<div style="margin-left:auto;font-size:13px;font-weight:700;color:var(--ink-soft);">Checked: <span id="s3count" style="color:var(--success);">0</span> / 40</div>'+
+  '</div><div class="passage" id="passageBody">'+buildPassageHTML()+'</div>';
+  main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" onclick="completeReading()">✓ Finished reading</button>'));
+  bindVocabClicks();
+}
+let s3Looked={};
+function bindVocabClicks(){
+  document.querySelectorAll('.v-word').forEach(function(el){
+    el.onclick=function(){
+      const en=el.dataset.en;const translation=lookupTranslation(en);
+      el.classList.add('learned');s3Looked[en]=true;
+      showToast(en+' — '+translation);speak(en.replace(/^to /,'').replace(/s$/,''));
+      updateS3Count();broadcastAction('vocab_lookup',en);
+    };
+  });
+}
+function lookupTranslation(en){
+  const base=en.replace(/s$/,'');
+  const found=VOCAB.find(function(v){
+    const w=v.en.toLowerCase();
+    return w===en.toLowerCase()||w===base.toLowerCase()||w+'s'===en.toLowerCase()||w.replace(/^to /,'')===en.toLowerCase()||w.replace(/^to /,'')+'ing'===en.toLowerCase();
+  });
+  if(found)return found.ru;
+  const plural={'blizzards':'снежные бури','droughts':'засухи','earthquakes':'землетрясения','floods':'наводнения','heat waves':'волны жары','hurricanes':'ураганы','thunderstorms':'грозы','tornadoes':'торнадо','tsunamis':'цунами','wildfires':'лесные пожары','structures':'сооружения','tremors':'толчки','vibrations':'вибрации','landslides':'оползни','avalanches':'лавины','volcanoes':'вулканы','toppling':'опрокидывая','swirling':'кружащиеся','collides':'сталкивается','overflow':'выходят из берегов','surge':'нахлынывают','disrupt':'нарушают','erupt':'извергаются'};
+  return plural[en.toLowerCase()]||'—';
+}
+function updateS3Count(){const el=document.getElementById('s3count');if(el)el.textContent=Object.keys(s3Looked).length}
+function speakPassage(){const text=document.getElementById('passageBody').innerText;speak(text.substring(0,500))}
+function completeReading(){if(!state.done[3]){state.done[3]=true;state.scores[3]=0;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
+
+/* ========== STAGE 4 ========== */
+const CLOZE=[
+  {text:'A ___ is a long snowstorm with very strong winds.',options:['blizzard','drought','flood'],correct:0},
+  {text:'A ___ is a long period with very little or no rain.',options:['wildfire','drought','tsunami'],correct:1},
+  {text:'An ___ happens when the Earth\'s crust moves suddenly.',options:['earthquake','eruption','avalanche'],correct:0},
+  {text:'___ happen when heavy rain makes rivers overflow.',options:['Droughts','Floods','Tornadoes'],correct:1},
+  {text:'A ___ is not just a normal hot summer day.',options:['heat wave','blizzard','thunderstorm'],correct:0},
+  {text:'___ are giant swirling storms with winds up to 160 mph.',options:['Tsunamis','Wildfires','Hurricanes'],correct:2},
+  {text:'A ___ is a destructive column of air that spins very fast.',options:['tsunami','tornado','hail'],correct:1},
+  {text:'A ___ is a giant ocean wave caused by an underwater earthquake.',options:['tornado','tsunami','flood'],correct:1}
+];
+let s4Score=0;
+function renderStage4(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 4 — Cloze Reading</div><h2>✏️ Fill in the Gaps</h2>'+
+  '<div class="lead">Choose the correct word.<span class="ru">Выберите подходящее слово.</span></div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
+  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s4live" style="color:var(--accent);font-size:18px;">0</span> / '+CLOZE.length+'</div>'+
+  '<button class="btn ghost small" onclick="resetStage4()">↻ Reset</button></div><div id="clozeBody"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(3,5));renderCloze();s4Score=0;
+}
+function renderCloze(){
+  const body=document.getElementById('clozeBody');body.innerHTML='';
+  CLOZE.forEach(function(item,i){
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.text).replace('___','<b style="color:var(--accent);">___</b>')+'</div>';
+    const opts=document.createElement('div');opts.className='q-opts';
+    item.options.forEach(function(opt,j){
+      const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
+      b.onclick=function(){
+        if(b.disabled)return;
+        opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+        if(j===item.correct){b.classList.add('correct');s4Score++;sCorrect();broadcastAction('cloze_correct',item.options[item.correct])}
+        else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');sWrong();broadcastAction('cloze_wrong',opt+' ≠ '+item.options[item.correct])}
+        document.getElementById('s4live').textContent=s4Score;
+        if(s4Score===CLOZE.length){setScore(4,10);markDone(4)}else{setScore(4,Math.floor(s4Score*10/CLOZE.length))}
+      };
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);body.appendChild(card);
+  });
+}
+function resetStage4(){setScore(4,0);state.done[4]=false;renderSidebar();renderStage4();updateHUD()}
+
+/* ========== STAGE 5 ========== */
+const COMP=[
+  {q:'A blizzard is a long snowstorm with strong winds.',type:'tf',correct:true,exp:'True.'},
+  {q:'Droughts are caused by too much rain.',type:'tf',correct:false,exp:'False. Droughts are caused by a LACK of rain.'},
+  {q:'Earthquakes happen when the Earth\'s crust moves suddenly.',type:'tf',correct:true,exp:'True.'},
+  {q:'Floods are the most common natural disaster in the U.S.',type:'tf',correct:true,exp:'True.'},
+  {q:'A heat wave is just a normal hot summer day.',type:'tf',correct:false,exp:'False. Temperatures are HIGHER than normal.'},
+  {q:'Hurricanes are called typhoons in some parts of the world.',type:'tf',correct:true,exp:'True.'},
+  {q:'Which of these is NOT mentioned as a natural disaster?',type:'mc',options:['tsunami','tornado','sandstorm','wildfire'],correct:2,exp:'Sandstorms are not in the list.'},
+  {q:'What is a tsunami usually caused by?',type:'mc',options:['strong winds','underwater earthquakes','heavy rain','volcanoes'],correct:1,exp:'Underwater earthquakes.'},
+  {q:'What makes wildfires spread?',type:'mc',options:['rain and cold','dry weather and strong winds','snow and hail','cloudy weather'],correct:1,exp:'Dry weather and strong winds.'},
+  {q:'What do active volcanoes send into the air?',type:'mc',options:['ash clouds','snow','rain','hail'],correct:0,exp:'Ash clouds and lava.'}
+];
+let s5Score=0;
+function renderStage5(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 5 — Comprehension</div><h2>✅ Did You Understand?</h2>'+
+  '<div class="lead">True/False and multiple choice.<span class="ru">Проверьте понимание.</span></div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
+  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s5live" style="color:var(--accent);font-size:18px;">0</span> / '+COMP.length+'</div>'+
+  '<button class="btn ghost small" onclick="resetStage5()">↻ Reset</button></div><div id="compBody"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(4,6));renderComp();s5Score=0;
+}
+function renderComp(){
+  const body=document.getElementById('compBody');body.innerHTML='';
+  COMP.forEach(function(item,i){
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML='<div class="q-num">Question '+(i+1)+' — '+(item.type==='tf'?'True or False':'Multiple Choice')+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div>';
+    const opts=document.createElement('div');opts.className='q-opts';
+    const list=item.type==='tf'?['True','False']:item.options;
+    const correctIdx=item.type==='tf'?(item.correct?0:1):item.correct;
+    list.forEach(function(opt,j){
+      const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
+      b.onclick=function(){
+        if(b.disabled)return;
+        opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+        const fb=card.querySelector('.q-feedback');
+        if(j===correctIdx){
+          b.classList.add('correct');s5Score++;sCorrect();
+          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
+          broadcastAction('comp_correct',item.q.substring(0,40));
+        }else{
+          b.classList.add('wrong');opts.querySelectorAll('button')[correctIdx].classList.add('correct');sWrong();
+          fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>';
+          broadcastAction('comp_wrong',item.q.substring(0,40));
+        }
+        document.getElementById('s5live').textContent=s5Score;
+        if(s5Score===COMP.length){setScore(5,10);markDone(5)}else{setScore(5,Math.floor(s5Score*10/COMP.length))}
+      };
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);
+    const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
+    body.appendChild(card);
+  });
+}
+function resetStage5(){setScore(5,0);state.done[5]=false;renderSidebar();renderStage5();updateHUD()}
+
+/* ========== STAGES 6-8 ========== */
+const PRESENT_PASSIVE=[
+  {prompt:'After every disaster, drinking water ___ by volunteers.',bracket:'need',answer:'is needed',exp:'Singular → is + V3.'},
+  {prompt:'Destroyed crops ___ by farmers every year.',bracket:'report',answer:'are reported',exp:'Plural → are + V3.'},
+  {prompt:'Many buildings ___ by hurricanes in this region.',bracket:'destroy',answer:'are destroyed',exp:'Plural → are + V3.'},
+  {prompt:'The town ___ with water when the river overflows.',bracket:'cover',answer:'is covered',exp:'Singular → is + V3.'},
+  {prompt:'Tsunamis ___ by underwater earthquakes.',bracket:'cause',answer:'are caused',exp:'Plural → are + V3.'},
+  {prompt:'Broken structures ___ in the news after an earthquake.',bracket:'see',answer:'are seen',exp:'Plural → are + V3.'}
+];
+const PAST_PASSIVE=[
+  {prompt:'The wildfire ___ by the drought last summer.',bracket:'cause',answer:'was caused',exp:'Singular + past → was + V3.'},
+  {prompt:'The streets ___ after heavy rain yesterday.',bracket:'flood',answer:'were flooded',exp:'Plural + past → were + V3.'},
+  {prompt:'Many homes ___ by floods last year.',bracket:'destroy',answer:'were destroyed',exp:'Plural + past → were + V3.'},
+  {prompt:'The ancient city ___ by an earthquake in 1906.',bracket:'topple',answer:'was toppled',exp:'Singular + past → was + V3.'},
+  {prompt:'The whole town ___ with water after the storm.',bracket:'cover',answer:'was covered',exp:'Singular + past → was + V3.'},
+  {prompt:'The tornadoes ___ by scientists two days ago.',bracket:'study',answer:'were studied',exp:'Plural + past → were + V3.'}
+];
+const PP=[
+  {prompt:'Many flights ___ (cancel) because of blizzards this winter.',answer:'have been cancelled',accept:['have been canceled'],exp:'Plural + present perfect passive.'},
+  {prompt:'Japan ___ (experience) many strong earthquakes over the years.',answer:'has experienced',exp:'Singular → has + V3.'},
+  {prompt:'Many homes ___ (destroy) by floods in recent years.',answer:'have been destroyed',exp:'Plural + present perfect passive.'},
+  {prompt:'California ___ (have) many terrible wildfires in the last decade.',answer:'has had',exp:'Singular → has + had.'},
+  {prompt:'Scientists ___ (study) volcanoes for many years.',answer:'have studied',exp:'Plural → have + V3.'},
+  {prompt:'The smoke from wildfires ___ (cause) serious health problems.',answer:'has caused',exp:'Uncountable → has + V3.'}
+];
+function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead,inputPlaceholder){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
+  '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
+  '<div class="lead">'+lead+'</div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
+  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="p'+stageId+'live" style="color:var(--accent);font-size:18px;">0</span> / '+data.length+'</div>'+
+  '<button class="btn ghost small" onclick="resetPassive('+stageId+')">↻ Reset</button></div><div id="p'+stageId+'body"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
+  let score=0;const body=document.getElementById('p'+stageId+'body');
+  data.forEach(function(item,i){
+    const card=document.createElement('div');card.className='q-card';
+    let promptHtml=escapeHtml(item.prompt).replace('___','<b style="color:var(--accent);">___</b>');
+    if(item.bracket)promptHtml+='<span class="bracket">'+escapeHtml(item.bracket)+'</span>';
+    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+promptHtml+'</div>';
+    const row=document.createElement('div');row.className='q-input-row';
+    const inp=document.createElement('input');inp.type='text';inp.className='q-input';
+    inp.placeholder=inputPlaceholder;inp.autocomplete='off';inp.spellcheck=false;
+    const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
+    const fb=document.createElement('div');fb.className='q-feedback';
+    let answered=false;
+    function submit(){
+      if(answered)return;
+      const val=inp.value.trim().toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
+      const ans=item.answer.toLowerCase();
+      const ok=val===ans||(item.accept&&item.accept.indexOf(val)!==-1);
+      if(ok){
+        inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true;
+        fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
+        sCorrect();score++;
+        document.getElementById('p'+stageId+'live').textContent=score;
+        setScore(stageId,Math.floor(score*10/data.length));
+        if(score===data.length){setScore(stageId,10);markDone(stageId)}
+        broadcastAction('answer_correct',item.prompt.substring(0,40)+' → '+item.answer);
+      }else{
+        inp.classList.add('wrong');sWrong();
+        fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!';
+        setTimeout(function(){inp.classList.remove('wrong')},600);
+        broadcastAction('answer_wrong',item.prompt.substring(0,40)+' → "'+inp.value+'"');
+      }
+    }
+    btn.onclick=submit;
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+    inp.addEventListener('input',function(){broadcastAction('typing',item.prompt.substring(0,30)+' | "'+inp.value+'"')});
+    row.appendChild(inp);row.appendChild(btn);
+    card.appendChild(row);card.appendChild(fb);body.appendChild(card);
+  });
+}
+function renderStage6(){renderInputExercise(PRESENT_PASSIVE,6,5,7,'🔵 Passive Voice — Present Simple','Stage 6 — Grammar','Object + am / is / are + V3 (+ by ...)','<li><b>is</b> + V3 → singular</li><li><b>are</b> + V3 → plural</li><li>Use for facts and general truths.</li>','Complete with the correct <b>Present Passive</b> form.<span class="ru">Впишите форму: <b>am / is / are + V3</b>.</span>','Type the passive form...')}
+function renderStage7(){renderInputExercise(PAST_PASSIVE,7,6,8,'🟣 Passive Voice — Past Simple','Stage 7 — Grammar','Object + was / were + V3 (+ by ...)','<li><b>was</b> + V3 → singular</li><li><b>were</b> + V3 → plural</li><li>Use for finished actions.</li>','Complete with the correct <b>Past Passive</b> form.<span class="ru">Впишите форму: <b>was / were + V3</b>.</span>','Type the passive form...')}
+function renderStage8(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 8 — New Grammar!</div><h2>🟢 Present Perfect</h2>'+
+  '<div class="g-box"><h3>What is Present Perfect?</h3>'+
+  '<p style="font-size:14.5px;line-height:1.65;margin-bottom:10px;">Actions that happened in the past but are <b>still important now</b>.</p>'+
+  '<div class="g-formula">Subject + have / has + V3</div>'+
+  '<h3 style="margin-top:16px;">When do we use it?</h3><ul>'+
+  '<li><b>Experience:</b> I <b>have visited</b> Japan.</li>'+
+  '<li><b>Recent news:</b> Many flights <b>have been cancelled</b>.</li>'+
+  '<li><b>Unfinished time:</b> Scientists <b>have studied</b> volcanoes for many years.</li>'+
+  '<li><b>Time words:</b> already, just, yet, ever, never, since, for.</li></ul>'+
+  '<h3 style="margin-top:16px;">Present Perfect Passive</h3>'+
+  '<div class="g-formula">Object + have / has + been + V3</div>'+
+  '<span class="ru-note"><b>Настоящее совершённое время</b>: <b>have / has + V3</b>. Пассив: <b>have / has + been + V3</b>.</span></div>'+
+  '<div class="lead">Complete with the correct Present Perfect form.<span class="ru">Впишите форму Present Perfect.</span></div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
+  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="p8live" style="color:var(--accent);font-size:18px;">0</span> / '+PP.length+'</div>'+
+  '<button class="btn ghost small" onclick="resetPassive(8)">↻ Reset</button></div><div id="p8body"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(7,9));
+  let score=0;const body=document.getElementById('p8body');
+  PP.forEach(function(item,i){
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt).replace('___','<b style="color:var(--success);">___</b>')+'</div>';
+    const row=document.createElement('div');row.className='q-input-row';
+    const inp=document.createElement('input');inp.type='text';inp.className='q-input';
+    inp.placeholder='Type the present perfect form...';inp.autocomplete='off';inp.spellcheck=false;
+    const btn=document.createElement('button');btn.className='btn success';btn.textContent='✓ Check';
+    const fb=document.createElement('div');fb.className='q-feedback';
+    let answered=false;
+    function submit(){
+      if(answered)return;
+      const v0=inp.value.trim().toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
+      const ok=v0===item.answer||(item.accept&&item.accept.indexOf(v0)!==-1);
+      if(ok){
+        inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true;
+        fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
+        sCorrect();score++;
+        document.getElementById('p8live').textContent=score;
+        setScore(8,Math.floor(score*10/PP.length));
+        if(score===PP.length){setScore(8,10);markDone(8)}
+        broadcastAction('answer_correct','PP: '+item.answer);
+      }else{
+        inp.classList.add('wrong');sWrong();
+        fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!';
+        setTimeout(function(){inp.classList.remove('wrong')},600);
+        broadcastAction('answer_wrong','PP attempt: "'+inp.value+'"');
+      }
+    }
+    btn.onclick=submit;
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+    inp.addEventListener('input',function(){broadcastAction('typing','PP | "'+inp.value+'"')});
+    row.appendChild(inp);row.appendChild(btn);
+    card.appendChild(row);card.appendChild(fb);body.appendChild(card);
+  });
+}
+function resetPassive(id){setScore(id,0);state.done[id]=false;renderSidebar();renderStage();updateHUD()}
+
+/* ========== STAGE 9 ========== */
+const SB=[
+  {prompt:'Build a Present Passive sentence about the town.',words:['The','town','is','covered','with','water'],correct:['The','town','is','covered','with','water']},
+  {prompt:'Build a Present Passive sentence about tsunamis.',words:['Tsunamis','are','caused','by','underwater','earthquakes'],correct:['Tsunamis','are','caused','by','underwater','earthquakes']},
+  {prompt:'Build a Past Passive sentence about the wildfire.',words:['The','wildfire','was','caused','by','the','drought'],correct:['The','wildfire','was','caused','by','the','drought']},
+  {prompt:'Build a Past Passive sentence about the streets.',words:['The','streets','were','flooded','after','heavy','rain'],correct:['The','streets','were','flooded','after','heavy','rain']},
+  {prompt:'Build a Present Perfect sentence about flights.',words:['Many','flights','have','been','cancelled'],correct:['Many','flights','have','been','cancelled']},
+  {prompt:'Build a Present Perfect sentence about volcanoes.',words:['Scientists','have','studied','volcanoes','for','many','years'],correct:['Scientists','have','studied','volcanoes','for','many','years']}
+];
+let s9Score=0;
+function renderStage9(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 9 — Sentence Builder</div><h2>🧩 Build the Sentence</h2>'+
+  '<div class="lead">Click words in the correct order.<span class="ru">Соберите предложение.</span></div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
+  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s9live" style="color:var(--accent);font-size:18px;">0</span> / '+SB.length+'</div>'+
+  '<button class="btn ghost small" onclick="resetStage9()">↻ Reset</button></div><div id="sbBody"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(8,10));s9Score=0;
+  const body=document.getElementById('sbBody');
+  SB.forEach(function(item,i){
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML='<div class="q-num">Sentence '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>'+
+    '<div class="sb-chips" id="sbChips'+i+'"></div>'+
+    '<div class="sb-area" id="sbArea'+i+'"><span class="placeholder">Click the words below...</span></div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn small" onclick="checkSB('+i+')">✓ Check</button>'+
+    '<button class="btn ghost small" onclick="resetSBItem('+i+')">↻ Reset</button></div>'+
+    '<div class="q-feedback" id="sbFb'+i+'"></div>';
+    body.appendChild(card);
+    const chipsEl=document.getElementById('sbChips'+i);
+    const shuffled=item.words.slice().sort(function(){return Math.random()-.5});
+    shuffled.forEach(function(w){const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=w;chip.onclick=function(){moveChip(i,chip,w)};chipsEl.appendChild(chip)});
+  });
+}
+function moveChip(qIndex,chip,word){
+  const area=document.getElementById('sbArea'+qIndex);const ph=area.querySelector('.placeholder');
+  if(ph)ph.remove();
+  const newChip=document.createElement('div');newChip.className='sb-chip';newChip.textContent=word;
+  newChip.onclick=function(){
+    newChip.remove();
+    const chipsEl=document.getElementById('sbChips'+qIndex);
+    const back=document.createElement('div');back.className='sb-chip';back.textContent=word;
+    back.onclick=function(){moveChip(qIndex,back,word)};
+    chipsEl.appendChild(back);
+    if(!area.querySelector('.sb-chip')){area.innerHTML='<span class="placeholder">Click the words below...</span>';area.classList.remove('filled')}
+  };
+  area.appendChild(newChip);area.classList.add('filled');chip.remove();sPop();
+}
+function resetSBItem(i){
+  const area=document.getElementById('sbArea'+i);const chipsEl=document.getElementById('sbChips'+i);
+  area.querySelectorAll('.sb-chip').forEach(function(ch){
+    const back=document.createElement('div');back.className='sb-chip';back.textContent=ch.textContent;
+    back.onclick=function(){moveChip(i,back,ch.textContent)};chipsEl.appendChild(back);
+  });
+  area.innerHTML='<span class="placeholder">Click the words below...</span>';
+  area.classList.remove('filled');document.getElementById('sbFb'+i).className='q-feedback';
+}
+function checkSB(i){
+  const area=document.getElementById('sbArea'+i);
+  const userWords=Array.prototype.slice.call(area.querySelectorAll('.sb-chip')).map(function(c){return c.textContent});
+  const correct=SB[i].correct;const fb=document.getElementById('sbFb'+i);
+  if(userWords.length!==correct.length){fb.className='q-feedback wrong';fb.innerHTML='Use all the words.';sWrong();return}
+  const ok=userWords.every(function(w,j){return w===correct[j]});
+  if(ok){
+    fb.className='q-feedback correct';fb.innerHTML='✓ Correct!';sCorrect();
+    if(!SB[i].__done){
+      SB[i].__done=true;s9Score++;
+      document.getElementById('s9live').textContent=s9Score;
+      setScore(9,Math.floor(s9Score*10/SB.length));
+      if(s9Score===SB.length){setScore(9,10);markDone(9)}
+    }
+    broadcastAction('sb_correct',correct.join(' '));
+  }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.';sWrong();broadcastAction('sb_wrong',userWords.join(' '))}
+}
+function resetStage9(){setScore(9,0);state.done[9]=false;SB.forEach(function(x){delete x.__done});renderSidebar();renderStage9();updateHUD()}
+
+/* ========== STAGE 10 ========== */
+const SPEED_QUESTIONS=[
+  {q:'Many buildings ___ by hurricanes every year.',options:['are destroyed','were destroyed','is destroyed'],correct:0,exp:'Present Passive.'},
+  {q:'The wildfire ___ by the drought last summer.',options:['is caused','was caused','has been caused'],correct:1,exp:'Past Passive.'},
+  {q:'Tsunamis ___ by underwater earthquakes.',options:['are caused','were caused','is caused'],correct:0,exp:'Present Passive.'},
+  {q:'The streets ___ after heavy rain yesterday.',options:['are flooded','were flooded','was flooded'],correct:1,exp:'Past Passive + plural.'},
+  {q:'Many flights ___ because of blizzards this winter.',options:['are cancelled','were cancelled','have been cancelled'],correct:2,exp:'Present Perfect Passive.'},
+  {q:'Scientists ___ volcanoes for many years.',options:['study','studied','have studied'],correct:2,exp:'Present Perfect.'},
+  {q:'The town ___ with water after the storm.',options:['is covered','was covered','has been covered'],correct:1,exp:'Past Passive.'},
+  {q:'Drinking water ___ after every disaster.',options:['is needed','was needed','has been needed'],correct:0,exp:'Present Passive.'},
+  {q:'California ___ many wildfires in the last decade.',options:['has','had','has had'],correct:2,exp:'Present Perfect.'},
+  {q:'The ancient city ___ by an earthquake in 1906.',options:['is toppled','was toppled','has been toppled'],correct:1,exp:'Past Passive.'},
+  {q:'Broken structures ___ in the news after an earthquake.',options:['are seen','were seen','have been seen'],correct:0,exp:'Present Passive.'},
+  {q:'The smoke from wildfires ___ serious health problems.',options:['cause','has caused','have caused'],correct:1,exp:'Present Perfect.'}
+];
+let s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};
+function renderStage10(){
+  const main=document.getElementById('main');
+  const v=document.createElement('div');v.className='stage-view active';
+  v.innerHTML='<div class="eyebrow">Stage 10 — Speed Round</div><h2>⚡ Challenge Yourself!</h2>'+
+  '<div class="lead">60 seconds. Streak of 3+ gives bonus!<span class="ru">60 секунд. Бонус за серию!</span></div><div id="speedRoot"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(9,null,'<button class="btn ghost small" onclick="resetSpeed()">↻ Restart</button>'));
+  renderSpeedIntro();
+}
+function renderSpeedIntro(){
+  document.getElementById('speedRoot').innerHTML='<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready?</h3><p>60 seconds.</p><div style="margin-top:20px;"><button class="btn success" style="font-size:16px;padding:14px 32px;" onclick="startSpeed()">▶ Start</button></div></div>';
+}
+function startSpeed(){
+  s10={active:true,idx:0,score:0,timeLeft:60,timer:null,streak:0};
+  document.getElementById('speedRoot').innerHTML='<div class="sr-hud"><div class="sr-hud-item"><span class="lbl">Time</span><span class="val timer" id="srTimer">60</span></div><div class="sr-hud-item"><span class="lbl">Score</span><span class="val" id="srScore">0</span></div><div class="sr-hud-item"><span class="lbl">Streak</span><span class="val" id="srStreak">0 🔥</span></div></div><div id="srQuestion"></div>';
+  s10.timer=setInterval(function(){
+    s10.timeLeft--;
+    const t=document.getElementById('srTimer');
+    if(t){t.textContent=s10.timeLeft;t.classList.remove('warn','danger');
+      if(s10.timeLeft<=10)t.classList.add('danger');else if(s10.timeLeft<=20)t.classList.add('warn')}
+    if(s10.timeLeft<=0)endSpeed();
+  },1000);
+  renderSpeedQuestion();broadcastAction('speed_start','Speed round started');
+}
+function renderSpeedQuestion(){
+  if(s10.idx>=SPEED_QUESTIONS.length){SPEED_QUESTIONS.sort(function(){return Math.random()-.5});s10.idx=0}
+  const item=SPEED_QUESTIONS[s10.idx];
+  document.getElementById('srQuestion').innerHTML='<div class="q-card"><div class="q-num">Question '+(s10.idx+1)+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div><div class="q-opts" id="srOpts"></div></div>';
+  const opts=document.getElementById('srOpts');
+  item.options.forEach(function(opt,j){
+    const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
+    b.onclick=function(){
+      if(b.disabled)return;
+      opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+      if(j===item.correct){b.classList.add('correct');s10.streak++;const bonus=s10.streak>=3?2:1;s10.score+=bonus;sCorrect();broadcastAction('speed_correct',item.options[item.correct])}
+      else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');s10.streak=0;sWrong();broadcastAction('speed_wrong',opt+' ≠ '+item.options[item.correct])}
+      document.getElementById('srScore').textContent=s10.score;
+      document.getElementById('srStreak').textContent=s10.streak+' 🔥';
+      s10.idx++;
+      setTimeout(function(){if(s10.active&&s10.timeLeft>0)renderSpeedQuestion()},700);
+    };
+    opts.appendChild(b);
+  });
+}
+function endSpeed(){
+  s10.active=false;clearInterval(s10.timer);
+  const final=s10.score;
+  document.getElementById('speedRoot').innerHTML='<div class="complete-banner"><div class="trophy">🏁</div><h3>Time\'s Up!</h3><p>You scored <b>'+final+'</b> points!</p><div style="margin-top:20px;"><button class="btn success" onclick="startSpeed()">↻ Play Again</button></div></div>';
+  sWin();confetti();
+  const scaled=Math.min(15,Math.floor(final/2));
+  setScore(10,scaled);if(scaled>=10)markDone(10);
+  broadcastAction('speed_end','Final score: '+final);
+}
+function resetSpeed(){if(s10.timer)clearInterval(s10.timer);s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};setScore(10,0);state.done[10]=false;renderSidebar();renderStage10();updateHUD()}
+
+/* ========== HUD ========== */
+function updateHUD(){
+  const el=document.getElementById('scoreDisplay');
+  el.textContent=totalScore();
+  el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');
+  document.getElementById('streakDisplay').textContent=state.streak;
+  const doneCount=Object.values(state.done).filter(Boolean).length;
+  const pct=Math.round((doneCount/STAGES.length)*100);
+  document.getElementById('progressPct').textContent=pct+'%';
+  document.getElementById('progressFill').style.width=pct+'%';
+}
+function markDone(stageId){
+  if(state.done[stageId])return;
+  state.done[stageId]=true;
+  sWin();confetti();renderSidebar();updateHUD();saveState();
+  broadcastAction('stage_complete','Stage '+stageId+' complete!');
+}
+function setScore(stageId,amount){state.scores[stageId]=amount;updateHUD();saveState()}
+function renderSidebar(){
+  const list=document.getElementById('stageList');list.innerHTML='';
+  STAGES.forEach(function(s){
+    const b=document.createElement('button');b.className='stage-item';
+    if(state.currentStage===s.id)b.classList.add('active');
+    if(state.done[s.id])b.classList.add('done');
+    b.innerHTML='<div class="icon">'+s.icon+'</div><div style="flex:1;min-width:0;"><span class="num">Stage '+s.id+'</span><span class="label">'+s.label+'</span></div><span class="check">✓</span>';
+    b.onclick=function(){goToStage(s.id)};
+    list.appendChild(b);
+  });
+}
+function goToStage(n){
+  state.currentStage=n;renderSidebar();renderStage();
+  document.getElementById('main').scrollTo({top:0,behavior:'smooth'});
+  broadcastAction('stage_open','Stage '+n);
+}
+function renderStage(){
+  const main=document.getElementById('main');main.innerHTML='';
+  const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9,10:renderStage10};
+  try{fns[state.currentStage]()}catch(e){console.error(e);main.innerHTML='<p>Error loading stage.</p>'}
+}
+function stageFooter(prevId,nextId,extraHTML){
+  const f=document.createElement('div');f.className='stage-footer';let html='';
+  if(prevId)html+='<button class="btn ghost" onclick="goToStage('+prevId+')">← Previous</button>';else html+='<span></span>';
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;">'+(extraHTML||'')+'</div>';
+  if(nextId)html+='<button class="btn" onclick="goToStage('+nextId+')">Next →</button>';else html+='<span></span>';
+  f.innerHTML=html;return f;
+}
+function startTimer(){
+  setInterval(function(){
+    const elapsed=Math.floor((Date.now()-state.sessionStart)/1000);
+    const m=String(Math.floor(elapsed/60)).padStart(2,'0');
+    const s=String(elapsed%60).padStart(2,'0');
+    const el=document.getElementById('timerDisplay');if(el)el.textContent=m+':'+s;
+  },1000);
+}
+function toggleSound(){soundOn=!soundOn;document.getElementById('soundToggle').classList.toggle('active',soundOn);document.getElementById('soundToggle').textContent=soundOn?'🔊':'🔇';saveState()}
+function toggleDark(){document.documentElement.classList.toggle('dark');document.getElementById('darkToggle').classList.toggle('active',document.documentElement.classList.contains('dark'));saveState()}
+function toggleNotes(){document.getElementById('notesPanel').classList.toggle('open')}
+document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
+function showToast(text){
+  let toast=document.getElementById('toast');
+  if(!toast){
+    toast=document.createElement('div');toast.id='toast';
+    toast.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:white;padding:14px 24px;border-radius:12px;font-size:15px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:9999;transition:opacity .3s,transform .3s;max-width:90vw;text-align:center;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent=text;
+  toast.style.opacity='1';toast.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(function(){toast.style.opacity='0';toast.style.transform='translateX(-50%) translateY(10px)'},2200);
+}
+/* INIT */
+loadState();
+const savedCode=getSessionCode();
+if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
+renderSidebar();renderStage();startTimer();updateHUD();
+if(soundOn)document.getElementById('soundToggle').classList.add('active');
+if(document.documentElement.classList.contains('dark'))document.getElementById('darkToggle').classList.add('active');
+initFirebase();
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeFCModal();
+  const modal=document.getElementById('fcModal');
+  if(modal.classList.contains('open')){
+    if(e.key==='ArrowRight')fcNext();
+    if(e.key==='ArrowLeft')fcPrev();
+    if(e.key===' '){e.preventDefault();fcRevealTrans()}
+  }
+});
+setInterval(function(){if(fbConnected)pushFullState()},5000);
+setTimeout(pushFullState,800);
+</script>
+</body>
+</html>
