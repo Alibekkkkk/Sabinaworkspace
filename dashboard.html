@@ -359,7 +359,7 @@ function renameStudent(){
 }
 function copyLessonLink(){
   if(!activeCode)return;
-  const url=new URL('lesson.html?code='+encodeURIComponent(activeCode),window.location.href).href;
+  const url=new URL((activeCode==='GAZIZ'?'lesson_gaziz.html':'lesson.html')+'?code='+encodeURIComponent(activeCode),window.location.href).href;
   copyText(url,'Lesson link copied!');
 }
 function copyText(text,msg){
