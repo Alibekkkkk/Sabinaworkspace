@@ -33,25 +33,33 @@ body{display:flex;flex-direction:column}
 .session-input input::placeholder{color:var(--ink-soft);font-weight:600;text-transform:none;letter-spacing:0}
 .session-input .lbl{color:var(--ink-soft);font-weight:600}
 .layout{flex:1;display:flex;overflow:hidden}
-.sidebar{width:250px;background:var(--panel);border-right:1px solid var(--border);padding:18px 14px;overflow-y:auto;flex-shrink:0}
+.sidebar{width:260px;background:var(--panel);border-right:1px solid var(--border);padding:18px 14px;overflow-y:auto;flex-shrink:0}
 .sidebar-header{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;padding:0 10px 10px;display:flex;justify-content:space-between;align-items:center}
 .sidebar-header .pct{color:var(--accent);font-size:13px}
 .progress-rail{height:6px;background:var(--bg);border-radius:6px;margin:0 10px 18px;overflow:hidden}
 .progress-rail-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .5s ease;border-radius:6px}
-.stage-list{display:flex;flex-direction:column;gap:4px}
-.stage-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-soft);transition:all .15s;border:1px solid transparent;background:transparent;text-align:left;width:100%;font-family:inherit}
-.stage-item:hover{background:var(--bg);color:var(--ink)}
-.stage-item.active{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 4px 12px rgba(238,90,36,.3)}
-.stage-item.done{color:var(--success)}
-.stage-item.done.active{color:#fff}
-.stage-item .icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--bg);flex-shrink:0}
-.stage-item.active .icon{background:rgba(255,255,255,.22)}
-.stage-item.done .icon{background:var(--success-soft);color:var(--success)}
-.stage-item.active.done .icon{background:rgba(255,255,255,.22);color:#fff}
-.stage-item .num{font-size:10px;font-weight:800;letter-spacing:.5px;opacity:.65;display:block;margin-bottom:1px}
-.stage-item .label{line-height:1.25}
-.stage-item .check{margin-left:auto;font-size:14px;opacity:0;transition:opacity .2s}
-.stage-item.done .check{opacity:1}
+.stage-list{display:flex;flex-direction:column;gap:2px}
+.year-item{padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;transition:all .15s;background:var(--bg);margin-top:4px}
+.year-item:hover{color:var(--accent)}
+.year-item .arrow{margin-left:auto;font-size:10px;transition:transform .2s}
+.year-item.open .arrow{transform:rotate(90deg)}
+.month-item{padding:8px 12px 8px 28px;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:8px;border-radius:8px;transition:all .15s}
+.month-item:hover{background:var(--bg);color:var(--ink)}
+.month-item .arrow{margin-left:auto;font-size:10px;transition:transform .2s}
+.month-item.open .arrow{transform:rotate(90deg)}
+.lesson-item{padding:8px 12px 8px 44px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-soft);border-radius:8px;transition:all .15s;display:flex;align-items:center;gap:8px}
+.lesson-item:hover{background:var(--bg);color:var(--ink)}
+.lesson-item.active{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 4px 12px rgba(238,90,36,.3)}
+.lesson-item.done{color:var(--success)}
+.lesson-item.active.done{color:#fff}
+.lesson-item .check{margin-left:auto;font-size:12px;opacity:0}
+.lesson-item.done .check{opacity:1}
+.stage-sub-list{display:flex;flex-direction:column;gap:2px;padding-left:8px;margin-bottom:8px;border-left:2px solid var(--border);margin-left:22px}
+.stage-sub-item{padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-soft);transition:all .15s;display:flex;align-items:center;gap:8px;background:transparent;border:none;text-align:left;width:100%;font-family:inherit}
+.stage-sub-item:hover{background:var(--bg);color:var(--ink)}
+.stage-sub-item.active{background:var(--bg);color:var(--accent);font-weight:800}
+.stage-sub-item.done{color:var(--success)}
+.stage-sub-item .icon{font-size:13px}
 .main{flex:1;overflow-y:auto;padding:30px 40px 40px;scroll-behavior:smooth}
 .main::-webkit-scrollbar{width:10px}
 .main::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
@@ -178,8 +186,8 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .complete-banner p{font-size:14px;color:var(--ink-soft)}
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-@media (max-width:900px){.sidebar{width:200px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
-@media (max-width:640px){.topbar{padding:0 14px;gap:8px}.logo .text{display:none}.session-input{display:none}.sidebar{position:fixed;left:-220px;top:60px;height:calc(100vh - 60px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}}
+@media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
+@media (max-width:640px){.topbar{padding:0 14px;gap:8px}.logo .text{display:none}.session-input{display:none}.sidebar{position:fixed;left:-240px;top:60px;height:calc(100vh - 60px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}}
 ::selection{background:var(--accent);color:#fff}
 </style>
 </head>
@@ -201,7 +209,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 
 <div class="layout">
   <aside class="sidebar">
-    <div class="sidebar-header"><span>Your Progress</span><span class="pct" id="progressPct">0%</span></div>
+    <div class="sidebar-header"><span>Your Curriculum</span><span class="pct" id="progressPct">0%</span></div>
     <div class="progress-rail"><div class="progress-rail-fill" id="progressFill"></div></div>
     <div class="stage-list" id="stageList"></div>
   </aside>
@@ -228,9 +236,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
       </div>
       <div class="fc-modal-tools">
         <button class="tool" onclick="fcSpeak()">🔊 Listen</button>
-        <button class="tool" onclick="fcEditImage()">🖼️ Custom image</button>
         <button class="tool" onclick="fcRevealTrans()">👁️ Reveal</button>
-        <button class="tool" onclick="fcClearImage()">🗑️ Remove</button>
       </div>
       <div class="fc-modal-nav">
         <button onclick="fcPrev()">← Previous</button>
@@ -379,32 +385,76 @@ function pushFullState(){
   });
 }
 
-/* ========== STATE ========== */
-const STAGES=[
-  {id:1,label:'Academic Vocabulary',sub:'Cards',icon:'📚'},
-  {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
-  {id:3,label:'Academic Reading',sub:'Passage',icon:'📖'},
-  {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
-  {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
-  {id:6,label:'Past Simple vs Present Perfect',sub:'Grammar',icon:'⏳'},
-  {id:7,label:'Passive Voice',sub:'Grammar',icon:'🔄'},
-  {id:8,label:'Conditionals & Modals',sub:'Grammar',icon:'🔀'},
-  {id:9,label:'Sentence Builder',sub:'IELTS Task 1',icon:'🧩'},
-  {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+/* ========== CURRICULUM STRUCTURE ========== */
+// TO ADD A NEW LESSON: Copy the { id, title, stages } block and paste it under the desired month.
+const CURRICULUM = [
+  {
+    year: "2026",
+    months: [
+      {
+        month: "October",
+        lessons: [
+          {
+            id: "lesson_1",
+            title: "Lesson 1: Foundations",
+            stages: [
+              {id:1,label:'Academic Vocabulary',sub:'Cards',icon:'📚'},
+              {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
+              {id:3,label:'Academic Reading',sub:'Passage',icon:'📖'},
+              {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
+              {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
+              {id:6,label:'Past Simple vs Present Perfect',sub:'Grammar',icon:'⏳'},
+              {id:7,label:'Passive Voice',sub:'Grammar',icon:'🔄'},
+              {id:8,label:'Conditionals & Modals',sub:'Grammar',icon:'🔀'},
+              {id:9,label:'Sentence Builder',sub:'IELTS Task 1',icon:'🧩'},
+              {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ];
+
+/* ========== STATE ========== */
 const state={
-  currentStage:1,
-  scores:{1:0,2:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0},
-  done:{1:false,2:false,3:false,4:false,5:false,6:false,7:false,8:false,9:false,10:false},
+  currentYear: "2026",
+  currentMonth: "October",
+  currentLessonId: "lesson_1",
+  currentStage: 1,
+  scores:{}, // Keyed by lessonId_stageId
+  done:{},   // Keyed by lessonId_stageId
   sessionStart:Date.now(),streak:0,currentQuestion:0,lastAction:''
 };
-function totalScore(){return Object.values(state.scores).reduce(function(a,b){return a+b},0)}
+// Initialize scores and done tracking for all lessons
+CURRICULUM.forEach(y => y.months.forEach(m => m.lessons.forEach(l => l.stages.forEach(s => {
+  const key = l.id + "_" + s.id;
+  state.scores[key] = 0;
+  state.done[key] = false;
+}))));
+
+function getCurrentLesson() {
+  const year = CURRICULUM.find(y => y.year === state.currentYear);
+  if (!year) return null;
+  const month = year.months.find(m => m.month === state.currentMonth);
+  if (!month) return null;
+  return month.lessons.find(l => l.id === state.currentLessonId);
+}
+function totalScore(){
+  const lesson = getCurrentLesson();
+  if (!lesson) return 0;
+  return lesson.stages.reduce((sum, s) => sum + (state.scores[lesson.id + "_" + s.id] || 0), 0);
+}
 function saveState(){
   try{localStorage.setItem('nd_state_gaziz',JSON.stringify({
+    currentYear: state.currentYear,
+    currentMonth: state.currentMonth,
+    currentLessonId: state.currentLessonId,
+    currentStage: state.currentStage,
     scores:state.scores,done:state.done,
     notes:document.getElementById('notesArea').value,
     dark:document.documentElement.classList.contains('dark'),
-    soundOn:soundOn,customImages:customImages
+    soundOn:soundOn
   }))}catch(e){}
   broadcast('state',{
     stage:state.currentStage,score:totalScore(),streak:state.streak,
@@ -417,12 +467,15 @@ function loadState(){
   try{
     const raw=localStorage.getItem('nd_state_gaziz');if(!raw)return;
     const p=JSON.parse(raw);
+    if(p.currentYear)state.currentYear=p.currentYear;
+    if(p.currentMonth)state.currentMonth=p.currentMonth;
+    if(p.currentLessonId)state.currentLessonId=p.currentLessonId;
+    if(p.currentStage)state.currentStage=p.currentStage;
     if(p.scores)Object.assign(state.scores,p.scores);
     if(p.done)Object.assign(state.done,p.done);
     if(p.notes)document.getElementById('notesArea').value=p.notes;
     if(p.dark)document.documentElement.classList.add('dark');
     if(p.soundOn!==undefined)soundOn=p.soundOn;
-    if(p.customImages)customImages=p.customImages;
   }catch(e){}
 }
 let customImages={};
@@ -501,7 +554,8 @@ function updateS1Stats(){
 }
 function checkS1Complete(){
   const known=Object.values(s1Known).filter(function(x){return x===true}).length;
-  if(known>=15&&!state.done[1]){setScore(1,10);markDone(1)}
+  const key = state.currentLessonId + "_1";
+  if(known>=15&&!state.done[key]){setScore(1,10);markDone(1)}
   else{setScore(1,Math.min(10,Math.floor(known/1.5)))}
 }
 function openFCModal(idx){s1CurrentIdx=idx;renderFCModal();document.getElementById('fcModal').classList.add('open');sFlip();broadcastAction('flashcard_open',s1VisibleList[idx]?s1VisibleList[idx].en:'')}
@@ -519,8 +573,6 @@ function fcMarkKnow(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v
 function fcMarkAgain(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=false;sPop();updateS1Stats();saveState();broadcastAction('practise',v.en);fcNext()}
 function fcNext(){if(s1CurrentIdx<s1VisibleList.length-1){s1CurrentIdx++;renderFCModal()}else{closeFCModal();renderFlashcards()}}
 function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
-function fcEditImage(){alert('Custom images are disabled for academic vocabulary.')}
-function fcClearImage(){}
 
 /* ========== STAGE 2 ========== */
 const MATCH_DATA=[
@@ -589,7 +641,7 @@ function tryPlace(word,slot){
 }
 function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').length;const el=document.getElementById('s2count');if(el)el.textContent=c}
 function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
-function resetStage2(){setScore(2,0);state.done[2]=false;renderSidebar();renderStage2();updateHUD()}
+function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
 /* ========== STAGE 3 ========== */
 function buildPassageHTML(){
@@ -630,7 +682,7 @@ function lookupTranslation(en){
 }
 function updateS3Count(){const el=document.getElementById('s3count');if(el)el.textContent=Object.keys(s3Looked).length}
 function speakPassage(){const text=document.getElementById('passageBody').innerText;speak(text.substring(0,500))}
-function completeReading(){if(!state.done[3]){state.done[3]=true;state.scores[3]=0;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
+function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;state.scores[state.currentLessonId+"_3"]=0;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
 /* ========== STAGE 4 ========== */
 const CLOZE=[
@@ -675,7 +727,7 @@ function renderCloze(){
     card.appendChild(opts);body.appendChild(card);
   });
 }
-function resetStage4(){setScore(4,0);state.done[4]=false;renderSidebar();renderStage4();updateHUD()}
+function resetStage4(){setScore(4,0);state.done[state.currentLessonId+"_4"]=false;renderSidebar();renderStage4();updateHUD()}
 
 /* ========== STAGE 5 ========== */
 const COMP=[
@@ -734,7 +786,7 @@ function renderComp(){
     body.appendChild(card);
   });
 }
-function resetStage5(){setScore(5,0);state.done[5]=false;renderSidebar();renderStage5();updateHUD()}
+function resetStage5(){setScore(5,0);state.done[state.currentLessonId+"_5"]=false;renderSidebar();renderStage5();updateHUD()}
 
 /* ========== STAGES 6-8 (Grammar) ========== */
 const GRAMMAR_6=[
@@ -817,7 +869,7 @@ function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,li
 function renderStage6(){renderInputExercise(GRAMMAR_6,6,5,7,'⏳ Past Simple vs Present Perfect','Stage 6 — Grammar','Past Simple: V2 (finished time) | Present Perfect: have/has + V3 (experience/result)','<li>Specific time (yesterday, ago, in 2020) → Past Simple</li><li>Experience, result, unfinished time (ever, never, since, for) → Present Perfect</li>','Complete with the correct form.<span class="ru">Впишите правильную форму.</span>','Type the correct form...')}
 function renderStage7(){renderInputExercise(GRAMMAR_7,7,6,8,'🔄 Passive Voice','Stage 7 — Grammar','Present: am/is/are + V3 | Past: was/were + V3 | Perfect: have/has + been + V3','<li>Focus on the action, not the doer.</li><li>Use by + agent if necessary.</li>','Complete with the correct passive form.<span class="ru">Впишите форму пассивного залога.</span>','Type the passive form...')}
 function renderStage8(){renderInputExercise(GRAMMAR_8,8,7,9,'🔀 Conditionals & Modals','Stage 8 — Grammar','If + Past Simple, would + V1 | If + had + V3, would have + V3','<li>2nd Conditional: unreal present.</li><li>3rd Conditional: unreal past.</li><li>Modal + have + V3: past speculation/regret.</li>','Complete with the correct form.<span class="ru">Впишите правильную форму.</span>','Type the correct form...')}
-function resetPassive(id){setScore(id,0);state.done[id]=false;renderSidebar();renderStage();updateHUD()}
+function resetPassive(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
 
 /* ========== STAGE 9 ========== */
 const SB=[
@@ -893,7 +945,7 @@ function checkSB(i){
     broadcastAction('sb_correct',correct.join(' '));
   }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.';sWrong();broadcastAction('sb_wrong',userWords.join(' '))}
 }
-function resetStage9(){setScore(9,0);state.done[9]=false;SB.forEach(function(x){delete x.__done});renderSidebar();renderStage9();updateHUD()}
+function resetStage9(){setScore(9,0);state.done[state.currentLessonId+"_9"]=false;SB.forEach(function(x){delete x.__done});renderSidebar();renderStage9();updateHUD()}
 
 /* ========== STAGE 10 ========== */
 const SPEED_QUESTIONS=[
@@ -963,7 +1015,7 @@ function endSpeed(){
   setScore(10,scaled);if(scaled>=10)markDone(10);
   broadcastAction('speed_end','Final score: '+final);
 }
-function resetSpeed(){if(s10.timer)clearInterval(s10.timer);s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};setScore(10,0);state.done[10]=false;renderSidebar();renderStage10();updateHUD()}
+function resetSpeed(){if(s10.timer)clearInterval(s10.timer);s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};setScore(10,0);state.done[state.currentLessonId+"_10"]=false;renderSidebar();renderStage10();updateHUD()}
 
 /* ========== HUD ========== */
 function updateHUD(){
@@ -971,29 +1023,93 @@ function updateHUD(){
   el.textContent=totalScore();
   el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');
   document.getElementById('streakDisplay').textContent=state.streak;
-  const doneCount=Object.values(state.done).filter(Boolean).length;
-  const pct=Math.round((doneCount/STAGES.length)*100);
+  const lesson = getCurrentLesson();
+  if (!lesson) return;
+  const doneCount = lesson.stages.filter(s => state.done[lesson.id + "_" + s.id]).length;
+  const pct = Math.round((doneCount / lesson.stages.length) * 100);
   document.getElementById('progressPct').textContent=pct+'%';
   document.getElementById('progressFill').style.width=pct+'%';
 }
 function markDone(stageId){
-  if(state.done[stageId])return;
-  state.done[stageId]=true;
+  const key = state.currentLessonId + "_" + stageId;
+  if(state.done[key])return;
+  state.done[key]=true;
   sWin();confetti();renderSidebar();updateHUD();saveState();
   broadcastAction('stage_complete','Stage '+stageId+' complete!');
 }
-function setScore(stageId,amount){state.scores[stageId]=amount;updateHUD();saveState()}
+function setScore(stageId,amount){
+  const key = state.currentLessonId + "_" + stageId;
+  state.scores[key] = amount;
+  updateHUD();saveState();
+}
+
+/* ========== SIDEBAR & NAVIGATION ========== */
+let expandedYears = ["2026"];
+let expandedMonths = ["October"];
+
 function renderSidebar(){
   const list=document.getElementById('stageList');list.innerHTML='';
-  STAGES.forEach(function(s){
-    const b=document.createElement('button');b.className='stage-item';
-    if(state.currentStage===s.id)b.classList.add('active');
-    if(state.done[s.id])b.classList.add('done');
-    b.innerHTML='<div class="icon">'+s.icon+'</div><div style="flex:1;min-width:0;"><span class="num">Stage '+s.id+'</span><span class="label">'+s.label+'</span></div><span class="check">✓</span>';
-    b.onclick=function(){goToStage(s.id)};
-    list.appendChild(b);
+  CURRICULUM.forEach(yearObj => {
+    const isYearOpen = expandedYears.includes(yearObj.year);
+    const yearEl = document.createElement('div');
+    yearEl.className = 'year-item' + (isYearOpen ? ' open' : '');
+    yearEl.innerHTML = `<span>📅 ${yearObj.year}</span><span class="arrow">▶</span>`;
+    yearEl.onclick = () => {
+      if (isYearOpen) expandedYears = expandedYears.filter(y => y !== yearObj.year);
+      else expandedYears.push(yearObj.year);
+      renderSidebar();
+    };
+    list.appendChild(yearEl);
+
+    if (isYearOpen) {
+      yearObj.months.forEach(monthObj => {
+        const isMonthOpen = expandedMonths.includes(monthObj.month);
+        const monthEl = document.createElement('div');
+        monthEl.className = 'month-item' + (isMonthOpen ? ' open' : '');
+        monthEl.innerHTML = `<span>📁 ${monthObj.month}</span><span class="arrow">▶</span>`;
+        monthEl.onclick = () => {
+          if (isMonthOpen) expandedMonths = expandedMonths.filter(m => m !== monthObj.month);
+          else expandedMonths.push(monthObj.month);
+          renderSidebar();
+        };
+        list.appendChild(monthEl);
+
+        if (isMonthOpen) {
+          monthObj.lessons.forEach(lesson => {
+            const isActive = lesson.id === state.currentLessonId;
+            const lessonEl = document.createElement('div');
+            lessonEl.className = 'lesson-item' + (isActive ? ' active' : '');
+            lessonEl.innerHTML = `<span>📘 ${lesson.title}</span><span class="check">✓</span>`;
+            lessonEl.onclick = () => {
+              state.currentLessonId = lesson.id;
+              state.currentStage = 1;
+              renderSidebar();
+              renderStage();
+            };
+            list.appendChild(lessonEl);
+
+            if (isActive) {
+              const stageSubList = document.createElement('div');
+              stageSubList.className = 'stage-sub-list';
+              lesson.stages.forEach(stage => {
+                const key = lesson.id + "_" + stage.id;
+                const isStageActive = stage.id === state.currentStage;
+                const isStageDone = state.done[key];
+                const stageEl = document.createElement('button');
+                stageEl.className = 'stage-sub-item' + (isStageActive ? ' active' : '') + (isStageDone ? ' done' : '');
+                stageEl.innerHTML = `<span class="icon">${stage.icon}</span> <span>${stage.label}</span>`;
+                stageEl.onclick = () => goToStage(stage.id);
+                stageSubList.appendChild(stageEl);
+              });
+              list.appendChild(stageSubList);
+            }
+          });
+        }
+      });
+    }
   });
 }
+
 function goToStage(n){
   state.currentStage=n;renderSidebar();renderStage();
   document.getElementById('main').scrollTo({top:0,behavior:'smooth'});
