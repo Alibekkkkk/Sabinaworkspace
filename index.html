@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Workspace — Choose a Student</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>
+:root{--bg:#0f1420;--panel:#1a2130;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--success:#4caf7d;--border:#2a3346;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+h1{font-size:28px;margin-bottom:10px;color:var(--ink);text-align:center}
+p.sub{font-size:14px;color:var(--ink-soft);margin-bottom:40px;text-align:center;max-width:500px}
+.students-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:800px;width:100%}
+.student-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .2s;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center}
+.student-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 30px rgba(255,138,91,.15)}
+.student-card .avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#d94a15);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;margin-bottom:16px}
+.student-card .name{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.student-card .code{font-size:12px;font-family:'Courier New',monospace;letter-spacing:2px;color:var(--ink-soft);font-weight:700;margin-bottom:20px}
+.student-card .btn{margin-top:auto;padding:10px 20px;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;width:100%}
+.student-card:hover .btn{background:#d94a15}
+.empty-state{text-align:center;padding:60px 20px;background:var(--panel);border-radius:20px;border:1px solid var(--border);max-width:500px;width:100%}
+.empty-state h3{font-size:20px;margin-bottom:10px}
+.empty-state p{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:20px}
+.loader{color:var(--ink-soft);font-size:14px;text-align:center;padding:40px}
+</style>
+</head>
+<body>
+
+<h1>🎓 My Workspace</h1>
+<p class="sub">Choose a student to open their personalized lesson page. Your progress is saved automatically.</p>
+
+<div id="root" class="students-grid">
+  <div class="loader">Loading students…</div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
+  authDomain: "sabina-s-workspace.firebaseapp.com",
+  databaseURL: "https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sabina-s-workspace",
+  storageBucket: "sabina-s-workspace.firebasestorage.app",
+  messagingSenderId: "64645562064",
+  appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+db.ref('students').on('value', function(snap){
+  const students = snap.val() || {};
+  const codes = Object.keys(students);
+  const root = document.getElementById('root');
+  
+  if (!codes.length) {
+    root.innerHTML = `
+      <div class="empty-state">
+        <h3>No students yet</h3>
+        <p>Open the Teacher Dashboard to add your first student. Once added, they will appear here.</p>
+        <a href="dashboard.html" style="color:var(--accent);font-weight:700;text-decoration:none;">Go to Dashboard →</a>
+      </div>`;
+    return;
+  }
+  
+  // Sort alphabetically by name
+  codes.sort((a,b) => (students[a].name||'').localeCompare(students[b].name||''));
+  
+  root.innerHTML = '';
+  codes.forEach(code => {
+    const s = students[code];
+    const initial = (s.name || '?').charAt(0).toUpperCase();
+    const card = document.createElement('a');
+    card.className = 'student-card';
+    card.href = 'lesson.html?code=' + encodeURIComponent(code);
+    card.innerHTML = `
+      <div class="avatar">${initial}</div>
+      <div class="name">${escapeHtml(s.name || 'Unnamed')}</div>
+      <div class="code">${escapeHtml(code)}</div>
+      <div class="btn">Open Workspace →</div>
+    `;
+    root.appendChild(card);
+  });
+});
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g, function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+</script>
+</body>
+</html>
