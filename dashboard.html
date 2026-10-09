@@ -3,41 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teacher Dashboard — Natural Disasters</title>
+<title>Teacher Dashboard — Multi-Student</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
-:root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;
---primary:#4a7fc8;--accent:#ff8a5b;--success:#4caf7d;--warn:#ffb74d;--error:#ef5468;--border:#2a3346;}
+:root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--success:#4caf7d;--warn:#ffb74d;--error:#ef5468;--border:#2a3346;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px}
-.wrap{max-width:1200px;margin:0 auto}
-.header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:var(--panel);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);flex-wrap:wrap;gap:14px}
+.wrap{max-width:1400px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--panel);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);flex-wrap:wrap;gap:14px}
 .header-left{display:flex;align-items:center;gap:14px}
 .header-left .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#d94a15);display:flex;align-items:center;justify-content:center;font-size:22px}
 .header-left h1{font-size:20px}
 .header-left .sub{font-size:12px;color:var(--ink-soft);margin-top:2px}
-.session-box{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--panel-2);border-radius:12px;border:1px solid var(--border)}
-.session-box .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase}
-.session-box input{padding:8px 12px;border:2px solid var(--border);border-radius:8px;background:var(--bg);color:var(--accent);font-family:inherit;font-size:14px;font-weight:800;outline:none;text-transform:uppercase;letter-spacing:1.5px;width:130px}
-.session-box input:focus{border-color:var(--accent)}
-.session-box input::placeholder{color:var(--ink-soft);font-weight:500;letter-spacing:0;text-transform:none}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .connection{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:20px;background:var(--panel-2);font-size:12px;font-weight:700}
 .connection .dot{width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}
 .connection.live .dot{background:var(--success);animation:pulse 1.5s infinite}
-.connection.stale .dot{background:var(--warn);animation:none}
-.connection.off .dot{background:var(--error);animation:none}
+.connection.off .dot{background:var(--error)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,125,.7)}50%{box-shadow:0 0 0 8px rgba(76,175,125,0)}}
-.header-actions{display:flex;gap:8px;flex-wrap:wrap}
 .btn{padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn.primary:hover{background:#d94a15}
 .btn.danger:hover{border-color:var(--error);color:var(--error)}
-.btn.success{background:var(--success);color:#fff;border-color:var(--success)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.btn.small{padding:6px 10px;font-size:12px}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+@media(max-width:960px){.layout{grid-template-columns:1fr}}
+.students-panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);overflow:hidden;position:sticky;top:20px;max-height:calc(100vh - 40px);display:flex;flex-direction:column}
+.students-header{padding:16px 16px 12px;border-bottom:1px solid var(--border)}
+.students-header h2{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.students-header h2 .count{padding:2px 8px;background:var(--panel-2);border-radius:10px;font-size:11px;color:var(--accent)}
+.students-search{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:13px;outline:none}
+.students-search:focus{border-color:var(--accent)}
+.students-search::placeholder{color:var(--ink-soft)}
+.students-list{flex:1;overflow-y:auto;padding:8px;min-height:100px}
+.students-list::-webkit-scrollbar{width:6px}
+.students-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+.student-item{padding:11px 13px;border-radius:12px;cursor:pointer;transition:all .15s;border:1px solid transparent;margin-bottom:4px;position:relative}
+.student-item:hover{background:var(--panel-2)}
+.student-item.active{background:var(--panel-2);border-color:var(--accent)}
+.student-item .top-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}
+.student-item .name{font-size:14px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.student-item .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-soft);flex-shrink:0}
+.student-item .dot.live{background:var(--success);animation:pulse 1.5s infinite}
+.student-item .dot.stale{background:var(--warn)}
+.student-item .dot.off{background:var(--error)}
+.student-item .unread{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.student-item .code{font-size:10px;font-family:'Courier New',monospace;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);margin-bottom:6px}
+.student-item .stats{display:flex;gap:10px;font-size:11px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap}
+.student-item .stats b{color:var(--accent)}
+.students-footer{padding:12px;border-top:1px solid var(--border)}
+.students-footer .btn{width:100%;justify-content:center}
+.main-area{min-width:0}
+.selected-header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap}
+.selected-header .info h2{font-size:20px;color:var(--ink);margin-bottom:4px}
+.selected-header .info .meta{font-size:12px;color:var(--ink-soft);font-family:'Courier New',monospace;letter-spacing:1px}
+.selected-header .info .meta b{color:var(--accent)}
+.selected-actions{display:flex;gap:8px;flex-wrap:wrap}
+.overview-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+.overview-stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;text-align:center}
+.overview-stat .num{font-size:30px;font-weight:800;color:var(--accent);line-height:1}
+.overview-stat .lbl{font-size:11px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:8px}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.overview-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all .15s;position:relative}
+.overview-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.overview-card .name{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.overview-card .code{font-size:11px;color:var(--ink-soft);font-family:'Courier New',monospace;letter-spacing:1.5px;font-weight:700;margin-bottom:14px}
+.overview-card .big-num{font-size:36px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px}
+.overview-card .big-lbl{font-size:11px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.overview-card .mini-stats{display:flex;gap:12px;font-size:11px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border)}
+.overview-card .status-pill{position:absolute;top:16px;right:16px;width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}
+.overview-card .status-pill.live{background:var(--success);animation:pulse 1.5s infinite}
+.overview-card .status-pill.stale{background:var(--warn)}
+.overview-card .status-pill.off{background:var(--error)}
+.empty-state{text-align:center;padding:80px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border)}
+.empty-state .icon{font-size:64px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-size:22px;color:var(--ink);margin-bottom:10px}
+.empty-state p{font-size:14px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
-@media(max-width:900px){.grid,.grid-3{grid-template-columns:1fr}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:1100px){.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.grid-3,.grid{grid-template-columns:1fr}}
 .card{background:var(--panel);border-radius:16px;padding:22px 24px;border:1px solid var(--border)}
 .card h2{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
 .card h2 .live-tag{padding:3px 8px;background:rgba(76,175,125,.2);color:var(--success);border-radius:10px;font-size:10px;letter-spacing:1px}
@@ -78,7 +125,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
 .ctrl-btn.current{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;border-color:var(--accent)}
 .ctrl-btn .num{font-size:10px;opacity:.65;display:block;margin-bottom:2px;letter-spacing:1px}
-@media(max-width:600px){.session-box input{width:90px}}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,20,32,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:480px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid var(--border);animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal h3{font-size:20px;margin-bottom:6px;color:var(--ink)}
+.modal .sub{font-size:13px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5}
+.modal label{display:block;font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:6px}
+.modal input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:15px;font-weight:700;outline:none;margin-bottom:16px}
+.modal input:focus{border-color:var(--accent)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
 </style>
 </head>
 <body>
@@ -88,75 +144,107 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <div class="mark">📊</div>
       <div>
         <h1>Teacher Dashboard</h1>
-        <div class="sub">Live view of the student's progress — opens in any browser on any device</div>
+        <div class="sub">Manage and monitor all your students in one place</div>
       </div>
-    </div>
-    <div class="session-box">
-      <span class="lbl">Session:</span>
-      <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" onchange="changeSessionCode()">
-    </div>
-    <div class="connection" id="conn">
-      <div class="dot"></div>
-      <span id="connText">Set code above</span>
     </div>
     <div class="header-actions">
-      <button class="btn" onclick="clearFeed()">Clear feed</button>
-      <button class="btn danger" onclick="sendReset()">Reset student</button>
+      <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
+      <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
     </div>
   </div>
 
-  <div class="grid-3">
-    <div class="card">
-      <h2>Live Score <span class="live-tag" id="liveTag">OFFLINE</span></h2>
-      <div class="big-stat">
-        <div class="num" id="scoreBig">0</div>
-        <div class="lbl">Total points (out of 80)</div>
+  <div class="layout">
+    <aside class="students-panel">
+      <div class="students-header">
+        <h2><span>Students</span><span class="count" id="studentsCount">0</span></h2>
+        <input type="text" class="students-search" id="studentSearch" placeholder="Search by name or code…" oninput="renderStudentsList()">
       </div>
-    </div>
-    <div class="card">
-      <h2>Session Info</h2>
-      <div class="info-row"><span class="k">Current stage</span><span class="v" id="currentStage">—</span></div>
-      <div class="info-row"><span class="k">Elapsed</span><span class="v" id="elapsedTime">00:00</span></div>
-      <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 10</span></div>
-      <div class="info-row"><span class="k">Streak</span><span class="v" id="streakVal">0 🔥</span></div>
-      <div class="info-row"><span class="k">Last activity</span><span class="v" id="lastActivity">—</span></div>
-    </div>
-    <div class="card">
-      <h2>Stage Map</h2>
-      <div class="stage-vis" id="stageVis"></div>
-      <div style="margin-top:16px;font-size:12px;color:var(--ink-soft);line-height:1.6;">
-        <div>🟩 Green = completed</div>
-        <div>🟧 Orange = current stage</div>
-        <div>⬛ Grey = not started</div>
+      <div class="students-list" id="studentsList"></div>
+      <div class="students-footer">
+        <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
       </div>
-    </div>
-  </div>
+    </aside>
 
-  <div class="card" style="margin-bottom:18px;">
-    <h2>Send Command to Student</h2>
-    <div class="control-grid" id="controlGrid"></div>
-  </div>
+    <main class="main-area">
+      <div id="selectedView" style="display:none;">
+        <div class="selected-header">
+          <div class="info">
+            <h2 id="selectedName">Student</h2>
+            <div class="meta">Code: <b id="selectedCode">—</b> · Added: <span id="selectedAdded">—</span></div>
+          </div>
+          <div class="selected-actions">
+            <button class="btn small" onclick="copyLessonLink()">🔗 Copy lesson link</button>
+            <button class="btn small" onclick="renameStudent()">✏️ Rename</button>
+            <button class="btn small danger" onclick="deleteStudent()">🗑 Delete</button>
+          </div>
+        </div>
 
-  <div class="grid">
-    <div class="card">
-      <h2>Live Activity Feed <span class="live-tag" id="feedLive">LIVE</span></h2>
-      <div class="activity-feed" id="feed">
-        <div class="no-data">
-          <div class="icon">📡</div>
-          <div>Waiting for the student to begin.<br>
-          <b>1.</b> Open <b>lesson.html</b> on the student's device<br>
-          <b>2.</b> Enter the <b>same code</b> in both session boxes<br>
-          <b>3.</b> Activity will appear here instantly</div>
+        <div class="grid-3">
+          <div class="card">
+            <h2>Live Score <span class="live-tag" id="liveTag">OFFLINE</span></h2>
+            <div class="big-stat">
+              <div class="num" id="scoreBig">0</div>
+              <div class="lbl">Total points (out of 80)</div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Session Info</h2>
+            <div class="info-row"><span class="k">Current stage</span><span class="v" id="currentStage">—</span></div>
+            <div class="info-row"><span class="k">Elapsed</span><span class="v" id="elapsedTime">00:00</span></div>
+            <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 10</span></div>
+            <div class="info-row"><span class="k">Streak</span><span class="v" id="streakVal">0 🔥</span></div>
+            <div class="info-row"><span class="k">Last activity</span><span class="v" id="lastActivity">—</span></div>
+          </div>
+          <div class="card">
+            <h2>Stage Map</h2>
+            <div class="stage-vis" id="stageVis"></div>
+            <div style="margin-top:16px;font-size:12px;color:var(--ink-soft);line-height:1.6;">
+              <div>🟩 Green = completed</div>
+              <div>🟧 Orange = current stage</div>
+              <div>⬛ Grey = not started</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px;">
+          <h2>Send Command to Student</h2>
+          <div class="control-grid" id="controlGrid"></div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h2>Live Activity Feed <span class="live-tag" id="feedLive">LIVE</span></h2>
+            <div class="activity-feed" id="feed"></div>
+            <div class="typing-live" id="typingLive">
+              <span class="lbl">⌨️ Student typing now</span>
+              <span class="txt" id="typingText"></span>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Student's Notes</h2>
+            <div class="notes-view" id="notesView">— No notes yet —</div>
+          </div>
         </div>
       </div>
-      <div class="typing-live" id="typingLive">
-        <span class="lbl">⌨️ Student typing now</span>
-        <span class="txt" id="typingText"></span>
+
+      <div id="overviewView">
+        <div id="overviewContent"></div>
       </div>
-    </div>
-    <div class="card">
-      <h2>Student's Notes</h2>
-      <div class="notes-view" id="notesView">— No notes yet —</div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="addStudentModal">
+  <div class="modal">
+    <h3>Add a new student</h3>
+    <p class="sub">Give your student a name. A unique session code will be generated automatically — share it with them so they can join the lesson.</p>
+    <label for="newStudentName">Student name</label>
+    <input type="text" id="newStudentName" placeholder="e.g. Alice Smith" maxlength="40" autocomplete="off">
+    <label for="newStudentCode">Session code (optional — leave empty to auto-generate)</label>
+    <input type="text" id="newStudentCode" placeholder="AUTO" maxlength="12" autocomplete="off" style="text-transform:uppercase;">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAddStudent()">Cancel</button>
+      <button class="btn primary" onclick="submitAddStudent()">Create student</button>
     </div>
   </div>
 </div>
@@ -172,7 +260,13 @@ const firebaseConfig = {
   appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
 };
 
-let fbApp=null,fbDb=null,sessionRef=null,stateRef=null,activityRef=null,commandRef=null;
+let fbApp=null,fbDb=null;
+let studentsRef=null,allSessionsRef=null;
+let studentsMap={};
+let studentMeta={};
+let activeCode=null;
+let activityRef=null;
+let unreadMap={};
 let state={connected:false,lastPing:0,score:0,stage:0,done:{},notes:'',elapsed:0,streak:0,lastActivity:'—'};
 const STAGE_NAMES=['Vocabulary','Word Match','Reading','Cloze','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
 
@@ -180,180 +274,104 @@ function initFirebase(){
   try{
     fbApp=firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
-    const code=getSessionCode();
-    if(code)attachSession(code);
-    else updateConnUI('nocode');
-  }catch(e){console.error('FB init error:',e);updateConnUI('error')}
-}
-function getSessionCode(){return (localStorage.getItem('nd_teacher_code')||'').toUpperCase()}
-function changeSessionCode(){
-  const input=document.getElementById('sessionCodeInput');
-  const code=(input.value||'').toUpperCase().trim();
-  if(!code){localStorage.removeItem('nd_teacher_code');detachSession();updateConnUI('nocode');return}
-  localStorage.setItem('nd_teacher_code',code);
-  if(!fbDb){initFirebase();return}
-  detachSession();
-  attachSession(code);
-}
-function attachSession(code){
-  sessionRef=fbDb.ref('sessions/'+code);
-  stateRef=sessionRef.child('state');
-  activityRef=sessionRef.child('activity');
-  commandRef=sessionRef.child('command');
-  stateRef.on('value',function(snap){
-    const p=snap.val();if(!p)return;
-    state.connected=true;state.lastPing=Date.now();
-    state.score=p.score||0;state.stage=p.stage||0;
-    state.done=p.done||{};state.notes=p.notes||'';
-    state.elapsed=p.elapsed||0;state.streak=p.streak||0;
-    renderAll();
-  });
-  activityRef.limitToLast(100).on('child_added',function(snap){
-    const p=snap.val();if(!p)return;
-    state.lastPing=Date.now();state.connected=true;
-    addFeedItem(p);
-    if(p.type!=='typing')renderStatus();
-  });
-  updateConnUI('live');
-  document.getElementById('feed').innerHTML='';
-}
-function detachSession(){
-  if(sessionRef)sessionRef.off();
-  if(stateRef)stateRef.off();
-  if(activityRef)activityRef.off();
-}
-function sendCommand(action,extra){
-  if(!commandRef){alert('No session code set!');return}
-  const payload=Object.assign({action:action,ts:Date.now()},extra||{});
-  commandRef.set(payload);
-}
-function sendReset(){
-  if(!confirm('Send reset command to student? All their progress will be cleared.'))return;
-  sendCommand('reset');
-  state.score=0;state.stage=0;state.done={};state.notes='';state.streak=0;
-  renderAll();
-  clearFeed();
-}
-function jumpToStage(n){sendCommand('goto',{stage:n})}
-function clearFeed(){
-  document.getElementById('feed').innerHTML='<div class="no-data"><div class="icon">📡</div><div>Feed cleared. Waiting for new activity…</div></div>';
+    studentsRef=fbDb.ref('students');
+    studentsRef.on('value',function(snap){
+      studentsMap=snap.val()||{};
+      updateConnUI('live');
+      renderStudentsList();
+      if(!activeCode)renderOverview();
+    },function(err){console.error(err);updateConnUI('error')});
+    allSessionsRef=fbDb.ref('sessions');
+    allSessionsRef.on('value',function(snap){
+      const data=snap.val()||{};
+      Object.keys(data).forEach(function(code){
+        const st=(data[code]&&data[code].state)||{};
+        studentMeta[code]={
+          score:st.score||0,
+          stage:st.stage||0,
+          done:st.done||{},
+          notes:st.notes||'',
+          elapsed:st.elapsed||0,
+          streak:st.streak||0,
+          lastSeen:st.lastUpdate||0
+        };
+      });
+      if(activeCode)renderSelectedView();
+      else renderOverview();
+      renderStudentsList();
+    });
+  }catch(e){console.error(e);updateConnUI('error')}
 }
 function updateConnUI(status){
   const el=document.getElementById('conn');
   const txt=document.getElementById('connText');
-  el.classList.remove('live','stale','off');
-  const tag=document.getElementById('liveTag');
-  const feedLive=document.getElementById('feedLive');
-  if(status==='nocode'){txt.textContent='Set code above';tag.textContent='OFFLINE';tag.classList.add('off');feedLive.textContent='—';return}
-  if(status==='error'){txt.textContent='Connection error';tag.textContent='ERROR';tag.classList.add('off');return}
-  if(status==='live'){
-    el.classList.add('live');txt.textContent='Live · Synced';
-    tag.textContent='LIVE';tag.classList.remove('off');feedLive.textContent='LIVE';
-  }
+  el.classList.remove('live','off');
+  if(status==='live'){el.classList.add('live');txt.textContent='Live · Synced'}
+  else if(status==='error'){el.classList.add('off');txt.textContent='Connection error'}
+  else txt.textContent='Connecting…';
 }
-function renderAll(){renderStatus();renderStageVis();renderNotes()}
-function renderStatus(){
-  document.getElementById('scoreBig').textContent=state.score;
-  document.getElementById('currentStage').textContent=state.stage?('Stage '+state.stage+' — '+STAGE_NAMES[state.stage-1]):'—';
-  document.getElementById('stagesDone').textContent=Object.values(state.done).filter(Boolean).length+' / 10';
-  document.getElementById('streakVal').textContent=state.streak+' 🔥';
-  document.getElementById('lastActivity').textContent=state.lastActivity;
-  const m=String(Math.floor(state.elapsed/60)).padStart(2,'0');
-  const s=String(state.elapsed%60).padStart(2,'0');
-  document.getElementById('elapsedTime').textContent=m+':'+s;
-  renderStageVis();
-  renderControls();
+
+function generateCode(existing){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code;
+  do{code='S';for(let i=0;i<4;i++)code+=chars[Math.floor(Math.random()*chars.length)]}while(existing[code]);
+  return code;
 }
-function renderStageVis(){
-  const el=document.getElementById('stageVis');el.innerHTML='';
-  for(let i=1;i<=10;i++){
-    const chip=document.createElement('div');chip.className='stage-chip';
-    if(state.stage===i)chip.classList.add('current');
-    if(state.done[i])chip.classList.add('done');
-    chip.textContent=i+'. '+STAGE_NAMES[i-1].substring(0,14);
-    el.appendChild(chip);
-  }
+function openAddStudent(){
+  document.getElementById('newStudentName').value='';
+  document.getElementById('newStudentCode').value='';
+  document.getElementById('addStudentModal').classList.add('open');
+  setTimeout(function(){document.getElementById('newStudentName').focus()},50);
 }
-function renderControls(){
-  const grid=document.getElementById('controlGrid');grid.innerHTML='';
-  for(let i=1;i<=10;i++){
-    const b=document.createElement('button');
-    b.className='ctrl-btn'+(state.stage===i?' current':'');
-    b.innerHTML='<span class="num">STAGE '+i+'</span>'+STAGE_NAMES[i-1];
-    b.onclick=function(){jumpToStage(i)};
-    grid.appendChild(b);
+function closeAddStudent(){document.getElementById('addStudentModal').classList.remove('open')}
+function submitAddStudent(){
+  const name=(document.getElementById('newStudentName').value||'').trim();
+  if(!name){alert('Please enter a student name.');return}
+  let code=(document.getElementById('newStudentCode').value||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(!code)code=generateCode(studentsMap);
+  else{
+    if(studentsMap[code]){alert('That code is already taken. Please choose another one.');return}
+    if(code.length<3){alert('Code must be at least 3 characters.');return}
   }
+  studentsRef.child(code).set({name:name,code:code,createdAt:Date.now()}).then(function(){
+    closeAddStudent();
+    selectStudent(code);
+  }).catch(function(err){alert('Could not add student: '+err.message)});
 }
-function renderNotes(){document.getElementById('notesView').textContent=state.notes||'— No notes yet —'}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
-function addFeedItem(p){
-  const feed=document.getElementById('feed');
-  const ph=feed.querySelector('.no-data');if(ph)ph.remove();
-  if(p.type==='typing'){
-    const typingLive=document.getElementById('typingLive');
-    const typingText=document.getElementById('typingText');
-    typingLive.classList.add('show');
-    typingText.textContent=p.detail;
-    clearTimeout(window.__typingTimer);
-    window.__typingTimer=setTimeout(function(){typingLive.classList.remove('show')},3000);
-    return;
-  }
-  const item=document.createElement('div');
-  let cls='info';let msg='';
-  const timeStr=new Date().toLocaleTimeString().substring(0,8);
-  switch(p.type){
-    case 'flashcard_open':cls='info';msg='📚 Opened flashcard: <strong>'+escapeHtml(p.detail)+'</strong>';break;
-    case 'know':cls='correct';msg='✓ Knows: <strong>'+escapeHtml(p.detail)+'</strong>';break;
-    case 'practise':cls='info';msg='↻ Practising: <strong>'+escapeHtml(p.detail)+'</strong>';break;
-    case 'vocab_lookup':cls='info';msg='📖 Looked up: <strong>'+escapeHtml(p.detail)+'</strong>';break;
-    case 'match_correct':cls='correct';msg='🔗 Matched: <strong>'+escapeHtml(p.detail)+'</strong>';break;
-    case 'match_wrong':cls='wrong';msg='✗ Wrong match: '+escapeHtml(p.detail);break;
-    case 'cloze_correct':cls='correct';msg='✏️ Cloze correct: <strong>'+escapeHtml(p.detail)+'</strong>';break;
-    case 'cloze_wrong':cls='wrong';msg='✗ Cloze wrong: '+escapeHtml(p.detail);break;
-    case 'comp_correct':cls='correct';msg='✅ Comprehension correct: '+escapeHtml(p.detail)+'…';break;
-    case 'comp_wrong':cls='wrong';msg='✗ Comprehension wrong: '+escapeHtml(p.detail)+'…';break;
-    case 'answer_correct':cls='correct';msg='✓ '+escapeHtml(p.detail);break;
-    case 'answer_wrong':cls='wrong';msg='✗ '+escapeHtml(p.detail);break;
-    case 'sb_correct':cls='correct';msg='🧩 Sentence: <strong>'+escapeHtml(p.detail)+'</strong>';break;
-    case 'sb_wrong':cls='wrong';msg='✗ Sentence wrong: '+escapeHtml(p.detail);break;
-    case 'speed_start':cls='action';msg='⚡ '+escapeHtml(p.detail);break;
-    case 'speed_correct':cls='correct';msg='⚡ Speed correct: '+escapeHtml(p.detail);break;
-    case 'speed_wrong':cls='wrong';msg='⚡ Speed wrong: '+escapeHtml(p.detail);break;
-    case 'speed_end':cls='action';msg='🏁 '+escapeHtml(p.detail);break;
-    case 'stage_open':cls='info';msg='➡️ '+escapeHtml(p.detail);break;
-    case 'stage_complete':cls='correct';msg='🎉 '+escapeHtml(p.detail);break;
-    case 'stage_done':cls='correct';msg='✓ '+escapeHtml(p.detail);break;
-    default:msg=escapeHtml(p.type)+': '+escapeHtml(p.detail||'');
-  }
-  item.className='feed-item '+cls;
-  item.innerHTML='<span class="time">'+timeStr+'</span><span class="msg">'+msg+'</span>';
-  feed.insertBefore(item,feed.firstChild);
-  state.lastActivity=timeStr+' — '+msg.replace(/<[^>]+>/g,'');
-  while(feed.children.length>100)feed.removeChild(feed.lastChild);
+function deleteStudent(){
+  if(!activeCode)return;
+  const s=studentsMap[activeCode]||{};
+  const name=s.name||activeCode;
+  if(!confirm('Delete "'+name+'" and all their progress? This cannot be undone.'))return;
+  const code=activeCode;
+  Promise.all([studentsRef.child(code).remove(),fbDb.ref('sessions/'+code).remove()]).then(function(){
+    deselectStudent();
+  }).catch(function(err){alert('Delete failed: '+err.message)});
 }
-setInterval(function(){
-  if(!state.connected){return}
-  const diff=Date.now()-state.lastPing;
-  const el=document.getElementById('conn');
-  const txt=document.getElementById('connText');
-  if(diff>20000){
-    el.classList.remove('live');el.classList.add('stale');
-    txt.textContent='No signal ('+Math.round(diff/1000)+'s)';
-  }else{
-    el.classList.remove('stale');el.classList.add('live');
-    txt.textContent='Live · Synced';
-  }
-},2000);
-setInterval(function(){
-  const m=String(Math.floor(state.elapsed/60)).padStart(2,'0');
-  const s=String(state.elapsed%60).padStart(2,'0');
-  document.getElementById('elapsedTime').textContent=m+':'+s;
-},1000);
-const savedCode=getSessionCode();
-if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
-renderControls();
-renderStageVis();
-initFirebase();
-</script>
-</body>
-</html>
+function renameStudent(){
+  if(!activeCode)return;
+  const s=studentsMap[activeCode]||{};
+  const current=s.name||'';
+  const newName=(prompt('New name for this student:',current)||'').trim();
+  if(!newName||newName===current)return;
+  studentsRef.child(activeCode).update({name:newName});
+}
+function copyLessonLink(){
+  if(!activeCode)return;
+  const url=new URL('lesson.html?code='+encodeURIComponent(activeCode),window.location.href).href;
+  copyText(url,'Lesson link copied!');
+}
+function copyText(text,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){showToast(msg)},function(){fallbackCopy(text,msg)});
+  }else fallbackCopy(text,msg);
+}
+function fallbackCopy(text,msg){
+  const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);
+  ta.select();try{document.execCommand('copy');showToast(msg)}catch(e){}ta.remove();
+}
+function showToast(text){
+  let t=document.getElementById('toast');
+  if(!t){
+    t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;box
