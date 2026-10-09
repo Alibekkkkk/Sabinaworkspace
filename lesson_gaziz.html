@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gaziz — IELTS Studio</title>
@@ -10,7 +11,7 @@
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);transition:background .3s,color .3s;overflow:hidden}
+html,body{height:100%;font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);transition:background .3s,color .3s;overflow:hidden}
 body{display:flex;flex-direction:column}
 .topbar{height:60px;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:14px;flex-shrink:0;z-index:100;box-shadow:var(--shadow-sm)}
 .logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;color:var(--primary);white-space:nowrap}
@@ -145,7 +146,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .q-opt.correct{background:var(--success-soft);border-color:var(--success);color:var(--success)}
 .q-opt.wrong{background:var(--error-soft);border-color:var(--error);color:var(--error);animation:shake .4s}
 .q-input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.q-input{flex:1;min-width:200px;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);background:var(--bg);outline:none}
+.q-input{flex:1;min-width:200px;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond','Times New Roman',serif;font-size:15px;font-weight:700;color:var(--ink);background:var(--bg);outline:none}
 .q-input:focus{border-color:var(--accent);background:var(--panel)}
 .q-input.correct{border-color:var(--success);background:var(--success-soft);color:var(--success)}
 .q-input.wrong{border-color:var(--error);background:var(--error-soft);color:var(--error);animation:shake .4s}
@@ -155,7 +156,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .q-feedback .exp{display:block;font-weight:500;font-size:13px;color:var(--ink-soft);margin-top:6px}
 .g-box{background:linear-gradient(135deg,rgba(46,158,91,.08),rgba(46,158,91,.03));border:1px solid rgba(46,158,91,.35);border-radius:14px;padding:20px 24px;margin-bottom:22px}
 .g-box h3{color:var(--success);font-size:17px;margin-bottom:12px;font-weight:800}
-.g-formula{background:var(--panel);padding:14px 18px;border-radius:10px;margin:10px 0;font-family:'Courier New',monospace;font-size:15px;font-weight:700;color:var(--success);border-left:4px solid var(--success)}
+.g-formula{background:var(--panel);padding:14px 18px;border-radius:10px;margin:10px 0;font-family:'Fira Code','Courier New',monospace;font-size:15px;font-weight:700;color:var(--success);border-left:4px solid var(--success)}
 .g-box ul{margin-left:22px;margin-top:8px}
 .g-box li{font-size:14px;line-height:1.7;margin-bottom:4px;color:var(--ink)}
 .ru-note{display:block;margin-top:14px;padding:12px 16px;background:rgba(255,152,0,.1);border-left:4px solid var(--warn);border-radius:8px;font-size:13.5px;color:var(--ink);line-height:1.6;font-style:italic}
