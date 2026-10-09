@@ -374,4 +374,240 @@ function showToast(text){
   let t=document.getElementById('toast');
   if(!t){
     t=document.createElement('div');t.id='toast';
-    t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;box
+    t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:9999;opacity:0;transition:all .25s;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.textContent=text;
+  requestAnimationFrame(function(){t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)'});
+  clearTimeout(window.__toastT);
+  window.__toastT=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)'},1800);
+}
+
+function renderStudentsList(){
+  const list=document.getElementById('studentsList');
+  const search=(document.getElementById('studentSearch').value||'').toLowerCase().trim();
+  const codes=Object.keys(studentsMap);
+  codes.sort(function(a,b){return (studentsMap[b].createdAt||0)-(studentsMap[a].createdAt||0)});
+  const filtered=codes.filter(function(c){
+    if(!search)return true;
+    const s=studentsMap[c]||{};
+    return (s.name||'').toLowerCase().indexOf(search)!==-1||c.toLowerCase().indexOf(search)!==-1;
+  });
+  document.getElementById('studentsCount').textContent=codes.length;
+  if(!filtered.length){
+    list.innerHTML='<div style="padding:30px 16px;text-align:center;color:var(--ink-soft);font-size:13px;">'+
+      (codes.length?'No students match your search.':'No students yet. Click “Add Student” to begin.')+'</div>';
+    return;
+  }
+  list.innerHTML='';
+  filtered.forEach(function(code){
+    const s=studentsMap[code]||{};
+    const meta=studentMeta[code]||{};
+    const el=document.createElement('div');
+    el.className='student-item'+(code===activeCode?' active':'');
+    let statusCls='off';
+    if(meta.lastSeen){
+      const diff=Date.now()-meta.lastSeen;
+      if(diff<30000)statusCls='live';
+      else if(diff<300000)statusCls='stale';
+    }
+    el.innerHTML='<div class="top-row"><div class="name">'+escapeHtml(s.name||'Unnamed')+'</div><div class="dot '+statusCls+'"></div></div>'+
+      '<div class="code">'+escapeHtml(code)+'</div>'+
+      '<div class="stats"><span>🏆 <b>'+(meta.score||0)+'</b>/80</span><span>📍 Stage '+(meta.stage||0)+'</span></div>'+
+      (unreadMap[code]?'<div class="unread"></div>':'');
+    el.onclick=function(){selectStudent(code)};
+    list.appendChild(el);
+  });
+}
+
+function selectStudent(code){
+  if(!studentsMap[code])return;
+  activeCode=code;
+  unreadMap[code]=false;
+  document.getElementById('selectedView').style.display='block';
+  document.getElementById('overviewView').style.display='none';
+  const s=studentsMap[code]||{};
+  document.getElementById('selectedName').textContent=s.name||'Unnamed';
+  document.getElementById('selectedCode').textContent=code;
+  document.getElementById('selectedAdded').textContent=s.createdAt?new Date(s.createdAt).toLocaleDateString():'—';
+  document.getElementById('feed').innerHTML='<div class="no-data"><div class="icon">📡</div><div>Waiting for activity…<br><b>Code:</b> '+escapeHtml(code)+'</div></div>';
+  attachActivity(code);
+  renderSelectedView();
+  renderStudentsList();
+}
+function deselectStudent(){
+  detachActivity();
+  activeCode=null;
+  document.getElementById('selectedView').style.display='none';
+  document.getElementById('overviewView').style.display='block';
+  renderStudentsList();
+  renderOverview();
+}
+function attachActivity(code){
+  detachActivity();
+  activityRef=fbDb.ref('sessions/'+code+'/activity');
+  activityRef.limitToLast(100).on('child_added',function(snap){
+    const p=snap.val();if(!p)return;
+    if(code!==activeCode){unreadMap[code]=true;renderStudentsList();return}
+    addFeedItem(p);
+  });
+}
+function detachActivity(){
+  if(activityRef){activityRef.off();activityRef=null}
+}
+
+function renderSelectedView(){
+  const meta=studentMeta[activeCode]||{};
+  state.score=meta.score||0;
+  state.stage=meta.stage||0;
+  state.done=meta.done||{};
+  state.notes=meta.notes||'';
+  state.elapsed=meta.elapsed||0;
+  state.streak=meta.streak||0;
+  state.connected=meta.lastSeen&&(Date.now()-meta.lastSeen<60000);
+  document.getElementById('scoreBig').textContent=state.score;
+  document.getElementById('currentStage').textContent=state.stage?('Stage '+state.stage+' — '+STAGE_NAMES[state.stage-1]):'—';
+  document.getElementById('stagesDone').textContent=Object.values(state.done).filter(Boolean).length+' / 10';
+  document.getElementById('streakVal').textContent=state.streak+' 🔥';
+  const m=String(Math.floor(state.elapsed/60)).padStart(2,'0');
+  const s=String(state.elapsed%60).padStart(2,'0');
+  document.getElementById('elapsedTime').textContent=m+':'+s;
+  const tag=document.getElementById('liveTag');
+  if(state.connected){tag.textContent='LIVE';tag.classList.remove('off')}
+  else{tag.textContent='OFFLINE';tag.classList.add('off')}
+  document.getElementById('notesView').textContent=state.notes||'— No notes yet —';
+  renderStageVis();renderControls();
+}
+function renderStageVis(){
+  const el=document.getElementById('stageVis');if(!el)return;el.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const chip=document.createElement('div');chip.className='stage-chip';
+    if(state.stage===i)chip.classList.add('current');
+    if(state.done[i])chip.classList.add('done');
+    chip.textContent=i+'. '+STAGE_NAMES[i-1].substring(0,14);
+    el.appendChild(chip);
+  }
+}
+function renderControls(){
+  const grid=document.getElementById('controlGrid');if(!grid)return;grid.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const b=document.createElement('button');
+    b.className='ctrl-btn'+(state.stage===i?' current':'');
+    b.innerHTML='<span class="num">STAGE '+i+'</span>'+STAGE_NAMES[i-1];
+    b.onclick=function(){jumpToStage(i)};
+    grid.appendChild(b);
+  }
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+
+function sendCommand(action,extra){
+  if(!activeCode){alert('Select a student first.');return}
+  const payload=Object.assign({action:action,ts:Date.now()},extra||{});
+  fbDb.ref('sessions/'+activeCode+'/command').set(payload);
+}
+function sendReset(){
+  if(!activeCode){alert('Select a student first.');return}
+  if(!confirm('Send reset command to this student? All their progress will be cleared.'))return;
+  sendCommand('reset');
+  clearFeed();
+}
+function jumpToStage(n){sendCommand('goto',{stage:n})}
+function clearFeed(){
+  const feed=document.getElementById('feed');
+  feed.innerHTML='<div class="no-data"><div class="icon">📡</div><div>Feed cleared.</div></div>';
+}
+function addFeedItem(p){
+  const feed=document.getElementById('feed');if(!feed)return;
+  const ph=feed.querySelector('.no-data');if(ph)ph.remove();
+  if(p.type==='typing'){
+    const tl=document.getElementById('typingLive');
+    const tt=document.getElementById('typingText');
+    tl.classList.add('show');tt.textContent=p.detail;
+    clearTimeout(window.__typingTimer);
+    window.__typingTimer=setTimeout(function(){tl.classList.remove('show')},3000);
+    return;
+  }
+  const item=document.createElement('div');
+  let cls='info';let msg='';
+  const timeStr=new Date().toLocaleTimeString().substring(0,8);
+  switch(p.type){
+    case 'flashcard_open':cls='info';msg='📚 Opened flashcard: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'know':cls='correct';msg='✓ Knows: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'practise':cls='info';msg='↻ Practising: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'vocab_lookup':cls='info';msg='📖 Looked up: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'match_correct':cls='correct';msg='🔗 Matched: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'match_wrong':cls='wrong';msg='✗ Wrong match: '+escapeHtml(p.detail);break;
+    case 'cloze_correct':cls='correct';msg='✏️ Cloze correct: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'cloze_wrong':cls='wrong';msg='✗ Cloze wrong: '+escapeHtml(p.detail);break;
+    case 'comp_correct':cls='correct';msg='✅ Comprehension correct: '+escapeHtml(p.detail)+'…';break;
+    case 'comp_wrong':cls='wrong';msg='✗ Comprehension wrong: '+escapeHtml(p.detail)+'…';break;
+    case 'answer_correct':cls='correct';msg='✓ '+escapeHtml(p.detail);break;
+    case 'answer_wrong':cls='wrong';msg='✗ '+escapeHtml(p.detail);break;
+    case 'sb_correct':cls='correct';msg='🧩 Sentence: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'sb_wrong':cls='wrong';msg='✗ Sentence wrong: '+escapeHtml(p.detail);break;
+    case 'speed_start':cls='action';msg='⚡ '+escapeHtml(p.detail);break;
+    case 'speed_correct':cls='correct';msg='⚡ Speed correct: '+escapeHtml(p.detail);break;
+    case 'speed_wrong':cls='wrong';msg='⚡ Speed wrong: '+escapeHtml(p.detail);break;
+    case 'speed_end':cls='action';msg='🏁 '+escapeHtml(p.detail);break;
+    case 'stage_open':cls='info';msg='➡️ '+escapeHtml(p.detail);break;
+    case 'stage_complete':cls='correct';msg='🎉 '+escapeHtml(p.detail);break;
+    case 'stage_done':cls='correct';msg='✓ '+escapeHtml(p.detail);break;
+    default:msg=escapeHtml(p.type)+': '+escapeHtml(p.detail||'');
+  }
+  item.className='feed-item '+cls;
+  item.innerHTML='<span class="time">'+timeStr+'</span><span class="msg">'+msg+'</span>';
+  feed.insertBefore(item,feed.firstChild);
+  while(feed.children.length>100)feed.removeChild(feed.lastChild);
+}
+
+function renderOverview(){
+  const codes=Object.keys(studentsMap);
+  const container=document.getElementById('overviewContent');
+  if(!codes.length){
+    container.innerHTML='<div class="empty-state"><div class="icon">🎓</div><h3>No students yet</h3><p>Add your first student to start tracking their progress. Each student gets a unique code they can enter on the lesson page.</p><button class="btn primary" onclick="openAddStudent()">+ Add your first student</button></div>';
+    return;
+  }
+  let totalScore=0,activeCount=0;
+  codes.forEach(function(c){
+    const m=studentMeta[c]||{};
+    totalScore+=m.score||0;
+    if(m.lastSeen&&Date.now()-m.lastSeen<60000)activeCount++;
+  });
+  const avg=codes.length?Math.round(totalScore/codes.length):0;
+  let html='<div class="overview-stats">'+
+    '<div class="overview-stat"><div class="num">'+codes.length+'</div><div class="lbl">Students</div></div>'+
+    '<div class="overview-stat"><div class="num">'+activeCount+'</div><div class="lbl">Active now</div></div>'+
+    '<div class="overview-stat"><div class="num">'+totalScore+'</div><div class="lbl">Total points</div></div>'+
+    '<div class="overview-stat"><div class="num">'+avg+'</div><div class="lbl">Avg per student</div></div></div>';
+  html+='<div class="overview-grid">';
+  codes.sort(function(a,b){return (studentMeta[b].lastSeen||0)-(studentMeta[a].lastSeen||0)});
+  codes.forEach(function(code){
+    const s=studentsMap[code]||{};
+    const m=studentMeta[code]||{};
+    let statusCls='off';
+    if(m.lastSeen){
+      const diff=Date.now()-m.lastSeen;
+      if(diff<30000)statusCls='live';
+      else if(diff<300000)statusCls='stale';
+    }
+    html+='<div class="overview-card" onclick="selectStudent(\''+code+'\')">'+
+      '<div class="status-pill '+statusCls+'"></div>'+
+      '<div class="name">'+escapeHtml(s.name||'Unnamed')+'</div>'+
+      '<div class="code">'+escapeHtml(code)+'</div>'+
+      '<div class="big-num">'+(m.score||0)+'</div>'+
+      '<div class="big-lbl">Points / 80</div>'+
+      '<div class="mini-stats"><span>📍 Stage '+(m.stage||0)+'</span>'+(s.createdAt?'<span>Added '+new Date(s.createdAt).toLocaleDateString()+'</span>':'')+'</div></div>';
+  });
+  html+='</div>';
+  container.innerHTML=html;
+}
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAddStudent()});
+document.getElementById('newStudentName').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
+document.getElementById('newStudentCode').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
+
+initFirebase();
+renderOverview();
+</script>
+</body>
+</html>
