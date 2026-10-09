@@ -271,7 +271,11 @@ function initFirebase(){
     fbConnected=true;updateSyncUI('live');pushFullState();
   }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
 }
-function getSessionCode(){return (localStorage.getItem('nd_session_code')||'').toUpperCase()}
+function getSessionCode(){
+  const urlCode=new URLSearchParams(window.location.search).get('code');
+  if(urlCode){localStorage.setItem('nd_session_code',urlCode.toUpperCase());return urlCode.toUpperCase()}
+  return (localStorage.getItem('nd_session_code')||'').toUpperCase();
+}
 function changeSessionCode(){
   const input=document.getElementById('sessionCodeInput');
   const code=(input.value||'').toUpperCase().trim();
@@ -356,7 +360,7 @@ try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
   if(fbConnected&&sessionRef){
     try{
-      if(type==='state')sessionRef.child('state').set(payload);
+      if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));
       else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}
       else if(type==='notes')sessionRef.child('state').update({notes:payload.text});
     }catch(e){console.error('FB write failed:',e)}
@@ -1141,6 +1145,18 @@ renderSidebar();renderStage();startTimer();updateHUD();
 if(soundOn)document.getElementById('soundToggle').classList.add('active');
 if(document.documentElement.classList.contains('dark'))document.getElementById('darkToggle').classList.add('active');
 initFirebase();
+// Fetch and display student name
+(function(){
+  const code=getSessionCode();
+  if(!code||!fbDb)return;
+  fbDb.ref('students/'+code+'/name').once('value',function(snap){
+    const name=snap.val();
+    if(!name)return;
+    const logo=document.querySelector('.logo .text');
+    if(logo)logo.textContent=name;
+    document.title=name+' — Learning Studio';
+  });
+})();
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeFCModal();
   const modal=document.getElementById('fcModal');
