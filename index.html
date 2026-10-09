@@ -73,7 +73,7 @@ db.ref('students').on('value', function(snap){
     const initial = (s.name || '?').charAt(0).toUpperCase();
     const card = document.createElement('a');
     card.className = 'student-card';
-    card.href = 'lesson.html?code=' + encodeURIComponent(code);
+    card.href = (code === 'GAZIZ' ? 'lesson_gaziz.html?code=' : 'lesson.html?code=') + encodeURIComponent(code);
     card.innerHTML = `
       <div class="avatar">${initial}</div>
       <div class="name">${escapeHtml(s.name || 'Unnamed')}</div>
