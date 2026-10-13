@@ -666,7 +666,7 @@ function updateSelectedClassworkLink(){
   const lesson=id?curriculum[id]:null;
   const base=(lesson&&lesson.customUrl)||(String(student.name||'').toLowerCase()==='gaziz'?'lesson_gaziz.html':'lesson.html');
   const separator=base.indexOf('?')===-1?'?':'&';
-  link.href=base+separator+'code='+encodeURIComponent(activeCode)+(id?'&lesson='+encodeURIComponent(id):'');
+  link.href=base+separator+'code='+encodeURIComponent(activeCode)+(id?'&lesson='+encodeURIComponent(id):'')+'&teacher=1';
   link.textContent='📘 '+(student.name||'Student')+' Classwork';
   link.style.display='inline-flex';
 }
@@ -681,7 +681,7 @@ function renderStudentHomework(){
     const progress=((studentMeta[activeCode]||{}).homework||{})[row.id]||{};
     const status=progress.completed?'Completed · ':progress.updatedAt?'In progress · ':'';
     const base=lesson.customUrl||'lesson.html';const url=new URL(base,window.location.href);url.searchParams.set('code',activeCode);url.searchParams.set('lesson',row.id);
-    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);flex-wrap:wrap;"><div><b>'+escapeHtml(lesson.title||row.id)+'</b><div style="font-size:14px;color:var(--ink-soft);">'+(lesson.homeworkDue?'Due: '+escapeHtml(lesson.homeworkDue)+' · ':'')+(lesson.customUrl&&lesson.customUrl.indexOf('homework.html')!==-1?status+((progress.score||0)+' / '+(progress.total||8)+' correct'):(finished+' / '+stages.length+' stages complete'))+'</div></div><a class="btn small" style="text-decoration:none;" href="'+escapeAttr(url.href)+'">Open homework</a></div>';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);flex-wrap:wrap;"><div><b>'+escapeHtml(lesson.title||row.id)+'</b><div style="font-size:14px;color:var(--ink-soft);">'+(lesson.homeworkDue?'Due: '+escapeHtml(lesson.homeworkDue)+' · ':'')+(lesson.customUrl&&lesson.customUrl.indexOf('homework.html')!==-1?status+((progress.score||0)+' / '+(progress.total||16)+' correct'):(finished+' / '+stages.length+' stages complete'))+'</div></div><a class="btn small" style="text-decoration:none;" href="'+escapeAttr(url.href)+'">Open homework</a></div>';
   }).join('');
 }
 function renderStudentsList(){
@@ -823,6 +823,7 @@ function sendReset(){
   const resetAt=Date.now();
   const paths=[
     {path:'sessions/'+activeCode+'/state',value:{stage:1,score:0,streak:0,done:{},scores:{},notes:'',elapsed:0,resetAt:resetAt}},
+    {path:'sessions/'+activeCode+'/activity',value:null},
     {path:'sessions/'+activeCode+'/command',value:{action:'reset',ts:resetAt}}
   ];
   writeChangesWithUndo(paths,'reset '+(studentsMap[activeCode].name||activeCode)+' progress').then(function(){
@@ -942,6 +943,7 @@ function renderLessons(){
       : '';
     const openUrl=new URL(lesson.customUrl||'lesson.html',window.location.href);
     openUrl.searchParams.set('lesson',id);
+    openUrl.searchParams.set('teacher','1');
     if(assignedTo.length)openUrl.searchParams.set('code',assignedTo[0]);
     container.innerHTML+=
       '<div class="lesson-tile">'+
@@ -955,7 +957,6 @@ function renderLessons(){
         '<div class="tile-actions">'+
           '<a class="btn" style="text-decoration:none;" href="'+escapeAttr(openUrl.href)+'">🔎 Open lesson</a>'+ 
           '<button class="btn" onclick="editLesson(\''+id+'\')">✏️ Edit</button>'+
-          '<button class="btn" onclick="openImagesModal(\''+id+'\')">🖼️ Flashcard images</button>'+
           '<button class="btn" onclick="togglePublish(\''+id+'\')">'+(published?'📥 Unpublish':'📤 Publish')+'</button>'+
           '<button class="btn danger" onclick="deleteLesson(\''+id+'\')">🗑 Delete</button>'+
         '</div>'+
@@ -1115,7 +1116,7 @@ function assignStudentHomework(variant){
       : 'Practise the Sustainable Cities class vocabulary in new homework question formats. Use present perfect and past simple active.',
     icon:'🏙️',customUrl:'homework.html?variant='+variant,
     stages:[{id:1,label:'Vocabulary and Grammar Homework',sub:'Independent practice',icon:'📝'}],
-    assignedTo:[code],homework:true,homeworkDue:'Before our next class',maxScore:8
+    assignedTo:[code],homework:true,homeworkDue:'Before our next class',maxScore:16
   });
   const changes=[{path:'curriculum/'+id,value:payload}];
   const oldClasswork=curriculum.lesson_1||{};

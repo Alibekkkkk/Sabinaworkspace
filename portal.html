@@ -304,7 +304,7 @@ function renderLessons(){
       doneCount = homeworkResult && homeworkResult.completed ? 1 : 0;
       pct = doneCount ? 100 : 0;
       lessonScore = homeworkResult ? (homeworkResult.score || 0) : 0;
-      maxScore = homeworkResult ? (homeworkResult.total || 8) : (lesson.maxScore || 8);
+      maxScore = homeworkResult ? (homeworkResult.total || 16) : (lesson.maxScore || 16);
     }
 
     const assignedTo = lesson.assignedTo || [];

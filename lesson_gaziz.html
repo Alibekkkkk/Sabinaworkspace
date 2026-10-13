@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
@@ -62,6 +63,14 @@ body{display:flex;flex-direction:column}
 .stage-sub-item.active{background:var(--bg);color:var(--accent);font-weight:800}
 .stage-sub-item.done{color:var(--success)}
 .stage-sub-item .icon{font-size:15px}
+.homework-sub-list{margin:2px 0 8px 30px;padding:7px 8px 7px 12px;border-left:2px solid var(--accent);background:rgba(255,138,91,.07);border-radius:0 9px 9px 0}
+.homework-sub-label{font:11px 'Fira Code',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin:2px 6px 5px}
+.homework-sub-item{display:block;padding:6px;color:var(--ink-soft);font-size:14px;text-decoration:none;border-radius:7px}.homework-sub-item:hover{background:var(--bg);color:var(--accent)}
+.reading-split{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(310px,.8fr);gap:16px;align-items:start}
+.reading-pane,.reading-questions{min-width:0}.reading-pane{position:sticky;top:8px;max-height:calc(100vh - 100px);overflow:auto}
+.stage-view:has(.reading-split){max-width:1300px}
+.reading-pane .passage{font-size:22px;line-height:1.9;padding:30px 34px}.reading-questions .q-card{margin-bottom:12px}.reading-questions .reading-question-controls{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:12px}
+@media(max-width:900px){.reading-split{grid-template-columns:1fr}.reading-pane{position:static;max-height:none}.reading-pane .passage{font-size:20px;padding:22px}}
 .main{flex:1;overflow-y:auto;padding:30px 40px 40px;scroll-behavior:smooth}
 .main::-webkit-scrollbar{width:10px}
 .main::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
@@ -241,6 +250,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
       <div class="fc-modal-tools">
         <button class="tool" onclick="fcSpeak()">🔊 Listen</button>
         <button class="tool" onclick="fcRevealTrans()">👁️ Reveal</button>
+        <button class="tool" id="customImageTool" onclick="editCurrentFlashcardImage()" style="display:none;">🖼️ Custom image</button>
       </div>
       <div class="fc-modal-nav">
         <button onclick="fcPrev()">← Previous</button>
@@ -263,14 +273,32 @@ const firebaseConfig = {
   appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
 };
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
+const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
+const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
+let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
 function initFirebase(){
   try{
-    fbApp=firebase.initializeApp(firebaseConfig);
+    fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
-    const code=getSessionCode();
     const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
     if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(snap){customImages=snap.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderFCModal();});
+    fbDb.ref('curriculum').on('value',function(snap){curriculumCache=snap.val()||{};renderSidebar()});
+    fbDb.ref('curriculum/lesson_1/questionEdits').on('value',function(snap){if(teacherEditsReady(snap.val())){applyTeacherQuestionEdits(snap.val());if(teacherMode)renderStage()}});
+    if(teacherPreviewRequested){
+      document.querySelector('.session-input').style.display='none';
+      firebase.auth().onAuthStateChanged(function(user){
+        teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
+        teacherMode=teacherCanEdit;
+        if(teacherCanEdit){updateSyncUI('teacher');document.getElementById('syncPill').title='Teacher preview · student progress is not changed';document.getElementById('customImageTool').style.display='inline-block';document.getElementById('timerPill').style.display='none';document.getElementById('scorePill').style.display='none';document.getElementById('streakPill').style.display='none';renderStage();}
+        else{teacherMode=true;updateSyncUI('error');document.getElementById('main').innerHTML='<div class="card"><h2>Teacher sign-in required</h2><p>Sign in to the teacher dashboard with one of the approved accounts, then reopen this lesson.</p></div>';}
+      });
+      return;
+    }
+    startStudentSession(getSessionCode());
+  }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
+}
+function startStudentSession(code){
     if(!code){updateSyncUI('nocode');return;}
     sessionRef=fbDb.ref('sessions/'+code);
     activityRef=sessionRef.child('activity');
@@ -281,11 +309,10 @@ function initFirebase(){
       if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
     });
     fbConnected=true;updateSyncUI('live');pushFullState();
-  }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
 }
 function getSessionCode(){
   const urlCode=new URLSearchParams(window.location.search).get('code');
-  if(urlCode){localStorage.setItem('nd_session_code',urlCode.toUpperCase());return urlCode.toUpperCase()}
+  if(urlCode){if(!teacherPreviewRequested)localStorage.setItem('nd_session_code',urlCode.toUpperCase());return urlCode.toUpperCase()}
   return (localStorage.getItem('nd_session_code')||'').toUpperCase();
 }
 function changeSessionCode(){
@@ -311,6 +338,7 @@ function updateSyncUI(status){
   const txt=document.getElementById('syncStatus');
   dot.classList.remove('warn','off');
   if(status==='live'){txt.textContent='Live · Connected'}
+  else if(status==='teacher'){txt.textContent='Teacher preview'}
   else if(status==='nocode'){dot.classList.add('warn');txt.textContent='Set code above'}
   else if(status==='error'){dot.classList.add('off');txt.textContent='Error'}
 }
@@ -378,6 +406,7 @@ const CHANNEL='nd_lesson_live_v1';
 let bc=null;
 try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
+  if(teacherMode)return;
   if(fbConnected&&sessionRef){
     try{
       if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));
@@ -390,7 +419,7 @@ function broadcast(type,payload){
   try{localStorage.setItem('nd_broadcast',JSON.stringify(msg));setTimeout(function(){localStorage.removeItem('nd_broadcast')},100)}catch(e){}
 }
 function pushFullState(){
-  if(!fbConnected||!sessionRef)return;
+  if(teacherMode||!fbConnected||!sessionRef)return;
   broadcast('state',{
     stage:state.currentStage,score:totalScore(),streak:state.streak,
     done:state.done,scores:state.scores,
@@ -459,6 +488,7 @@ function totalScore(){
   return lesson.stages.reduce((sum, s) => sum + (state.scores[lesson.id + "_" + s.id] || 0), 0);
 }
 function saveState(){
+  if(teacherMode)return;
   try{localStorage.setItem('nd_state_gaziz_academic_pp_v2',JSON.stringify({
     currentYear: state.currentYear,
     currentMonth: state.currentMonth,
@@ -499,26 +529,16 @@ function broadcastAction(type,detail){
 
 /* ========== SUSTAINABLE CITIES VOCABULARY ========== */
 const VOCAB=[
-  {en:'sustainable',ru:'устойчивый, экологичный',emoji:'🌱',img:''},
-  {en:'emissions',ru:'выбросы',emoji:'💨',img:''},
-  {en:'renewable',ru:'возобновляемый',emoji:'☀️',img:''},
-  {en:'infrastructure',ru:'инфраструктура',emoji:'🛣️',img:''},
-  {en:'commute',ru:'ездить на работу или учёбу',emoji:'🚌',img:''},
-  {en:'congestion',ru:'перегруженность, пробки',emoji:'🚗',img:''},
-  {en:'pedestrian',ru:'пешеход',emoji:'🚶',img:''},
-  {en:'affordable',ru:'доступный по цене',emoji:'🏠',img:''},
-  {en:'implement',ru:'внедрять, осуществлять',emoji:'🧰',img:''},
-  {en:'expand',ru:'расширять',emoji:'↗️',img:''},
-  {en:'reduce',ru:'сокращать, уменьшать',emoji:'📉',img:''},
-  {en:'invest',ru:'инвестировать, вкладывать',emoji:'💰',img:''},
-  {en:'accessible',ru:'доступный, удобный для всех',emoji:'♿',img:''},
-  {en:'reliable',ru:'надёжный',emoji:'✅',img:''},
-  {en:'efficient',ru:'эффективный',emoji:'⚙️',img:''},
-  {en:'public transport',ru:'общественный транспорт',emoji:'🚉',img:''},
-  {en:'green space',ru:'зелёная зона',emoji:'🌳',img:''},
-  {en:'urban',ru:'городской',emoji:'🏙️',img:''},
-  {en:'contribute',ru:'способствовать, вносить вклад',emoji:'🤝',img:''},
-  {en:'improve',ru:'улучшать',emoji:'✨',img:''}
+  {en:'environment',ru:'окружающая среда',emoji:'🌍',img:''},{en:'pollution',ru:'загрязнение',emoji:'💨',img:''},
+  {en:'transport',ru:'транспорт',emoji:'🚌',img:''},{en:'community',ru:'местное сообщество',emoji:'👥',img:''},
+  {en:'improve',ru:'улучшать',emoji:'✨',img:''},{en:'increase',ru:'увеличивать(ся)',emoji:'📈',img:''},
+  {en:'reduce',ru:'уменьшать(ся)',emoji:'📉',img:''},{en:'provide',ru:'предоставлять',emoji:'🎁',img:''},
+  {en:'affect',ru:'влиять',emoji:'🔄',img:''},{en:'result',ru:'результат',emoji:'🎯',img:''},
+  {en:'benefit',ru:'польза, преимущество',emoji:'👍',img:''},{en:'cost',ru:'стоимость; стоить',emoji:'💰',img:''},
+  {en:'issue',ru:'вопрос, проблема',emoji:'❔',img:''},{en:'solution',ru:'решение',emoji:'💡',img:''},
+  {en:'public',ru:'общественный; публичный',emoji:'🏛️',img:''},{en:'local',ru:'местный',emoji:'📍',img:''},
+  {en:'energy',ru:'энергия',emoji:'⚡',img:''},{en:'resource',ru:'ресурс',emoji:'🧰',img:''},
+  {en:'develop',ru:'развивать(ся)',emoji:'🌱',img:''},{en:'support',ru:'поддерживать',emoji:'🤝',img:''}
 ];
 
 /* ========== HELPERS ========== */
@@ -581,6 +601,18 @@ function renderFCModal(){
   document.getElementById('fcModalWord').textContent=v.en;
   const tr=document.getElementById('fcModalTrans');tr.textContent=v.ru;tr.classList.add('hidden');
   document.getElementById('fcCounter').textContent=(s1CurrentIdx+1)+' / '+s1VisibleList.length;
+  document.getElementById('customImageTool').style.display=teacherCanEdit?'inline-block':'none';
+  document.querySelector('.fc-modal-actions').style.display=teacherMode?'none':'flex';
+}
+function editCurrentFlashcardImage(){
+  if(!teacherCanEdit||!fbDb)return alert('Sign in with an approved teacher account to edit flashcards.');
+  const word=s1VisibleList[s1CurrentIdx];if(!word)return;
+  const current=customImages[word.en]||'';
+  const value=prompt('Paste an image URL for “'+word.en+'”. Leave blank to remove the custom image.',current);
+  if(value===null)return;
+  const url=value.trim();if(url&&!/^https?:\/\//i.test(url)){alert('Use a complete image URL beginning with https:// or http://.');return}
+  const updated=Object.assign({},customImages);if(url)updated[word.en]=url;else delete updated[word.en];
+  fbDb.ref('curriculum/'+state.currentLessonId+'/flashcardImages').set(updated).then(function(){customImages=updated;renderFlashcards();renderFCModal();showToast('Flashcard image saved')}).catch(function(err){alert('Could not save image: '+err.message)});
 }
 function fcRevealTrans(){document.getElementById('fcModalTrans').classList.remove('hidden')}
 function fcSpeak(){const v=s1VisibleList[s1CurrentIdx];if(v)speak(v.en)}
@@ -591,16 +623,11 @@ function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
 
 /* ========== STAGE 2 ========== */
 const MATCH_DATA=[
-  {word:'sustainable',meaning:'able to continue with less harm to the environment'},
-  {word:'emissions',meaning:'gases released into the air'},
-  {word:'renewable',meaning:'replaced naturally; not permanently used up'},
-  {word:'infrastructure',meaning:'basic systems such as roads and transport'},
-  {word:'commute',meaning:'travel regularly between home and work or school'},
-  {word:'congestion',meaning:'too much traffic in one place'},
-  {word:'pedestrian',meaning:'a person who travels on foot'},
-  {word:'affordable',meaning:'low enough in cost for people to pay'},
-  {word:'implement',meaning:'put a plan or decision into action'},
-  {word:'efficient',meaning:'working well without wasting time or energy'}
+  {word:'environment',meaning:'the natural world around us'}, {word:'pollution',meaning:'harmful material in air, water, or land'},
+  {word:'transport',meaning:'ways of moving people or goods'}, {word:'community',meaning:'people who live in one area'},
+  {word:'improve',meaning:'make something better'}, {word:'increase',meaning:'become or make greater'},
+  {word:'reduce',meaning:'make or become smaller'}, {word:'provide',meaning:'give or make something available'},
+  {word:'affect',meaning:'change or influence something'}, {word:'benefit',meaning:'a good or helpful result'}
 ];
 function renderStage2(){
   const main=document.getElementById('main');
@@ -666,24 +693,48 @@ function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=fals
 /* ========== STAGE 3 ========== */
 function buildPassageHTML(){
   function vw(word){return '<span class="v-word" data-en="'+word+'">'+word+'</span>'}
-  return ['<h3>Rivergate Changes Its Daily Travel</h3>','<p>Rivergate '+vw('has invested')+' in a more '+vw('sustainable')+' transport system. The city '+vw('has expanded')+' its bus network and '+vw('has made')+' several routes more '+vw('reliable')+'. Last year, the council '+vw('opened')+' two bus-only lanes and '+vw('built')+' a safe crossing near the university. Many residents '+vw('have commuted')+' by bus since then, and fewer cars '+vw('have entered')+' the busiest streets.</p>',
-    '<h3>Cleaner Energy and Greener Streets</h3>','<p>The city '+vw('has installed')+' solar panels on public buildings, so Rivergate '+vw('has increased')+' its use of '+vw('renewable')+' energy. The council '+vw('replaced')+' old streetlights with '+vw('efficient')+' lamps in 2024. These changes '+vw('have reduced')+' energy use and transport '+vw('emissions')+'. Rivergate also '+vw('has created')+' a new '+vw('green space')+' beside the river. Local volunteers '+vw('planted')+' trees there last spring.</p>',
-    '<h3>Making the Plan Work for Everyone</h3>','<p>Rivergate '+vw('has improved')+' its transport '+vw('infrastructure')+' and '+vw('has made')+' more stations '+vw('accessible')+' to '+vw('pedestrians')+' with limited mobility. In 2023, the city '+vw('introduced')+' a discount pass to keep travel '+vw('affordable')+'. The council '+vw('implemented')+' these projects in stages. The changes '+vw('have helped')+' residents travel more easily, although traffic '+vw('has still caused')+' '+vw('congestion')+' at peak times.</p>'].join('');
+  return '<h3>A growing city</h3><p>Rivergate is a growing city beside a wide river. In recent years, the local council '+vw('has improved')+' public '+vw('transport')+'. It '+vw('has provided')+' more buses in the evening, and it '+vw('has added')+' clear maps at busy stops. These changes '+vw('have helped')+' people travel to work, school, and the hospital. Last spring, the council '+vw('opened')+' a new bus station near the market. Residents '+vw('tested')+' the routes and '+vw('shared')+' their ideas at a public meeting. The council '+vw('has listened')+' to some of those ideas and '+vw('has changed')+' the bus times to help people who finish work late.</p>'+
+  '<p>Many people in Rivergate use buses because they do not have a car. Before the new evening service, some workers waited a long time or paid for a taxi. The new buses have made travel easier for them. A local nurse said that she has used the later bus three times this week. In 2024, the council '+vw('increased')+' the number of evening trips after residents described this '+vw('issue')+'. The change has helped people get home safely after work.</p>'+
+  '<h3>Cleaner streets and shared places</h3><p>The city '+vw('has also worked')+' to '+vw('reduce')+' '+vw('pollution')+'. It '+vw('has planted')+' trees along two busy roads and '+vw('has created')+' a small park beside the river. In 2023, local volunteers '+vw('cleaned')+' the riverbank and '+vw('collected')+' plastic waste. The project had a good '+vw('result')+': families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind. The council '+vw('has provided')+' bins near the main path and '+vw('has asked')+' a local group to check the park every week.</p>'+
+  '<p>Local shops have also supported the project. They have given water to volunteers and have put small signs in their windows. Last year, one shop owner '+vw('started')+' a weekend walk for families. The group '+vw('visited')+' the park and '+vw('learned')+' about the birds that live by the river. These small activities have brought people together and have helped the community take care of a shared place.</p>'+
+  '<h3>Plans, costs, and results</h3><p>The council’s plans have brought benefits, but they have also cost money. The council '+vw('spent')+' part of its budget on new buses and street lights last year. It '+vw('has saved')+' energy by using better lights in public buildings. The changes '+vw('have affected')+' daily life in different ways. Some people have found it easier to travel, while others still wait a long time at the busiest stops. A new bus can cost more than an old one, but it can carry many people and use less fuel. The council will review the service this autumn and decide what to improve next.</p>'+
+  '<p>Rivergate has not solved every problem. Traffic is still heavy near the market in the afternoon, and the park needs regular care. However, the council has heard local views and has tried several practical solutions. Residents have helped by using the new buses, keeping the park clean, and sharing feedback. Over time, the city has learned which changes work best for its community.</p>';
 }
 function renderStage3(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 3 — Reading</div><h2>📖 Rivergate: A More Sustainable City</h2>'+
-  '<div class="lead">Click an <span class="v-word" style="cursor:default;">orange</span> word to see its translation. Notice how the text uses present perfect for changes connected to now and past simple for finished dates.<span class="ru">Нажмите на оранжевые слова и сравните Present Perfect с Past Simple.</span></div>'+
+  v.innerHTML='<div class="eyebrow">Stage 3 — Reading</div><h2>📖 Rivergate: A Growing City</h2>'+
+  '<div class="lead">Read the longer report on the left and answer each question on the right. Click highlighted words for their meanings. Notice present perfect for changes connected to now and past simple for finished dates.<span class="ru">Читайте текст и отвечайте на вопросы рядом. Present Perfect — изменения, связанные с настоящим; Past Simple — завершённые даты.</span></div>'+
   '<div class="card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
   '<button class="btn small" onclick="speakPassage()">🔊 Listen</button>'+
   '<button class="btn ghost small" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>'+
-  '<div style="margin-left:auto;font-size:15px;font-weight:700;color:var(--ink-soft);">Checked: <span id="s3count" style="color:var(--success);">0</span> / 20</div>'+
-  '</div><div class="passage" id="passageBody">'+buildPassageHTML()+'</div>';
+  '<div style="margin-left:auto;font-size:15px;font-weight:700;color:var(--ink-soft);">Read questions: <span id="s3count" style="color:var(--success);">0</span> / '+READING_Q.length+'</div>'+ 
+  '</div><div class="reading-split"><section class="reading-pane"><div class="passage" id="passageBody">'+buildPassageHTML()+'</div></section><section class="reading-questions"><div class="q-card"><div class="q-num">Reading check</div><div id="readingQuestion"></div><div class="reading-question-controls"><button class="btn ghost small" onclick="moveReadingQuestion(-1)">← Previous</button><span id="readingQuestionCount"></span><button class="btn small" onclick="moveReadingQuestion(1)">Next →</button></div></div></section></div>';
   main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" onclick="completeReading()">✓ Finished reading</button>'));
-  bindVocabClicks();
+  bindVocabClicks();renderReadingQuestion();
 }
 let s3Looked={};
+const READING_Q=[
+ {q:'Where is Rivergate?',options:['Beside a wide river','On a mountain','Near a desert'],correct:0},
+ {q:'What has the council provided in the evening?',options:['More buses','Free meals','New houses'],correct:0},
+ {q:'What did the council open near the market last spring?',options:['A bus station','A school','A hospital'],correct:0},
+ {q:'What did residents do at the public meeting?',options:['Shared ideas','Planted trees','Built a road'],correct:0},
+ {q:'What has the city planted beside two busy roads?',options:['Trees','Flowers in buses','Fruit stalls'],correct:0},
+ {q:'When did volunteers clean the riverbank?',options:['In 2023','Last week','In 2025'],correct:0},
+ {q:'What has the city created beside the river?',options:['A small park','A new airport','A shopping centre'],correct:0},
+ {q:'What has the council done with some residents’ ideas?',options:['Changed bus times','Closed the market','Raised every fare'],correct:0},
+ {q:'Which tense describes the finished volunteer project in 2023?',options:['Past simple','Present perfect','Future simple'],correct:0},
+ {q:'Which tense describes a change that matters now?',options:['Present perfect','Past simple','Past continuous'],correct:0}
+];
+let s3QuestionIndex=0,s3Answered={};
+function renderReadingQuestion(){
+ const host=document.getElementById('readingQuestion');if(!host)return;const item=READING_Q[s3QuestionIndex];
+ host.innerHTML='<div class="q-num">Question '+(s3QuestionIndex+1)+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div><div class="q-opts"></div>';
+ const opts=host.querySelector('.q-opts');item.options.forEach(function(option,index){const b=document.createElement('button');b.className='q-opt';b.textContent=option;if(s3Answered[s3QuestionIndex]!==undefined){b.disabled=true;if(index===item.correct)b.classList.add('correct');else if(index===s3Answered[s3QuestionIndex])b.classList.add('wrong')}b.onclick=function(){if(s3Answered[s3QuestionIndex]!==undefined)return;s3Answered[s3QuestionIndex]=index;if(index===item.correct){b.classList.add('correct');sCorrect()}else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');sWrong()}opts.querySelectorAll('button').forEach(function(x){x.disabled=true});updateS3Count();broadcastAction('reading_answer',item.q)};opts.appendChild(b)});
+ const count=document.getElementById('readingQuestionCount');if(count)count.textContent=(s3QuestionIndex+1)+' / '+READING_Q.length;
+ addTeacherQuestionEditor(host,'reading',s3QuestionIndex);
+}
+function moveReadingQuestion(step){s3QuestionIndex=Math.max(0,Math.min(READING_Q.length-1,s3QuestionIndex+step));renderReadingQuestion()}
 function bindVocabClicks(){
   document.querySelectorAll('.v-word').forEach(function(el){
     el.onclick=function(){
@@ -697,23 +748,23 @@ function bindVocabClicks(){
 function lookupTranslation(en){
   const found=VOCAB.find(function(v){return v.en.toLowerCase()===en.toLowerCase()});
   if(found)return found.ru;
-  const extra={'has invested':'инвестировал','has expanded':'расширил','has made':'сделал','reliable':'надёжный','opened':'открыл','built':'построил','have commuted':'ездили на работу или учёбу','have entered':'въехали','has installed':'установил','has increased':'увеличил','renewable':'возобновляемый','replaced':'заменил','efficient':'эффективный','have reduced':'сократили','emissions':'выбросы','has created':'создал','green space':'зелёная зона','planted':'посадили','has improved':'улучшил','infrastructure':'инфраструктура','accessible':'доступный','pedestrians':'пешеходы','affordable':'доступный по цене','introduced':'ввёл','implemented':'внедрил','have helped':'помогли','has still caused':'по-прежнему вызвал','congestion':'пробки'};
+  const extra={'has improved':'улучшил','opened':'открыл','tested':'проверили','shared':'поделились','has listened':'выслушал','has changed':'изменил','has also worked':'также работал','has planted':'посадил','cleaned':'очистили','collected':'собрали','have created':'создали','has created':'создал','have helped':'помогли','has provided':'предоставил','has added':'добавил','increased':'увеличил','has asked':'попросил','started':'начал','visited':'посетили','learned':'узнали','spent':'потратил','has saved':'сэкономил','have affected':'повлияли','has made':'сделал','has heard':'услышал','has tried':'попробовал'};
   return extra[en.toLowerCase()]||'—';
 }
-function updateS3Count(){const el=document.getElementById('s3count');if(el)el.textContent=Object.keys(s3Looked).length}
-function speakPassage(){const text=document.getElementById('passageBody').innerText;speak(text.substring(0,500))}
+function updateS3Count(){const el=document.getElementById('s3count');if(el)el.textContent=Object.keys(s3Answered).length}
+function speakPassage(){const text=document.getElementById('passageBody').innerText;speak(text)}
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;state.scores[state.currentLessonId+"_3"]=0;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
 /* ========== STAGE 4 ========== */
 const CLOZE=[
-  {text:'Which change has Rivergate made to its bus network?',options:['It has expanded the network','It has closed every route','It has removed all bus lanes'],correct:0},
-  {text:'What did the council build near the university last year?',options:['A safe crossing','A solar farm','A new airport'],correct:0},
-  {text:'Why does the passage call solar energy renewable?',options:['Nature replaces its source','It creates more traffic','It costs nothing to install'],correct:0},
-  {text:'What did Rivergate replace in 2024?',options:['Old streetlights','The river bridge','The bus network'],correct:0},
-  {text:'Which result connects to the present?',options:['The changes have reduced energy use','The city opened two lanes last year','The council introduced a pass in 2023'],correct:0},
-  {text:'How did Rivergate try to keep travel affordable?',options:['It introduced a discount pass','It removed public transport','It increased every fare'],correct:0},
-  {text:'Who planted trees beside the river last spring?',options:['Local volunteers','Bus drivers','University visitors'],correct:0},
-  {text:'What challenge still remains at peak times?',options:['Traffic congestion','A lack of streetlights','No renewable energy'],correct:0}
+  {text:'What has Rivergate improved?',options:['Public transport','The weather','The river'],correct:0},
+  {text:'What has the council provided in the evening?',options:['More buses','More shops','More schools'],correct:0},
+  {text:'What did the council open last spring?',options:['A bus station','A sports centre','A library'],correct:0},
+  {text:'What did residents share at a public meeting?',options:['Their ideas','Their tickets','Their maps'],correct:0},
+  {text:'What has the city planted along busy roads?',options:['Trees','Buses','Signs'],correct:0},
+  {text:'What did volunteers collect in 2023?',options:['Plastic waste','Bus tickets','Books'],correct:0},
+  {text:'Why have families used the park more often?',options:['The project had a good result','The council closed the roads','The market moved'],correct:0},
+  {text:'When did the council spend money on buses?',options:['Last year','Since last year','Next year'],correct:0}
 ];
 let s4Score=0;
 function renderStage4(){
@@ -731,6 +782,7 @@ function renderCloze(){
   CLOZE.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
     card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.text)+'</div>';
+    addTeacherQuestionEditor(card,'cloze',i);
     const opts=document.createElement('div');opts.className='q-opts';
     item.options.forEach(function(opt,j){
       const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
@@ -751,16 +803,16 @@ function resetStage4(){setScore(4,0);state.done[state.currentLessonId+"_4"]=fals
 
 /* ========== STAGE 5 ========== */
 const COMP=[
-  {q:'Rivergate has expanded its bus network.',type:'tf',correct:true,exp:'The passage says the city has expanded the network.'},
-  {q:'The council built the safe crossing last year.',type:'tf',correct:true,exp:'The passage gives a finished time: last year.'},
-  {q:'Rivergate replaced its streetlights in 2025.',type:'tf',correct:false,exp:'The passage says the city replaced them in 2024.'},
-  {q:'The city has used more renewable energy after installing solar panels.',type:'tf',correct:true,exp:'The passage links the panels to greater use of renewable energy.'},
-  {q:'Local volunteers planted trees this spring.',type:'tf',correct:false,exp:'They planted the trees last spring.'},
-  {q:'The discount pass has made travel affordable for every resident.',type:'tf',correct:false,exp:'The passage says the city introduced a pass to keep travel affordable; it does not say every resident uses it.'},
-  {q:'Which action happened in 2023?',type:'mc',options:['The city introduced a discount pass','The city installed solar panels','The city expanded all train lines','Volunteers opened a new station'],correct:0,exp:'Rivergate introduced the pass in 2023.'},
-  {q:'Which word describes a person travelling on foot?',type:'mc',options:['Pedestrian','Commuter route','Emission','Infrastructure'],correct:0,exp:'A pedestrian travels on foot.'},
-  {q:'What have the transport changes reduced?',type:'mc',options:['Energy use and emissions','The number of green spaces','The cost of every home','The city population'],correct:0,exp:'The passage says the changes have reduced energy use and emissions.'},
-  {q:'What still causes congestion at peak times?',type:'mc',options:['Traffic','Solar panels','Discount passes','Green spaces'],correct:0,exp:'The passage says traffic still causes congestion.'}
+  {q:'The council has improved public transport.',type:'tf',correct:true,exp:'The passage says the council has improved public transport.'},
+  {q:'The council opened the bus station last spring.',type:'tf',correct:true,exp:'Last spring is the finished time in the report.'},
+  {q:'The city created the park in 2025.',type:'tf',correct:false,exp:'The passage does not give 2025 as the date.'},
+  {q:'Volunteers collected plastic waste in 2023.',type:'tf',correct:true,exp:'The report says volunteers cleaned the riverbank and collected waste in 2023.'},
+  {q:'All residents now use the evening buses.',type:'tf',correct:false,exp:'The text says the buses have helped people, not that everyone uses them.'},
+  {q:'The council spent money on new buses last year.',type:'tf',correct:true,exp:'The passage gives last year as a finished time.'},
+  {q:'What did the council add at busy stops?',type:'mc',options:['Clear maps','New shops','More bins'],correct:0,exp:'The council has added clear maps at busy stops.'},
+  {q:'What did the city do to the riverbank?',type:'mc',options:['Volunteers cleaned it','The council built a station there','Residents sold it'],correct:0,exp:'Local volunteers cleaned the riverbank.'},
+  {q:'What has the city saved with better lights?',type:'mc',options:['Energy','Money for every resident','Bus tickets'],correct:0,exp:'The text says the city has saved energy.'},
+  {q:'When will the council review the bus service?',type:'mc',options:['This autumn','Last spring','In 2023'],correct:0,exp:'The report says it will review the service this autumn.'}
 ];
 let s5Score=0;
 function renderStage5(){
@@ -778,6 +830,7 @@ function renderComp(){
   COMP.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
     card.innerHTML='<div class="q-num">Question '+(i+1)+' — '+(item.type==='tf'?'True or False':'Multiple Choice')+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div>';
+    addTeacherQuestionEditor(card,'comp',i);
     const opts=document.createElement('div');opts.className='q-opts';
     const list=item.type==='tf'?['True','False']:item.options;
     const correctIdx=item.type==='tf'?(item.correct?0:1):item.correct;
@@ -813,33 +866,33 @@ const GRAMMAR_6=[
   {prompt:'Rivergate ___ (expand) its bus network.',answer:'has expanded',exp:'The city is one place: has + past participle. The change matters now.'},
   {prompt:'Residents ___ (use) the new bus route since March.',answer:'have used',exp:'Since marks a situation that began in the past and continues now.'},
   {prompt:'The council ___ (install) solar panels on three schools.',answer:'has installed',exp:'The council has completed the action; the result matters now.'},
-  {prompt:'These projects ___ (reduce) transport emissions.',answer:'have reduced',exp:'Projects is plural, so use have + V3.'},
-  {prompt:'Our neighbourhood ___ (create) more green space this year.',answer:'has created',exp:'This year is still continuing: has + V3.'},
-  {prompt:'The city ___ (make) two stations accessible.',answer:'has made',exp:'Make → made; the subject city takes has.'},
+  {prompt:'These projects ___ (improve) public transport.',answer:'have improved',exp:'Projects is plural, so use have + V3.'},
+  {prompt:'Our community ___ (create) a new park this year.',answer:'has created',exp:'This year is still continuing: has + V3.'},
+  {prompt:'The city ___ (provide) clear maps at busy stops.',answer:'has provided',exp:'The subject city takes has + past participle.'},
   {prompt:'I ___ (take) public transport more often recently.',answer:'have taken',exp:'Recently connects a past change to now.'},
-  {prompt:'The new bus lanes ___ (become) popular with commuters.',answer:'have become',exp:'Bus lanes is plural; become has the same V1 and V3 form.'},
+  {prompt:'The new buses ___ (become) popular with local people.',answer:'have become',exp:'Buses is plural; become has the same V1 and V3 form.'},
   {prompt:'The council ___ (not / finish) the river path yet.',answer:'has not finished',exp:'Yet often appears with a present perfect negative.'},
   {prompt:'___ the city ___ (improve) its transport system so far?',answer:'has the city improved',exp:'Present perfect question: has + subject + V3.'}
 ];
 const GRAMMAR_7=[
-  {prompt:'In 2024, the council ___ (replace) old streetlights with efficient lamps.',answer:'replaced',exp:'In 2024 is a finished time, so use past simple.'},
+  {prompt:'In 2024, the council ___ (add) more evening trips.',answer:'added',exp:'In 2024 is a finished time, so use past simple.'},
   {prompt:'Last spring, volunteers ___ (plant) trees beside the river.',answer:'planted',exp:'Last spring is finished; plant becomes planted.'},
   {prompt:'The city ___ (open) two bus-only lanes last year.',answer:'opened',exp:'Last year calls for past simple.'},
   {prompt:'The council ___ (introduce) a discount pass in 2023.',answer:'introduced',exp:'The finished date in 2023 takes past simple.'},
   {prompt:'Residents ___ (choose) the river path for their weekend walk.',answer:'chose',exp:'Choose is irregular: choose → chose in the past simple.'},
   {prompt:'The mayor ___ (meet) local cyclists on Monday.',answer:'met',exp:'Meet is irregular: meet → met.'},
   {prompt:'Our class ___ (compare) two transport plans yesterday.',answer:'compared',exp:'Yesterday is finished; compare becomes compared.'},
-  {prompt:'The new route ___ (make) the commute shorter last month.',answer:'made',exp:'Make is irregular: make → made.'}
+  {prompt:'The new bus service ___ (make) travel easier last month.',answer:'made',exp:'Make is irregular: make → made.'}
 ];
 const GRAMMAR_8=[
   {prompt:'The city ___ (add) three bus routes in 2022.',answer:'added',exp:'In 2022 is a finished time: past simple.'},
   {prompt:'Rivergate ___ (reduce) its energy use over the past year.',answer:'has reduced',exp:'Over the past year connects a period to now: present perfect.'},
   {prompt:'Residents ___ (see) cleaner buses on the roads since April.',answer:'have seen',exp:'Since April connects the past to now: present perfect.'},
   {prompt:'The council ___ (open) the first cycle lane in 2021.',answer:'opened',exp:'In 2021 is a finished time: past simple.'},
-  {prompt:'___ the city ___ (make) public transport more accessible yet?',answer:'has the city made',exp:'Yet and a result connected to now call for present perfect.'},
+  {prompt:'___ the city ___ (provide) a better service yet?',answer:'has the city provided',exp:'Yet and a result connected to now call for present perfect.'},
   {prompt:'Last month, local students ___ (design) posters about clean travel.',answer:'designed',exp:'Last month is finished, so use past simple.'},
   {prompt:'The new pass ___ (help) many commuters so far.',answer:'has helped',exp:'So far connects the result to now: present perfect.'},
-  {prompt:'We ___ (visit) the new green space on Friday.',answer:'visited',exp:'On Friday describes a finished time: past simple.'}
+  {prompt:'We ___ (visit) the new park on Friday.',answer:'visited',exp:'On Friday describes a finished time: past simple.'}
 ];
 function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead,inputPlaceholder){
   const main=document.getElementById('main');
@@ -855,6 +908,7 @@ function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,li
   data.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
     card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt).replace('___','<b style="color:var(--accent);">___</b>')+'</div>';
+    addTeacherQuestionEditor(card,'grammar'+stageId,i);
     const row=document.createElement('div');row.className='q-input-row';
     const inp=document.createElement('input');inp.type='text';inp.className='q-input';
     inp.placeholder=inputPlaceholder;inp.autocomplete='off';inp.spellcheck=false;
@@ -897,9 +951,9 @@ function resetPassive(id){setScore(id,0);state.done[state.currentLessonId+"_"+id
 const SB=[
   {prompt:'Build a present perfect sentence about transport.',words:['Rivergate','has','expanded','its','bus','network.'],correct:['Rivergate','has','expanded','its','bus','network.']},
   {prompt:'Build a past simple sentence with a finished date.',words:['The','council','opened','two','lanes','last','year.'],correct:['The','council','opened','two','lanes','last','year.']},
-  {prompt:'Build a present perfect sentence about emissions.',words:['The','projects','have','reduced','transport','emissions.'],correct:['The','projects','have','reduced','transport','emissions.']},
+  {prompt:'Build a present perfect sentence about public transport.',words:['The','projects','have','improved','public','transport.'],correct:['The','projects','have','improved','public','transport.']},
   {prompt:'Build a past simple sentence about volunteers.',words:['Volunteers','planted','trees','last','spring.'],correct:['Volunteers','planted','trees','last','spring.']},
-  {prompt:'Build a present perfect question.',words:['Has','the','city','made','stations','accessible','yet?'],correct:['Has','the','city','made','stations','accessible','yet?']},
+  {prompt:'Build a present perfect question.',words:['Has','the','city','provided','clear','maps','yet?'],correct:['Has','the','city','provided','clear','maps','yet?']},
   {prompt:'Build a past simple sentence with an irregular verb.',words:['Residents','chose','the','river','path','on','Friday.'],correct:['Residents','chose','the','river','path','on','Friday.']}
 ];
 let s9Score=0;
@@ -922,6 +976,7 @@ function renderStage9(){
     '<button class="btn ghost small" onclick="resetSBItem('+i+')">↻ Reset</button></div>'+
     '<div class="q-feedback" id="sbFb'+i+'"></div>';
     body.appendChild(card);
+    addTeacherQuestionEditor(card,'sentence',i);
     const chipsEl=document.getElementById('sbChips'+i);
     const shuffled=item.words.slice().sort(function(){return Math.random()-.5});
     shuffled.forEach(function(w){const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=w;chip.onclick=function(){moveChip(i,chip,w)};chipsEl.appendChild(chip)});
@@ -975,13 +1030,13 @@ const SPEED_QUESTIONS=[
   {q:'The council ___ two lanes last year.',options:['has opened','opened','have open'],correct:1,exp:'Last year is a finished time: past simple active.'},
   {q:'The city has ___ its energy use.',options:['reduce','reduced','reducing'],correct:1,exp:'After has, use the past participle reduced.'},
   {q:'Volunteers ___ trees last spring.',options:['planted','have planted in 2022','has planted'],correct:0,exp:'Last spring is finished: past simple.'},
-  {q:'Which word means “gases released into the air”?',options:['emissions','infrastructure','commute'],correct:0,exp:'Emissions are gases released into the air.'},
-  {q:'A person who travels on foot is a ___.',options:['pedestrian','commute','congestion'],correct:0,exp:'A pedestrian travels on foot.'},
+  {q:'Which word means “harmful material in air, water, or land”?',options:['pollution','community','transport'],correct:0,exp:'Pollution harms the environment.'},
+  {q:'A good or helpful result is a ___.',options:['benefit','cost','issue'],correct:0,exp:'A benefit is a good or helpful result.'},
   {q:'The council ___ (not / finish) the river path yet.',options:['has not finished','did not finished','have not finish'],correct:0,exp:'Yet with a result connected to now takes present perfect.'},
   {q:'Residents ___ the new route in 2023.',options:['have tried','tried','has tried'],correct:1,exp:'In 2023 is finished: past simple.'},
   {q:'The city ___ (make) several stations accessible so far.',options:['made','has made','have make'],correct:1,exp:'So far connects the action to now: present perfect.'},
-  {q:'Which phrase means “put a plan into action”?',options:['implement a plan','reduce a commute','expand a pedestrian'],correct:0,exp:'Implement a plan means put it into action.'},
-  {q:'The new bus lanes ___ congestion on one busy street.',options:['have reduced','has reduce','reduced last week'],correct:0,exp:'The result matters now and no finished time is given.'},
+  {q:'Which word means “give or make something available”?',options:['provide','affect','result'],correct:0,exp:'Provide means to give or make something available.'},
+  {q:'The new bus service ___ daily travel.',options:['has improved','have improve','improved tomorrow'],correct:0,exp:'The result matters now: present perfect active.'},
   {q:'The mayor ___ local cyclists on Monday.',options:['has met','meet','met'],correct:2,exp:'On Monday is a finished time in this context: past simple.'}
 ];
 let s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};
@@ -1111,6 +1166,19 @@ function renderSidebar(){
             list.appendChild(lessonEl);
 
             if (isActive) {
+              const studentCode=getSessionCode();
+              const assignedHomework=Object.keys(curriculumCache||{}).map(function(id){return curriculumCache[id]}).filter(function(item){
+                return item&&item.homework&&item.published!==false&&(!Array.isArray(item.assignedTo)||!item.assignedTo.length||item.assignedTo.indexOf(studentCode)!==-1);
+              });
+              if(lesson.id==='lesson_1'&&assignedHomework.length){
+                const homeworkList=document.createElement('div');homeworkList.className='homework-sub-list';
+                homeworkList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHomework.map(function(item){
+                  const id=item.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===item});
+                  const url=new URL(item.customUrl||'homework.html',window.location.href);url.searchParams.set('lesson',id);if(studentCode)url.searchParams.set('code',studentCode);
+                  return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(item.title||'Homework 1')+' ↗</a>';
+                }).join('');
+                homeworkList.addEventListener('click',function(e){e.stopPropagation()});list.appendChild(homeworkList);
+              }
               const stageSubList = document.createElement('div');
               stageSubList.className = 'stage-sub-list';
               lesson.stages.forEach(stage => {
@@ -1173,11 +1241,41 @@ function showToast(text){
   clearTimeout(window.__toastTimer);
   window.__toastTimer=setTimeout(function(){toast.style.opacity='0';toast.style.transform='translateX(-50%) translateY(10px)'},2200);
 }
+const QUESTION_BANKS={reading:READING_Q,cloze:CLOZE,comp:COMP,grammar6:GRAMMAR_6,grammar7:GRAMMAR_7,grammar8:GRAMMAR_8,sentence:SB};
+function teacherEditsReady(data){return !!data}
+function applyTeacherQuestionEdits(data){
+  Object.keys(QUESTION_BANKS).forEach(function(bank){const edits=data&&data[bank]||{};Object.keys(edits).forEach(function(index){const target=QUESTION_BANKS[bank][Number(index)];if(target)Object.assign(target,edits[index])})});
+}
+function addTeacherQuestionEditor(card,bank,index){
+  if(!teacherCanEdit)return;
+  const button=document.createElement('button');button.type='button';button.className='btn ghost small';button.textContent='✏️ Edit question';button.style.marginBottom='12px';
+  button.onclick=function(){editTeacherQuestion(bank,index)};card.appendChild(button);
+}
+function editTeacherQuestion(bank,index){
+  if(!teacherCanEdit||!fbDb)return alert('Only an approved teacher account can edit questions.');
+  const item=QUESTION_BANKS[bank]&&QUESTION_BANKS[bank][index];if(!item)return;
+  const next=JSON.parse(JSON.stringify(item));const textKey=Object.prototype.hasOwnProperty.call(next,'text')?'text':(Object.prototype.hasOwnProperty.call(next,'q')?'q':'prompt');
+  const wording=prompt('Question or sentence wording:',next[textKey]||'');if(wording===null)return;next[textKey]=wording.trim();
+  if(Array.isArray(next.options)){
+    const rawOptions=prompt('Answer choices, one per line:',next.options.join('\n'));if(rawOptions===null)return;const options=rawOptions.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean);if(options.length<2){alert('Keep at least two answer choices.');return}next.options=options;
+    if(bank==='cloze'||bank==='speed'||bank==='reading'){
+      const correct=prompt('Correct choice number (1 to '+options.length+'):',String((Number(next.correct)||0)+1));if(correct===null)return;const n=Number(correct);if(!Number.isInteger(n)||n<1||n>options.length){alert('Enter a valid choice number.');return}next.correct=n-1;
+    }else if(bank==='comp'&&next.type==='mc'){
+      const correct=prompt('Correct choice number (1 to '+options.length+'):',String((Number(next.correct)||0)+1));if(correct===null)return;const n=Number(correct);if(!Number.isInteger(n)||n<1||n>options.length){alert('Enter a valid choice number.');return}next.correct=n-1;
+    }else if(bank==='comp'&&next.type==='tf'){
+      const answer=prompt('Correct answer: True or False',next.correct?'True':'False');if(answer===null)return;next.correct=answer.trim().toLowerCase()==='true';
+    }
+  }else if(bank.indexOf('grammar')===0){const answer=prompt('Accepted answer:',next.answer||'');if(answer===null)return;next.answer=answer.trim();}
+  else if(bank==='sentence'){const answer=prompt('Correct sentence:',(next.correct||[]).join(' '));if(answer===null)return;next.correct=answer.trim().split(/\s+/);next.words=next.correct.slice();}
+  if(Object.prototype.hasOwnProperty.call(next,'exp')){const exp=prompt('Explanation shown after the answer:',next.exp);if(exp===null)return;next.exp=exp.trim()}
+  if(Object.prototype.hasOwnProperty.call(next,'explain')){const explain=prompt('Explanation shown after the answer:',next.explain);if(explain===null)return;next.explain=explain.trim()}
+  fbDb.ref('curriculum/lesson_1/questionEdits/'+bank+'/'+index).set(next).then(function(){Object.assign(item,next);renderStage();showToast('Question saved')}).catch(function(err){alert('Could not save question: '+err.message)});
+}
 /* INIT */
-loadState();
+if(!teacherPreviewRequested)loadState();
 const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
-if(lessonFromUrl){state.currentLessonId=lessonFromUrl;localStorage.setItem('nd_current_lesson',lessonFromUrl);}
-const savedCode=getSessionCode();
+if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl);}
+const savedCode=teacherPreviewRequested?'':getSessionCode();
 if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
 renderSidebar();renderStage();startTimer();updateHUD();
 if(soundOn)document.getElementById('soundToggle').classList.add('active');

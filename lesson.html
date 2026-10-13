@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
@@ -238,6 +239,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
       <div class="fc-modal-tools">
         <button class="tool" onclick="fcSpeak()">🔊 Listen</button>
         <button class="tool" onclick="fcRevealTrans()">👁️ Reveal</button>
+        <button class="tool" id="customImageTool" onclick="editCurrentFlashcardImage()" style="display:none;">🖼️ Custom image</button>
       </div>
       <div class="fc-modal-nav">
         <button onclick="fcPrev()">← Previous</button>
@@ -260,14 +262,28 @@ const firebaseConfig = {
   appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
 };
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
+const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
+const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
+let teacherMode=teacherPreviewRequested,teacherCanEdit=false;
 
 function initFirebase(){
   try{
-    fbApp=firebase.initializeApp(firebaseConfig);
+    fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
-    const code=getSessionCode();
     const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
     if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(snap){customImages=snap.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderFCModal();});
+    if(teacherPreviewRequested){
+      document.querySelector('.session-input').style.display='none';
+      firebase.auth().onAuthStateChanged(function(user){
+        teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));teacherMode=teacherCanEdit;
+        if(teacherCanEdit){updateSyncUI('teacher');document.getElementById('syncPill').title='Teacher preview · student progress is not changed';document.getElementById('timerPill').style.display='none';document.getElementById('scorePill').style.display='none';document.getElementById('streakPill').style.display='none';renderStage();}
+        else{teacherMode=true;updateSyncUI('error');document.getElementById('main').innerHTML='<div class="card"><h2>Teacher sign-in required</h2><p>Sign in to the teacher dashboard with one of the approved accounts, then reopen this lesson.</p></div>';}
+      });return;
+    }
+    startStudentSession(getSessionCode());
+  }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
+}
+function startStudentSession(code){
     if(!code){updateSyncUI('nocode');return;}
     sessionRef=fbDb.ref('sessions/'+code);
     activityRef=sessionRef.child('activity');
@@ -278,16 +294,15 @@ function initFirebase(){
       if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
     });
     fbConnected=true;updateSyncUI('live');pushFullState();
-  }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
 }
 function getSessionCode(){
   const params = new URLSearchParams(window.location.search);
   const urlCode = params.get('code');
   const urlLesson = params.get('lesson');
-  if (urlCode) {
+  if (urlCode && !teacherPreviewRequested) {
     localStorage.setItem('nd_session_code', urlCode.toUpperCase());
   }
-  if (urlLesson) {
+  if (urlLesson && !teacherPreviewRequested) {
     localStorage.setItem('nd_current_lesson', urlLesson);
   }
   return (urlCode || localStorage.getItem('nd_session_code') || '').toUpperCase();
@@ -315,6 +330,7 @@ function updateSyncUI(status){
   const txt=document.getElementById('syncStatus');
   dot.classList.remove('warn','off');
   if(status==='live'){txt.textContent='Live · Connected'}
+  else if(status==='teacher'){txt.textContent='Teacher preview'}
   else if(status==='nocode'){dot.classList.add('warn');txt.textContent='Set code above'}
   else if(status==='error'){dot.classList.add('off');txt.textContent='Error'}
 }
@@ -382,6 +398,7 @@ const CHANNEL='nd_lesson_live_v1';
 let bc=null;
 try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
+  if(teacherMode)return;
   if(fbConnected&&sessionRef){
     try{
       if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));
@@ -394,7 +411,7 @@ function broadcast(type,payload){
   try{localStorage.setItem('nd_broadcast',JSON.stringify(msg));setTimeout(function(){localStorage.removeItem('nd_broadcast')},100)}catch(e){}
 }
 function pushFullState(){
-  if(!fbConnected||!sessionRef)return;
+  if(teacherMode||!fbConnected||!sessionRef)return;
   broadcast('state',{
     stage:state.currentStage,score:totalScore(),streak:state.streak,
     done:state.done,scores:state.scores,
@@ -463,6 +480,7 @@ function totalScore(){
   return lesson.stages.reduce((sum, s) => sum + (state.scores[lesson.id + "_" + s.id] || 0), 0);
 }
 function saveState(){
+  if(teacherMode)return;
   try{localStorage.setItem('nd_state',JSON.stringify({
     currentYear: state.currentYear,
     currentMonth: state.currentMonth,
@@ -610,6 +628,17 @@ function renderFCModal(){
   document.getElementById('fcModalWord').textContent=v.en;
   const tr=document.getElementById('fcModalTrans');tr.textContent=v.ru;tr.classList.add('hidden');
   document.getElementById('fcCounter').textContent=(s1CurrentIdx+1)+' / '+s1VisibleList.length;
+  document.getElementById('customImageTool').style.display=teacherCanEdit?'inline-block':'none';
+  document.querySelector('.fc-modal-actions').style.display=teacherMode?'none':'flex';
+}
+function editCurrentFlashcardImage(){
+  if(!teacherCanEdit||!fbDb)return alert('Sign in with an approved teacher account to edit flashcards.');
+  const word=s1VisibleList[s1CurrentIdx];if(!word)return;
+  const id=new URLSearchParams(window.location.search).get('lesson')||state.currentLessonId;
+  const current=customImages[word.en]||'';const value=prompt('Paste an image URL for “'+word.en+'”. Leave blank to remove the custom image.',current);if(value===null)return;
+  const url=value.trim();if(url&&!/^https?:\/\//i.test(url)){alert('Use a complete image URL beginning with https:// or http://.');return}
+  const updated=Object.assign({},customImages);if(url)updated[word.en]=url;else delete updated[word.en];
+  fbDb.ref('curriculum/'+id+'/flashcardImages').set(updated).then(function(){customImages=updated;renderFlashcards();renderFCModal();showToast('Flashcard image saved')}).catch(function(err){alert('Could not save image: '+err.message)});
 }
 function fcRevealTrans(){document.getElementById('fcModalTrans').classList.remove('hidden')}
 function fcSpeak(){const v=s1VisibleList[s1CurrentIdx];if(v)speak(v.en.replace(/^to /,''))}
@@ -1264,11 +1293,11 @@ function showToast(text){
   window.__toastTimer=setTimeout(function(){toast.style.opacity='0';toast.style.transform='translateX(-50%) translateY(10px)'},2200);
 }
 /* INIT */
-loadState();
+if(!teacherPreviewRequested)loadState();
   // Load lesson from URL if provided
 const lessonFromUrl = new URLSearchParams(window.location.search).get('lesson');
-if (lessonFromUrl) state.currentLessonId = lessonFromUrl;
-const savedCode=getSessionCode();
+if (lessonFromUrl){state.currentLessonId = lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl);}
+const savedCode=teacherPreviewRequested?'':getSessionCode();
 if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
 renderSidebar();renderStage();startTimer();updateHUD();
 if(soundOn)document.getElementById('soundToggle').classList.add('active');

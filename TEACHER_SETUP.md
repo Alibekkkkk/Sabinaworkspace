@@ -25,12 +25,14 @@ Then open `http://localhost:8000/dashboard.html`. If Firebase blocks sign-in loc
 
 ## Assign the Sustainable Cities homework
 
-The first class topic is **Sustainable Cities**. Gaziz’s classwork uses a 20-word set and a Rivergate reading. His separate homework uses a different Rivergate planning case and supplementary words such as *retrofit*, *stormwater*, and *urban heat island*. Sabina’s homework uses the same class reading and vocabulary as classwork, presented through different activity formats. Both practise present perfect and past simple in active voice.
+The first class topic is **Sustainable Cities**. Gaziz’s homework uses a separate Rivergate case, a different common-word set, and 16 questions. Sabina’s homework follows the same topic and key classwork facts, with a separate 16-question set using different response formats. Both practise present perfect and past simple in active voice.
 
 Sign in to the teacher dashboard, open **Lessons**, then click **Assign Gaziz homework** and **Assign Sabina homework** when you want to assign each one. Each button also shares the Sustainable Cities classwork with that student. The buttons find the existing students by name and add separate homework cards to their portals, due before the next class. Students can resume saved answers; completion and score appear in the student portal and teacher dashboard. If a student is missing, add them first.
 
-## Add vocabulary pictures
+## Edit classwork and add vocabulary pictures
 
-On any lesson tile, choose **Flashcard images**, enter a vocabulary word exactly as it appears in that lesson, paste a direct public image URL, and save. Students see the image on the card and when they open it. To remove a picture, remove its row and save. Only use image URLs that are publicly viewable by students.
+On the teacher dashboard’s **Lessons** tab, choose **Open lesson**. The lesson opens in teacher preview when the page is opened with one of the approved accounts. It does not attach to the student’s live session. In the vocabulary section, click a card and use **Custom image** beside **Listen** and **Reveal**. Paste a public `https://` image URL; leave it blank to remove the custom image. Students see the saved image on the card.
 
-The dashboard edits lesson assignment, homework, title/description, visibility, and flashcard images. To change the wording of a built-in classwork or homework activity, edit its HTML source file (`lesson_gaziz.html` or `homework.html`) and upload it with the other site files.
+In Gaziz’s Sustainable Cities lesson, teacher preview adds **Edit question** controls to the reading, comprehension, grammar, and sentence questions. Update the wording, options, answer key, or explanation in the prompts; these edits are saved to Firebase and appear for students. Use the visible Homework link nested under Lesson 1 in the classwork sidebar to open the assigned separate homework page. Homework pages have a **Light theme** / **Dark theme** toggle.
+
+The dashboard’s **Reset student progress** clears the saved score, stages, notes, and activity feed. The dashboard’s **Undo** can restore the reset if it is the most recent teacher change.
