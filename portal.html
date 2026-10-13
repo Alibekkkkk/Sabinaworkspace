@@ -73,6 +73,7 @@ body.light .lesson-card .progress-rail{background:#f0ebe0}
 .lesson-card .open-btn{padding:11px 20px;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;font-size:16px;text-align:center;border:none;font-family:inherit;cursor:pointer}
 .lesson-card:hover .open-btn{background:var(--accent-dark)}
 .lesson-card .private-tag{position:absolute;top:14px;right:14px;background:rgba(255,138,91,.2);color:var(--accent);font-size:11px;font-weight:800;padding:3px 8px;border-radius:10px;letter-spacing:.5px}
+.lesson-card .homework-tag{position:absolute;top:14px;left:14px;background:rgba(255,183,77,.18);color:#ffc15c;font-size:12px;font-weight:800;padding:5px 9px;border-radius:10px;letter-spacing:.3px}
 .empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:17px}
 body.light .empty{color:var(--ink-soft-light)}
 .actions-bar{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
@@ -304,6 +305,7 @@ function renderLessons(){
     card.href = targetFile + '?code=' + encodeURIComponent(state.currentCode) + '&lesson=' + encodeURIComponent(lessonId);
     card.innerHTML =
       (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
+      (lesson.homework ? '<div class="homework-tag">📌 Homework' + (lesson.homeworkDue ? ' · ' + escapeHtml(lesson.homeworkDue) : '') + '</div>' : '') +
       '<div class="icon">' + (lesson.icon || '📘') + '</div>' +
       '<div class="title">' + escapeHtml(lesson.title || 'Untitled lesson') + '</div>' +
       '<div class="desc">' + escapeHtml(lesson.description || 'No description.') + '</div>' +

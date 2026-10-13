@@ -6,6 +6,7 @@
 <title>Teacher Dashboard — Multi-Student</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
 :root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--success:#4caf7d;--warn:#ffb74d;--error:#ef5468;--border:#2a3346;}
@@ -158,7 +159,18 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 </style>
 </head>
 <body>
-<div class="wrap">
+<div id="teacherLogin" style="max-width:460px;margin:8vh auto;padding:28px;background:var(--panel);border:1px solid var(--border);border-radius:16px;">
+  <h1 style="margin-bottom:8px;">Teacher sign in</h1>
+  <p style="color:var(--ink-soft);margin-bottom:20px;">Sign in with Google or email and password using one of the three approved teacher accounts.</p>
+  <form onsubmit="teacherSignIn(event)">
+    <label for="teacherEmail">Email</label><input id="teacherEmail" type="email" autocomplete="username" required>
+    <label for="teacherPassword">Password</label><input id="teacherPassword" type="password" autocomplete="current-password" required>
+    <p id="teacherAuthError" style="color:var(--error);margin:10px 0;min-height:20px;"></p>
+    <button class="btn primary" type="submit" style="width:100%;">Sign in</button>
+  </form>
+  <button class="btn" type="button" onclick="teacherGoogleSignIn()" style="width:100%;margin-top:10px;">Continue with Google</button>
+</div>
+<div class="wrap" style="display:none;">
   <div class="header">
     <div class="header-left">
       <div class="mark">📊</div>
@@ -169,7 +181,9 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     </div>
     <div class="header-actions">
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
-      <button class="btn" onclick="window.open('portal.html','_blank')">🎓 Student Portal</button>
+      <a class="btn" href="portal.html" style="text-decoration:none;">🎓 Student Portal</a>
+      <a class="btn" href="lesson_gaziz.html" style="text-decoration:none;">📘 Gaziz Classwork</a>
+      <button class="btn" onclick="teacherSignOut()">Sign out</button>
       <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
     </div>
   </div>
@@ -270,7 +284,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
         <h2 style="margin:0;">📚 Your Curriculum</h2>
         <p style="font-size:15px;color:var(--ink-soft);margin-top:6px;">Lessons here appear in student portals instantly.</p>
       </div>
-      <button class="btn primary" onclick="openLessonModal()">+ New Lesson</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" onclick="assignGazizHomework()">📌 Assign Gaziz Lesson 1 homework</button><button class="btn primary" onclick="openLessonModal()">+ New Lesson</button></div>
     </div>
     <div id="lessonsContainer"></div>
   </div>
@@ -299,6 +313,9 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <input type="text" id="lessonTitle" placeholder="e.g. Lesson 2: Volcanoes and Earthquakes" maxlength="80">
     <label for="lessonDesc">Short description</label>
     <textarea id="lessonDesc" placeholder="What will students learn in this lesson?"></textarea>
+    <label style="display:flex;align-items:center;gap:8px;margin:0 0 12px;text-transform:none;letter-spacing:0;color:var(--ink);font-size:15px;"><input type="checkbox" id="lessonHomework" style="width:auto;margin:0;"> Assign this lesson as homework</label>
+    <label for="lessonDue">Homework due (date or note)</label>
+    <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
     <label for="lessonIcon">Icon (emoji)</label>
     <input type="text" id="lessonIcon" placeholder="🌋" maxlength="4" style="text-transform:none;width:80px;">
     <label>Who can see this lesson?</label>
@@ -321,30 +338,41 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
         <input type="checkbox" id="stage_3" checked style="width:auto;margin:0;"> 📖 Reading
       </label>
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
-        <input type="checkbox" id="stage_4" checked style="width:auto;margin:0;"> ✏️ Cloze
+        <input type="checkbox" id="stage_4" checked style="width:auto;margin:0;"> 🔎 Close Reading
       </label>
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
         <input type="checkbox" id="stage_5" checked style="width:auto;margin:0;"> ✅ Comprehension
       </label>
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
-        <input type="checkbox" id="stage_6" checked style="width:auto;margin:0;"> 🔵 Present Passive
+        <input type="checkbox" id="stage_6" checked style="width:auto;margin:0;"> ⏳ Present Perfect Active
       </label>
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
-        <input type="checkbox" id="stage_7" checked style="width:auto;margin:0;"> 🟣 Past Passive
+        <input type="checkbox" id="stage_7" checked style="width:auto;margin:0;"> 🧠 Academic Word Choice
       </label>
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
-        <input type="checkbox" id="stage_8" checked style="width:auto;margin:0;"> 🟢 Present Perfect
+        <input type="checkbox" id="stage_8" checked style="width:auto;margin:0;"> 🗣️ Reporting Verbs
       </label>
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
         <input type="checkbox" id="stage_9" checked style="width:auto;margin:0;"> 🧩 Sentence Builder
       </label>
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
-        <input type="checkbox" id="stage_10" checked style="width:auto;margin:0;"> ⚡ Speed Round
+        <input type="checkbox" id="stage_10" checked style="width:auto;margin:0;"> ⚡ Vocabulary Challenge
       </label>
     </div>
     <div class="modal-actions">
       <button class="btn" onclick="closeLessonModal()">Cancel</button>
       <button class="btn primary" id="lessonSubmitBtn" onclick="submitLesson()">Create lesson</button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="imagesModal">
+  <div class="modal">
+    <h3>Vocabulary flashcard images</h3>
+    <p class="sub">Add a vocabulary word and its public image URL. Students see these images on their flashcards; only teachers can change them.</p>
+    <div id="imageRows"></div>
+    <div class="modal-actions" style="justify-content:space-between;">
+      <button class="btn" onclick="addImageRow()">+ Add image</button>
+      <div style="display:flex;gap:10px;"><button class="btn" onclick="closeImagesModal()">Cancel</button><button class="btn primary" onclick="saveFlashcardImages()">Save images</button></div>
     </div>
   </div>
 </div>
@@ -360,7 +388,8 @@ const firebaseConfig = {
   appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
 };
 
-let fbApp=null,fbDb=null;
+const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
+let fbApp=null,fbDb=null,fbAuth=null,teacherUid=null;
 let studentsRef=null,allSessionsRef=null,curriculumRef=null;
 let studentsMap={};
 let studentMeta={};
@@ -370,24 +399,57 @@ let activityRef=null;
 let unreadMap={};
 let editingLessonId=null;
 let lessonVisibility='all';
-const STAGE_NAMES=['Vocabulary','Word Match','Reading','Cloze','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
+let editingImagesLessonId=null;
+const STAGE_NAMES=['Academic Vocabulary','Word Match','Academic Reading','Close Reading','Comprehension','Present Perfect Active','Academic Word Choice','Reporting Verbs','Sentence Builder','Vocabulary Challenge'];
 const ALL_STAGES=[
-  {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
+  {id:1,label:'Academic Vocabulary',sub:'Cards',icon:'📚'},
   {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
-  {id:3,label:'Reading',sub:'Passage',icon:'📖'},
-  {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
+  {id:3,label:'Academic Reading',sub:'Passage',icon:'📖'},
+  {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
   {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
-  {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
-  {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
-  {id:8,label:'Present Perfect',sub:'New!',icon:'🟢'},
+  {id:6,label:'Present Perfect Active',sub:'Grammar',icon:'⏳'},
+  {id:7,label:'Academic Word Choice',sub:'Vocabulary',icon:'🧠'},
+  {id:8,label:'Reporting Verbs',sub:'Vocabulary',icon:'🗣️'},
   {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
-  {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+  {id:10,label:'Vocabulary Challenge',sub:'Review',icon:'⚡'}
 ];
 
 function initFirebase(){
   try{
     fbApp=firebase.initializeApp(firebaseConfig);
+    fbAuth=firebase.auth();
     fbDb=firebase.database();
+    fbAuth.onAuthStateChanged(function(user){
+      const allowed=user&&user.email&&TEACHER_EMAILS.indexOf(user.email.toLowerCase())!==-1;
+      if(!allowed){
+        teacherUid=null;
+        document.querySelector('.wrap').style.display='none';
+        document.getElementById('teacherLogin').style.display='block';
+        if(user)fbAuth.signOut();
+        return;
+      }
+      teacherUid=user.uid;
+      document.getElementById('teacherLogin').style.display='none';
+      document.querySelector('.wrap').style.display='block';
+      initTeacherData();
+    });
+  }catch(e){console.error(e);document.getElementById('teacherAuthError').textContent=e.message||'Firebase setup error.';}
+}
+function teacherSignIn(event){
+  event.preventDefault();
+  const email=document.getElementById('teacherEmail').value.trim().toLowerCase();
+  const error=document.getElementById('teacherAuthError');
+  if(TEACHER_EMAILS.indexOf(email)===-1){error.textContent='This email is not on the teacher allowlist.';return}
+  error.textContent='';
+  fbAuth.signInWithEmailAndPassword(email,document.getElementById('teacherPassword').value).catch(function(err){error.textContent=err.message||'Sign-in failed.';});
+}
+function teacherSignOut(){if(fbAuth)fbAuth.signOut()}
+function teacherGoogleSignIn(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  fbAuth.signInWithPopup(provider).catch(function(err){document.getElementById('teacherAuthError').textContent=err.message||'Google sign-in failed.';});
+}
+function initTeacherData(){
+  if(!teacherUid)return;
     studentsRef=fbDb.ref('students');
     studentsRef.on('value',function(snap){
       studentsMap=snap.val()||{};
@@ -415,7 +477,6 @@ function initFirebase(){
       curriculum=snap.val()||{};
       renderLessons();
     });
-  }catch(e){console.error(e);updateConnUI('error')}
 }
 function updateConnUI(status){
   const el=document.getElementById('conn');
@@ -658,6 +719,8 @@ function addFeedItem(p){
     case 'match_wrong':cls='wrong';msg='✗ Wrong match: '+escapeHtml(p.detail);break;
     case 'cloze_correct':cls='correct';msg='✏️ Cloze correct: <strong>'+escapeHtml(p.detail)+'</strong>';break;
     case 'cloze_wrong':cls='wrong';msg='✗ Cloze wrong: '+escapeHtml(p.detail);break;
+    case 'close_reading_correct':cls='correct';msg='🔎 Close Reading correct: <strong>'+escapeHtml(p.detail)+'</strong>';break;
+    case 'close_reading_wrong':cls='wrong';msg='✗ Close Reading: '+escapeHtml(p.detail);break;
     case 'comp_correct':cls='correct';msg='✅ Comprehension correct: '+escapeHtml(p.detail)+'…';break;
     case 'comp_wrong':cls='wrong';msg='✗ Comprehension wrong: '+escapeHtml(p.detail)+'…';break;
     case 'answer_correct':cls='correct';msg='✓ '+escapeHtml(p.detail);break;
@@ -683,7 +746,7 @@ function renderOverview(){
   const codes=Object.keys(studentsMap);
   const container=document.getElementById('overviewContent');
   if(!codes.length){
-    container.innerHTML='<div class="empty-state"><div class="icon">🎓</div><h3>No students yet</h3><p>Add your first student to start tracking their progress. Students can also self-register at the Student Portal.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn primary" onclick="openAddStudent()">+ Add student</button><button class="btn" onclick="window.open(\'portal.html\',\'_blank\')">🎓 Open Portal</button></div></div>';
+    container.innerHTML='<div class="empty-state"><div class="icon">🎓</div><h3>No students yet</h3><p>Add your first student to start tracking their progress. Students can also self-register at the Student Portal.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn primary" onclick="openAddStudent()">+ Add student</button><a class="btn" href="portal.html" style="text-decoration:none;">🎓 Open Portal</a></div></div>';
     return;
   }
   let totalScore=0,activeCount=0;
@@ -746,8 +809,11 @@ function renderLessons(){
         '<div class="title">'+escapeHtml(lesson.title||'Untitled lesson')+'</div>'+
         '<div class="desc">'+escapeHtml(lesson.description||'No description.')+'</div>'+
         '<div class="meta">'+stageCount+' stages · ID: '+escapeHtml(id)+(lesson.customUrl?' · '+escapeHtml(lesson.customUrl):'')+'</div>'+
+        (lesson.homework?'<div class="meta" style="color:var(--warn);">📌 Homework'+(lesson.homeworkDue?' · Due: '+escapeHtml(lesson.homeworkDue):'')+'</div>':'')+
         '<div class="tile-actions">'+
+          '<a class="btn" style="text-decoration:none;" href="'+escapeAttr((lesson.customUrl||'lesson.html')+'?lesson='+encodeURIComponent(id))+'">🔎 Open lesson</a>'+
           '<button class="btn" onclick="editLesson(\''+id+'\')">✏️ Edit</button>'+
+          '<button class="btn" onclick="openImagesModal(\''+id+'\')">🖼️ Flashcard images</button>'+
           '<button class="btn" onclick="togglePublish(\''+id+'\')">'+(published?'📥 Unpublish':'📤 Publish')+'</button>'+
           '<button class="btn danger" onclick="deleteLesson(\''+id+'\')">🗑 Delete</button>'+
         '</div>'+
@@ -788,6 +854,8 @@ function openLessonModal(editId){
     document.getElementById('lessonModalTitle').textContent = 'Edit lesson';
     document.getElementById('lessonTitle').value = l.title || '';
     document.getElementById('lessonDesc').value = l.description || '';
+    document.getElementById('lessonHomework').checked=!!l.homework;
+    document.getElementById('lessonDue').value=l.homeworkDue||'';
     document.getElementById('lessonIcon').value = l.icon || '';
     document.getElementById('lessonCustomUrl').value = l.customUrl || '';
     const stageIds = (l.stages||[]).map(function(s){return s.id;});
@@ -800,6 +868,8 @@ function openLessonModal(editId){
     document.getElementById('lessonModalTitle').textContent = 'Create a new lesson';
     document.getElementById('lessonTitle').value = '';
     document.getElementById('lessonDesc').value = '';
+    document.getElementById('lessonHomework').checked=false;
+    document.getElementById('lessonDue').value='';
     document.getElementById('lessonIcon').value = '';
     document.getElementById('lessonCustomUrl').value = '';
     for (let i=1;i<=10;i++) document.getElementById('stage_'+i).checked = true;
@@ -815,6 +885,8 @@ function submitLesson(){
   const title = (document.getElementById('lessonTitle').value||'').trim();
   if (!title) { alert('Please enter a title.'); return; }
   const desc = (document.getElementById('lessonDesc').value||'').trim();
+  const homework=document.getElementById('lessonHomework').checked;
+  const homeworkDue=(document.getElementById('lessonDue').value||'').trim();
   const icon = (document.getElementById('lessonIcon').value||'📘').trim() || '📘';
   const customUrl = (document.getElementById('lessonCustomUrl').value||'').trim();
   const selectedStages = [];
@@ -832,7 +904,7 @@ function submitLesson(){
   const payload = {
     title: title, description: desc, icon: icon,
     stages: selectedStages, customUrl: customUrl,
-    assignedTo: assignedTo
+    assignedTo: assignedTo, homework:homework, homeworkDue:homeworkDue
   };
   if (editingLessonId) {
     fbDb.ref('curriculum/'+editingLessonId).update(payload).then(function(){
@@ -856,6 +928,51 @@ function submitLesson(){
   }).catch(function(err){ alert('Error: '+err.message); });
 }
 function editLesson(id){openLessonModal(id)}
+function openImagesModal(id){
+  editingImagesLessonId=id;
+  const rows=document.getElementById('imageRows');rows.innerHTML='';
+  const images=(curriculum[id]&&curriculum[id].flashcardImages)||{};
+  Object.keys(images).forEach(function(word){addImageRow(word,images[word])});
+  if(!Object.keys(images).length)addImageRow();
+  document.getElementById('imagesModal').classList.add('open');
+}
+function addImageRow(word,url){
+  const row=document.createElement('div');row.className='image-row';row.style.cssText='display:grid;grid-template-columns:1fr 2fr auto;gap:8px;margin:10px 0;';
+  row.innerHTML='<input type="text" class="image-word" placeholder="Vocabulary word" value="'+escapeHtml(word||'')+'"><input type="url" class="image-url" placeholder="https://… image URL" value="'+escapeHtml(url||'')+'"><button type="button" class="btn danger" onclick="this.parentNode.remove()">Remove</button>';
+  document.getElementById('imageRows').appendChild(row);
+}
+function closeImagesModal(){document.getElementById('imagesModal').classList.remove('open')}
+function saveFlashcardImages(){
+  if(!editingImagesLessonId)return;
+  const images={};let invalid=false;
+  document.querySelectorAll('#imageRows .image-row').forEach(function(row){
+    const word=row.querySelector('.image-word').value.trim();const url=row.querySelector('.image-url').value.trim();
+    if(!word&&!url)return;
+    if(!word||!url){invalid=true;return;}
+    if(!/^https?:\/\//i.test(url)){invalid=true;return;}
+    images[word]=url;
+  });
+  if(invalid){alert('Each image needs a vocabulary word and a complete http:// or https:// URL.');return;}
+  fbDb.ref('curriculum/'+editingImagesLessonId+'/flashcardImages').set(images).then(function(){closeImagesModal();showToast('Flashcard images saved')}).catch(function(err){alert('Error: '+err.message)});
+}
+function assignGazizHomework(){
+  const match=Object.keys(studentsMap).find(function(code){return String((studentsMap[code]||{}).name||'').trim().toLowerCase()==='gaziz'});
+  if(!match){alert('Gaziz was not found in the student list. Add him to the teacher dashboard first.');return;}
+  const existingId=Object.keys(curriculum).find(function(id){const l=curriculum[id]||{};const assigned=l.assignedTo||[];return String(l.customUrl||'').toLowerCase().includes('lesson_gaziz.html')||(assigned.indexOf(match)!==-1&&String(l.title||'').toLowerCase().includes('lesson 1'))});
+  const id=existingId||'gaziz_lesson_1_homework';const lesson=curriculum[id]||{};
+  const assigned=Array.isArray(lesson.assignedTo)?lesson.assignedTo.slice():[];
+  if(assigned.indexOf(match)===-1)assigned.push(match);
+  const payload=Object.assign({},lesson,{
+    id:id,order:lesson.order||1,published:true,
+    title:lesson.title||'Lesson 1: Academic Vocabulary and Present Perfect Active',
+    description:lesson.description||'Academic vocabulary practice with present perfect active.',
+    icon:lesson.icon||'📘',customUrl:lesson.customUrl||'lesson_gaziz.html',
+    stages:lesson.stages&&lesson.stages.length?lesson.stages:ALL_STAGES,
+    assignedTo:assigned,homework:true,homeworkDue:'Before our next class',
+    maxScore:lesson.maxScore||100
+  });
+  fbDb.ref('curriculum/'+id).set(payload).then(function(){showToast('Gaziz Lesson 1 homework assigned')}).catch(function(err){alert('Could not assign homework: '+err.message)});
+}
 function togglePublish(id){
   const l=curriculum[id]||{};
   const published=l.published!==false;

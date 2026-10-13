@@ -237,9 +237,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
       </div>
       <div class="fc-modal-tools">
         <button class="tool" onclick="fcSpeak()">🔊 Listen</button>
-        <button class="tool" onclick="fcEditImage()">🖼️ Custom image</button>
         <button class="tool" onclick="fcRevealTrans()">👁️ Reveal</button>
-        <button class="tool" onclick="fcClearImage()">🗑️ Remove</button>
       </div>
       <div class="fc-modal-nav">
         <button onclick="fcPrev()">← Previous</button>
@@ -268,6 +266,8 @@ function initFirebase(){
     fbApp=firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
     const code=getSessionCode();
+    const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
+    if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(snap){customImages=snap.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderFCModal();});
     if(!code){updateSyncUI('nocode');return;}
     sessionRef=fbDb.ref('sessions/'+code);
     activityRef=sessionRef.child('activity');
@@ -410,7 +410,7 @@ const CURRICULUM = [
               {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
               {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
               {id:3,label:'Reading',sub:'Passage',icon:'📖'},
-              {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
+              {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
               {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
               {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
               {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
@@ -609,16 +609,6 @@ function fcMarkKnow(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v
 function fcMarkAgain(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=false;sPop();updateS1Stats();saveState();broadcastAction('practise',v.en);fcNext()}
 function fcNext(){if(s1CurrentIdx<s1VisibleList.length-1){s1CurrentIdx++;renderFCModal()}else{closeFCModal();renderFlashcards()}}
 function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
-function fcEditImage(){
-  const v=s1VisibleList[s1CurrentIdx];if(!v)return;
-  const current=customImages[v.en]||'';
-  const url=prompt('Paste an image URL for "'+v.en+'":',current);
-  if(url===null)return;
-  if(url.trim()==='')delete customImages[v.en];else customImages[v.en]=url.trim();
-  saveState();renderFCModal();renderFlashcards();sPop();
-}
-function fcClearImage(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;delete customImages[v.en];saveState();renderFCModal();renderFlashcards()}
-
 /* ========== STAGE 2 ========== */
 const MATCH_DATA=[
   {word:'blizzard',meaning:'снежная буря'},{word:'drought',meaning:'засуха'},
@@ -749,21 +739,21 @@ function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[k
 
 /* ========== STAGE 4 ========== */
 const CLOZE=[
-  {text:'A ___ is a long snowstorm with very strong winds.',options:['blizzard','drought','flood'],correct:0},
-  {text:'A ___ is a long period with very little or no rain.',options:['wildfire','drought','tsunami'],correct:1},
-  {text:'An ___ happens when the Earth\'s crust moves suddenly.',options:['earthquake','eruption','avalanche'],correct:0},
-  {text:'___ happen when heavy rain makes rivers overflow.',options:['Droughts','Floods','Tornadoes'],correct:1},
-  {text:'A ___ is not just a normal hot summer day.',options:['heat wave','blizzard','thunderstorm'],correct:0},
-  {text:'___ are giant swirling storms with winds up to 160 mph.',options:['Tsunamis','Wildfires','Hurricanes'],correct:2},
-  {text:'A ___ is a destructive column of air that spins very fast.',options:['tsunami','tornado','hail'],correct:1},
-  {text:'A ___ is a giant ocean wave caused by an underwater earthquake.',options:['tornado','tsunami','flood'],correct:1}
+  {text:'Which detail best distinguishes a blizzard from an ordinary snow shower?',options:['Very strong winds during a long snowstorm','A long period without rain','Heavy rain overflowing rivers'],correct:0},
+  {text:'What can a reader infer from the word “drought”?',options:['Water is scarce because rain has been limited','The ground is covered by floodwater','A storm is spinning over the ocean'],correct:0},
+  {text:'According to the text, what causes an earthquake?',options:['Sudden movement of the Earth’s crust','A long period of high temperature','Strong winds over dry land'],correct:0},
+  {text:'Which phrase gives the clearest clue to the meaning of “flood”?',options:['Rivers overflow after heavy rain','Rain stops for a long period','A column of air spins quickly'],correct:0},
+  {text:'Why is a heat wave more than “a normal hot summer day”?',options:['Temperatures rise above what is usual','It always brings heavy snow','It only happens near rivers'],correct:0},
+  {text:'Which context clue describes a hurricane?',options:['A giant swirling storm with powerful winds','A sudden movement beneath the Earth','A large ocean wave after an earthquake'],correct:0},
+  {text:'What does “destructive column of air” help explain?',options:['The damaging force and shape of a tornado','The cause of a drought','The size of a tsunami'],correct:0},
+  {text:'What cause-and-effect relationship is stated about tsunamis?',options:['An underwater earthquake can cause a giant ocean wave','A heat wave causes rivers to overflow','A blizzard causes the crust to move'],correct:0}
 ];
 let s4Score=0;
 function renderStage4(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 4 — Cloze Reading</div><h2>✏️ Fill in the Gaps</h2>'+
-  '<div class="lead">Choose the correct word.<span class="ru">Выберите подходящее слово.</span></div>'+
+  v.innerHTML='<div class="eyebrow">Stage 4 — Close Reading</div><h2>🔎 Read Closely</h2>'+
+  '<div class="lead">Use context clues and details from the passage to choose the best answer.<span class="ru">Используйте контекст и детали текста.</span></div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
   '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s4live" style="color:var(--accent);font-size:18px;">0</span> / '+CLOZE.length+'</div>'+
   '<button class="btn ghost small" onclick="resetStage4()">↻ Reset</button></div><div id="clozeBody"></div>';
@@ -773,15 +763,15 @@ function renderCloze(){
   const body=document.getElementById('clozeBody');body.innerHTML='';
   CLOZE.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.text).replace('___','<b style="color:var(--accent);">___</b>')+'</div>';
+    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.text)+'</div>';
     const opts=document.createElement('div');opts.className='q-opts';
     item.options.forEach(function(opt,j){
       const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
       b.onclick=function(){
         if(b.disabled)return;
         opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
-        if(j===item.correct){b.classList.add('correct');s4Score++;sCorrect();broadcastAction('cloze_correct',item.options[item.correct])}
-        else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');sWrong();broadcastAction('cloze_wrong',opt+' ≠ '+item.options[item.correct])}
+        if(j===item.correct){b.classList.add('correct');s4Score++;sCorrect();broadcastAction('close_reading_correct',item.options[item.correct])}
+        else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');sWrong();broadcastAction('close_reading_wrong',opt+' ≠ '+item.options[item.correct])}
         document.getElementById('s4live').textContent=s4Score;
         if(s4Score===CLOZE.length){setScore(4,10);markDone(4)}else{setScore(4,Math.floor(s4Score*10/CLOZE.length))}
       };

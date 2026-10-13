@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gaziz — IELTS Studio</title>
+<title>Gaziz — Academic Vocabulary & Present Perfect</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -32,6 +32,7 @@ body{display:flex;flex-direction:column}
 .session-input{display:flex;align-items:center;gap:6px;background:var(--bg);padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700}
 .session-input input{border:none;background:transparent;font-family:'Fira Code','Courier New',monospace;font-size:13px;font-weight:800;color:var(--accent);outline:none;width:90px;text-transform:uppercase;letter-spacing:.5px}
 .session-input input::placeholder{color:var(--ink-soft);font-weight:600;text-transform:none;letter-spacing:0}
+.session-input .join-code{border:0;border-radius:14px;background:var(--accent);color:#fff;font-size:11px;font-family:inherit;font-weight:700;padding:5px 9px;cursor:pointer}
 .session-input .lbl{color:var(--ink-soft);font-weight:600}
 .layout{flex:1;display:flex;overflow:hidden}
 .sidebar{width:260px;background:var(--panel);border-right:1px solid var(--border);padding:18px 14px;overflow-y:auto;flex-shrink:0}
@@ -188,7 +189,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 @media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
-@media (max-width:640px){.topbar{padding:0 14px;gap:8px}.logo .text{display:none}.session-input{display:none}.sidebar{position:fixed;left:-240px;top:60px;height:calc(100vh - 60px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}}
+@media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo{order:0}.logo .text{display:none}.session-input{display:flex;order:1;flex:1 1 145px;min-width:145px;max-width:220px;justify-content:space-between;padding:6px 10px}.session-input input{width:95px;font-size:14px;min-height:30px}.topbar>#scorePill,.topbar>#streakPill{display:none}.topbar>#syncPill{order:2;padding:5px 9px;font-size:12px}.topbar>#timerPill{order:3;padding:5px 9px;font-size:12px}.spacer{display:none}.icon-btn{width:34px;height:34px}.layout{min-height:0}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}}
 ::selection{background:var(--accent);color:#fff}
 </style>
 </head>
@@ -197,12 +198,14 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 <div class="topbar">
   <div class="logo"><div class="mark">🎓</div><span class="text">IELTS Studio</span></div>
   <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
-  <div class="session-input"><span class="lbl">Code:</span>
-    <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" onchange="changeSessionCode()"></div>
-  <div class="stat-pill">⏱ <span class="val" id="timerDisplay">00:00</span></div>
-  <div class="stat-pill">🏆 <span class="val" id="scoreDisplay">0</span><span style="opacity:.6;"> / 80</span></div>
-  <div class="stat-pill"><span id="streakDisplay" class="val green">0</span> 🔥</div>
+  <div class="session-input"><label class="lbl" for="sessionCodeInput">Code:</label>
+    <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" autocapitalize="characters" autocomplete="off" inputmode="text" onkeydown="if(event.key==='Enter')changeSessionCode()">
+    <button type="button" class="join-code" onclick="changeSessionCode()">Open</button></div>
+  <div class="stat-pill" id="timerPill">⏱ <span class="val" id="timerDisplay">00:00</span></div>
+  <div class="stat-pill" id="scorePill">🏆 <span class="val" id="scoreDisplay">0</span><span style="opacity:.6;"> / 100</span></div>
+  <div class="stat-pill" id="streakPill"><span id="streakDisplay" class="val green">0</span> 🔥</div>
   <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html" title="Teacher dashboard" aria-label="Open teacher dashboard">🏫</a>
   <button class="icon-btn" id="soundToggle" onclick="toggleSound()" title="Sound">🔊</button>
   <button class="icon-btn" id="darkToggle" onclick="toggleDark()" title="Dark">🌙</button>
   <button class="icon-btn" onclick="toggleNotes()" title="Notes">📝</button>
@@ -266,6 +269,8 @@ function initFirebase(){
     fbApp=firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
     const code=getSessionCode();
+    const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
+    if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(snap){customImages=snap.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderFCModal();});
     if(!code){updateSyncUI('nocode');return;}
     sessionRef=fbDb.ref('sessions/'+code);
     activityRef=sessionRef.child('activity');
@@ -396,18 +401,18 @@ const CURRICULUM = [
         lessons: [
           {
             id: "lesson_1",
-            title: "Lesson 1: Foundations",
+            title: "Lesson 1: Academic Vocabulary & Present Perfect",
             stages: [
               {id:1,label:'Academic Vocabulary',sub:'Cards',icon:'📚'},
               {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
               {id:3,label:'Academic Reading',sub:'Passage',icon:'📖'},
-              {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
+              {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
               {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
-              {id:6,label:'Past Simple vs Present Perfect',sub:'Grammar',icon:'⏳'},
-              {id:7,label:'Passive Voice',sub:'Grammar',icon:'🔄'},
-              {id:8,label:'Conditionals & Modals',sub:'Grammar',icon:'🔀'},
-              {id:9,label:'Sentence Builder',sub:'IELTS Task 1',icon:'🧩'},
-              {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+              {id:6,label:'Present Perfect Active',sub:'Grammar',icon:'⏳'},
+              {id:7,label:'Academic Word Choice',sub:'Vocabulary',icon:'🧠'},
+              {id:8,label:'Reporting Verbs',sub:'Vocabulary',icon:'🗣️'},
+              {id:9,label:'Sentence Builder',sub:'Present Perfect',icon:'🧩'},
+              {id:10,label:'Vocabulary Challenge',sub:'Review',icon:'⚡'}
             ]
           }
         ]
@@ -446,7 +451,7 @@ function totalScore(){
   return lesson.stages.reduce((sum, s) => sum + (state.scores[lesson.id + "_" + s.id] || 0), 0);
 }
 function saveState(){
-  try{localStorage.setItem('nd_state_gaziz',JSON.stringify({
+  try{localStorage.setItem('nd_state_gaziz_academic_pp_v2',JSON.stringify({
     currentYear: state.currentYear,
     currentMonth: state.currentMonth,
     currentLessonId: state.currentLessonId,
@@ -465,7 +470,7 @@ function saveState(){
 }
 function loadState(){
   try{
-    const raw=localStorage.getItem('nd_state_gaziz');if(!raw)return;
+    const raw=localStorage.getItem('nd_state_gaziz_academic_pp_v2');if(!raw)return;
     const p=JSON.parse(raw);
     if(p.currentYear)state.currentYear=p.currentYear;
     if(p.currentMonth)state.currentMonth=p.currentMonth;
@@ -484,28 +489,28 @@ function broadcastAction(type,detail){
   broadcast('action',{stage:state.currentStage,type:type,detail:detail,score:totalScore(),ts:Date.now()});
 }
 
-/* ========== IELTS VOCAB ========== */
+/* ========== ACADEMIC VOCABULARY ========== */
 const VOCAB=[
-  {en:'significant',ru:'значительный',emoji:'📈',img:''},
-  {en:'increase',ru:'увеличиваться',emoji:'⬆️',img:''},
-  {en:'decrease',ru:'уменьшаться',emoji:'⬇️',img:''},
-  {en:'fluctuate',ru:'колебаться',emoji:'〰️',img:''},
-  {en:'plateau',ru:'достигать плато',emoji:'➡️',img:''},
-  {en:'peak',ru:'достигать пика',emoji:'🔝',img:''},
-  {en:'trough',ru:'низшая точка',emoji:'🔽',img:''},
-  {en:'proportion',ru:'доля, пропорция',emoji:'🥧',img:''},
-  {en:'rate',ru:'показатель, темп',emoji:'📊',img:''},
-  {en:'trend',ru:'тенденция',emoji:'📉',img:''},
-  {en:'data',ru:'данные',emoji:'💾',img:''},
-  {en:'variable',ru:'переменная',emoji:'🔢',img:''},
-  {en:'correlation',ru:'корреляция',emoji:'🔗',img:''},
-  {en:'impact',ru:'влияние',emoji:'💥',img:''},
+  {en:'evidence',ru:'доказательства, данные',emoji:'🔎',img:''},
+  {en:'approach',ru:'подход, метод',emoji:'🧭',img:''},
+  {en:'analyze',ru:'анализировать',emoji:'📊',img:''},
+  {en:'assess',ru:'оценивать',emoji:'⚖️',img:''},
+  {en:'establish',ru:'устанавливать, подтверждать',emoji:'🧱',img:''},
+  {en:'indicate',ru:'указывать, свидетельствовать',emoji:'☝️',img:''},
+  {en:'interpret',ru:'интерпретировать',emoji:'💡',img:''},
+  {en:'contribute',ru:'способствовать, вносить вклад',emoji:'🤝',img:''},
+  {en:'impact',ru:'влияние, воздействие',emoji:'💥',img:''},
+  {en:'significant',ru:'значительный, существенный',emoji:'📈',img:''},
   {en:'factor',ru:'фактор',emoji:'🧩',img:''},
-  {en:'substantial',ru:'существенный',emoji:'🏋️',img:''},
-  {en:'gradual',ru:'постепенный',emoji:'🐢',img:''},
-  {en:'sharp',ru:'резкий',emoji:'⚡',img:''},
-  {en:'slightly',ru:'незначительно',emoji:'🤏',img:''},
-  {en:'dramatically',ru:'драматически',emoji:'🎭',img:''}
+  {en:'perspective',ru:'точка зрения, перспектива',emoji:'👁️',img:''},
+  {en:'require',ru:'требовать',emoji:'📌',img:''},
+  {en:'demonstrate',ru:'демонстрировать, показывать',emoji:'🧪',img:''},
+  {en:'research',ru:'исследование; исследовать',emoji:'📚',img:''},
+  {en:'source',ru:'источник',emoji:'🗂️',img:''},
+  {en:'method',ru:'метод',emoji:'🛠️',img:''},
+  {en:'benefit',ru:'преимущество; приносить пользу',emoji:'🌱',img:''},
+  {en:'challenge',ru:'проблема, сложность',emoji:'🧗',img:''},
+  {en:'available',ru:'доступный, имеющийся',emoji:'📦',img:''}
 ];
 
 /* ========== HELPERS ========== */
@@ -540,7 +545,8 @@ function renderFlashcards(){
   list.forEach(function(v,idx){
     const card=document.createElement('div');card.className='flashcard';
     if(s1Known[v.en]===true)card.classList.add('known');
-    card.innerHTML='<div class="flashcard-img">'+v.emoji+'</div><div class="flashcard-word">'+escapeHtml(v.en)+'</div>';
+    const image=customImages[v.en];
+    card.innerHTML='<div class="flashcard-img">'+(image?'<img src="'+escapeAttr(image)+'" alt="'+escapeAttr(v.en)+'" loading="lazy" onerror="this.parentNode.textContent=\''+v.emoji+'\'">':v.emoji)+'</div><div class="flashcard-word">'+escapeHtml(v.en)+'</div>';
     card.onclick=function(){openFCModal(idx)};
     grid.appendChild(card);
   });
@@ -562,7 +568,8 @@ function openFCModal(idx){s1CurrentIdx=idx;renderFCModal();document.getElementBy
 function closeFCModal(){document.getElementById('fcModal').classList.remove('open')}
 function renderFCModal(){
   const v=s1VisibleList[s1CurrentIdx];if(!v)return;
-  document.getElementById('fcModalImg').innerHTML='<div style="font-size:180px;line-height:1;">'+v.emoji+'</div><div class="label">WORD</div>';
+  const image=customImages[v.en];
+  document.getElementById('fcModalImg').innerHTML=(image?'<img src="'+escapeAttr(image)+'" alt="'+escapeAttr(v.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+v.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+v.emoji+'</div>')+'<div class="label">WORD</div>';
   document.getElementById('fcModalWord').textContent=v.en;
   const tr=document.getElementById('fcModalTrans');tr.textContent=v.ru;tr.classList.add('hidden');
   document.getElementById('fcCounter').textContent=(s1CurrentIdx+1)+' / '+s1VisibleList.length;
@@ -576,11 +583,11 @@ function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
 
 /* ========== STAGE 2 ========== */
 const MATCH_DATA=[
-  {word:'significant',meaning:'значительный'},{word:'increase',meaning:'увеличиваться'},
-  {word:'decrease',meaning:'уменьшаться'},{word:'fluctuate',meaning:'колебаться'},
-  {word:'plateau',meaning:'достигать плато'},{word:'peak',meaning:'достигать пика'},
-  {word:'proportion',meaning:'доля, пропорция'},{word:'trend',meaning:'тенденция'},
-  {word:'variable',meaning:'переменная'},{word:'correlation',meaning:'корреляция'}
+  {word:'evidence',meaning:'доказательства, данные'},{word:'approach',meaning:'подход, метод'},
+  {word:'analyze',meaning:'анализировать'},{word:'assess',meaning:'оценивать'},
+  {word:'establish',meaning:'устанавливать, подтверждать'},{word:'indicate',meaning:'указывать, свидетельствовать'},
+  {word:'interpret',meaning:'интерпретировать'},{word:'contribute',meaning:'способствовать, вносить вклад'},
+  {word:'perspective',meaning:'точка зрения, перспектива'},{word:'demonstrate',meaning:'демонстрировать, показывать'}
 ];
 function renderStage2(){
   const main=document.getElementById('main');
@@ -646,15 +653,15 @@ function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=fals
 /* ========== STAGE 3 ========== */
 function buildPassageHTML(){
   function vw(word){return '<span class="v-word" data-en="'+word+'">'+word+'</span>'}
-  return ['<h3>The Impact of Remote Work</h3>','<p>Over the past decade, remote work '+vw('has increased')+' '+vw('significantly')+' across the globe. Before 2020, only a small '+vw('proportion')+' of employees worked from home regularly. However, the pandemic '+vw('dramatically')+' changed this '+vw('trend')+'. Companies '+vw('have adopted')+' flexible working policies, and many workers '+vw('have moved')+' away from expensive cities.</p>',
-    '<h3>Economic Effects</h3>','<p>Economists '+vw('have studied')+' the '+vw('impact')+' of this shift on urban economies. Early studies '+vw('showed')+' a '+vw('sharp')+' decline in spending in city centres. More recent research '+vw('has revealed')+' a more complex picture. While some businesses '+vw('have struggled')+', others '+vw('have adapted')+' successfully. The overall '+vw('rate')+' of employment '+vw('has remained')+' relatively stable.</p>',
-    '<h3>The Future of Work</h3>','<p>Researchers '+vw('have identified')+' several '+vw('factors')+' that influence the success of remote work. These include internet access, housing costs, and family responsibilities. The '+vw('data')+' '+vw('suggest')+' that remote work is here to stay. However, experts '+vw('have not reached')+' a consensus on its long-term effects. Some argue that it '+vw('has created')+' new opportunities, while others warn of isolation and reduced collaboration.</p>'].join('');
+  return ['<h3>How Researchers Study Learning</h3>','<p>Researchers '+vw('have analyzed')+' how vocabulary practice supports academic reading. They '+vw('have used')+' interviews, classroom observations, and written tasks as sources of '+vw('evidence')+'. One common '+vw('approach')+' '+vw('has combined')+' short word reviews with reading in context. This method '+vw('has helped')+' students notice how an academic word changes meaning across subjects.</p>',
+    '<h3>What the Evidence Shows</h3>','<p>Several studies '+vw('have indicated')+' that learners remember new words when they meet them repeatedly. Researchers '+vw('have assessed')+' vocabulary knowledge before and after a course. Their results '+vw('have demonstrated')+' a '+vw('significant')+' improvement in word recognition. The studies '+vw('have also identified')+' factors such as practice time and prior knowledge. These factors '+vw('have contributed')+' to differences in student progress.</p>',
+    '<h3>Interpreting Results</h3>','<p>Academic readers '+vw('have interpreted')+' findings from more than one '+vw('perspective')+'. A single study '+vw('has not established')+' a universal rule, and its results '+vw('have not explained')+' every learner’s experience. Scholars '+vw('have compared')+' methods and '+vw('have considered')+' each study’s limits. This careful process '+vw('has helped')+' readers assess claims and decide which conclusions the evidence supports.</p>'].join('');
 }
 function renderStage3(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">Stage 3 — Reading</div><h2>📖 Academic Reading</h2>'+
-  '<div class="lead">Click any <span class="v-word" style="cursor:default;">orange</span> word to see its translation.<span class="ru">Нажмите на оранжевое слово — увидите перевод.</span></div>'+
+  '<div class="lead">Click an <span class="v-word" style="cursor:default;">orange</span> academic word to see its translation. Notice the active present perfect verb in each sentence.<span class="ru">Нажмите на оранжевое слово, чтобы увидеть перевод. Обратите внимание на Present Perfect Active.</span></div>'+
   '<div class="card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
   '<button class="btn small" onclick="speakPassage()">🔊 Listen</button>'+
   '<button class="btn ghost small" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>'+
@@ -677,7 +684,7 @@ function bindVocabClicks(){
 function lookupTranslation(en){
   const found=VOCAB.find(function(v){return v.en.toLowerCase()===en.toLowerCase()});
   if(found)return found.ru;
-  const extra={'has increased':'увеличилось','has adopted':'внедрили','have moved':'переехали','have studied':'изучили','showed':'показало','has revealed':'выявило','have struggled':'столкнулись с трудностями','have adapted':'адаптировались','has remained':'остался','have identified':'выявили','suggest':'предполагают','have not reached':'не достигли','has created':'создал','dramatically':'драматически'};
+  const extra={'have analyzed':'проанализировали','have used':'использовали','evidence':'доказательства, данные','approach':'подход, метод','has combined':'объединил','has helped':'помог','have indicated':'указали','have assessed':'оценили','have demonstrated':'продемонстрировали','significant':'значительный','have also identified':'также выявили','have contributed':'способствовали','have interpreted':'интерпретировали','perspective':'точка зрения','has not established':'не установило','have not explained':'не объяснили','have compared':'сравнили','have considered':'рассмотрели','factors':'факторы'};
   return extra[en.toLowerCase()]||'—';
 }
 function updateS3Count(){const el=document.getElementById('s3count');if(el)el.textContent=Object.keys(s3Looked).length}
@@ -686,21 +693,21 @@ function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[k
 
 /* ========== STAGE 4 ========== */
 const CLOZE=[
-  {text:'Over the past decade, remote work ___ significantly.',options:['has increased','increased','increases'],correct:0},
-  {text:'Before 2020, only a small ___ of employees worked from home.',options:['number','proportion','amount'],correct:1},
-  {text:'The pandemic ___ changed this trend.',options:['dramatically','slightly','gradually'],correct:0},
-  {text:'Many workers ___ away from expensive cities.',options:['have moved','moved','move'],correct:0},
-  {text:'Economists ___ the impact of this shift on urban economies.',options:['studied','have studied','study'],correct:1},
-  {text:'Early studies ___ a sharp decline in spending.',options:['showed','have shown','show'],correct:0},
-  {text:'More recent research ___ a more complex picture.',options:['revealed','has revealed','reveals'],correct:1},
-  {text:'The overall ___ of employment has remained stable.',options:['rate','number','level'],correct:0}
+  {text:'In the passage, what counts as evidence?',options:['Interviews, observations, and written tasks','Only researchers’ opinions','A list of academic words'],correct:0},
+  {text:'What does the word “approach” mean in “one common approach”?',options:['A method or way of doing something','A final result','A difficulty'],correct:0},
+  {text:'What has the combined method helped students notice?',options:['How a word’s meaning changes across subjects','That every word has one meaning','That reading can be skipped'],correct:0},
+  {text:'What does “assessed vocabulary knowledge” mean?',options:['Measured or evaluated it','Removed it from the study','Translated it into another language'],correct:0},
+  {text:'In the passage, “significant improvement” means the improvement was…',options:['Important or noticeable','Unrelated to the results','Impossible to measure'],correct:0},
+  {text:'Why have researchers used repeated encounters with words?',options:['Studies indicate learners remember words they meet repeatedly','The passage says one encounter is always enough','It prevents students from reading context'],correct:0},
+  {text:'What does “contributed to differences” suggest about practice time?',options:['It helped cause differences in student progress','It had no connection to progress','It replaced prior knowledge'],correct:0},
+  {text:'Why has one study not established a universal rule?',options:['A single study cannot show that the result applies to everyone','The study collected no evidence','The researchers ignored vocabulary'],correct:0}
 ];
 let s4Score=0;
 function renderStage4(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 4 — Cloze Reading</div><h2>✏️ Fill in the Gaps</h2>'+
-  '<div class="lead">Choose the correct word.<span class="ru">Выберите подходящее слово.</span></div>'+
+  v.innerHTML='<div class="eyebrow">Stage 4 — Close Reading</div><h2>🔎 Read Closely</h2>'+
+  '<div class="lead">Use details and vocabulary from the passage to choose the best answer.<span class="ru">Опирайтесь на детали и лексику текста.</span></div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
   '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s4live" style="color:var(--accent);font-size:18px;">0</span> / '+CLOZE.length+'</div>'+
   '<button class="btn ghost small" onclick="resetStage4()">↻ Reset</button></div><div id="clozeBody"></div>';
@@ -710,15 +717,15 @@ function renderCloze(){
   const body=document.getElementById('clozeBody');body.innerHTML='';
   CLOZE.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.text).replace('___','<b style="color:var(--accent);">___</b>')+'</div>';
+    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.text)+'</div>';
     const opts=document.createElement('div');opts.className='q-opts';
     item.options.forEach(function(opt,j){
       const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
       b.onclick=function(){
         if(b.disabled)return;
         opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
-        if(j===item.correct){b.classList.add('correct');s4Score++;sCorrect();broadcastAction('cloze_correct',item.options[item.correct])}
-        else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');sWrong();broadcastAction('cloze_wrong',opt+' ≠ '+item.options[item.correct])}
+        if(j===item.correct){b.classList.add('correct');s4Score++;sCorrect();broadcastAction('close_reading_correct',item.options[item.correct])}
+        else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');sWrong();broadcastAction('close_reading_wrong',opt+' ≠ '+item.options[item.correct])}
         document.getElementById('s4live').textContent=s4Score;
         if(s4Score===CLOZE.length){setScore(4,10);markDone(4)}else{setScore(4,Math.floor(s4Score*10/CLOZE.length))}
       };
@@ -731,16 +738,16 @@ function resetStage4(){setScore(4,0);state.done[state.currentLessonId+"_4"]=fals
 
 /* ========== STAGE 5 ========== */
 const COMP=[
-  {q:'Remote work has increased significantly over the past decade.',type:'tf',correct:true,exp:'True.'},
-  {q:'Before 2020, most employees worked from home regularly.',type:'tf',correct:false,exp:'False. Only a small proportion did.'},
-  {q:'The pandemic dramatically changed the trend of remote work.',type:'tf',correct:true,exp:'True.'},
-  {q:'Early studies showed a sharp increase in city centre spending.',type:'tf',correct:false,exp:'False. It was a sharp decline.'},
-  {q:'The overall rate of employment has remained relatively stable.',type:'tf',correct:true,exp:'True.'},
-  {q:'Experts have reached a consensus on the long-term effects of remote work.',type:'tf',correct:false,exp:'False. They have not reached a consensus.'},
-  {q:'What has increased significantly over the past decade?',type:'mc',options:['City centre spending','Remote work','Housing costs','Collaboration'],correct:1,exp:'Remote work.'},
-  {q:'What did early studies show?',type:'mc',options:['A sharp decline in city spending','A rise in employment','A decrease in remote work','An increase in collaboration'],correct:0,exp:'A sharp decline in city centre spending.'},
-  {q:'What have researchers identified as factors influencing remote work?',type:'mc',options:['Weather and traffic','Internet access, housing costs, family responsibilities','Government policies only','Company size only'],correct:1,exp:'Internet access, housing costs, and family responsibilities.'},
-  {q:'What is one concern about remote work mentioned in the text?',type:'mc',options:['Increased commuting','Isolation and reduced collaboration','Higher salaries','More office space'],correct:1,exp:'Isolation and reduced collaboration.'}
+  {q:'Researchers have used interviews and classroom observations as evidence.',type:'tf',correct:true,exp:'True. The passage names both sources.'},
+  {q:'The researchers have combined vocabulary review with reading in context.',type:'tf',correct:true,exp:'True. This is the approach described.'},
+  {q:'The studies have found that learners remember words after meeting them once.',type:'tf',correct:false,exp:'False. The passage says learners meet words repeatedly.'},
+  {q:'The results have demonstrated an improvement in word recognition.',type:'tf',correct:true,exp:'True. The studies report a significant improvement.'},
+  {q:'One study has established a universal rule for every learner.',type:'tf',correct:false,exp:'False. The passage says one study has not established a universal rule.'},
+  {q:'Scholars have compared methods and considered study limitations.',type:'tf',correct:true,exp:'True. They have used both steps to interpret findings.'},
+  {q:'Which sources have researchers used?',type:'mc',options:['Interviews, classroom observations, and written tasks','Only online surveys','Only exam scores','News articles and advertisements'],correct:0,exp:'They have used interviews, observations, and written tasks.'},
+  {q:'What has the combined approach helped students do?',type:'mc',options:['Avoid academic reading','Notice words in different contexts','Memorize one translation only','Finish tasks without practice'],correct:1,exp:'It has helped students notice meaning in context.'},
+  {q:'Which factors have contributed to differences in progress?',type:'mc',options:['Practice time and prior knowledge','Classroom colour and seating','Weather and transport','Age and height'],correct:0,exp:'The passage names practice time and prior knowledge.'},
+  {q:'What have scholars done to interpret results carefully?',type:'mc',options:['Compared methods and considered limitations','Ignored the evidence','Used one result as a universal rule','Removed all context'],correct:0,exp:'They have compared methods and considered limitations.'}
 ];
 let s5Score=0;
 function renderStage5(){
@@ -790,34 +797,34 @@ function resetStage5(){setScore(5,0);state.done[state.currentLessonId+"_5"]=fals
 
 /* ========== STAGES 6-8 (Grammar) ========== */
 const GRAMMAR_6=[
-  {prompt:'I ___ (see) him yesterday.',answer:'saw',exp:'Specific past time (yesterday) → Past Simple.'},
-  {prompt:'I ___ (see) him already.',answer:'have seen',exp:'Life experience with "already" → Present Perfect.'},
-  {prompt:'She ___ (work) here since 2010.',answer:'has worked',exp:'Started in past, continues now (since) → Present Perfect.'},
-  {prompt:'She ___ (work) here in 2015.',answer:'worked',exp:'Specific finished time (in 2015) → Past Simple.'},
-  {prompt:'We ___ (be) to Paris three times.',answer:'have been',exp:'Life experience → Present Perfect.'},
-  {prompt:'We ___ (go) to Paris last summer.',answer:'went',exp:'Specific past time (last summer) → Past Simple.'},
-  {prompt:'He ___ (just / finish) his homework.',answer:'has just finished',exp:'Recent news with "just" → Present Perfect.'},
-  {prompt:'He ___ (finish) his homework at 8 pm.',answer:'finished',exp:'Specific past time (at 8 pm) → Past Simple.'},
-  {prompt:'I ___ (never / eat) sushi.',answer:'have never eaten',exp:'Life experience with "never" → Present Perfect.'},
-  {prompt:'I ___ (eat) sushi for the first time in 2020.',answer:'ate',exp:'Specific past time (in 2020) → Past Simple.'}
+  {prompt:'Researchers ___ (analyze) the evidence.',answer:'have analyzed',exp:'Plural subject + have + past participle.'},
+  {prompt:'The student ___ (assess) the source.',answer:'has assessed',exp:'Singular subject + has + past participle.'},
+  {prompt:'Scholars ___ (identify) several important factors.',answer:'have identified',exp:'Have + V3 forms the present perfect.'},
+  {prompt:'The research team ___ (establish) a clear method.',answer:'has established',exp:'The team is treated as one group: has + V3.'},
+  {prompt:'I ___ (read) three academic articles this week.',answer:'have read',exp:'The unfinished time period connects to now.'},
+  {prompt:'He ___ (write) a detailed interpretation.',answer:'has written',exp:'He + has + the irregular past participle written.'},
+  {prompt:'We ___ (compare) two different approaches.',answer:'have compared',exp:'We + have + the regular past participle compared.'},
+  {prompt:'The results ___ (indicate) a significant change.',answer:'have indicated',exp:'Results is plural, so use have indicated.'},
+  {prompt:'She ___ (choose) a reliable source.',answer:'has chosen',exp:'She + has + the irregular past participle chosen.'},
+  {prompt:'They ___ (not / explain) the final result yet.',answer:'have not explained',exp:'Negative form: have not + past participle.'}
 ];
 const GRAMMAR_7=[
-  {prompt:'After every disaster, drinking water ___ (need) by volunteers.',answer:'is needed',exp:'Present Passive.'},
-  {prompt:'Many buildings ___ (destroy) by hurricanes last year.',answer:'were destroyed',exp:'Past Passive.'},
-  {prompt:'The town ___ (cover) with water when the river overflows.',answer:'is covered',exp:'Present Passive.'},
-  {prompt:'The wildfire ___ (cause) by the drought last summer.',answer:'was caused',exp:'Past Passive.'},
-  {prompt:'Tsunamis ___ (cause) by underwater earthquakes.',answer:'are caused',exp:'Present Passive.'},
-  {prompt:'The streets ___ (flood) after heavy rain yesterday.',answer:'were flooded',exp:'Past Passive.'},
-  {prompt:'Many flights ___ (cancel) because of blizzards this winter.',answer:'have been cancelled',exp:'Present Perfect Passive.'},
-  {prompt:'The smoke from wildfires ___ (cause) serious health problems.',answer:'has caused',exp:'Present Perfect.'}
+  {prompt:'The article has ___ (provide) strong evidence.',answer:'provided',exp:'Provide evidence is a useful academic collocation.'},
+  {prompt:'Researchers have ___ (conduct) a detailed analysis.',answer:'conducted',exp:'Conduct an analysis means to carry out a careful study.'},
+  {prompt:'The results have ___ (reveal) a significant pattern.',answer:'revealed',exp:'Reveal a pattern means to make it clear or visible.'},
+  {prompt:'The student has ___ (consider) another perspective.',answer:'considered',exp:'Consider a perspective means to think about a point of view.'},
+  {prompt:'The study has ___ (identify) two key factors.',answer:'identified',exp:'Identify a factor means to recognize an important cause or condition.'},
+  {prompt:'Our class has ___ (discuss) the impact of technology.',answer:'discussed',exp:'Discuss the impact is a common academic phrase.'},
+  {prompt:'The author has ___ (support) the claim with evidence.',answer:'supported',exp:'Support a claim means to give reasons or evidence for it.'},
+  {prompt:'Scholars have ___ (compare) several approaches.',answer:'compared',exp:'Compare approaches means to examine their similarities and differences.'}
 ];
 const GRAMMAR_8=[
-  {prompt:'If I ___ (leave) earlier, I wouldn\'t have been late.',answer:'had left',exp:'Third Conditional.'},
-  {prompt:'You ___ (should / study) harder for the exam.',answer:'should have studied',exp:'Past Modal for regret/criticism.'},
-  {prompt:'If I ___ (win) a million pounds, I would travel the world.',answer:'won',exp:'Second Conditional.'},
-  {prompt:'She ___ (must / forget) to lock the door.',answer:'must have forgotten',exp:'Modal + Perfect Infinitive for certainty about the past.'},
-  {prompt:'I wish I ___ (not / have to) get up early every morning!',answer:'didn\'t have to',exp:'Wish + Past Simple for present regrets.'},
-  {prompt:'If you go to London, the Tate Modern is really worth ___ (see).',answer:'seeing',exp:'Worth + Gerund.'}
+  {prompt:'Researchers ___ already ___ (publish) their findings.',answer:'have already published',exp:'Already often appears between have and the past participle.'},
+  {prompt:'The student ___ never ___ (encounter) this term before.',answer:'has never encountered',exp:'Never comes after have/has and before the past participle.'},
+  {prompt:'___ the class ___ (complete) the vocabulary review yet?',answer:'has the class completed',exp:'Question form: has + subject + past participle.'},
+  {prompt:'We ___ (not / reach) a conclusion so far.',answer:'have not reached',exp:'So far connects an unfinished period to now.'},
+  {prompt:'How many sources ___ you ___ (evaluate) this month?',answer:'have you evaluated',exp:'Question form: have + subject + past participle.'},
+  {prompt:'The author ___ (make) a convincing argument.',answer:'has made',exp:'Make has the irregular past participle made.'}
 ];
 function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead,inputPlaceholder){
   const main=document.getElementById('main');
@@ -866,25 +873,25 @@ function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,li
     card.appendChild(row);card.appendChild(fb);body.appendChild(card);
   });
 }
-function renderStage6(){renderInputExercise(GRAMMAR_6,6,5,7,'⏳ Past Simple vs Present Perfect','Stage 6 — Grammar','Past Simple: V2 (finished time) | Present Perfect: have/has + V3 (experience/result)','<li>Specific time (yesterday, ago, in 2020) → Past Simple</li><li>Experience, result, unfinished time (ever, never, since, for) → Present Perfect</li>','Complete with the correct form.<span class="ru">Впишите правильную форму.</span>','Type the correct form...')}
-function renderStage7(){renderInputExercise(GRAMMAR_7,7,6,8,'🔄 Passive Voice','Stage 7 — Grammar','Present: am/is/are + V3 | Past: was/were + V3 | Perfect: have/has + been + V3','<li>Focus on the action, not the doer.</li><li>Use by + agent if necessary.</li>','Complete with the correct passive form.<span class="ru">Впишите форму пассивного залога.</span>','Type the passive form...')}
-function renderStage8(){renderInputExercise(GRAMMAR_8,8,7,9,'🔀 Conditionals & Modals','Stage 8 — Grammar','If + Past Simple, would + V1 | If + had + V3, would have + V3','<li>2nd Conditional: unreal present.</li><li>3rd Conditional: unreal past.</li><li>Modal + have + V3: past speculation/regret.</li>','Complete with the correct form.<span class="ru">Впишите правильную форму.</span>','Type the correct form...')}
+function renderStage6(){renderInputExercise(GRAMMAR_6,6,5,7,'⏳ Present Perfect: Active Voice','Stage 6 — Grammar','Subject + have/has + past participle (V3)','<li>Use have with I, you, we, they, and plural nouns.</li><li>Use has with he, she, it, and singular nouns.</li><li>Keep the subject as the doer: Researchers have analyzed the evidence.</li>','Complete each academic sentence in the present perfect active.<span class="ru">Дополните предложения в Present Perfect Active.</span>','Type have/has + past participle...')}
+function renderStage7(){renderInputExercise(GRAMMAR_7,7,6,8,'🧠 Academic Word Choice','Stage 7 — Vocabulary','Academic verb + noun collocation','<li>Provide evidence; conduct an analysis.</li><li>Reveal a pattern; consider a perspective.</li><li>Use the past participle after have/has.</li>','Complete the academic collocation with the correct past participle.<span class="ru">Дополните академическое словосочетание причастием.</span>','Type the past participle...')}
+function renderStage8(){renderInputExercise(GRAMMAR_8,8,7,9,'🗣️ Reporting and Research Verbs','Stage 8 — Vocabulary + Grammar','Positive: have/has + V3 | Negative: have/has not + V3 | Question: Have/Has + subject + V3?','<li>Place already, never, and yet around the main verb correctly.</li><li>Use the active voice: The author has made a claim.</li><li>Match have/has to the subject.</li>','Complete each sentence using the present perfect active.<span class="ru">Используйте Present Perfect Active.</span>','Type the complete verb phrase...')}
 function resetPassive(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
 
 /* ========== STAGE 9 ========== */
 const SB=[
-  {prompt:'Build a sentence about the graph.',words:['The','number','of','tourists','increased','significantly'],correct:['The','number','of','tourists','increased','significantly']},
-  {prompt:'Build an overview sentence.',words:['Overall','the','total','number','grew','from','1','million','to','3.5','million'],correct:['Overall','the','total','number','grew','from','1','million','to','3.5','million']},
-  {prompt:'Build a comparison sentence.',words:['Cruise','ship','visitors','rose','sharply','while','island','visitors','remained','stable'],correct:['Cruise','ship','visitors','rose','sharply','while','island','visitors','remained','stable']},
-  {prompt:'Build a sentence using Present Perfect.',words:['The','data','have','shown','a','clear','trend'],correct:['The','data','have','shown','a','clear','trend']},
-  {prompt:'Build a sentence using Past Passive.',words:['The','data','were','collected','in','2017'],correct:['The','data','were','collected','in','2017']},
-  {prompt:'Build a sentence using Present Perfect Passive.',words:['Many','flights','have','been','cancelled','this','winter'],correct:['Many','flights','have','been','cancelled','this','winter']}
+  {prompt:'Build a sentence about academic evidence.',words:['Researchers','have','analyzed','the','evidence'],correct:['Researchers','have','analyzed','the','evidence']},
+  {prompt:'Build a sentence about a research method.',words:['The','team','has','established','a','clear','method'],correct:['The','team','has','established','a','clear','method']},
+  {prompt:'Build a sentence about study results.',words:['Recent','studies','have','demonstrated','a','significant','impact'],correct:['Recent','studies','have','demonstrated','a','significant','impact']},
+  {prompt:'Build a sentence using an academic collocation.',words:['The','author','has','provided','strong','evidence'],correct:['The','author','has','provided','strong','evidence']},
+  {prompt:'Build a negative present perfect active sentence.',words:['Researchers','have','not','reached','a','conclusion','yet'],correct:['Researchers','have','not','reached','a','conclusion','yet']},
+  {prompt:'Build a present perfect active question.',words:['How','many','sources','have','you','evaluated','this','month?'],correct:['How','many','sources','have','you','evaluated','this','month?']}
 ];
 let s9Score=0;
 function renderStage9(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 9 — Sentence Builder</div><h2>🧩 Build IELTS Sentences</h2>'+
+  v.innerHTML='<div class="eyebrow">Stage 9 — Sentence Builder</div><h2>🧩 Build Academic Sentences</h2>'+
   '<div class="lead">Click words in the correct order.<span class="ru">Соберите предложение.</span></div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
   '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s9live" style="color:var(--accent);font-size:18px;">0</span> / '+SB.length+'</div>'+
@@ -949,24 +956,24 @@ function resetStage9(){setScore(9,0);state.done[state.currentLessonId+"_9"]=fals
 
 /* ========== STAGE 10 ========== */
 const SPEED_QUESTIONS=[
-  {q:'I ___ (see) him yesterday.',options:['saw','have seen','see'],correct:0,exp:'Past Simple.'},
-  {q:'She ___ (work) here since 2010.',options:['worked','has worked','works'],correct:1,exp:'Present Perfect.'},
-  {q:'The data ___ (collect) last year.',options:['were collected','have been collected','are collected'],correct:0,exp:'Past Passive.'},
-  {q:'Many flights ___ (cancel) this winter.',options:['were cancelled','have been cancelled','are cancelled'],correct:1,exp:'Present Perfect Passive.'},
-  {q:'If I ___ (leave) earlier, I wouldn\'t have been late.',options:['left','had left','have left'],correct:1,exp:'Third Conditional.'},
-  {q:'You ___ (should / study) harder.',options:['should study','should have studied','should studied'],correct:1,exp:'Past Modal.'},
-  {q:'I ___ (never / eat) sushi.',options:['never ate','have never eaten','never eat'],correct:1,exp:'Present Perfect.'},
-  {q:'We ___ (go) to Paris last summer.',options:['went','have gone','go'],correct:0,exp:'Past Simple.'},
-  {q:'Tsunamis ___ (cause) by underwater earthquakes.',options:['are caused','were caused','is caused'],correct:0,exp:'Present Passive.'},
-  {q:'The smoke ___ (cause) serious health problems.',options:['caused','has caused','cause'],correct:1,exp:'Present Perfect.'},
-  {q:'If I ___ (win) a million pounds, I would travel.',options:['won','had won','win'],correct:0,exp:'Second Conditional.'},
-  {q:'He ___ (just / finish) his homework.',options:['just finished','has just finished','finishes'],correct:1,exp:'Present Perfect.'}
+  {q:'Researchers ___ (analyze) the evidence.',options:['have analyzed','has analyzed','have analyze'],correct:0,exp:'Plural subject + have + V3.'},
+  {q:'The student ___ (assess) the source.',options:['have assessed','has assessed','has assess'],correct:1,exp:'Singular subject + has + V3.'},
+  {q:'The results have ___ a clear pattern.',options:['indicated','indicate','indicating'],correct:0,exp:'Indicate → indicated (past participle).'},
+  {q:'The author has ___ strong evidence.',options:['provide','provided','providing'],correct:1,exp:'Provide evidence is an academic collocation.'},
+  {q:'Scholars have ___ several methods.',options:['compared','compare','comparing'],correct:0,exp:'Compare → compared (past participle).'},
+  {q:'The article has ___ the impact of technology.',options:['discuss','discussed','discussing'],correct:1,exp:'Discussed is the past participle.'},
+  {q:'We ___ already ___ the vocabulary list.',options:['have / reviewed','has / reviewed','have / review'],correct:0,exp:'We + have + already + V3.'},
+  {q:'The researcher ___ never ___ this approach.',options:['have / used','has / used','has / use'],correct:1,exp:'The researcher + has + never + V3.'},
+  {q:'They ___ not ___ a conclusion yet.',options:['have / reached','has / reached','have / reach'],correct:0,exp:'They + have not + V3 + yet.'},
+  {q:'Which phrase means to carefully study information?',options:['analyze evidence','make a perspective','conduct a factor'],correct:0,exp:'Analyze evidence means to examine information carefully.'},
+  {q:'A point of view is a ___.',options:['source','perspective','method'],correct:1,exp:'Perspective means a point of view.'},
+  {q:'Researchers have ___ key factors in student progress.',options:['identified','identify','identifying'],correct:0,exp:'Identify → identified (past participle).'}
 ];
 let s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};
 function renderStage10(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 10 — Speed Round</div><h2>⚡ Challenge Yourself!</h2>'+
+  v.innerHTML='<div class="eyebrow">Stage 10 — Vocabulary Review</div><h2>⚡ Academic Word Challenge</h2>'+
   '<div class="lead">60 seconds. Streak of 3+ gives bonus!<span class="ru">60 секунд. Бонус за серию!</span></div><div id="speedRoot"></div>';
   main.appendChild(v);main.appendChild(stageFooter(9,null,'<button class="btn ghost small" onclick="resetSpeed()">↻ Restart</button>'));
   renderSpeedIntro();
@@ -1153,6 +1160,8 @@ function showToast(text){
 }
 /* INIT */
 loadState();
+const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
+if(lessonFromUrl){state.currentLessonId=lessonFromUrl;localStorage.setItem('nd_current_lesson',lessonFromUrl);}
 const savedCode=getSessionCode();
 if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
 renderSidebar();renderStage();startTimer();updateHUD();
