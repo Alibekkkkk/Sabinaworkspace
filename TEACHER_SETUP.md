@@ -5,12 +5,13 @@ The site files in this folder share the existing Firebase project, `sabina-s-wor
 ## Turn on teacher sign-in
 
 1. In Firebase Console, open the `sabina-s-workspace` project.
-2. Go to **Authentication → Sign-in method**. Enable **Google** and **Email/Password**. The dashboard accepts either method for these three addresses:
+2. Open **Authentication** and click **Get started** if Firebase offers it. Then go to **Authentication → Sign-in method** and enable **Google** and **Email/Password**. The dashboard accepts either method for these three addresses:
    - `alibek.alpysbayev@gmail.com`
    - `alibek.alpysbayev@nu.edu.kz`
    - `aalpysbayev2@gmail.com`
 3. Under **Authentication → Users**, make sure those accounts exist. If an account is Google-only, use **Continue with Google** on the dashboard. For an email/password account, use the email and password form.
-4. Go to **Realtime Database → Rules**, replace the current rules with the contents of [`database.rules.json`](database.rules.json), and click **Publish**. The rules let students continue reading the curriculum and using code-based lessons, while only those three authenticated teacher emails can edit curriculum or existing student records. New student codes can still be registered by the portal.
+4. Under **Authentication → Settings → Authorized domains**, ensure `alibekkkkk.github.io` is listed. Add it if needed so Google sign-in works on the published site.
+5. Go to **Realtime Database → Rules**, replace the current rules with the contents of [`database.rules.json`](database.rules.json), and click **Publish**. The rules let students continue reading the curriculum and using code-based lessons, while only those three authenticated teacher emails can edit curriculum or existing student records. New student codes can still be registered by the portal.
 
 ## Put the changes on the website
 

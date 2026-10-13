@@ -9,13 +9,13 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
-:root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--success:#4caf7d;--warn:#ffb74d;--error:#ef5468;--border:#2a3346;}
+:root{--bg:#f5f3ed;--panel:#fffefa;--panel-2:#edf4ed;--ink:#18302b;--ink-soft:#677771;--primary:#2c6653;--accent:#2c6653;--success:#43845a;--warn:#916313;--error:#b33e37;--border:#dce1d8;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px}
 .wrap{max-width:1400px;margin:0 auto}
 .header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--panel);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);flex-wrap:wrap;gap:14px}
 .header-left{display:flex;align-items:center;gap:14px}
-.header-left .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#d94a15);display:flex;align-items:center;justify-content:center;font-size:22px}
+.header-left .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#1f5141);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}
 .header-left h1{font-size:24px}
 .header-left .sub{font-size:14px;color:var(--ink-soft);margin-top:2px}
 .header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -27,7 +27,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .btn{padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
 .btn:hover{border-color:var(--accent);color:var(--accent)}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.primary:hover{background:#d94a15}
+.btn.primary:hover{background:#1f5141}
 .btn.danger:hover{border-color:var(--error);color:var(--error)}
 .btn.small{padding:6px 10px;font-size:13px}
 .tabs{display:flex;gap:6px;margin-bottom:18px;padding:6px;background:var(--panel);border-radius:14px;border:1px solid var(--border)}
@@ -82,7 +82,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .big-stat .lbl{color:var(--ink-soft);font-size:15px;font-weight:600}
 .stage-vis{display:flex;gap:4px;margin-top:16px;flex-wrap:wrap}
 .stage-chip{padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:var(--panel-2);color:var(--ink-soft);border:1px solid var(--border);transition:all .3s}
-.stage-chip.current{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;border-color:var(--accent);transform:scale(1.05);box-shadow:0 4px 12px rgba(255,138,91,.4)}
+.stage-chip.current{background:linear-gradient(135deg,var(--accent),#1f5141);color:#fff;border-color:var(--accent);transform:scale(1.05);box-shadow:0 4px 12px rgba(44,102,83,.24)}
 .stage-chip.done{background:rgba(76,175,125,.2);color:var(--success);border-color:var(--success)}
 .stage-chip.done.current{background:linear-gradient(135deg,var(--success),#2e7d5b);color:#fff}
 .info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:16px}
@@ -111,7 +111,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .control-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
 .ctrl-btn{padding:12px 10px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
 .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
-.ctrl-btn.current{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;border-color:var(--accent)}
+.ctrl-btn.current{background:linear-gradient(135deg,var(--accent),#1f5141);color:#fff;border-color:var(--accent)}
 .ctrl-btn .num{font-size:11px;opacity:.65;display:block;margin-bottom:2px;letter-spacing:1px}
 .overview-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
 .overview-stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;text-align:center}
@@ -145,9 +145,9 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .lesson-tile .badge{position:absolute;top:14px;right:14px;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:800;letter-spacing:.5px}
 .lesson-tile .badge.published{background:rgba(76,175,125,.2);color:var(--success)}
 .lesson-tile .badge.draft{background:rgba(255,183,77,.2);color:var(--warn)}
-.modal-backdrop{position:fixed;inset:0;background:rgba(15,20,32,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.modal-backdrop{position:fixed;inset:0;background:rgba(24,48,43,.48);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:560px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid var(--border);animation:modalIn .25s ease;margin:auto}
+.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:560px;width:100%;box-shadow:0 20px 50px rgba(24,48,43,.18);border:1px solid var(--border);animation:modalIn .25s ease;margin:auto}
 @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal h3{font-size:24px;margin-bottom:6px;color:var(--ink)}
 .modal .sub{font-size:15px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5}
@@ -156,6 +156,17 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .modal input:focus,.modal textarea:focus{border-color:var(--accent)}
 .modal textarea{font-family:inherit;font-weight:500;resize:vertical;min-height:70px;font-size:15px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+#teacherLogin{max-width:520px!important;margin:8vh auto!important;padding:34px!important;background:var(--panel)!important;border:1px solid var(--border)!important;border-radius:18px!important;box-shadow:0 18px 50px rgba(24,48,43,.1)}
+#teacherLogin h1{font-size:34px;line-height:1.1;color:var(--ink)}
+#teacherLogin p{font-size:16px;line-height:1.5}
+#teacherLogin label{display:block;color:var(--ink-soft);font-size:14px;font-weight:700;margin:14px 0 6px}
+#teacherLogin input{display:block;width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--ink);font:16px 'EB Garamond','Times New Roman',serif}
+#teacherLogin input:focus{outline:2px solid rgba(44,102,83,.25);border-color:var(--accent)}
+#teacherLogin form{display:flex;flex-direction:column}
+#teacherLogin #teacherAuthError{color:var(--error);font-size:14px;min-height:20px;margin:10px 0}
+#teacherLogin .btn.primary{min-height:44px;background:var(--accent);border-color:var(--accent);color:#fff}
+#teacherLogin .btn:not(.primary){min-height:44px;background:var(--panel-2);border-color:var(--border);color:var(--ink)}
+@media(max-width:600px){body{padding:12px}#teacherLogin{margin:7vh auto!important;padding:24px!important}.header{padding:16px}.header-actions{width:100%}.lesson-tile .tile-actions{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -165,10 +176,12 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
   <form onsubmit="teacherSignIn(event)">
     <label for="teacherEmail">Email</label><input id="teacherEmail" type="email" autocomplete="username" required>
     <label for="teacherPassword">Password</label><input id="teacherPassword" type="password" autocomplete="current-password" required>
-    <p id="teacherAuthError" style="color:var(--error);margin:10px 0;min-height:20px;"></p>
+    <p id="teacherAuthError" role="alert" style="color:var(--error);margin:10px 0;min-height:20px;"></p>
     <button class="btn primary" type="submit" style="width:100%;">Sign in</button>
   </form>
   <button class="btn" type="button" onclick="teacherGoogleSignIn()" style="width:100%;margin-top:10px;">Continue with Google</button>
+  <p style="font-size:13px;color:var(--ink-soft);margin-top:14px;">If sign-in reports that authentication is not configured, enable Google and Email/Password in this Firebase project’s Authentication settings.</p>
+  <a href="https://console.firebase.google.com/project/sabina-s-workspace/authentication/providers" target="_blank" rel="noopener" style="display:inline-block;color:var(--primary);font-size:14px;margin-top:4px;">Open Firebase Authentication settings</a>
 </div>
 <div class="wrap" style="display:none;">
   <div class="header">
@@ -432,8 +445,20 @@ function initFirebase(){
       document.getElementById('teacherLogin').style.display='none';
       document.querySelector('.wrap').style.display='block';
       initTeacherData();
+    },function(err){
+      console.error('Firebase Authentication error:',err);
+      document.getElementById('teacherAuthError').textContent=teacherAuthErrorMessage(err);
     });
-  }catch(e){console.error(e);document.getElementById('teacherAuthError').textContent=e.message||'Firebase setup error.';}
+  }catch(e){console.error(e);document.getElementById('teacherAuthError').textContent=teacherAuthErrorMessage(e);}
+}
+function teacherAuthErrorMessage(err){
+  const code=(err&&err.code)||'';
+  if(code.indexOf('configuration-not-found')!==-1||code.indexOf('operation-not-allowed')!==-1){
+    return 'Firebase Authentication is not configured for this project yet. Open Authentication settings, click Get started if shown, enable Google and Email/Password, then Save and reload this page.';
+  }
+  if(code.indexOf('unauthorized-domain')!==-1)return 'This website domain is not authorized for Firebase sign-in. Add alibekkkkk.github.io under Authentication → Settings → Authorized domains.';
+  if(code.indexOf('invalid-credential')!==-1||code.indexOf('wrong-password')!==-1)return 'The email/password sign-in failed. Check the password, or use Continue with Google for a Google account.';
+  return (err&&err.message)||'Sign-in failed. Check Firebase Authentication settings and try again.';
 }
 function teacherSignIn(event){
   event.preventDefault();
@@ -441,12 +466,12 @@ function teacherSignIn(event){
   const error=document.getElementById('teacherAuthError');
   if(TEACHER_EMAILS.indexOf(email)===-1){error.textContent='This email is not on the teacher allowlist.';return}
   error.textContent='';
-  fbAuth.signInWithEmailAndPassword(email,document.getElementById('teacherPassword').value).catch(function(err){error.textContent=err.message||'Sign-in failed.';});
+  fbAuth.signInWithEmailAndPassword(email,document.getElementById('teacherPassword').value).catch(function(err){error.textContent=teacherAuthErrorMessage(err);});
 }
 function teacherSignOut(){if(fbAuth)fbAuth.signOut()}
 function teacherGoogleSignIn(){
   const provider=new firebase.auth.GoogleAuthProvider();
-  fbAuth.signInWithPopup(provider).catch(function(err){document.getElementById('teacherAuthError').textContent=err.message||'Google sign-in failed.';});
+  fbAuth.signInWithPopup(provider).catch(function(err){document.getElementById('teacherAuthError').textContent=teacherAuthErrorMessage(err);});
 }
 function initTeacherData(){
   if(!teacherUid)return;
