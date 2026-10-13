@@ -29,6 +29,12 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .btn.primary:hover{background:#d94a15}
 .btn.danger:hover{border-color:var(--error);color:var(--error)}
 .btn.small{padding:6px 10px;font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:18px;padding:6px;background:var(--panel);border-radius:14px;border:1px solid var(--border)}
+.tab{flex:1;padding:12px 16px;background:transparent;border:none;border-radius:10px;color:var(--ink-soft);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.tab:hover{color:var(--accent)}
+.tab.active{background:var(--panel-2);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.tab-view{display:none}
+.tab-view.active{display:block}
 .layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
 @media(max-width:960px){.layout{grid-template-columns:1fr}}
 .students-panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);overflow:hidden;position:sticky;top:20px;max-height:calc(100vh - 40px);display:flex;flex-direction:column}
@@ -55,33 +61,13 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .student-item .stats{display:flex;gap:10px;font-size:13px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap}
 .student-item .stats b{color:var(--accent)}
 .students-footer{padding:12px;border-top:1px solid var(--border)}
-.students-footer .btn{width:100%;justify-content:center}
+.students-footer .btn{width:100%;justify-content:center;text-align:center}
 .main-area{min-width:0}
 .selected-header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap}
 .selected-header .info h2{font-size:24px;color:var(--ink);margin-bottom:4px}
 .selected-header .info .meta{font-size:14px;color:var(--ink-soft);font-family:'Fira Code','Courier New',monospace;letter-spacing:1px}
 .selected-header .info .meta b{color:var(--accent)}
 .selected-actions{display:flex;gap:8px;flex-wrap:wrap}
-.overview-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
-.overview-stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;text-align:center}
-.overview-stat .num{font-size:36px;font-weight:800;color:var(--accent);line-height:1}
-.overview-stat .lbl{font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:8px}
-.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.overview-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all .15s;position:relative}
-.overview-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.overview-card .name{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:4px}
-.overview-card .code{font-size:13px;color:var(--ink-soft);font-family:'Fira Code','Courier New',monospace;letter-spacing:1.5px;font-weight:700;margin-bottom:14px}
-.overview-card .big-num{font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px}
-.overview-card .big-lbl{font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.overview-card .mini-stats{display:flex;gap:12px;font-size:13px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border)}
-.overview-card .status-pill{position:absolute;top:16px;right:16px;width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}
-.overview-card .status-pill.live{background:var(--success);animation:pulse 1.5s infinite}
-.overview-card .status-pill.stale{background:var(--warn)}
-.overview-card .status-pill.off{background:var(--error)}
-.empty-state{text-align:center;padding:80px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border)}
-.empty-state .icon{font-size:64px;margin-bottom:16px;opacity:.5}
-.empty-state h3{font-size:24px;color:var(--ink);margin-bottom:10px}
-.empty-state p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
 @media(max-width:1100px){.grid-3{grid-template-columns:1fr 1fr}}
@@ -126,15 +112,49 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
 .ctrl-btn.current{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;border-color:var(--accent)}
 .ctrl-btn .num{font-size:11px;opacity:.65;display:block;margin-bottom:2px;letter-spacing:1px}
-.modal-backdrop{position:fixed;inset:0;background:rgba(15,20,32,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.overview-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+.overview-stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;text-align:center}
+.overview-stat .num{font-size:36px;font-weight:800;color:var(--accent);line-height:1}
+.overview-stat .lbl{font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:8px}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.overview-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all .15s;position:relative}
+.overview-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.overview-card .name{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.overview-card .code{font-size:13px;color:var(--ink-soft);font-family:'Fira Code','Courier New',monospace;letter-spacing:1.5px;font-weight:700;margin-bottom:14px}
+.overview-card .big-num{font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px}
+.overview-card .big-lbl{font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.overview-card .mini-stats{display:flex;gap:12px;font-size:13px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border)}
+.overview-card .status-pill{position:absolute;top:16px;right:16px;width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}
+.overview-card .status-pill.live{background:var(--success);animation:pulse 1.5s infinite}
+.overview-card .status-pill.stale{background:var(--warn)}
+.overview-card .status-pill.off{background:var(--error)}
+.empty-state{text-align:center;padding:80px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border)}
+.empty-state .icon{font-size:64px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-size:24px;color:var(--ink);margin-bottom:10px}
+.empty-state p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}
+/* Lesson Manager */
+.lessons-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.lesson-tile{background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:all .15s}
+.lesson-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.lesson-tile .icon{font-size:38px;margin-bottom:10px}
+.lesson-tile .title{font-size:19px;font-weight:800;margin-bottom:6px;color:var(--ink)}
+.lesson-tile .desc{font-size:14px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;min-height:42px}
+.lesson-tile .meta{font-size:12px;color:var(--ink-soft);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:12px;padding-top:10px;border-top:1px solid var(--border)}
+.lesson-tile .tile-actions{display:flex;gap:6px}
+.lesson-tile .tile-actions .btn{flex:1;padding:8px;font-size:13px}
+.lesson-tile .badge{position:absolute;top:14px;right:14px;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:800;letter-spacing:.5px}
+.lesson-tile .badge.published{background:rgba(76,175,125,.2);color:var(--success)}
+.lesson-tile .badge.draft{background:rgba(255,183,77,.2);color:var(--warn)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,20,32,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:480px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid var(--border);animation:modalIn .25s ease}
+.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:520px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid var(--border);animation:modalIn .25s ease;margin:auto}
 @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal h3{font-size:24px;margin-bottom:6px;color:var(--ink)}
 .modal .sub{font-size:15px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5}
 .modal label{display:block;font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:6px}
-.modal input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:'Fira Code','Courier New',monospace;font-size:16px;font-weight:700;outline:none;margin-bottom:16px}
-.modal input:focus{border-color:var(--accent)}
+.modal input,.modal textarea{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px;font-weight:700;outline:none;margin-bottom:16px}
+.modal input:focus,.modal textarea:focus{border-color:var(--accent)}
+.modal textarea{font-family:inherit;font-weight:500;resize:vertical;min-height:70px;font-size:15px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
 </style>
 </head>
@@ -145,98 +165,121 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
       <div class="mark">📊</div>
       <div>
         <h1>Teacher Dashboard</h1>
-        <div class="sub">Manage and monitor all your students in one place</div>
+        <div class="sub">Manage students and lessons — everything syncs live</div>
       </div>
     </div>
     <div class="header-actions">
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
-      <button class="btn" onclick="window.open('index.html','_blank')">👁️ Student View</button>
+      <button class="btn" onclick="window.open('portal.html','_blank')">🎓 Student Portal</button>
       <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
-      <button class="btn" onclick="openLessonManager()">📚 Manage Lessons</button>
     </div>
   </div>
 
-  <div class="layout">
-    <aside class="students-panel">
-      <div class="students-header">
-        <h2><span>Students</span><span class="count" id="studentsCount">0</span></h2>
-        <input type="text" class="students-search" id="studentSearch" placeholder="Search by name or code…" oninput="renderStudentsList()">
-      </div>
-      <div class="students-list" id="studentsList"></div>
-      <div class="students-footer">
-        <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
-      </div>
-    </aside>
+  <div class="tabs">
+    <button class="tab active" id="tabStudents" onclick="switchMainTab('students')">👥 Students</button>
+    <button class="tab" id="tabLessons" onclick="switchMainTab('lessons')">📚 Lessons</button>
+  </div>
 
-    <main class="main-area">
-      <div id="selectedView" style="display:none;">
-        <div class="selected-header">
-          <div class="info">
-            <h2 id="selectedName">Student</h2>
-            <div class="meta">Code: <b id="selectedCode">—</b> · Added: <span id="selectedAdded">—</span></div>
-          </div>
-          <div class="selected-actions">
-            <button class="btn small" onclick="copyLessonLink()">🔗 Copy lesson link</button>
-            <button class="btn small" onclick="renameStudent()">✏️ Rename</button>
-            <button class="btn small danger" onclick="deleteStudent()">🗑 Delete</button>
-          </div>
+  <!-- ========== STUDENTS TAB ========== -->
+  <div class="tab-view active" id="viewStudents">
+    <div class="layout">
+      <aside class="students-panel">
+        <div class="students-header">
+          <h2><span>Students</span><span class="count" id="studentsCount">0</span></h2>
+          <input type="text" class="students-search" id="studentSearch" placeholder="Search by name or code…" oninput="renderStudentsList()">
         </div>
+        <div class="students-list" id="studentsList"></div>
+        <div class="students-footer">
+          <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
+        </div>
+      </aside>
 
-        <div class="grid-3">
-          <div class="card">
-            <h2>Live Score <span class="live-tag" id="liveTag">OFFLINE</span></h2>
-            <div class="big-stat">
-              <div class="num" id="scoreBig">0</div>
-              <div class="lbl">Total points (out of 80)</div>
+      <main class="main-area">
+        <div id="selectedView" style="display:none;">
+          <div class="selected-header">
+            <div class="info">
+              <h2 id="selectedName">Student</h2>
+              <div class="meta">Code: <b id="selectedCode">—</b> · Added: <span id="selectedAdded">—</span></div>
+            </div>
+            <div class="selected-actions">
+              <button class="btn small" onclick="copyLessonLink()">🔗 Copy lesson link</button>
+              <button class="btn small" onclick="renameStudent()">✏️ Rename</button>
+              <button class="btn small danger" onclick="deleteStudent()">🗑 Delete</button>
             </div>
           </div>
-          <div class="card">
-            <h2>Session Info</h2>
-            <div class="info-row"><span class="k">Current stage</span><span class="v" id="currentStage">—</span></div>
-            <div class="info-row"><span class="k">Elapsed</span><span class="v" id="elapsedTime">00:00</span></div>
-            <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 10</span></div>
-            <div class="info-row"><span class="k">Streak</span><span class="v" id="streakVal">0 🔥</span></div>
-            <div class="info-row"><span class="k">Last activity</span><span class="v" id="lastActivity">—</span></div>
+
+          <div class="grid-3">
+            <div class="card">
+              <h2>Live Score <span class="live-tag" id="liveTag">OFFLINE</span></h2>
+              <div class="big-stat">
+                <div class="num" id="scoreBig">0</div>
+                <div class="lbl">Total points</div>
+              </div>
+            </div>
+            <div class="card">
+              <h2>Session Info</h2>
+              <div class="info-row"><span class="k">Current stage</span><span class="v" id="currentStage">—</span></div>
+              <div class="info-row"><span class="k">Elapsed</span><span class="v" id="elapsedTime">00:00</span></div>
+              <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 10</span></div>
+              <div class="info-row"><span class="k">Streak</span><span class="v" id="streakVal">0 🔥</span></div>
+              <div class="info-row"><span class="k">Last activity</span><span class="v" id="lastActivity">—</span></div>
+            </div>
+            <div class="card">
+              <h2>Stage Map</h2>
+              <div class="stage-vis" id="stageVis"></div>
+              <div style="margin-top:16px;font-size:14px;color:var(--ink-soft);line-height:1.6;">
+                <div>🟩 Green = completed</div>
+                <div>🟧 Orange = current stage</div>
+                <div>⬛ Grey = not started</div>
+              </div>
+            </div>
           </div>
-          <div class="card">
-            <h2>Stage Map</h2>
-            <div class="stage-vis" id="stageVis"></div>
-            <div style="margin-top:16px;font-size:14px;color:var(--ink-soft);line-height:1.6;">
-              <div>🟩 Green = completed</div>
-              <div>🟧 Orange = current stage</div>
-              <div>⬛ Grey = not started</div>
+
+          <div class="card" style="margin-bottom:18px;">
+            <h2>Send Command to Student</h2>
+            <div class="control-grid" id="controlGrid"></div>
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn" onclick="sendReset()">🔄 Reset student progress</button>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="card">
+              <h2>Live Activity Feed <span class="live-tag" id="feedLive">LIVE</span></h2>
+              <div class="activity-feed" id="feed"></div>
+              <div class="typing-live" id="typingLive">
+                <span class="lbl">⌨️ Student typing now</span>
+                <span class="txt" id="typingText"></span>
+              </div>
+            </div>
+            <div class="card">
+              <h2>Student's Notes</h2>
+              <div class="notes-view" id="notesView">— No notes yet —</div>
             </div>
           </div>
         </div>
 
-        <div class="card" style="margin-bottom:18px;">
-          <h2>Send Command to Student</h2>
-          <div class="control-grid" id="controlGrid"></div>
+        <div id="overviewView">
+          <div id="overviewContent"></div>
         </div>
+      </main>
+    </div>
+  </div>
 
-        <div class="grid">
-          <div class="card">
-            <h2>Live Activity Feed <span class="live-tag" id="feedLive">LIVE</span></h2>
-            <div class="activity-feed" id="feed"></div>
-            <div class="typing-live" id="typingLive">
-              <span class="lbl">⌨️ Student typing now</span>
-              <span class="txt" id="typingText"></span>
-            </div>
-          </div>
-          <div class="card">
-            <h2>Student's Notes</h2>
-            <div class="notes-view" id="notesView">— No notes yet —</div>
-          </div>
-        </div>
+  <!-- ========== LESSONS TAB ========== -->
+  <div class="tab-view" id="viewLessons">
+    <div class="card" style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h2 style="margin:0;">📚 Your Curriculum</h2>
+        <p style="font-size:15px;color:var(--ink-soft);margin-top:6px;">Lessons here appear in every student's portal instantly.</p>
       </div>
-
-      <div id="overviewView">
-        <div id="overviewContent"></div>
-      </div>
-    </main>
+      <button class="btn primary" onclick="openLessonModal()">+ New Lesson</button>
+    </div>
+    <div id="lessonsContainer"></div>
   </div>
 </div>
 
+<!-- Add Student Modal -->
 <div class="modal-backdrop" id="addStudentModal">
   <div class="modal">
     <h3>Add a new student</h3>
@@ -248,6 +291,57 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <div class="modal-actions">
       <button class="btn" onclick="closeAddStudent()">Cancel</button>
       <button class="btn primary" onclick="submitAddStudent()">Create student</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lesson Modal -->
+<div class="modal-backdrop" id="lessonModal">
+  <div class="modal">
+    <h3 id="lessonModalTitle">Create a new lesson</h3>
+    <p class="sub">The lesson will appear in every student's portal automatically. Students can start it right away.</p>
+    <label for="lessonTitle">Lesson title</label>
+    <input type="text" id="lessonTitle" placeholder="e.g. Lesson 2: Volcanoes and Earthquakes" maxlength="80">
+    <label for="lessonDesc">Short description</label>
+    <textarea id="lessonDesc" placeholder="What will students learn in this lesson?"></textarea>
+    <label for="lessonIcon">Icon (emoji)</label>
+    <input type="text" id="lessonIcon" placeholder="🌋" maxlength="4" style="text-transform:none;width:80px;">
+    <label>Stages to include</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_1" checked style="width:auto;margin:0;"> 📚 Vocabulary
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_2" checked style="width:auto;margin:0;"> 🔗 Word Match
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_3" checked style="width:auto;margin:0;"> 📖 Reading
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_4" checked style="width:auto;margin:0;"> ✏️ Cloze
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_5" checked style="width:auto;margin:0;"> ✅ Comprehension
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_6" checked style="width:auto;margin:0;"> 🔵 Present Passive
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_7" checked style="width:auto;margin:0;"> 🟣 Past Passive
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_8" checked style="width:auto;margin:0;"> 🟢 Present Perfect
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_9" checked style="width:auto;margin:0;"> 🧩 Sentence Builder
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
+        <input type="checkbox" id="stage_10" checked style="width:auto;margin:0;"> ⚡ Speed Round
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeLessonModal()">Cancel</button>
+      <button class="btn primary" id="lessonSubmitBtn" onclick="submitLesson()">Create lesson</button>
     </div>
   </div>
 </div>
@@ -264,15 +358,29 @@ const firebaseConfig = {
 };
 
 let fbApp=null,fbDb=null;
-let studentsRef=null,allSessionsRef=null;
+let studentsRef=null,allSessionsRef=null,curriculumRef=null;
 let studentsMap={};
 let studentMeta={};
+let curriculum={};
 let activeCode=null;
 let activityRef=null;
 let unreadMap={};
-let state={connected:false,lastPing:0,score:0,stage:0,done:{},notes:'',elapsed:0,streak:0,lastActivity:'—'};
+let editingLessonId=null;
 const STAGE_NAMES=['Vocabulary','Word Match','Reading','Cloze','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
+const ALL_STAGES=[
+  {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
+  {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
+  {id:3,label:'Reading',sub:'Passage',icon:'📖'},
+  {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
+  {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
+  {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
+  {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
+  {id:8,label:'Present Perfect',sub:'New!',icon:'🟢'},
+  {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
+  {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+];
 
+/* ========== FIREBASE INIT ========== */
 function initFirebase(){
   try{
     fbApp=firebase.initializeApp(firebaseConfig);
@@ -290,18 +398,19 @@ function initFirebase(){
       Object.keys(data).forEach(function(code){
         const st=(data[code]&&data[code].state)||{};
         studentMeta[code]={
-          score:st.score||0,
-          stage:st.stage||0,
-          done:st.done||{},
-          notes:st.notes||'',
-          elapsed:st.elapsed||0,
-          streak:st.streak||0,
+          score:st.score||0,stage:st.stage||0,done:st.done||{},
+          notes:st.notes||'',elapsed:st.elapsed||0,streak:st.streak||0,
           lastSeen:st.lastUpdate||0
         };
       });
       if(activeCode)renderSelectedView();
       else renderOverview();
       renderStudentsList();
+    });
+    curriculumRef=fbDb.ref('curriculum');
+    curriculumRef.on('value',function(snap){
+      curriculum=snap.val()||{};
+      renderLessons();
     });
   }catch(e){console.error(e);updateConnUI('error')}
 }
@@ -314,6 +423,16 @@ function updateConnUI(status){
   else txt.textContent='Connecting…';
 }
 
+/* ========== MAIN TAB SWITCH ========== */
+function switchMainTab(tab){
+  document.getElementById('tabStudents').classList.toggle('active', tab === 'students');
+  document.getElementById('tabLessons').classList.toggle('active', tab === 'lessons');
+  document.getElementById('viewStudents').classList.toggle('active', tab === 'students');
+  document.getElementById('viewLessons').classList.toggle('active', tab === 'lessons');
+  if (tab === 'lessons') renderLessons();
+}
+
+/* ========== STUDENT MANAGEMENT ========== */
 function generateCode(existing){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code;
@@ -361,10 +480,8 @@ function renameStudent(){
 }
 function copyLessonLink(){
   if(!activeCode)return;
-  // Check if it's Gaziz to point to his specific file
-  const lessonFile = (activeCode === 'GAZIZ') ? 'lesson_gaziz.html' : 'lesson.html';
-  const url=new URL(lessonFile+'?code='+encodeURIComponent(activeCode),window.location.href).href;
-  copyText(url,'Lesson link copied!');
+  const url=new URL('lesson.html?code='+encodeURIComponent(activeCode),window.location.href).href;
+  copyText(url,'Lesson link copied! Send this to your student.');
 }
 function copyText(text,msg){
   if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -385,9 +502,8 @@ function showToast(text){
   t.textContent=text;
   requestAnimationFrame(function(){t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)'});
   clearTimeout(window.__toastT);
-  window.__toastT=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)'},1800);
+  window.__toastT=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)'},2400);
 }
-
 function renderStudentsList(){
   const list=document.getElementById('studentsList');
   const search=(document.getElementById('studentSearch').value||'').toLowerCase().trim();
@@ -401,7 +517,7 @@ function renderStudentsList(){
   document.getElementById('studentsCount').textContent=codes.length;
   if(!filtered.length){
     list.innerHTML='<div style="padding:30px 16px;text-align:center;color:var(--ink-soft);font-size:15px;">'+
-      (codes.length?'No students match your search.':'No students yet. Click “Add Student” to begin.')+'</div>';
+      (codes.length?'No students match your search.':'No students yet. Click "Add Student" to begin.')+'</div>';
     return;
   }
   list.innerHTML='';
@@ -418,7 +534,7 @@ function renderStudentsList(){
     }
     el.innerHTML='<div class="top-row"><div class="name">'+escapeHtml(s.name||'Unnamed')+'</div><div class="dot '+statusCls+'"></div></div>'+
       '<div class="code">'+escapeHtml(code)+'</div>'+
-      '<div class="stats"><span>🏆 <b>'+(meta.score||0)+'</b>/80</span><span>📍 Stage '+(meta.stage||0)+'</span></div>'+
+      '<div class="stats"><span>🏆 <b>'+(meta.score||0)+'</b></span><span>📍 Stage '+(meta.stage||0)+'</span></div>'+
       (unreadMap[code]?'<div class="unread"></div>':'');
     el.onclick=function(){selectStudent(code)};
     list.appendChild(el);
@@ -463,41 +579,38 @@ function detachActivity(){
 
 function renderSelectedView(){
   const meta=studentMeta[activeCode]||{};
-  state.score=meta.score||0;
-  state.stage=meta.stage||0;
-  state.done=meta.done||{};
-  state.notes=meta.notes||'';
-  state.elapsed=meta.elapsed||0;
-  state.streak=meta.streak||0;
-  state.connected=meta.lastSeen&&(Date.now()-meta.lastSeen<60000);
-  document.getElementById('scoreBig').textContent=state.score;
-  document.getElementById('currentStage').textContent=state.stage?('Stage '+state.stage+' — '+STAGE_NAMES[state.stage-1]):'—';
-  document.getElementById('stagesDone').textContent=Object.values(state.done).filter(Boolean).length+' / 10';
-  document.getElementById('streakVal').textContent=state.streak+' 🔥';
-  const m=String(Math.floor(state.elapsed/60)).padStart(2,'0');
-  const s=String(state.elapsed%60).padStart(2,'0');
+  const score=meta.score||0;
+  const stage=meta.stage||0;
+  const done=meta.done||{};
+  document.getElementById('scoreBig').textContent=score;
+  document.getElementById('currentStage').textContent=stage?('Stage '+stage+' — '+STAGE_NAMES[stage-1]):'—';
+  document.getElementById('stagesDone').textContent=Object.values(done).filter(Boolean).length+' / 10';
+  document.getElementById('streakVal').textContent=(meta.streak||0)+' 🔥';
+  const m=String(Math.floor((meta.elapsed||0)/60)).padStart(2,'0');
+  const s=String((meta.elapsed||0)%60).padStart(2,'0');
   document.getElementById('elapsedTime').textContent=m+':'+s;
+  const live=meta.lastSeen&&(Date.now()-meta.lastSeen<60000);
   const tag=document.getElementById('liveTag');
-  if(state.connected){tag.textContent='LIVE';tag.classList.remove('off')}
+  if(live){tag.textContent='LIVE';tag.classList.remove('off')}
   else{tag.textContent='OFFLINE';tag.classList.add('off')}
-  document.getElementById('notesView').textContent=state.notes||'— No notes yet —';
-  renderStageVis();renderControls();
+  document.getElementById('notesView').textContent=meta.notes||'— No notes yet —';
+  renderStageVis(stage,done);renderControls(stage);
 }
-function renderStageVis(){
+function renderStageVis(stage,done){
   const el=document.getElementById('stageVis');if(!el)return;el.innerHTML='';
   for(let i=1;i<=10;i++){
     const chip=document.createElement('div');chip.className='stage-chip';
-    if(state.stage===i)chip.classList.add('current');
-    if(state.done[i])chip.classList.add('done');
+    if(stage===i)chip.classList.add('current');
+    if(done[i])chip.classList.add('done');
     chip.textContent=i+'. '+STAGE_NAMES[i-1].substring(0,14);
     el.appendChild(chip);
   }
 }
-function renderControls(){
+function renderControls(stage){
   const grid=document.getElementById('controlGrid');if(!grid)return;grid.innerHTML='';
   for(let i=1;i<=10;i++){
     const b=document.createElement('button');
-    b.className='ctrl-btn'+(state.stage===i?' current':'');
+    b.className='ctrl-btn'+(stage===i?' current':'');
     b.innerHTML='<span class="num">STAGE '+i+'</span>'+STAGE_NAMES[i-1];
     b.onclick=function(){jumpToStage(i)};
     grid.appendChild(b);
@@ -569,7 +682,7 @@ function renderOverview(){
   const codes=Object.keys(studentsMap);
   const container=document.getElementById('overviewContent');
   if(!codes.length){
-    container.innerHTML='<div class="empty-state"><div class="icon">🎓</div><h3>No students yet</h3><p>Add your first student to start tracking their progress. Each student gets a unique code they can enter on the lesson page.</p><button class="btn primary" onclick="openAddStudent()">+ Add your first student</button></div>';
+    container.innerHTML='<div class="empty-state"><div class="icon">🎓</div><h3>No students yet</h3><p>Add your first student to start tracking their progress. Students can also self-register at the Student Portal.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn primary" onclick="openAddStudent()">+ Add student</button><button class="btn" onclick="window.open(\'portal.html\',\'_blank\')">🎓 Open Portal</button></div></div>';
     return;
   }
   let totalScore=0,activeCount=0;
@@ -600,16 +713,128 @@ function renderOverview(){
       '<div class="name">'+escapeHtml(s.name||'Unnamed')+'</div>'+
       '<div class="code">'+escapeHtml(code)+'</div>'+
       '<div class="big-num">'+(m.score||0)+'</div>'+
-      '<div class="big-lbl">Points / 80</div>'+
+      '<div class="big-lbl">Points</div>'+
       '<div class="mini-stats"><span>📍 Stage '+(m.stage||0)+'</span>'+(s.createdAt?'<span>Added '+new Date(s.createdAt).toLocaleDateString()+'</span>':'')+'</div></div>';
   });
   html+='</div>';
   container.innerHTML=html;
 }
 
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAddStudent()});
+/* ========== LESSON MANAGEMENT ========== */
+function renderLessons(){
+  const container=document.getElementById('lessonsContainer');
+  const lessons=Object.values(curriculum||{});
+  if(!lessons.length){
+    container.innerHTML='<div class="empty-state"><div class="icon">📚</div><h3>No lessons yet</h3><p>Create your first lesson — it will appear in every student\'s portal immediately.</p><button class="btn primary" onclick="openLessonModal()">+ Create your first lesson</button></div>';
+    return;
+  }
+  lessons.sort(function(a,b){return (a.order||0)-(b.order||0)});
+  container.innerHTML='<div class="lessons-list">';
+  lessons.forEach(function(lesson){
+    const id=lesson.id||Object.keys(curriculum).find(function(k){return curriculum[k]===lesson});
+    const stageCount=(lesson.stages||[]).length;
+    const published=lesson.published!==false;
+    container.innerHTML+=
+      '<div class="lesson-tile">'+
+        '<span class="badge '+(published?'published':'draft')+'">'+(published?'Published':'Draft')+'</span>'+
+        '<div class="icon">'+(lesson.icon||'📘')+'</div>'+
+        '<div class="title">'+escapeHtml(lesson.title||'Untitled lesson')+'</div>'+
+        '<div class="desc">'+escapeHtml(lesson.description||'No description.')+'</div>'+
+        '<div class="meta">'+stageCount+' stages · ID: '+escapeHtml(id)+'</div>'+
+        '<div class="tile-actions">'+
+          '<button class="btn" onclick="editLesson(\''+id+'\')">✏️ Edit</button>'+
+          '<button class="btn" onclick="togglePublish(\''+id+'\')">'+(published?'📥 Unpublish':'📤 Publish')+'</button>'+
+          '<button class="btn danger" onclick="deleteLesson(\''+id+'\')">🗑 Delete</button>'+
+        '</div>'+
+      '</div>';
+  });
+  container.innerHTML+='</div>';
+}
+function openLessonModal(editId){
+  editingLessonId=editId||null;
+  if(editId&&curriculum[editId]){
+    const l=curriculum[editId];
+    document.getElementById('lessonModalTitle').textContent='Edit lesson';
+    document.getElementById('lessonTitle').value=l.title||'';
+    document.getElementById('lessonDesc').value=l.description||'';
+    document.getElementById('lessonIcon').value=l.icon||'';
+    const stageIds=(l.stages||[]).map(function(s){return s.id});
+    for(let i=1;i<=10;i++){
+      document.getElementById('stage_'+i).checked=stageIds.indexOf(i)!==-1;
+    }
+    document.getElementById('lessonSubmitBtn').textContent='Save changes';
+  } else {
+    document.getElementById('lessonModalTitle').textContent='Create a new lesson';
+    document.getElementById('lessonTitle').value='';
+    document.getElementById('lessonDesc').value='';
+    document.getElementById('lessonIcon').value='';
+    for(let i=1;i<=10;i++)document.getElementById('stage_'+i).checked=true;
+    document.getElementById('lessonSubmitBtn').textContent='Create lesson';
+  }
+  document.getElementById('lessonModal').classList.add('open');
+  setTimeout(function(){document.getElementById('lessonTitle').focus()},50);
+}
+function closeLessonModal(){document.getElementById('lessonModal').classList.remove('open')}
+function submitLesson(){
+  const title=(document.getElementById('lessonTitle').value||'').trim();
+  if(!title){alert('Please enter a title.');return}
+  const desc=(document.getElementById('lessonDesc').value||'').trim();
+  const icon=(document.getElementById('lessonIcon').value||'📘').trim()||'📘';
+  const selectedStages=[];
+  for(let i=1;i<=10;i++){
+    if(document.getElementById('stage_'+i).checked){
+      selectedStages.push(ALL_STAGES[i-1]);
+    }
+  }
+  if(!selectedStages.length){alert('Select at least one stage.');return}
+  if(editingLessonId){
+    fbDb.ref('curriculum/'+editingLessonId).update({
+      title:title, description:desc, icon:icon, stages:selectedStages
+    }).then(function(){
+      alert('Lesson updated!');
+      closeLessonModal();
+      editingLessonId=null;
+    }).catch(function(err){alert('Error: '+err.message)});
+    return;
+  }
+  // New lesson — find next id
+  fbDb.ref('curriculum').once('value').then(function(snap){
+    const all=snap.val()||{};
+    let n=1;
+    while(all['lesson_'+n])n++;
+    const id='lesson_'+n;
+    return fbDb.ref('curriculum/'+id).set({
+      id:id, title:title, description:desc, icon:icon,
+      order:n, published:true, createdAt:Date.now(),
+      maxScore:selectedStages.length*8,
+      stages:selectedStages
+    });
+  }).then(function(){
+    alert('Lesson created! Students will see it when they open the portal.');
+    closeLessonModal();
+  }).catch(function(err){alert('Error: '+err.message)});
+}
+function editLesson(id){openLessonModal(id)}
+function togglePublish(id){
+  const l=curriculum[id]||{};
+  const published=l.published!==false;
+  fbDb.ref('curriculum/'+id).update({published:!published}).then(function(){
+    showToast(published?'Lesson unpublished':'Lesson published');
+  }).catch(function(err){alert('Error: '+err.message)});
+}
+function deleteLesson(id){
+  const l=curriculum[id]||{};
+  if(!confirm('Delete "'+(l.title||id)+'"? Students will no longer see it. Their scores are kept.'))return;
+  fbDb.ref('curriculum/'+id).remove().then(function(){
+    showToast('Lesson deleted');
+  }).catch(function(err){alert('Error: '+err.message)});
+}
+
+/* ========== INIT ========== */
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAddStudent();closeLessonModal()}});
 document.getElementById('newStudentName').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
 document.getElementById('newStudentCode').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
+document.getElementById('lessonTitle').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.ctrlKey)submitLesson()});
 
 initFirebase();
 renderOverview();
