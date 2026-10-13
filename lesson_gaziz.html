@@ -277,7 +277,7 @@ function initFirebase(){
     commandRef=sessionRef.child('command');
     commandRef.on('value',function(snap){
       const cmd=snap.val();if(!cmd)return;
-      if(cmd.action==='reset'&&cmd.ts>Date.now()-10000)teacherReset();
+      applyTeacherResetCommand(cmd);
       if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
     });
     fbConnected=true;updateSyncUI('live');pushFullState();
@@ -301,7 +301,7 @@ function changeSessionCode(){
   commandRef=sessionRef.child('command');
   commandRef.on('value',function(snap){
     const cmd=snap.val();if(!cmd)return;
-    if(cmd.action==='reset'&&cmd.ts>Date.now()-10000)teacherReset();
+    applyTeacherResetCommand(cmd);
     if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
   });
   fbConnected=true;updateSyncUI('live');pushFullState();
@@ -314,10 +314,18 @@ function updateSyncUI(status){
   else if(status==='nocode'){dot.classList.add('warn');txt.textContent='Set code above'}
   else if(status==='error'){dot.classList.add('off');txt.textContent='Error'}
 }
+function applyTeacherResetCommand(cmd){
+  if(!cmd||cmd.action!=='reset'||!cmd.ts)return;
+  const key='nd_teacher_reset_seen_'+getSessionCode();
+  let seen=0;try{seen=Number(localStorage.getItem(key)||0)}catch(e){}
+  if(Number(cmd.ts)<=seen)return;
+  try{localStorage.setItem(key,String(cmd.ts))}catch(e){}
+  teacherReset();
+}
 function teacherReset(){
-  if(!confirm('Teacher requested reset. Clear all progress?'))return;
   Object.keys(state.scores).forEach(function(k){state.scores[k]=0});
   Object.keys(state.done).forEach(function(k){state.done[k]=false});
+  state.currentStage=1;state.streak=0;
   s1Known={};s3Looked={};customImages={};
   document.getElementById('notesArea').value='';
   updateHUD();renderSidebar();renderStage();saveState();
