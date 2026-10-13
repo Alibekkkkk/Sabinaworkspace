@@ -132,7 +132,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .empty-state .icon{font-size:64px;margin-bottom:16px;opacity:.5}
 .empty-state h3{font-size:24px;color:var(--ink);margin-bottom:10px}
 .empty-state p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}
-/* Lesson Manager */
 .lessons-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
 .lesson-tile{background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:all .15s}
 .lesson-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
@@ -147,7 +146,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .lesson-tile .badge.draft{background:rgba(255,183,77,.2);color:var(--warn)}
 .modal-backdrop{position:fixed;inset:0;background:rgba(15,20,32,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:520px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid var(--border);animation:modalIn .25s ease;margin:auto}
+.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:560px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.5);border:1px solid var(--border);animation:modalIn .25s ease;margin:auto}
 @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .modal h3{font-size:24px;margin-bottom:6px;color:var(--ink)}
 .modal .sub{font-size:15px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5}
@@ -180,7 +179,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <button class="tab" id="tabLessons" onclick="switchMainTab('lessons')">📚 Lessons</button>
   </div>
 
-  <!-- ========== STUDENTS TAB ========== -->
   <div class="tab-view active" id="viewStudents">
     <div class="layout">
       <aside class="students-panel">
@@ -266,12 +264,11 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     </div>
   </div>
 
-  <!-- ========== LESSONS TAB ========== -->
   <div class="tab-view" id="viewLessons">
     <div class="card" style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
       <div>
         <h2 style="margin:0;">📚 Your Curriculum</h2>
-        <p style="font-size:15px;color:var(--ink-soft);margin-top:6px;">Lessons here appear in every student's portal instantly.</p>
+        <p style="font-size:15px;color:var(--ink-soft);margin-top:6px;">Lessons here appear in student portals instantly.</p>
       </div>
       <button class="btn primary" onclick="openLessonModal()">+ New Lesson</button>
     </div>
@@ -279,11 +276,10 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
   </div>
 </div>
 
-<!-- Add Student Modal -->
 <div class="modal-backdrop" id="addStudentModal">
   <div class="modal">
     <h3>Add a new student</h3>
-    <p class="sub">Give your student a name. A unique session code will be generated automatically — share it with them so they can join the lesson.</p>
+    <p class="sub">Give your student a name. A unique session code will be generated automatically.</p>
     <label for="newStudentName">Student name</label>
     <input type="text" id="newStudentName" placeholder="e.g. Alice Smith" maxlength="40" autocomplete="off">
     <label for="newStudentCode">Session code (optional — leave empty to auto-generate)</label>
@@ -295,17 +291,24 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
   </div>
 </div>
 
-<!-- Lesson Modal -->
 <div class="modal-backdrop" id="lessonModal">
   <div class="modal">
     <h3 id="lessonModalTitle">Create a new lesson</h3>
-    <p class="sub">The lesson will appear in every student's portal automatically. Students can start it right away.</p>
+    <p class="sub">Lessons appear in student portals instantly. You can make them public for everyone, or private for specific students.</p>
     <label for="lessonTitle">Lesson title</label>
     <input type="text" id="lessonTitle" placeholder="e.g. Lesson 2: Volcanoes and Earthquakes" maxlength="80">
     <label for="lessonDesc">Short description</label>
     <textarea id="lessonDesc" placeholder="What will students learn in this lesson?"></textarea>
     <label for="lessonIcon">Icon (emoji)</label>
     <input type="text" id="lessonIcon" placeholder="🌋" maxlength="4" style="text-transform:none;width:80px;">
+    <label>Who can see this lesson?</label>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <button type="button" class="btn" id="visAllBtn" onclick="setLessonVisibility('all')" style="flex:1;">👥 All students</button>
+      <button type="button" class="btn" id="visSomeBtn" onclick="setLessonVisibility('some')" style="flex:1;">🔒 Only selected</button>
+    </div>
+    <div id="studentPickList" style="display:none;max-height:220px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;margin-bottom:16px;border:1px solid var(--border);"></div>
+    <label for="lessonCustomUrl">Custom lesson URL (optional)</label>
+    <input type="text" id="lessonCustomUrl" placeholder="e.g. lesson_gaziz.html (leave empty for standard lesson)" style="text-transform:none;">
     <label>Stages to include</label>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
       <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);">
@@ -366,6 +369,7 @@ let activeCode=null;
 let activityRef=null;
 let unreadMap={};
 let editingLessonId=null;
+let lessonVisibility='all';
 const STAGE_NAMES=['Vocabulary','Word Match','Reading','Cloze','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
 const ALL_STAGES=[
   {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
@@ -380,7 +384,6 @@ const ALL_STAGES=[
   {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
 ];
 
-/* ========== FIREBASE INIT ========== */
 function initFirebase(){
   try{
     fbApp=firebase.initializeApp(firebaseConfig);
@@ -423,7 +426,6 @@ function updateConnUI(status){
   else txt.textContent='Connecting…';
 }
 
-/* ========== MAIN TAB SWITCH ========== */
 function switchMainTab(tab){
   document.getElementById('tabStudents').classList.toggle('active', tab === 'students');
   document.getElementById('tabLessons').classList.toggle('active', tab === 'lessons');
@@ -432,7 +434,6 @@ function switchMainTab(tab){
   if (tab === 'lessons') renderLessons();
 }
 
-/* ========== STUDENT MANAGEMENT ========== */
 function generateCode(existing){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code;
@@ -480,8 +481,8 @@ function renameStudent(){
 }
 function copyLessonLink(){
   if(!activeCode)return;
-  const url=new URL('lesson.html?code='+encodeURIComponent(activeCode),window.location.href).href;
-  copyText(url,'Lesson link copied! Send this to your student.');
+  const url=new URL('portal.html',window.location.href).href;
+  copyText(url,'Portal link copied! Send this to your student.');
 }
 function copyText(text,msg){
   if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -720,7 +721,6 @@ function renderOverview(){
   container.innerHTML=html;
 }
 
-/* ========== LESSON MANAGEMENT ========== */
 function renderLessons(){
   const container=document.getElementById('lessonsContainer');
   const lessons=Object.values(curriculum||{});
@@ -734,13 +734,18 @@ function renderLessons(){
     const id=lesson.id||Object.keys(curriculum).find(function(k){return curriculum[k]===lesson});
     const stageCount=(lesson.stages||[]).length;
     const published=lesson.published!==false;
+    const assignedTo = lesson.assignedTo || [];
+    const visibilityBadge = assignedTo.length 
+      ? '<span class="badge draft" style="left:14px;right:auto;">🔒 '+assignedTo.length+' student'+(assignedTo.length>1?'s':'')+'</span>'
+      : '';
     container.innerHTML+=
       '<div class="lesson-tile">'+
+        visibilityBadge+
         '<span class="badge '+(published?'published':'draft')+'">'+(published?'Published':'Draft')+'</span>'+
         '<div class="icon">'+(lesson.icon||'📘')+'</div>'+
         '<div class="title">'+escapeHtml(lesson.title||'Untitled lesson')+'</div>'+
         '<div class="desc">'+escapeHtml(lesson.description||'No description.')+'</div>'+
-        '<div class="meta">'+stageCount+' stages · ID: '+escapeHtml(id)+'</div>'+
+        '<div class="meta">'+stageCount+' stages · ID: '+escapeHtml(id)+(lesson.customUrl?' · '+escapeHtml(lesson.customUrl):'')+'</div>'+
         '<div class="tile-actions">'+
           '<button class="btn" onclick="editLesson(\''+id+'\')">✏️ Edit</button>'+
           '<button class="btn" onclick="togglePublish(\''+id+'\')">'+(published?'📥 Unpublish':'📤 Publish')+'</button>'+
@@ -750,69 +755,105 @@ function renderLessons(){
   });
   container.innerHTML+='</div>';
 }
+
+function setLessonVisibility(mode){
+  lessonVisibility = mode;
+  document.getElementById('visAllBtn').style.background = (mode === 'all') ? 'var(--accent)' : 'var(--panel-2)';
+  document.getElementById('visAllBtn').style.color = (mode === 'all') ? '#fff' : 'var(--ink)';
+  document.getElementById('visSomeBtn').style.background = (mode === 'some') ? 'var(--accent)' : 'var(--panel-2)';
+  document.getElementById('visSomeBtn').style.color = (mode === 'some') ? '#fff' : 'var(--ink)';
+  document.getElementById('studentPickList').style.display = (mode === 'some') ? 'block' : 'none';
+}
+function buildStudentPickList(selected){
+  const el = document.getElementById('studentPickList');
+  const codes = Object.keys(studentsMap);
+  if (!codes.length) {
+    el.innerHTML = '<div style="font-size:14px;color:var(--ink-soft);text-align:center;padding:10px;">No students yet. Add a student first.</div>';
+    return;
+  }
+  codes.sort(function(a,b){ return (studentsMap[a].name||'').localeCompare(studentsMap[b].name||''); });
+  el.innerHTML = codes.map(function(code){
+    const s = studentsMap[code] || {};
+    const checked = (selected||[]).indexOf(code) !== -1;
+    return '<label style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer;font-size:15px;text-transform:none;letter-spacing:0;color:var(--ink);margin:0;font-weight:600;">' +
+      '<input type="checkbox" class="student-pick" value="' + code + '" ' + (checked?'checked':'') + ' style="width:auto;margin:0;"> ' +
+      escapeHtml(s.name||'Unnamed') + ' <span style="color:var(--ink-soft);font-family:Fira Code,monospace;font-size:12px;">' + code + '</span>' +
+    '</label>';
+  }).join('');
+}
 function openLessonModal(editId){
-  editingLessonId=editId||null;
-  if(editId&&curriculum[editId]){
-    const l=curriculum[editId];
-    document.getElementById('lessonModalTitle').textContent='Edit lesson';
-    document.getElementById('lessonTitle').value=l.title||'';
-    document.getElementById('lessonDesc').value=l.description||'';
-    document.getElementById('lessonIcon').value=l.icon||'';
-    const stageIds=(l.stages||[]).map(function(s){return s.id});
-    for(let i=1;i<=10;i++){
-      document.getElementById('stage_'+i).checked=stageIds.indexOf(i)!==-1;
-    }
-    document.getElementById('lessonSubmitBtn').textContent='Save changes';
+  editingLessonId = editId || null;
+  if (editId && curriculum[editId]) {
+    const l = curriculum[editId];
+    document.getElementById('lessonModalTitle').textContent = 'Edit lesson';
+    document.getElementById('lessonTitle').value = l.title || '';
+    document.getElementById('lessonDesc').value = l.description || '';
+    document.getElementById('lessonIcon').value = l.icon || '';
+    document.getElementById('lessonCustomUrl').value = l.customUrl || '';
+    const stageIds = (l.stages||[]).map(function(s){return s.id;});
+    for (let i=1;i<=10;i++) document.getElementById('stage_'+i).checked = stageIds.indexOf(i)!==-1;
+    document.getElementById('lessonSubmitBtn').textContent = 'Save changes';
+    const assigned = l.assignedTo || [];
+    setLessonVisibility(assigned.length ? 'some' : 'all');
+    buildStudentPickList(assigned);
   } else {
-    document.getElementById('lessonModalTitle').textContent='Create a new lesson';
-    document.getElementById('lessonTitle').value='';
-    document.getElementById('lessonDesc').value='';
-    document.getElementById('lessonIcon').value='';
-    for(let i=1;i<=10;i++)document.getElementById('stage_'+i).checked=true;
-    document.getElementById('lessonSubmitBtn').textContent='Create lesson';
+    document.getElementById('lessonModalTitle').textContent = 'Create a new lesson';
+    document.getElementById('lessonTitle').value = '';
+    document.getElementById('lessonDesc').value = '';
+    document.getElementById('lessonIcon').value = '';
+    document.getElementById('lessonCustomUrl').value = '';
+    for (let i=1;i<=10;i++) document.getElementById('stage_'+i).checked = true;
+    document.getElementById('lessonSubmitBtn').textContent = 'Create lesson';
+    setLessonVisibility('all');
+    buildStudentPickList([]);
   }
   document.getElementById('lessonModal').classList.add('open');
-  setTimeout(function(){document.getElementById('lessonTitle').focus()},50);
+  setTimeout(function(){ document.getElementById('lessonTitle').focus(); }, 50);
 }
 function closeLessonModal(){document.getElementById('lessonModal').classList.remove('open')}
 function submitLesson(){
-  const title=(document.getElementById('lessonTitle').value||'').trim();
-  if(!title){alert('Please enter a title.');return}
-  const desc=(document.getElementById('lessonDesc').value||'').trim();
-  const icon=(document.getElementById('lessonIcon').value||'📘').trim()||'📘';
-  const selectedStages=[];
-  for(let i=1;i<=10;i++){
-    if(document.getElementById('stage_'+i).checked){
-      selectedStages.push(ALL_STAGES[i-1]);
-    }
+  const title = (document.getElementById('lessonTitle').value||'').trim();
+  if (!title) { alert('Please enter a title.'); return; }
+  const desc = (document.getElementById('lessonDesc').value||'').trim();
+  const icon = (document.getElementById('lessonIcon').value||'📘').trim() || '📘';
+  const customUrl = (document.getElementById('lessonCustomUrl').value||'').trim();
+  const selectedStages = [];
+  for (let i=1;i<=10;i++) {
+    if (document.getElementById('stage_'+i).checked) selectedStages.push(ALL_STAGES[i-1]);
   }
-  if(!selectedStages.length){alert('Select at least one stage.');return}
-  if(editingLessonId){
-    fbDb.ref('curriculum/'+editingLessonId).update({
-      title:title, description:desc, icon:icon, stages:selectedStages
-    }).then(function(){
+  if (!selectedStages.length) { alert('Select at least one stage.'); return; }
+  let assignedTo = [];
+  if (lessonVisibility === 'some') {
+    document.querySelectorAll('.student-pick:checked').forEach(function(cb){
+      assignedTo.push(cb.value);
+    });
+    if (!assignedTo.length) { alert('Please select at least one student, or switch back to "All students".'); return; }
+  }
+  const payload = {
+    title: title, description: desc, icon: icon,
+    stages: selectedStages, customUrl: customUrl,
+    assignedTo: assignedTo
+  };
+  if (editingLessonId) {
+    fbDb.ref('curriculum/'+editingLessonId).update(payload).then(function(){
       alert('Lesson updated!');
-      closeLessonModal();
-      editingLessonId=null;
-    }).catch(function(err){alert('Error: '+err.message)});
+      closeLessonModal(); editingLessonId = null;
+    }).catch(function(err){ alert('Error: '+err.message); });
     return;
   }
-  // New lesson — find next id
   fbDb.ref('curriculum').once('value').then(function(snap){
-    const all=snap.val()||{};
-    let n=1;
-    while(all['lesson_'+n])n++;
-    const id='lesson_'+n;
-    return fbDb.ref('curriculum/'+id).set({
-      id:id, title:title, description:desc, icon:icon,
-      order:n, published:true, createdAt:Date.now(),
-      maxScore:selectedStages.length*8,
-      stages:selectedStages
-    });
+    const all = snap.val() || {};
+    let n = 1;
+    while (all['lesson_'+n]) n++;
+    const id = 'lesson_' + n;
+    return fbDb.ref('curriculum/'+id).set(Object.assign({
+      id: id, order: n, published: true, createdAt: Date.now(),
+      maxScore: selectedStages.length * 8
+    }, payload));
   }).then(function(){
-    alert('Lesson created! Students will see it when they open the portal.');
+    alert('Lesson created!');
     closeLessonModal();
-  }).catch(function(err){alert('Error: '+err.message)});
+  }).catch(function(err){ alert('Error: '+err.message); });
 }
 function editLesson(id){openLessonModal(id)}
 function togglePublish(id){
@@ -830,11 +871,9 @@ function deleteLesson(id){
   }).catch(function(err){alert('Error: '+err.message)});
 }
 
-/* ========== INIT ========== */
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAddStudent();closeLessonModal()}});
 document.getElementById('newStudentName').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
 document.getElementById('newStudentCode').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
-document.getElementById('lessonTitle').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.ctrlKey)submitLesson()});
 
 initFirebase();
 renderOverview();
