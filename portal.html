@@ -48,13 +48,11 @@ body.light .helper{color:var(--ink-soft-light)}
 .alert.success{background:rgba(76,175,125,.15);color:#7fd4a8;border-left:4px solid var(--success)}
 body.light .alert.error{background:#f8d7da;color:#721c24}
 body.light .alert.success{background:#d4edda;color:#155724}
-/* Welcome screen after login */
 .welcome{text-align:center;margin-bottom:30px;padding:20px}
 .welcome .avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:#fff;margin:0 auto 16px;box-shadow:0 12px 30px rgba(255,138,91,.35)}
 .welcome h2{font-size:34px;margin-bottom:6px;font-weight:800}
 .welcome p{font-size:17px;color:var(--ink-soft)}
 body.light .welcome p{color:var(--ink-soft-light)}
-/* Lesson cards */
 .lessons-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
 .lessons-header h3{font-size:24px;font-weight:800}
 .lessons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
@@ -74,9 +72,7 @@ body.light .lesson-card .progress-rail{background:#f0ebe0}
 .lesson-card .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:6px;transition:width .4s}
 .lesson-card .open-btn{padding:11px 20px;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;font-size:16px;text-align:center;border:none;font-family:inherit;cursor:pointer}
 .lesson-card:hover .open-btn{background:var(--accent-dark)}
-.lesson-card.locked{opacity:.5;cursor:not-allowed}
-.lesson-card.locked::after{content:'🔒';position:absolute;top:20px;right:20px;font-size:32px}
-.lesson-card.locked:hover{transform:none;border-color:var(--border)}
+.lesson-card .private-tag{position:absolute;top:14px;right:14px;background:rgba(255,138,91,.2);color:var(--accent);font-size:11px;font-weight:800;padding:3px 8px;border-radius:10px;letter-spacing:.5px}
 .empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:17px}
 body.light .empty{color:var(--ink-soft-light)}
 .actions-bar{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
@@ -95,7 +91,6 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
 <button class="theme-toggle" onclick="toggleTheme()" title="Theme">🌙</button>
 
 <div class="wrap">
-  <!-- ============ WELCOME / LOGIN SCREEN ============ -->
   <div id="loginScreen">
     <div class="header">
       <div class="logo">🌍</div>
@@ -111,7 +106,6 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
 
       <div class="alert" id="alertBox"></div>
 
-      <!-- Sign in -->
       <div id="loginForm">
         <label for="loginCode">Your student code</label>
         <input type="text" id="loginCode" class="code-input" placeholder="SABIN" maxlength="12" autocomplete="off">
@@ -119,7 +113,6 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
         <p class="helper">Don't have a code yet? Click <b>Register</b> above.</p>
       </div>
 
-      <!-- Register -->
       <div id="registerForm" style="display:none;">
         <label for="regName">What is your name?</label>
         <input type="text" id="regName" placeholder="e.g. Sabina" maxlength="40" autocomplete="off">
@@ -129,7 +122,6 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
     </div>
   </div>
 
-  <!-- ============ LESSONS SCREEN (after login) ============ -->
   <div id="lessonsScreen" style="display:none;">
     <div class="welcome" id="welcomeBox"></div>
 
@@ -151,7 +143,6 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
 </div>
 
 <script>
-/* ========== FIREBASE ========== */
 const firebaseConfig = {
   apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
   authDomain: "sabina-s-workspace.firebaseapp.com",
@@ -164,7 +155,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* ========== STATE ========== */
 const state = {
   currentCode: localStorage.getItem('nd_student_code') || '',
   currentName: localStorage.getItem('nd_student_name') || '',
@@ -172,7 +162,6 @@ const state = {
   progress: {}
 };
 
-/* ========== THEME ========== */
 if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
 function toggleTheme(){
   document.body.classList.toggle('light');
@@ -182,7 +171,6 @@ function toggleTheme(){
 }
 if (document.body.classList.contains('light')) document.querySelector('.theme-toggle').textContent = '☀️';
 
-/* ========== HELPERS ========== */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
 function showAlert(msg, type){
   const el = document.getElementById('alertBox');
@@ -200,7 +188,6 @@ function generateCode(existing){
   return code;
 }
 
-/* ========== TAB SWITCHING ========== */
 function switchTab(which){
   document.getElementById('tabLogin').classList.toggle('active', which === 'login');
   document.getElementById('tabRegister').classList.toggle('active', which === 'register');
@@ -213,7 +200,6 @@ function switchTab(which){
   }, 50);
 }
 
-/* ========== LOGIN ========== */
 function doLogin(){
   const code = (document.getElementById('loginCode').value || '').toUpperCase().trim().replace(/[^A-Z0-9]/g, '');
   if (!code) { showAlert('Please enter your student code.', 'error'); return; }
@@ -223,31 +209,25 @@ function doLogin(){
       showAlert('Code "' + code + '" not found. Check the spelling or register a new account.', 'error');
       return;
     }
-    // Save
     state.currentCode = code;
     state.currentName = data.name || 'Student';
     localStorage.setItem('nd_student_code', code);
     localStorage.setItem('nd_student_name', state.currentName);
-    // Update last login
     db.ref('students/' + code).update({ lastLogin: Date.now() });
     enterPortal();
   }).catch(err => showAlert('Connection error: ' + err.message, 'error'));
 }
 
-/* ========== REGISTER ========== */
 function doRegister(){
   const name = (document.getElementById('regName').value || '').trim();
   if (!name) { showAlert('Please enter your name.', 'error'); return; }
   if (name.length < 2) { showAlert('Name must be at least 2 characters.', 'error'); return; }
-  // Load students to generate unique code
   db.ref('students').once('value').then(snap => {
     const all = snap.val() || {};
     const code = generateCode(all);
     const payload = {
-      name: name,
-      code: code,
-      createdAt: Date.now(),
-      lastLogin: Date.now(),
+      name: name, code: code,
+      createdAt: Date.now(), lastLogin: Date.now(),
       selfRegistered: true
     };
     return db.ref('students/' + code).set(payload).then(() => {
@@ -255,7 +235,6 @@ function doRegister(){
       state.currentName = name;
       localStorage.setItem('nd_student_code', code);
       localStorage.setItem('nd_student_name', name);
-      // Show the code prominently
       const el = document.getElementById('alertBox');
       el.className = 'alert show success';
       el.innerHTML = '✓ Welcome, <b>' + escapeHtml(name) + '</b>!<br>Your code is: <span class="code-badge">' + code + '</span><br><span style="font-size:14px;">Save this code — you\'ll need it to sign in next time.</span>';
@@ -264,7 +243,6 @@ function doRegister(){
   }).catch(err => showAlert('Error: ' + err.message, 'error'));
 }
 
-/* ========== ENTER PORTAL ========== */
 function enterPortal(){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('lessonsScreen').style.display = 'block';
@@ -275,12 +253,9 @@ function enterPortal(){
   loadLessons();
 }
 
-/* ========== LOAD LESSONS ========== */
 function loadLessons(){
-  // Listen to curriculum
   db.ref('curriculum').on('value', snap => {
     state.lessons = snap.val() || {};
-    // Also listen to this student's progress
     db.ref('sessions/' + state.currentCode + '/state').on('value', progSnap => {
       const st = progSnap.val() || {};
       state.progress = {
@@ -292,11 +267,16 @@ function loadLessons(){
   });
 }
 
-/* ========== RENDER LESSONS ========== */
 function renderLessons(){
   const grid = document.getElementById('lessonsGrid');
   const empty = document.getElementById('emptyLessons');
-  const lessons = Object.values(state.lessons || {}).filter(l => l.published !== false);
+  const lessons = Object.values(state.lessons || {}).filter(function(l) {
+    if (l.published === false) return false;
+    if (l.assignedTo && l.assignedTo.length > 0) {
+      return l.assignedTo.indexOf(state.currentCode) !== -1;
+    }
+    return true;
+  });
   lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
 
   if (!lessons.length) {
@@ -315,10 +295,15 @@ function renderLessons(){
     const lessonScore = stages.reduce((sum, s) => sum + (state.progress.scores[lessonId + '_' + s.id] || 0), 0);
     const maxScore = lesson.maxScore || 80;
 
+    const assignedTo = lesson.assignedTo || [];
+    const isPrivate = assignedTo.length > 0;
+
+    const targetFile = lesson.customUrl ? lesson.customUrl : 'lesson.html';
     const card = document.createElement('a');
     card.className = 'lesson-card';
-    card.href = 'lesson.html?code=' + encodeURIComponent(state.currentCode) + '&lesson=' + encodeURIComponent(lessonId);
+    card.href = targetFile + '?code=' + encodeURIComponent(state.currentCode) + '&lesson=' + encodeURIComponent(lessonId);
     card.innerHTML =
+      (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
       '<div class="icon">' + (lesson.icon || '📘') + '</div>' +
       '<div class="title">' + escapeHtml(lesson.title || 'Untitled lesson') + '</div>' +
       '<div class="desc">' + escapeHtml(lesson.description || 'No description.') + '</div>' +
@@ -329,7 +314,6 @@ function renderLessons(){
   });
 }
 
-/* ========== SIGN OUT ========== */
 function signOut(){
   if (!confirm('Sign out? You can log back in with your code.')) return;
   localStorage.removeItem('nd_student_code');
@@ -342,19 +326,15 @@ function signOut(){
   document.getElementById('regName').value = '';
 }
 
-/* ========== SHOW CODE INFO ========== */
 function showCodeInfo(){
   alert('Your student code is:\n\n  ' + state.currentCode + '\n\nWrite it down! You\'ll need it to sign in from another device or after clearing your browser data.');
 }
 
-/* ========== INIT ========== */
 if (state.currentCode && state.currentName) {
-  // Verify code still exists in Firebase
   db.ref('students/' + state.currentCode).once('value').then(snap => {
     if (snap.val()) {
       enterPortal();
     } else {
-      // Code was deleted by teacher
       localStorage.removeItem('nd_student_code');
       localStorage.removeItem('nd_student_name');
       document.getElementById('loginCode').value = state.currentCode;
@@ -364,7 +344,6 @@ if (state.currentCode && state.currentName) {
   setTimeout(() => document.getElementById('loginCode').focus(), 200);
 }
 
-// Enter key support
 document.getElementById('loginCode').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('regName').addEventListener('keydown', e => { if (e.key === 'Enter') doRegister(); });
 </script>
