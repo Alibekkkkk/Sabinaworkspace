@@ -303,7 +303,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
         <h2 style="margin:0;">📚 Your Curriculum</h2>
         <p style="font-size:15px;color:var(--ink-soft);margin-top:6px;">Lessons here appear in student portals instantly.</p>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" onclick="assignGazizHomework()">📌 Assign Gaziz Lesson 1 homework</button><button class="btn primary" onclick="openLessonModal()">+ New Lesson</button></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" onclick="assignStudentHomework('gaziz')">📌 Assign Gaziz homework</button><button class="btn" onclick="assignStudentHomework('sabina')">📌 Assign Sabina homework</button><button class="btn primary" onclick="openLessonModal()">+ New Lesson</button></div>
     </div>
     <div id="lessonsContainer"></div>
   </div>
@@ -434,6 +434,18 @@ const ALL_STAGES=[
   {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
   {id:10,label:'Vocabulary Challenge',sub:'Review',icon:'⚡'}
 ];
+const SUSTAINABLE_STAGES=[
+  {id:1,label:'Sustainable Cities Vocabulary',sub:'Cards',icon:'🏙️'},
+  {id:2,label:'Word Match',sub:'Match definitions',icon:'🔗'},
+  {id:3,label:'Rivergate Reading',sub:'Sustainable transport',icon:'📖'},
+  {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
+  {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
+  {id:6,label:'Present Perfect Active',sub:'Grammar',icon:'⏳'},
+  {id:7,label:'Past Simple Active',sub:'Grammar',icon:'🕰️'},
+  {id:8,label:'Choose the Tense',sub:'Grammar',icon:'🧭'},
+  {id:9,label:'Sentence Builder',sub:'Active voice',icon:'🧩'},
+  {id:10,label:'City Vocabulary Review',sub:'Review',icon:'⚡'}
+];
 
 function initFirebase(){
   try{
@@ -501,7 +513,7 @@ function initTeacherData(){
         studentMeta[code]={
           score:st.score||0,stage:st.stage||0,done:st.done||{},
           notes:st.notes||'',elapsed:st.elapsed||0,streak:st.streak||0,
-          lastSeen:st.lastUpdate||0
+          lastSeen:st.lastUpdate||0,homework:(data[code]&&data[code].homework)||{}
         };
       });
       if(activeCode)renderSelectedView();
@@ -648,8 +660,9 @@ function updateSelectedClassworkLink(){
   if(!link)return;
   if(!activeCode||!studentsMap[activeCode]){link.style.display='none';return}
   const student=studentsMap[activeCode]||{};
-  const assigned=Object.keys(curriculum||{}).filter(function(id){const lesson=curriculum[id]||{};return Array.isArray(lesson.assignedTo)&&lesson.assignedTo.indexOf(activeCode)!==-1&&lesson.published!==false});
-  const id=assigned.length?assigned[0]:null;
+  const assigned=Object.keys(curriculum||{}).filter(function(id){const lesson=curriculum[id]||{};const codes=Array.isArray(lesson.assignedTo)?lesson.assignedTo:[];return !lesson.homework&&(!codes.length||codes.indexOf(activeCode)!==-1)&&lesson.published!==false});
+  const lessonOne=curriculum.lesson_1||{};const lessonOneCodes=Array.isArray(lessonOne.assignedTo)?lessonOne.assignedTo:[];
+  const id=lessonOne.customUrl&&String(lessonOne.customUrl).indexOf('lesson_gaziz.html')!==-1&&!lessonOne.homework&&(!lessonOneCodes.length||lessonOneCodes.indexOf(activeCode)!==-1)?'lesson_1':(assigned.length?assigned[0]:null);
   const lesson=id?curriculum[id]:null;
   const base=(lesson&&lesson.customUrl)||(String(student.name||'').toLowerCase()==='gaziz'?'lesson_gaziz.html':'lesson.html');
   const separator=base.indexOf('?')===-1?'?':'&';
@@ -665,8 +678,10 @@ function renderStudentHomework(){
   const done=(studentMeta[activeCode]||{}).done||{};
   list.innerHTML=assigned.map(function(row){
     const lesson=row.lesson;const stages=lesson.stages||[];const finished=stages.filter(function(stage){return !!done[stage.id]||!!done[row.id+'_'+stage.id]}).length;
-    const base=lesson.customUrl||'lesson.html';const sep=base.indexOf('?')===-1?'?':'&';
-    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);flex-wrap:wrap;"><div><b>'+escapeHtml(lesson.title||row.id)+'</b><div style="font-size:14px;color:var(--ink-soft);">'+(lesson.homeworkDue?'Due: '+escapeHtml(lesson.homeworkDue)+' · ':'')+finished+' / '+stages.length+' stages complete</div></div><a class="btn small" style="text-decoration:none;" href="'+escapeAttr(base+sep+'code='+encodeURIComponent(activeCode)+'&lesson='+encodeURIComponent(row.id))+'">Open homework</a></div>';
+    const progress=((studentMeta[activeCode]||{}).homework||{})[row.id]||{};
+    const status=progress.completed?'Completed · ':progress.updatedAt?'In progress · ':'';
+    const base=lesson.customUrl||'lesson.html';const url=new URL(base,window.location.href);url.searchParams.set('code',activeCode);url.searchParams.set('lesson',row.id);
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);flex-wrap:wrap;"><div><b>'+escapeHtml(lesson.title||row.id)+'</b><div style="font-size:14px;color:var(--ink-soft);">'+(lesson.homeworkDue?'Due: '+escapeHtml(lesson.homeworkDue)+' · ':'')+(lesson.customUrl&&lesson.customUrl.indexOf('homework.html')!==-1?status+((progress.score||0)+' / '+(progress.total||8)+' correct'):(finished+' / '+stages.length+' stages complete'))+'</div></div><a class="btn small" style="text-decoration:none;" href="'+escapeAttr(url.href)+'">Open homework</a></div>';
   }).join('');
 }
 function renderStudentsList(){
@@ -747,12 +762,13 @@ function detachActivity(){
 
 function renderSelectedView(){
   if(!activeCode)return;
+  const stageNames=getStudentStageNames(activeCode);
   const meta=studentMeta[activeCode]||{};
   const score=meta.score||0;
   const stage=meta.stage||0;
   const done=meta.done||{};
   document.getElementById('scoreBig').textContent=score;
-  document.getElementById('currentStage').textContent=stage?('Stage '+stage+' — '+STAGE_NAMES[stage-1]):'—';
+  document.getElementById('currentStage').textContent=stage?('Stage '+stage+' — '+stageNames[stage-1]):'—';
   document.getElementById('stagesDone').textContent=Object.values(done).filter(Boolean).length+' / 10';
   document.getElementById('streakVal').textContent=(meta.streak||0)+' 🔥';
   const m=String(Math.floor((meta.elapsed||0)/60)).padStart(2,'0');
@@ -763,25 +779,32 @@ function renderSelectedView(){
   if(live){tag.textContent='LIVE';tag.classList.remove('off')}
   else{tag.textContent='OFFLINE';tag.classList.add('off')}
   document.getElementById('notesView').textContent=meta.notes||'— No notes yet —';
-  renderStageVis(stage,done);renderControls(stage);
+  renderStageVis(stage,done,stageNames);renderControls(stage,stageNames);
   renderStudentHomework();updateSelectedClassworkLink();
 }
-function renderStageVis(stage,done){
+function getStudentStageNames(code){
+  const lesson=curriculum.lesson_1||{};const assigned=lesson.assignedTo||[];
+  if(String(lesson.customUrl||'').indexOf('lesson_gaziz.html')!==-1&&(!assigned.length||assigned.indexOf(code)!==-1))return SUSTAINABLE_STAGES.map(function(item){return item.label});
+  return STAGE_NAMES;
+}
+function renderStageVis(stage,done,names){
   const el=document.getElementById('stageVis');if(!el)return;el.innerHTML='';
+  names=names||STAGE_NAMES;
   for(let i=1;i<=10;i++){
     const chip=document.createElement('div');chip.className='stage-chip';
     if(stage===i)chip.classList.add('current');
     if(done[i])chip.classList.add('done');
-    chip.textContent=i+'. '+STAGE_NAMES[i-1].substring(0,14);
+    chip.textContent=i+'. '+names[i-1].substring(0,14);
     el.appendChild(chip);
   }
 }
-function renderControls(stage){
+function renderControls(stage,names){
   const grid=document.getElementById('controlGrid');if(!grid)return;grid.innerHTML='';
+  names=names||STAGE_NAMES;
   for(let i=1;i<=10;i++){
     const b=document.createElement('button');
     b.className='ctrl-btn'+(stage===i?' current':'');
-    b.innerHTML='<span class="num">STAGE '+i+'</span>'+STAGE_NAMES[i-1];
+    b.innerHTML='<span class="num">STAGE '+i+'</span>'+names[i-1];
     b.onclick=function(){jumpToStage(i)};
     grid.appendChild(b);
   }
@@ -917,6 +940,9 @@ function renderLessons(){
     const visibilityBadge = assignedTo.length 
       ? '<span class="badge draft" style="left:14px;right:auto;">🔒 '+assignedTo.length+' student'+(assignedTo.length>1?'s':'')+'</span>'
       : '';
+    const openUrl=new URL(lesson.customUrl||'lesson.html',window.location.href);
+    openUrl.searchParams.set('lesson',id);
+    if(assignedTo.length)openUrl.searchParams.set('code',assignedTo[0]);
     container.innerHTML+=
       '<div class="lesson-tile">'+
         visibilityBadge+
@@ -927,7 +953,7 @@ function renderLessons(){
         '<div class="meta">'+stageCount+' stages · ID: '+escapeHtml(id)+(lesson.customUrl?' · '+escapeHtml(lesson.customUrl):'')+'</div>'+
         (lesson.homework?'<div class="meta" style="color:var(--warn);">📌 Homework'+(lesson.homeworkDue?' · Due: '+escapeHtml(lesson.homeworkDue):'')+'</div>':'')+
         '<div class="tile-actions">'+
-          '<a class="btn" style="text-decoration:none;" href="'+escapeAttr((lesson.customUrl||'lesson.html')+'?lesson='+encodeURIComponent(id))+'">🔎 Open lesson</a>'+
+          '<a class="btn" style="text-decoration:none;" href="'+escapeAttr(openUrl.href)+'">🔎 Open lesson</a>'+ 
           '<button class="btn" onclick="editLesson(\''+id+'\')">✏️ Edit</button>'+
           '<button class="btn" onclick="openImagesModal(\''+id+'\')">🖼️ Flashcard images</button>'+
           '<button class="btn" onclick="togglePublish(\''+id+'\')">'+(published?'📥 Unpublish':'📤 Publish')+'</button>'+
@@ -1075,24 +1101,46 @@ function saveFlashcardImages(){
   const id=editingImagesLessonId;const updated=Object.assign({},curriculum[id]||{},{flashcardImages:images});
   writeChangesWithUndo([{path:'curriculum/'+id,value:updated}],'edit flashcard images').then(function(){curriculum[id]=updated;renderLessons();closeImagesModal();showToast('Flashcard images saved')}).catch(function(err){alert('Error: '+err.message)});
 }
-function assignGazizHomework(){
-  const match=Object.keys(studentsMap).find(function(code){return String((studentsMap[code]||{}).name||'').trim().toLowerCase()==='gaziz'});
-  if(!match){alert('Gaziz was not found in the student list. Add him to the teacher dashboard first.');return;}
-  const existingId=Object.keys(curriculum).find(function(id){const l=curriculum[id]||{};const assigned=l.assignedTo||[];return String(l.customUrl||'').toLowerCase().includes('lesson_gaziz.html')||(assigned.indexOf(match)!==-1&&String(l.title||'').toLowerCase().includes('lesson 1'))});
-  const id=existingId||'lesson_1';const lesson=curriculum[id]||{};
-  const assigned=Array.isArray(lesson.assignedTo)?lesson.assignedTo.slice():[];
-  if(assigned.indexOf(match)===-1)assigned.push(match);
-  const payload=Object.assign({},lesson,{
-    id:id,order:lesson.order||1,published:true,
-    title:lesson.title||'Lesson 1: Academic Vocabulary and Present Perfect Active',
-    description:lesson.description||'Academic vocabulary practice with present perfect active.',
-    icon:lesson.icon||'📘',customUrl:lesson.customUrl||'lesson_gaziz.html',
-    stages:lesson.stages&&lesson.stages.length?lesson.stages:ALL_STAGES,
-    assignedTo:assigned,homework:true,homeworkDue:'Before our next class',
-    maxScore:lesson.maxScore||100
+function assignStudentHomework(variant){
+  const studentName=variant==='gaziz'?'Gaziz':'Sabina';
+  const code=Object.keys(studentsMap).find(function(key){return String((studentsMap[key]||{}).name||'').trim().toLowerCase()===studentName.toLowerCase()});
+  if(!code){alert(studentName+' was not found in the student list.');return}
+  const id='homework_'+variant+'_sustainable_cities';
+  const old=curriculum[id]||{};
+  const payload=Object.assign({},old,{
+    id:id,order:old.order||20,published:true,
+    title:studentName+' — Sustainable Cities Homework',
+    description:variant==='gaziz'
+      ? 'A separate case study, new vocabulary, and new question types. Practise present perfect and past simple active.'
+      : 'Practise the Sustainable Cities class vocabulary in new homework question formats. Use present perfect and past simple active.',
+    icon:'🏙️',customUrl:'homework.html?variant='+variant,
+    stages:[{id:1,label:'Vocabulary and Grammar Homework',sub:'Independent practice',icon:'📝'}],
+    assignedTo:[code],homework:true,homeworkDue:'Before our next class',maxScore:8
   });
-  writeChangesWithUndo([{path:'curriculum/'+id,value:payload}],'assign Gaziz Lesson 1 homework').then(function(){curriculum[id]=payload;renderLessons();renderStudentHomework();updateSelectedClassworkLink();showToast('Gaziz Lesson 1 homework assigned and shown in the student workspace')}).catch(function(err){alert('Could not assign homework: '+err.message)});
+  const changes=[{path:'curriculum/'+id,value:payload}];
+  const oldClasswork=curriculum.lesson_1||{};
+  const classAssigned=Array.isArray(oldClasswork.assignedTo)?oldClasswork.assignedTo.slice():[];
+  if(!curriculum.lesson_1&&classAssigned.indexOf(code)===-1)classAssigned.push(code);
+  else if(classAssigned.length&&classAssigned.indexOf(code)===-1)classAssigned.push(code);
+  const classwork=Object.assign({},oldClasswork,{
+    id:'lesson_1',order:oldClasswork.order||1,published:true,
+    title:'Lesson 1: Sustainable Cities — Vocabulary and Active Tenses',
+    description:'Explore city sustainability vocabulary and practise present perfect and past simple in active voice.',
+    icon:'🏙️',customUrl:'lesson_gaziz.html',stages:SUSTAINABLE_STAGES,
+    assignedTo:classAssigned,homework:false,maxScore:100
+  });
+  changes.push({path:'curriculum/lesson_1',value:classwork});
+  Object.keys(curriculum).forEach(function(oldId){
+    if(oldId===id||oldId==='lesson_1')return;
+    const oldLesson=curriculum[oldId]||{};const oldAssigned=oldLesson.assignedTo||[];
+    if(oldLesson.homework&&oldAssigned.indexOf(code)!==-1&&String(oldLesson.customUrl||'').toLowerCase().indexOf('lesson_gaziz.html')!==-1)changes.push({path:'curriculum/'+oldId,value:null});
+  });
+  writeChangesWithUndo(changes,'assign '+studentName+' Sustainable Cities homework').then(function(){
+    changes.slice(1).forEach(function(change){if(change.value===null)delete curriculum[change.path.split('/').pop()];else curriculum[change.path.split('/').pop()]=change.value});
+    curriculum[id]=payload;renderLessons();renderStudentHomework();updateSelectedClassworkLink();showToast(studentName+' homework assigned with its own activities');
+  }).catch(function(err){alert('Could not assign '+studentName+' homework: '+err.message)});
 }
+function assignGazizHomework(){assignStudentHomework('gaziz')}
 function togglePublish(id){
   const l=curriculum[id]||{};
   const published=l.published!==false;

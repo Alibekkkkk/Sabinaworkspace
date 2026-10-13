@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gaziz — Academic Vocabulary & Present Perfect</title>
+<title>Gaziz — Sustainable Cities: Vocabulary & Tenses</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -409,18 +409,18 @@ const CURRICULUM = [
         lessons: [
           {
             id: "lesson_1",
-            title: "Lesson 1: Academic Vocabulary & Present Perfect",
+            title: "Lesson 1: Sustainable Cities — Vocabulary, Present Perfect & Past Simple",
             stages: [
-              {id:1,label:'Academic Vocabulary',sub:'Cards',icon:'📚'},
+              {id:1,label:'Sustainable Cities Vocabulary',sub:'Cards',icon:'🏙️'},
               {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
               {id:3,label:'Academic Reading',sub:'Passage',icon:'📖'},
               {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
               {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
               {id:6,label:'Present Perfect Active',sub:'Grammar',icon:'⏳'},
-              {id:7,label:'Academic Word Choice',sub:'Vocabulary',icon:'🧠'},
-              {id:8,label:'Reporting Verbs',sub:'Vocabulary',icon:'🗣️'},
-              {id:9,label:'Sentence Builder',sub:'Present Perfect',icon:'🧩'},
-              {id:10,label:'Vocabulary Challenge',sub:'Review',icon:'⚡'}
+              {id:7,label:'Past Simple Active',sub:'Grammar',icon:'🕰️'},
+              {id:8,label:'Choose the Tense',sub:'Grammar',icon:'🧭'},
+              {id:9,label:'Sentence Builder',sub:'Active Voice',icon:'🧩'},
+              {id:10,label:'City Vocabulary Review',sub:'Review',icon:'⚡'}
             ]
           }
         ]
@@ -497,28 +497,28 @@ function broadcastAction(type,detail){
   broadcast('action',{stage:state.currentStage,type:type,detail:detail,score:totalScore(),ts:Date.now()});
 }
 
-/* ========== ACADEMIC VOCABULARY ========== */
+/* ========== SUSTAINABLE CITIES VOCABULARY ========== */
 const VOCAB=[
-  {en:'evidence',ru:'доказательства, данные',emoji:'🔎',img:''},
-  {en:'approach',ru:'подход, метод',emoji:'🧭',img:''},
-  {en:'analyze',ru:'анализировать',emoji:'📊',img:''},
-  {en:'assess',ru:'оценивать',emoji:'⚖️',img:''},
-  {en:'establish',ru:'устанавливать, подтверждать',emoji:'🧱',img:''},
-  {en:'indicate',ru:'указывать, свидетельствовать',emoji:'☝️',img:''},
-  {en:'interpret',ru:'интерпретировать',emoji:'💡',img:''},
+  {en:'sustainable',ru:'устойчивый, экологичный',emoji:'🌱',img:''},
+  {en:'emissions',ru:'выбросы',emoji:'💨',img:''},
+  {en:'renewable',ru:'возобновляемый',emoji:'☀️',img:''},
+  {en:'infrastructure',ru:'инфраструктура',emoji:'🛣️',img:''},
+  {en:'commute',ru:'ездить на работу или учёбу',emoji:'🚌',img:''},
+  {en:'congestion',ru:'перегруженность, пробки',emoji:'🚗',img:''},
+  {en:'pedestrian',ru:'пешеход',emoji:'🚶',img:''},
+  {en:'affordable',ru:'доступный по цене',emoji:'🏠',img:''},
+  {en:'implement',ru:'внедрять, осуществлять',emoji:'🧰',img:''},
+  {en:'expand',ru:'расширять',emoji:'↗️',img:''},
+  {en:'reduce',ru:'сокращать, уменьшать',emoji:'📉',img:''},
+  {en:'invest',ru:'инвестировать, вкладывать',emoji:'💰',img:''},
+  {en:'accessible',ru:'доступный, удобный для всех',emoji:'♿',img:''},
+  {en:'reliable',ru:'надёжный',emoji:'✅',img:''},
+  {en:'efficient',ru:'эффективный',emoji:'⚙️',img:''},
+  {en:'public transport',ru:'общественный транспорт',emoji:'🚉',img:''},
+  {en:'green space',ru:'зелёная зона',emoji:'🌳',img:''},
+  {en:'urban',ru:'городской',emoji:'🏙️',img:''},
   {en:'contribute',ru:'способствовать, вносить вклад',emoji:'🤝',img:''},
-  {en:'impact',ru:'влияние, воздействие',emoji:'💥',img:''},
-  {en:'significant',ru:'значительный, существенный',emoji:'📈',img:''},
-  {en:'factor',ru:'фактор',emoji:'🧩',img:''},
-  {en:'perspective',ru:'точка зрения, перспектива',emoji:'👁️',img:''},
-  {en:'require',ru:'требовать',emoji:'📌',img:''},
-  {en:'demonstrate',ru:'демонстрировать, показывать',emoji:'🧪',img:''},
-  {en:'research',ru:'исследование; исследовать',emoji:'📚',img:''},
-  {en:'source',ru:'источник',emoji:'🗂️',img:''},
-  {en:'method',ru:'метод',emoji:'🛠️',img:''},
-  {en:'benefit',ru:'преимущество; приносить пользу',emoji:'🌱',img:''},
-  {en:'challenge',ru:'проблема, сложность',emoji:'🧗',img:''},
-  {en:'available',ru:'доступный, имеющийся',emoji:'📦',img:''}
+  {en:'improve',ru:'улучшать',emoji:'✨',img:''}
 ];
 
 /* ========== HELPERS ========== */
@@ -530,7 +530,7 @@ let s1Filter='all',s1Known={},s1CurrentIdx=0,s1VisibleList=[];
 function renderStage1(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 1 — Vocabulary</div><h2>📚 Academic Vocabulary</h2>'+
+  v.innerHTML='<div class="eyebrow">Stage 1 — Sustainable Cities</div><h2>🏙️ How Cities Have Become More Sustainable</h2>'+
   '<div class="lead">Click any card to <b>open it large</b>. Mark each word as <b>✓ I know it</b> or <b>↻ Practise</b>.<span class="ru">Нажмите на карточку — она откроется.</span></div>'+
   '<div class="flash-toolbar">'+
   '<button class="filt active" data-f="all" onclick="setFilter(\'all\')">All ('+VOCAB.length+')</button>'+
@@ -591,11 +591,16 @@ function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
 
 /* ========== STAGE 2 ========== */
 const MATCH_DATA=[
-  {word:'evidence',meaning:'доказательства, данные'},{word:'approach',meaning:'подход, метод'},
-  {word:'analyze',meaning:'анализировать'},{word:'assess',meaning:'оценивать'},
-  {word:'establish',meaning:'устанавливать, подтверждать'},{word:'indicate',meaning:'указывать, свидетельствовать'},
-  {word:'interpret',meaning:'интерпретировать'},{word:'contribute',meaning:'способствовать, вносить вклад'},
-  {word:'perspective',meaning:'точка зрения, перспектива'},{word:'demonstrate',meaning:'демонстрировать, показывать'}
+  {word:'sustainable',meaning:'able to continue with less harm to the environment'},
+  {word:'emissions',meaning:'gases released into the air'},
+  {word:'renewable',meaning:'replaced naturally; not permanently used up'},
+  {word:'infrastructure',meaning:'basic systems such as roads and transport'},
+  {word:'commute',meaning:'travel regularly between home and work or school'},
+  {word:'congestion',meaning:'too much traffic in one place'},
+  {word:'pedestrian',meaning:'a person who travels on foot'},
+  {word:'affordable',meaning:'low enough in cost for people to pay'},
+  {word:'implement',meaning:'put a plan or decision into action'},
+  {word:'efficient',meaning:'working well without wasting time or energy'}
 ];
 function renderStage2(){
   const main=document.getElementById('main');
@@ -606,7 +611,7 @@ function renderStage2(){
   '<div style="font-size:14px;font-weight:700;color:var(--ink-soft);">Matched: <span id="s2count" style="color:var(--accent);font-size:18px;">0</span> / '+MATCH_DATA.length+'</div>'+
   '<button class="btn ghost small" onclick="resetStage2()">↻ Reset</button></div>'+
   '<div class="dd-area"><div><div class="dd-col-title">English Words</div><div class="dd-words" id="ddWords"></div></div>'+
-  '<div><div class="dd-col-title">Русский перевод</div><div class="dd-slots" id="ddSlots"></div></div></div>';
+  '<div><div class="dd-col-title">Meaning</div><div class="dd-slots" id="ddSlots"></div></div></div>';
   main.appendChild(v);main.appendChild(stageFooter(1,3,'<button class="btn ghost small" onclick="resetStage2()">↻ Reset</button>'));
   renderDD();
 }
@@ -661,15 +666,15 @@ function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=fals
 /* ========== STAGE 3 ========== */
 function buildPassageHTML(){
   function vw(word){return '<span class="v-word" data-en="'+word+'">'+word+'</span>'}
-  return ['<h3>How Researchers Study Learning</h3>','<p>Researchers '+vw('have analyzed')+' how vocabulary practice supports academic reading. They '+vw('have used')+' interviews, classroom observations, and written tasks as sources of '+vw('evidence')+'. One common '+vw('approach')+' '+vw('has combined')+' short word reviews with reading in context. This method '+vw('has helped')+' students notice how an academic word changes meaning across subjects.</p>',
-    '<h3>What the Evidence Shows</h3>','<p>Several studies '+vw('have indicated')+' that learners remember new words when they meet them repeatedly. Researchers '+vw('have assessed')+' vocabulary knowledge before and after a course. Their results '+vw('have demonstrated')+' a '+vw('significant')+' improvement in word recognition. The studies '+vw('have also identified')+' factors such as practice time and prior knowledge. These factors '+vw('have contributed')+' to differences in student progress.</p>',
-    '<h3>Interpreting Results</h3>','<p>Academic readers '+vw('have interpreted')+' findings from more than one '+vw('perspective')+'. A single study '+vw('has not established')+' a universal rule, and its results '+vw('have not explained')+' every learner’s experience. Scholars '+vw('have compared')+' methods and '+vw('have considered')+' each study’s limits. This careful process '+vw('has helped')+' readers assess claims and decide which conclusions the evidence supports.</p>'].join('');
+  return ['<h3>Rivergate Changes Its Daily Travel</h3>','<p>Rivergate '+vw('has invested')+' in a more '+vw('sustainable')+' transport system. The city '+vw('has expanded')+' its bus network and '+vw('has made')+' several routes more '+vw('reliable')+'. Last year, the council '+vw('opened')+' two bus-only lanes and '+vw('built')+' a safe crossing near the university. Many residents '+vw('have commuted')+' by bus since then, and fewer cars '+vw('have entered')+' the busiest streets.</p>',
+    '<h3>Cleaner Energy and Greener Streets</h3>','<p>The city '+vw('has installed')+' solar panels on public buildings, so Rivergate '+vw('has increased')+' its use of '+vw('renewable')+' energy. The council '+vw('replaced')+' old streetlights with '+vw('efficient')+' lamps in 2024. These changes '+vw('have reduced')+' energy use and transport '+vw('emissions')+'. Rivergate also '+vw('has created')+' a new '+vw('green space')+' beside the river. Local volunteers '+vw('planted')+' trees there last spring.</p>',
+    '<h3>Making the Plan Work for Everyone</h3>','<p>Rivergate '+vw('has improved')+' its transport '+vw('infrastructure')+' and '+vw('has made')+' more stations '+vw('accessible')+' to '+vw('pedestrians')+' with limited mobility. In 2023, the city '+vw('introduced')+' a discount pass to keep travel '+vw('affordable')+'. The council '+vw('implemented')+' these projects in stages. The changes '+vw('have helped')+' residents travel more easily, although traffic '+vw('has still caused')+' '+vw('congestion')+' at peak times.</p>'].join('');
 }
 function renderStage3(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 3 — Reading</div><h2>📖 Academic Reading</h2>'+
-  '<div class="lead">Click an <span class="v-word" style="cursor:default;">orange</span> academic word to see its translation. Notice the active present perfect verb in each sentence.<span class="ru">Нажмите на оранжевое слово, чтобы увидеть перевод. Обратите внимание на Present Perfect Active.</span></div>'+
+  v.innerHTML='<div class="eyebrow">Stage 3 — Reading</div><h2>📖 Rivergate: A More Sustainable City</h2>'+
+  '<div class="lead">Click an <span class="v-word" style="cursor:default;">orange</span> word to see its translation. Notice how the text uses present perfect for changes connected to now and past simple for finished dates.<span class="ru">Нажмите на оранжевые слова и сравните Present Perfect с Past Simple.</span></div>'+
   '<div class="card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
   '<button class="btn small" onclick="speakPassage()">🔊 Listen</button>'+
   '<button class="btn ghost small" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>'+
@@ -692,7 +697,7 @@ function bindVocabClicks(){
 function lookupTranslation(en){
   const found=VOCAB.find(function(v){return v.en.toLowerCase()===en.toLowerCase()});
   if(found)return found.ru;
-  const extra={'have analyzed':'проанализировали','have used':'использовали','evidence':'доказательства, данные','approach':'подход, метод','has combined':'объединил','has helped':'помог','have indicated':'указали','have assessed':'оценили','have demonstrated':'продемонстрировали','significant':'значительный','have also identified':'также выявили','have contributed':'способствовали','have interpreted':'интерпретировали','perspective':'точка зрения','has not established':'не установило','have not explained':'не объяснили','have compared':'сравнили','have considered':'рассмотрели','factors':'факторы'};
+  const extra={'has invested':'инвестировал','has expanded':'расширил','has made':'сделал','reliable':'надёжный','opened':'открыл','built':'построил','have commuted':'ездили на работу или учёбу','have entered':'въехали','has installed':'установил','has increased':'увеличил','renewable':'возобновляемый','replaced':'заменил','efficient':'эффективный','have reduced':'сократили','emissions':'выбросы','has created':'создал','green space':'зелёная зона','planted':'посадили','has improved':'улучшил','infrastructure':'инфраструктура','accessible':'доступный','pedestrians':'пешеходы','affordable':'доступный по цене','introduced':'ввёл','implemented':'внедрил','have helped':'помогли','has still caused':'по-прежнему вызвал','congestion':'пробки'};
   return extra[en.toLowerCase()]||'—';
 }
 function updateS3Count(){const el=document.getElementById('s3count');if(el)el.textContent=Object.keys(s3Looked).length}
@@ -701,14 +706,14 @@ function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[k
 
 /* ========== STAGE 4 ========== */
 const CLOZE=[
-  {text:'In the passage, what counts as evidence?',options:['Interviews, observations, and written tasks','Only researchers’ opinions','A list of academic words'],correct:0},
-  {text:'What does the word “approach” mean in “one common approach”?',options:['A method or way of doing something','A final result','A difficulty'],correct:0},
-  {text:'What has the combined method helped students notice?',options:['How a word’s meaning changes across subjects','That every word has one meaning','That reading can be skipped'],correct:0},
-  {text:'What does “assessed vocabulary knowledge” mean?',options:['Measured or evaluated it','Removed it from the study','Translated it into another language'],correct:0},
-  {text:'In the passage, “significant improvement” means the improvement was…',options:['Important or noticeable','Unrelated to the results','Impossible to measure'],correct:0},
-  {text:'Why have researchers used repeated encounters with words?',options:['Studies indicate learners remember words they meet repeatedly','The passage says one encounter is always enough','It prevents students from reading context'],correct:0},
-  {text:'What does “contributed to differences” suggest about practice time?',options:['It helped cause differences in student progress','It had no connection to progress','It replaced prior knowledge'],correct:0},
-  {text:'Why has one study not established a universal rule?',options:['A single study cannot show that the result applies to everyone','The study collected no evidence','The researchers ignored vocabulary'],correct:0}
+  {text:'Which change has Rivergate made to its bus network?',options:['It has expanded the network','It has closed every route','It has removed all bus lanes'],correct:0},
+  {text:'What did the council build near the university last year?',options:['A safe crossing','A solar farm','A new airport'],correct:0},
+  {text:'Why does the passage call solar energy renewable?',options:['Nature replaces its source','It creates more traffic','It costs nothing to install'],correct:0},
+  {text:'What did Rivergate replace in 2024?',options:['Old streetlights','The river bridge','The bus network'],correct:0},
+  {text:'Which result connects to the present?',options:['The changes have reduced energy use','The city opened two lanes last year','The council introduced a pass in 2023'],correct:0},
+  {text:'How did Rivergate try to keep travel affordable?',options:['It introduced a discount pass','It removed public transport','It increased every fare'],correct:0},
+  {text:'Who planted trees beside the river last spring?',options:['Local volunteers','Bus drivers','University visitors'],correct:0},
+  {text:'What challenge still remains at peak times?',options:['Traffic congestion','A lack of streetlights','No renewable energy'],correct:0}
 ];
 let s4Score=0;
 function renderStage4(){
@@ -746,16 +751,16 @@ function resetStage4(){setScore(4,0);state.done[state.currentLessonId+"_4"]=fals
 
 /* ========== STAGE 5 ========== */
 const COMP=[
-  {q:'Researchers have used interviews and classroom observations as evidence.',type:'tf',correct:true,exp:'True. The passage names both sources.'},
-  {q:'The researchers have combined vocabulary review with reading in context.',type:'tf',correct:true,exp:'True. This is the approach described.'},
-  {q:'The studies have found that learners remember words after meeting them once.',type:'tf',correct:false,exp:'False. The passage says learners meet words repeatedly.'},
-  {q:'The results have demonstrated an improvement in word recognition.',type:'tf',correct:true,exp:'True. The studies report a significant improvement.'},
-  {q:'One study has established a universal rule for every learner.',type:'tf',correct:false,exp:'False. The passage says one study has not established a universal rule.'},
-  {q:'Scholars have compared methods and considered study limitations.',type:'tf',correct:true,exp:'True. They have used both steps to interpret findings.'},
-  {q:'Which sources have researchers used?',type:'mc',options:['Interviews, classroom observations, and written tasks','Only online surveys','Only exam scores','News articles and advertisements'],correct:0,exp:'They have used interviews, observations, and written tasks.'},
-  {q:'What has the combined approach helped students do?',type:'mc',options:['Avoid academic reading','Notice words in different contexts','Memorize one translation only','Finish tasks without practice'],correct:1,exp:'It has helped students notice meaning in context.'},
-  {q:'Which factors have contributed to differences in progress?',type:'mc',options:['Practice time and prior knowledge','Classroom colour and seating','Weather and transport','Age and height'],correct:0,exp:'The passage names practice time and prior knowledge.'},
-  {q:'What have scholars done to interpret results carefully?',type:'mc',options:['Compared methods and considered limitations','Ignored the evidence','Used one result as a universal rule','Removed all context'],correct:0,exp:'They have compared methods and considered limitations.'}
+  {q:'Rivergate has expanded its bus network.',type:'tf',correct:true,exp:'The passage says the city has expanded the network.'},
+  {q:'The council built the safe crossing last year.',type:'tf',correct:true,exp:'The passage gives a finished time: last year.'},
+  {q:'Rivergate replaced its streetlights in 2025.',type:'tf',correct:false,exp:'The passage says the city replaced them in 2024.'},
+  {q:'The city has used more renewable energy after installing solar panels.',type:'tf',correct:true,exp:'The passage links the panels to greater use of renewable energy.'},
+  {q:'Local volunteers planted trees this spring.',type:'tf',correct:false,exp:'They planted the trees last spring.'},
+  {q:'The discount pass has made travel affordable for every resident.',type:'tf',correct:false,exp:'The passage says the city introduced a pass to keep travel affordable; it does not say every resident uses it.'},
+  {q:'Which action happened in 2023?',type:'mc',options:['The city introduced a discount pass','The city installed solar panels','The city expanded all train lines','Volunteers opened a new station'],correct:0,exp:'Rivergate introduced the pass in 2023.'},
+  {q:'Which word describes a person travelling on foot?',type:'mc',options:['Pedestrian','Commuter route','Emission','Infrastructure'],correct:0,exp:'A pedestrian travels on foot.'},
+  {q:'What have the transport changes reduced?',type:'mc',options:['Energy use and emissions','The number of green spaces','The cost of every home','The city population'],correct:0,exp:'The passage says the changes have reduced energy use and emissions.'},
+  {q:'What still causes congestion at peak times?',type:'mc',options:['Traffic','Solar panels','Discount passes','Green spaces'],correct:0,exp:'The passage says traffic still causes congestion.'}
 ];
 let s5Score=0;
 function renderStage5(){
@@ -805,34 +810,36 @@ function resetStage5(){setScore(5,0);state.done[state.currentLessonId+"_5"]=fals
 
 /* ========== STAGES 6-8 (Grammar) ========== */
 const GRAMMAR_6=[
-  {prompt:'Researchers ___ (analyze) the evidence.',answer:'have analyzed',exp:'Plural subject + have + past participle.'},
-  {prompt:'The student ___ (assess) the source.',answer:'has assessed',exp:'Singular subject + has + past participle.'},
-  {prompt:'Scholars ___ (identify) several important factors.',answer:'have identified',exp:'Have + V3 forms the present perfect.'},
-  {prompt:'The research team ___ (establish) a clear method.',answer:'has established',exp:'The team is treated as one group: has + V3.'},
-  {prompt:'I ___ (read) three academic articles this week.',answer:'have read',exp:'The unfinished time period connects to now.'},
-  {prompt:'He ___ (write) a detailed interpretation.',answer:'has written',exp:'He + has + the irregular past participle written.'},
-  {prompt:'We ___ (compare) two different approaches.',answer:'have compared',exp:'We + have + the regular past participle compared.'},
-  {prompt:'The results ___ (indicate) a significant change.',answer:'have indicated',exp:'Results is plural, so use have indicated.'},
-  {prompt:'She ___ (choose) a reliable source.',answer:'has chosen',exp:'She + has + the irregular past participle chosen.'},
-  {prompt:'They ___ (not / explain) the final result yet.',answer:'have not explained',exp:'Negative form: have not + past participle.'}
+  {prompt:'Rivergate ___ (expand) its bus network.',answer:'has expanded',exp:'The city is one place: has + past participle. The change matters now.'},
+  {prompt:'Residents ___ (use) the new bus route since March.',answer:'have used',exp:'Since marks a situation that began in the past and continues now.'},
+  {prompt:'The council ___ (install) solar panels on three schools.',answer:'has installed',exp:'The council has completed the action; the result matters now.'},
+  {prompt:'These projects ___ (reduce) transport emissions.',answer:'have reduced',exp:'Projects is plural, so use have + V3.'},
+  {prompt:'Our neighbourhood ___ (create) more green space this year.',answer:'has created',exp:'This year is still continuing: has + V3.'},
+  {prompt:'The city ___ (make) two stations accessible.',answer:'has made',exp:'Make → made; the subject city takes has.'},
+  {prompt:'I ___ (take) public transport more often recently.',answer:'have taken',exp:'Recently connects a past change to now.'},
+  {prompt:'The new bus lanes ___ (become) popular with commuters.',answer:'have become',exp:'Bus lanes is plural; become has the same V1 and V3 form.'},
+  {prompt:'The council ___ (not / finish) the river path yet.',answer:'has not finished',exp:'Yet often appears with a present perfect negative.'},
+  {prompt:'___ the city ___ (improve) its transport system so far?',answer:'has the city improved',exp:'Present perfect question: has + subject + V3.'}
 ];
 const GRAMMAR_7=[
-  {prompt:'The article has ___ (provide) strong evidence.',answer:'provided',exp:'Provide evidence is a useful academic collocation.'},
-  {prompt:'Researchers have ___ (conduct) a detailed analysis.',answer:'conducted',exp:'Conduct an analysis means to carry out a careful study.'},
-  {prompt:'The results have ___ (reveal) a significant pattern.',answer:'revealed',exp:'Reveal a pattern means to make it clear or visible.'},
-  {prompt:'The student has ___ (consider) another perspective.',answer:'considered',exp:'Consider a perspective means to think about a point of view.'},
-  {prompt:'The study has ___ (identify) two key factors.',answer:'identified',exp:'Identify a factor means to recognize an important cause or condition.'},
-  {prompt:'Our class has ___ (discuss) the impact of technology.',answer:'discussed',exp:'Discuss the impact is a common academic phrase.'},
-  {prompt:'The author has ___ (support) the claim with evidence.',answer:'supported',exp:'Support a claim means to give reasons or evidence for it.'},
-  {prompt:'Scholars have ___ (compare) several approaches.',answer:'compared',exp:'Compare approaches means to examine their similarities and differences.'}
+  {prompt:'In 2024, the council ___ (replace) old streetlights with efficient lamps.',answer:'replaced',exp:'In 2024 is a finished time, so use past simple.'},
+  {prompt:'Last spring, volunteers ___ (plant) trees beside the river.',answer:'planted',exp:'Last spring is finished; plant becomes planted.'},
+  {prompt:'The city ___ (open) two bus-only lanes last year.',answer:'opened',exp:'Last year calls for past simple.'},
+  {prompt:'The council ___ (introduce) a discount pass in 2023.',answer:'introduced',exp:'The finished date in 2023 takes past simple.'},
+  {prompt:'Residents ___ (choose) the river path for their weekend walk.',answer:'chose',exp:'Choose is irregular: choose → chose in the past simple.'},
+  {prompt:'The mayor ___ (meet) local cyclists on Monday.',answer:'met',exp:'Meet is irregular: meet → met.'},
+  {prompt:'Our class ___ (compare) two transport plans yesterday.',answer:'compared',exp:'Yesterday is finished; compare becomes compared.'},
+  {prompt:'The new route ___ (make) the commute shorter last month.',answer:'made',exp:'Make is irregular: make → made.'}
 ];
 const GRAMMAR_8=[
-  {prompt:'Researchers ___ already ___ (publish) their findings.',answer:'have already published',exp:'Already often appears between have and the past participle.'},
-  {prompt:'The student ___ never ___ (encounter) this term before.',answer:'has never encountered',exp:'Never comes after have/has and before the past participle.'},
-  {prompt:'___ the class ___ (complete) the vocabulary review yet?',answer:'has the class completed',exp:'Question form: has + subject + past participle.'},
-  {prompt:'We ___ (not / reach) a conclusion so far.',answer:'have not reached',exp:'So far connects an unfinished period to now.'},
-  {prompt:'How many sources ___ you ___ (evaluate) this month?',answer:'have you evaluated',exp:'Question form: have + subject + past participle.'},
-  {prompt:'The author ___ (make) a convincing argument.',answer:'has made',exp:'Make has the irregular past participle made.'}
+  {prompt:'The city ___ (add) three bus routes in 2022.',answer:'added',exp:'In 2022 is a finished time: past simple.'},
+  {prompt:'Rivergate ___ (reduce) its energy use over the past year.',answer:'has reduced',exp:'Over the past year connects a period to now: present perfect.'},
+  {prompt:'Residents ___ (see) cleaner buses on the roads since April.',answer:'have seen',exp:'Since April connects the past to now: present perfect.'},
+  {prompt:'The council ___ (open) the first cycle lane in 2021.',answer:'opened',exp:'In 2021 is a finished time: past simple.'},
+  {prompt:'___ the city ___ (make) public transport more accessible yet?',answer:'has the city made',exp:'Yet and a result connected to now call for present perfect.'},
+  {prompt:'Last month, local students ___ (design) posters about clean travel.',answer:'designed',exp:'Last month is finished, so use past simple.'},
+  {prompt:'The new pass ___ (help) many commuters so far.',answer:'has helped',exp:'So far connects the result to now: present perfect.'},
+  {prompt:'We ___ (visit) the new green space on Friday.',answer:'visited',exp:'On Friday describes a finished time: past simple.'}
 ];
 function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead,inputPlaceholder){
   const main=document.getElementById('main');
@@ -881,25 +888,25 @@ function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,li
     card.appendChild(row);card.appendChild(fb);body.appendChild(card);
   });
 }
-function renderStage6(){renderInputExercise(GRAMMAR_6,6,5,7,'⏳ Present Perfect: Active Voice','Stage 6 — Grammar','Subject + have/has + past participle (V3)','<li>Use have with I, you, we, they, and plural nouns.</li><li>Use has with he, she, it, and singular nouns.</li><li>Keep the subject as the doer: Researchers have analyzed the evidence.</li>','Complete each academic sentence in the present perfect active.<span class="ru">Дополните предложения в Present Perfect Active.</span>','Type have/has + past participle...')}
-function renderStage7(){renderInputExercise(GRAMMAR_7,7,6,8,'🧠 Academic Word Choice','Stage 7 — Vocabulary','Academic verb + noun collocation','<li>Provide evidence; conduct an analysis.</li><li>Reveal a pattern; consider a perspective.</li><li>Use the past participle after have/has.</li>','Complete the academic collocation with the correct past participle.<span class="ru">Дополните академическое словосочетание причастием.</span>','Type the past participle...')}
-function renderStage8(){renderInputExercise(GRAMMAR_8,8,7,9,'🗣️ Reporting and Research Verbs','Stage 8 — Vocabulary + Grammar','Positive: have/has + V3 | Negative: have/has not + V3 | Question: Have/Has + subject + V3?','<li>Place already, never, and yet around the main verb correctly.</li><li>Use the active voice: The author has made a claim.</li><li>Match have/has to the subject.</li>','Complete each sentence using the present perfect active.<span class="ru">Используйте Present Perfect Active.</span>','Type the complete verb phrase...')}
+function renderStage6(){renderInputExercise(GRAMMAR_6,6,5,7,'⏳ Present Perfect: Active Voice','Stage 6 — Grammar','Subject + have/has + past participle (V3)','<li>Use have with I, you, we, they, and plural nouns.</li><li>Use has with he, she, it, and singular nouns.</li><li>Keep the subject as the doer: Rivergate has expanded its bus network.</li>','Complete each city sentence in the present perfect active.<span class="ru">Дополните предложения в Present Perfect Active.</span>','Type have/has + past participle...')}
+function renderStage7(){renderInputExercise(GRAMMAR_7,7,6,8,'🕰️ Past Simple: Active Voice','Stage 7 — Grammar','Subject + past form of the verb','<li>Use past simple for a finished time: The council opened a lane last year.</li><li>Regular verbs add -ed; some verbs change form: meet → met.</li><li>The subject performs the action.</li>','Complete each city sentence in the past simple active.<span class="ru">Дополните предложения в Past Simple Active.</span>','Type the past simple form...')}
+function renderStage8(){renderInputExercise(GRAMMAR_8,8,7,9,'🧭 Present Perfect or Past Simple?','Stage 8 — Grammar','Present perfect: have/has + V3 | Past simple: V2','<li>Use present perfect when a past change connects to now.</li><li>Use past simple with a finished time such as in 2022, yesterday, or last month.</li><li>Keep the subject as the doer in both tenses.</li>','Choose the correct tense and complete the active sentence.<span class="ru">Выберите время: Present Perfect или Past Simple.</span>','Type the complete verb form...')}
 function resetPassive(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
 
 /* ========== STAGE 9 ========== */
 const SB=[
-  {prompt:'Build a sentence about academic evidence.',words:['Researchers','have','analyzed','the','evidence'],correct:['Researchers','have','analyzed','the','evidence']},
-  {prompt:'Build a sentence about a research method.',words:['The','team','has','established','a','clear','method'],correct:['The','team','has','established','a','clear','method']},
-  {prompt:'Build a sentence about study results.',words:['Recent','studies','have','demonstrated','a','significant','impact'],correct:['Recent','studies','have','demonstrated','a','significant','impact']},
-  {prompt:'Build a sentence using an academic collocation.',words:['The','author','has','provided','strong','evidence'],correct:['The','author','has','provided','strong','evidence']},
-  {prompt:'Build a negative present perfect active sentence.',words:['Researchers','have','not','reached','a','conclusion','yet'],correct:['Researchers','have','not','reached','a','conclusion','yet']},
-  {prompt:'Build a present perfect active question.',words:['How','many','sources','have','you','evaluated','this','month?'],correct:['How','many','sources','have','you','evaluated','this','month?']}
+  {prompt:'Build a present perfect sentence about transport.',words:['Rivergate','has','expanded','its','bus','network.'],correct:['Rivergate','has','expanded','its','bus','network.']},
+  {prompt:'Build a past simple sentence with a finished date.',words:['The','council','opened','two','lanes','last','year.'],correct:['The','council','opened','two','lanes','last','year.']},
+  {prompt:'Build a present perfect sentence about emissions.',words:['The','projects','have','reduced','transport','emissions.'],correct:['The','projects','have','reduced','transport','emissions.']},
+  {prompt:'Build a past simple sentence about volunteers.',words:['Volunteers','planted','trees','last','spring.'],correct:['Volunteers','planted','trees','last','spring.']},
+  {prompt:'Build a present perfect question.',words:['Has','the','city','made','stations','accessible','yet?'],correct:['Has','the','city','made','stations','accessible','yet?']},
+  {prompt:'Build a past simple sentence with an irregular verb.',words:['Residents','chose','the','river','path','on','Friday.'],correct:['Residents','chose','the','river','path','on','Friday.']}
 ];
 let s9Score=0;
 function renderStage9(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 9 — Sentence Builder</div><h2>🧩 Build Academic Sentences</h2>'+
+  v.innerHTML='<div class="eyebrow">Stage 9 — Active Voice</div><h2>🧩 Build City Change Sentences</h2>'+
   '<div class="lead">Click words in the correct order.<span class="ru">Соберите предложение.</span></div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
   '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s9live" style="color:var(--accent);font-size:18px;">0</span> / '+SB.length+'</div>'+
@@ -964,24 +971,24 @@ function resetStage9(){setScore(9,0);state.done[state.currentLessonId+"_9"]=fals
 
 /* ========== STAGE 10 ========== */
 const SPEED_QUESTIONS=[
-  {q:'Researchers ___ (analyze) the evidence.',options:['have analyzed','has analyzed','have analyze'],correct:0,exp:'Plural subject + have + V3.'},
-  {q:'The student ___ (assess) the source.',options:['have assessed','has assessed','has assess'],correct:1,exp:'Singular subject + has + V3.'},
-  {q:'The results have ___ a clear pattern.',options:['indicated','indicate','indicating'],correct:0,exp:'Indicate → indicated (past participle).'},
-  {q:'The author has ___ strong evidence.',options:['provide','provided','providing'],correct:1,exp:'Provide evidence is an academic collocation.'},
-  {q:'Scholars have ___ several methods.',options:['compared','compare','comparing'],correct:0,exp:'Compare → compared (past participle).'},
-  {q:'The article has ___ the impact of technology.',options:['discuss','discussed','discussing'],correct:1,exp:'Discussed is the past participle.'},
-  {q:'We ___ already ___ the vocabulary list.',options:['have / reviewed','has / reviewed','have / review'],correct:0,exp:'We + have + already + V3.'},
-  {q:'The researcher ___ never ___ this approach.',options:['have / used','has / used','has / use'],correct:1,exp:'The researcher + has + never + V3.'},
-  {q:'They ___ not ___ a conclusion yet.',options:['have / reached','has / reached','have / reach'],correct:0,exp:'They + have not + V3 + yet.'},
-  {q:'Which phrase means to carefully study information?',options:['analyze evidence','make a perspective','conduct a factor'],correct:0,exp:'Analyze evidence means to examine information carefully.'},
-  {q:'A point of view is a ___.',options:['source','perspective','method'],correct:1,exp:'Perspective means a point of view.'},
-  {q:'Researchers have ___ key factors in student progress.',options:['identified','identify','identifying'],correct:0,exp:'Identify → identified (past participle).'}
+  {q:'Rivergate ___ (expand) its bus network, and the change still helps residents.',options:['has expanded','expanded yesterday','have expand'],correct:0,exp:'The result connects to now: present perfect active.'},
+  {q:'The council ___ two lanes last year.',options:['has opened','opened','have open'],correct:1,exp:'Last year is a finished time: past simple active.'},
+  {q:'The city has ___ its energy use.',options:['reduce','reduced','reducing'],correct:1,exp:'After has, use the past participle reduced.'},
+  {q:'Volunteers ___ trees last spring.',options:['planted','have planted in 2022','has planted'],correct:0,exp:'Last spring is finished: past simple.'},
+  {q:'Which word means “gases released into the air”?',options:['emissions','infrastructure','commute'],correct:0,exp:'Emissions are gases released into the air.'},
+  {q:'A person who travels on foot is a ___.',options:['pedestrian','commute','congestion'],correct:0,exp:'A pedestrian travels on foot.'},
+  {q:'The council ___ (not / finish) the river path yet.',options:['has not finished','did not finished','have not finish'],correct:0,exp:'Yet with a result connected to now takes present perfect.'},
+  {q:'Residents ___ the new route in 2023.',options:['have tried','tried','has tried'],correct:1,exp:'In 2023 is finished: past simple.'},
+  {q:'The city ___ (make) several stations accessible so far.',options:['made','has made','have make'],correct:1,exp:'So far connects the action to now: present perfect.'},
+  {q:'Which phrase means “put a plan into action”?',options:['implement a plan','reduce a commute','expand a pedestrian'],correct:0,exp:'Implement a plan means put it into action.'},
+  {q:'The new bus lanes ___ congestion on one busy street.',options:['have reduced','has reduce','reduced last week'],correct:0,exp:'The result matters now and no finished time is given.'},
+  {q:'The mayor ___ local cyclists on Monday.',options:['has met','meet','met'],correct:2,exp:'On Monday is a finished time in this context: past simple.'}
 ];
 let s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};
 function renderStage10(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 10 — Vocabulary Review</div><h2>⚡ Academic Word Challenge</h2>'+
+  v.innerHTML='<div class="eyebrow">Stage 10 — Vocabulary Review</div><h2>⚡ Sustainable Cities Challenge</h2>'+
   '<div class="lead">60 seconds. Streak of 3+ gives bonus!<span class="ru">60 секунд. Бонус за серию!</span></div><div id="speedRoot"></div>';
   main.appendChild(v);main.appendChild(stageFooter(9,null,'<button class="btn ghost small" onclick="resetSpeed()">↻ Restart</button>'));
   renderSpeedIntro();

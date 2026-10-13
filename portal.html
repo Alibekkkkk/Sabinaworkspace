@@ -160,7 +160,8 @@ const state = {
   currentCode: localStorage.getItem('nd_student_code') || '',
   currentName: localStorage.getItem('nd_student_name') || '',
   lessons: {},
-  progress: {}
+  progress: {},
+  homework: {}
 };
 
 if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
@@ -257,14 +258,16 @@ function enterPortal(){
 function loadLessons(){
   db.ref('curriculum').on('value', snap => {
     state.lessons = snap.val() || {};
-    db.ref('sessions/' + state.currentCode + '/state').on('value', progSnap => {
-      const st = progSnap.val() || {};
-      state.progress = {
-        scores: st.scores || {},
-        done: st.done || {}
-      };
-      renderLessons();
-    });
+    renderLessons();
+  });
+  db.ref('sessions/' + state.currentCode + '/homework').on('value', hwSnap => {
+    state.homework = hwSnap.val() || {};
+    renderLessons();
+  });
+  db.ref('sessions/' + state.currentCode + '/state').on('value', progSnap => {
+    const st = progSnap.val() || {};
+    state.progress = { scores: st.scores || {}, done: st.done || {} };
+    renderLessons();
   });
 }
 
@@ -290,11 +293,19 @@ function renderLessons(){
   lessons.forEach(lesson => {
     const lessonId = lesson.id || Object.keys(state.lessons).find(k => state.lessons[k] === lesson);
     const stages = lesson.stages || [];
-    const totalStages = stages.length;
-    const doneCount = stages.filter(s => state.progress.done[lessonId + '_' + s.id]).length;
-    const pct = totalStages ? Math.round((doneCount / totalStages) * 100) : 0;
-    const lessonScore = stages.reduce((sum, s) => sum + (state.progress.scores[lessonId + '_' + s.id] || 0), 0);
-    const maxScore = lesson.maxScore || 80;
+    let totalStages = stages.length;
+    let doneCount = stages.filter(s => state.progress.done[lessonId + '_' + s.id]).length;
+    let pct = totalStages ? Math.round((doneCount / totalStages) * 100) : 0;
+    let lessonScore = stages.reduce((sum, s) => sum + (state.progress.scores[lessonId + '_' + s.id] || 0), 0);
+    let maxScore = lesson.maxScore || 80;
+    const homeworkResult = (state.homework || {})[lessonId];
+    if (lesson.customUrl && lesson.customUrl.indexOf('homework.html') !== -1) {
+      totalStages = 1;
+      doneCount = homeworkResult && homeworkResult.completed ? 1 : 0;
+      pct = doneCount ? 100 : 0;
+      lessonScore = homeworkResult ? (homeworkResult.score || 0) : 0;
+      maxScore = homeworkResult ? (homeworkResult.total || 8) : (lesson.maxScore || 8);
+    }
 
     const assignedTo = lesson.assignedTo || [];
     const isPrivate = assignedTo.length > 0;
@@ -302,7 +313,10 @@ function renderLessons(){
     const targetFile = lesson.customUrl ? lesson.customUrl : 'lesson.html';
     const card = document.createElement('a');
     card.className = 'lesson-card';
-    card.href = targetFile + '?code=' + encodeURIComponent(state.currentCode) + '&lesson=' + encodeURIComponent(lessonId);
+    const targetUrl = new URL(targetFile, window.location.href);
+    targetUrl.searchParams.set('code', state.currentCode);
+    targetUrl.searchParams.set('lesson', lessonId);
+    card.href = targetUrl.href;
     card.innerHTML =
       (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
       (lesson.homework ? '<div class="homework-tag">📌 Homework' + (lesson.homeworkDue ? ' · ' + escapeHtml(lesson.homeworkDue) : '') + '</div>' : '') +
