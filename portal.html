@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Learning Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>
+:root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--accent-dark:#d94a15;--success:#4caf7d;--border:#2a3346;--bg-light:#f4f1ea;--panel-light:#fff;--ink-light:#2c3e50;--ink-soft-light:#6c757d;--border-light:#e0dbd0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;transition:background .3s,color .3s}
+body.light{background:var(--bg-light);color:var(--ink-light)}
+.wrap{width:100%;max-width:1000px}
+.header{text-align:center;padding:30px 20px 20px}
+.header .logo{font-size:56px;margin-bottom:12px}
+.header h1{font-size:42px;margin-bottom:6px;font-weight:800;letter-spacing:-.5px}
+.header p{font-size:18px;color:var(--ink-soft);max-width:600px;margin:0 auto;line-height:1.5}
+body.light .header p{color:var(--ink-soft-light)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:520px;margin:0 auto 20px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+body.light .card{background:var(--panel-light);border-color:var(--border-light);box-shadow:0 20px 50px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:8px;margin-bottom:26px;border-bottom:1px solid var(--border);padding-bottom:14px}
+body.light .tabs{border-color:var(--border-light)}
+.tab{flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--ink-soft);font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s}
+body.light .tab{border-color:var(--border-light);color:var(--ink-soft-light)}
+.tab:hover{color:var(--accent);border-color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+label{display:block;font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px}
+body.light label{color:var(--ink-soft-light)}
+input{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:18px;font-weight:600;outline:none;transition:all .15s;margin-bottom:18px}
+body.light input{background:#f8f8f8;border-color:var(--border-light);color:var(--ink-light)}
+input:focus{border-color:var(--accent);background:var(--panel)}
+body.light input:focus{background:#fff}
+input.code-input{font-family:'Fira Code','Courier New',monospace;text-transform:uppercase;letter-spacing:3px;text-align:center;font-size:22px;font-weight:800}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-family:inherit;font-size:18px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 0 var(--accent-dark);margin-bottom:12px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--accent-dark)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--accent-dark)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--border);box-shadow:none}
+body.light .btn.ghost{color:var(--ink-light);border-color:var(--border-light)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.helper{font-size:15px;color:var(--ink-soft);text-align:center;line-height:1.5;margin-bottom:8px}
+body.light .helper{color:var(--ink-soft-light)}
+.alert{padding:14px 18px;border-radius:12px;font-size:16px;font-weight:600;margin-bottom:16px;display:none;line-height:1.5}
+.alert.show{display:block}
+.alert.error{background:rgba(239,84,104,.15);color:#ff8a9a;border-left:4px solid #ef5468}
+.alert.success{background:rgba(76,175,125,.15);color:#7fd4a8;border-left:4px solid var(--success)}
+body.light .alert.error{background:#f8d7da;color:#721c24}
+body.light .alert.success{background:#d4edda;color:#155724}
+/* Welcome screen after login */
+.welcome{text-align:center;margin-bottom:30px;padding:20px}
+.welcome .avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:#fff;margin:0 auto 16px;box-shadow:0 12px 30px rgba(255,138,91,.35)}
+.welcome h2{font-size:34px;margin-bottom:6px;font-weight:800}
+.welcome p{font-size:17px;color:var(--ink-soft)}
+body.light .welcome p{color:var(--ink-soft-light)}
+/* Lesson cards */
+.lessons-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.lessons-header h3{font-size:24px;font-weight:800}
+.lessons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.lesson-card{background:var(--panel);border:2px solid var(--border);border-radius:18px;padding:24px;cursor:pointer;transition:all .2s;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative;overflow:hidden}
+body.light .lesson-card{background:var(--panel-light);border-color:var(--border-light);color:var(--ink-light)}
+.lesson-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 16px 40px rgba(255,138,91,.2)}
+.lesson-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:6px;background:linear-gradient(90deg,var(--accent),var(--accent-dark))}
+.lesson-card .icon{font-size:48px;margin-bottom:14px}
+.lesson-card .title{font-size:24px;font-weight:800;margin-bottom:8px;color:inherit}
+.lesson-card .desc{font-size:15px;color:var(--ink-soft);line-height:1.5;margin-bottom:18px;flex:1}
+body.light .lesson-card .desc{color:var(--ink-soft-light)}
+.lesson-card .meta{display:flex;gap:14px;font-size:14px;color:var(--ink-soft);font-weight:700;margin-bottom:14px;flex-wrap:wrap}
+body.light .lesson-card .meta{color:var(--ink-soft-light)}
+.lesson-card .meta b{color:var(--accent)}
+.lesson-card .progress-rail{height:8px;background:var(--bg);border-radius:6px;overflow:hidden;margin-bottom:12px}
+body.light .lesson-card .progress-rail{background:#f0ebe0}
+.lesson-card .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:6px;transition:width .4s}
+.lesson-card .open-btn{padding:11px 20px;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;font-size:16px;text-align:center;border:none;font-family:inherit;cursor:pointer}
+.lesson-card:hover .open-btn{background:var(--accent-dark)}
+.lesson-card.locked{opacity:.5;cursor:not-allowed}
+.lesson-card.locked::after{content:'🔒';position:absolute;top:20px;right:20px;font-size:32px}
+.lesson-card.locked:hover{transform:none;border-color:var(--border)}
+.empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:17px}
+body.light .empty{color:var(--ink-soft-light)}
+.actions-bar{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.actions-bar button{padding:10px 20px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--ink-soft);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+body.light .actions-bar button{border-color:var(--border-light);color:var(--ink-soft-light)}
+.actions-bar button:hover{color:var(--accent);border-color:var(--accent)}
+.code-badge{display:inline-block;padding:10px 20px;background:var(--bg);border:2px dashed var(--accent);border-radius:12px;font-family:'Fira Code','Courier New',monospace;font-size:22px;font-weight:800;letter-spacing:4px;color:var(--accent);margin:10px 0 16px}
+body.light .code-badge{background:#fff8f0}
+.theme-toggle{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--panel);border:1px solid var(--border);color:var(--ink);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:10}
+body.light .theme-toggle{background:var(--panel-light);border-color:var(--border-light);color:var(--ink-light)}
+.theme-toggle:hover{transform:scale(1.1);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" title="Theme">🌙</button>
+
+<div class="wrap">
+  <!-- ============ WELCOME / LOGIN SCREEN ============ -->
+  <div id="loginScreen">
+    <div class="header">
+      <div class="logo">🌍</div>
+      <h1>Learning Studio</h1>
+      <p>Register or sign in to access your lessons, track progress, and pick up where you left off.</p>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign in</button>
+        <button class="tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <div class="alert" id="alertBox"></div>
+
+      <!-- Sign in -->
+      <div id="loginForm">
+        <label for="loginCode">Your student code</label>
+        <input type="text" id="loginCode" class="code-input" placeholder="SABIN" maxlength="12" autocomplete="off">
+        <button class="btn" onclick="doLogin()">Enter my lessons →</button>
+        <p class="helper">Don't have a code yet? Click <b>Register</b> above.</p>
+      </div>
+
+      <!-- Register -->
+      <div id="registerForm" style="display:none;">
+        <label for="regName">What is your name?</label>
+        <input type="text" id="regName" placeholder="e.g. Sabina" maxlength="40" autocomplete="off">
+        <button class="btn" onclick="doRegister()">Create my account</button>
+        <p class="helper">You'll get a personal code — save it to sign in next time.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LESSONS SCREEN (after login) ============ -->
+  <div id="lessonsScreen" style="display:none;">
+    <div class="welcome" id="welcomeBox"></div>
+
+    <div class="lessons-header">
+      <h3>📚 Your Lessons</h3>
+      <button class="btn ghost" style="width:auto;padding:10px 20px;margin:0;font-size:15px;" onclick="signOut()">Sign out</button>
+    </div>
+
+    <div class="lessons-grid" id="lessonsGrid"></div>
+
+    <div class="empty" id="emptyLessons" style="display:none;">
+      No lessons available yet.<br>Ask your teacher to publish the first lesson.
+    </div>
+
+    <div class="actions-bar">
+      <button onclick="showCodeInfo()">🔑 Show my code</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== FIREBASE ========== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
+  authDomain: "sabina-s-workspace.firebaseapp.com",
+  databaseURL: "https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sabina-s-workspace",
+  storageBucket: "sabina-s-workspace.firebasestorage.app",
+  messagingSenderId: "64645562064",
+  appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ========== STATE ========== */
+const state = {
+  currentCode: localStorage.getItem('nd_student_code') || '',
+  currentName: localStorage.getItem('nd_student_name') || '',
+  lessons: {},
+  progress: {}
+};
+
+/* ========== THEME ========== */
+if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  localStorage.setItem('nd_theme', isLight ? 'light' : 'dark');
+  document.querySelector('.theme-toggle').textContent = isLight ? '☀️' : '🌙';
+}
+if (document.body.classList.contains('light')) document.querySelector('.theme-toggle').textContent = '☀️';
+
+/* ========== HELPERS ========== */
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+function showAlert(msg, type){
+  const el = document.getElementById('alertBox');
+  el.className = 'alert show ' + type;
+  el.textContent = msg;
+  setTimeout(() => { el.className = 'alert'; }, 5000);
+}
+function generateCode(existing){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code;
+  do {
+    code = 'S';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  } while (existing && existing[code]);
+  return code;
+}
+
+/* ========== TAB SWITCHING ========== */
+function switchTab(which){
+  document.getElementById('tabLogin').classList.toggle('active', which === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', which === 'register');
+  document.getElementById('loginForm').style.display = which === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = which === 'register' ? 'block' : 'none';
+  document.getElementById('alertBox').className = 'alert';
+  setTimeout(() => {
+    const inp = which === 'login' ? document.getElementById('loginCode') : document.getElementById('regName');
+    inp.focus();
+  }, 50);
+}
+
+/* ========== LOGIN ========== */
+function doLogin(){
+  const code = (document.getElementById('loginCode').value || '').toUpperCase().trim().replace(/[^A-Z0-9]/g, '');
+  if (!code) { showAlert('Please enter your student code.', 'error'); return; }
+  db.ref('students/' + code).once('value').then(snap => {
+    const data = snap.val();
+    if (!data) {
+      showAlert('Code "' + code + '" not found. Check the spelling or register a new account.', 'error');
+      return;
+    }
+    // Save
+    state.currentCode = code;
+    state.currentName = data.name || 'Student';
+    localStorage.setItem('nd_student_code', code);
+    localStorage.setItem('nd_student_name', state.currentName);
+    // Update last login
+    db.ref('students/' + code).update({ lastLogin: Date.now() });
+    enterPortal();
+  }).catch(err => showAlert('Connection error: ' + err.message, 'error'));
+}
+
+/* ========== REGISTER ========== */
+function doRegister(){
+  const name = (document.getElementById('regName').value || '').trim();
+  if (!name) { showAlert('Please enter your name.', 'error'); return; }
+  if (name.length < 2) { showAlert('Name must be at least 2 characters.', 'error'); return; }
+  // Load students to generate unique code
+  db.ref('students').once('value').then(snap => {
+    const all = snap.val() || {};
+    const code = generateCode(all);
+    const payload = {
+      name: name,
+      code: code,
+      createdAt: Date.now(),
+      lastLogin: Date.now(),
+      selfRegistered: true
+    };
+    return db.ref('students/' + code).set(payload).then(() => {
+      state.currentCode = code;
+      state.currentName = name;
+      localStorage.setItem('nd_student_code', code);
+      localStorage.setItem('nd_student_name', name);
+      // Show the code prominently
+      const el = document.getElementById('alertBox');
+      el.className = 'alert show success';
+      el.innerHTML = '✓ Welcome, <b>' + escapeHtml(name) + '</b>!<br>Your code is: <span class="code-badge">' + code + '</span><br><span style="font-size:14px;">Save this code — you\'ll need it to sign in next time.</span>';
+      setTimeout(() => enterPortal(), 2500);
+    });
+  }).catch(err => showAlert('Error: ' + err.message, 'error'));
+}
+
+/* ========== ENTER PORTAL ========== */
+function enterPortal(){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('lessonsScreen').style.display = 'block';
+  document.getElementById('welcomeBox').innerHTML =
+    '<div class="avatar">' + escapeHtml(state.currentName.charAt(0).toUpperCase()) + '</div>' +
+    '<h2>Welcome, ' + escapeHtml(state.currentName) + '! 👋</h2>' +
+    '<p>Code: <b style="color:var(--accent);font-family:Fira Code,monospace;letter-spacing:2px;">' + escapeHtml(state.currentCode) + '</b></p>';
+  loadLessons();
+}
+
+/* ========== LOAD LESSONS ========== */
+function loadLessons(){
+  // Listen to curriculum
+  db.ref('curriculum').on('value', snap => {
+    state.lessons = snap.val() || {};
+    // Also listen to this student's progress
+    db.ref('sessions/' + state.currentCode + '/state').on('value', progSnap => {
+      const st = progSnap.val() || {};
+      state.progress = {
+        scores: st.scores || {},
+        done: st.done || {}
+      };
+      renderLessons();
+    });
+  });
+}
+
+/* ========== RENDER LESSONS ========== */
+function renderLessons(){
+  const grid = document.getElementById('lessonsGrid');
+  const empty = document.getElementById('emptyLessons');
+  const lessons = Object.values(state.lessons || {}).filter(l => l.published !== false);
+  lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  if (!lessons.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = '';
+  lessons.forEach(lesson => {
+    const lessonId = lesson.id || Object.keys(state.lessons).find(k => state.lessons[k] === lesson);
+    const stages = lesson.stages || [];
+    const totalStages = stages.length;
+    const doneCount = stages.filter(s => state.progress.done[lessonId + '_' + s.id]).length;
+    const pct = totalStages ? Math.round((doneCount / totalStages) * 100) : 0;
+    const lessonScore = stages.reduce((sum, s) => sum + (state.progress.scores[lessonId + '_' + s.id] || 0), 0);
+    const maxScore = lesson.maxScore || 80;
+
+    const card = document.createElement('a');
+    card.className = 'lesson-card';
+    card.href = 'lesson.html?code=' + encodeURIComponent(state.currentCode) + '&lesson=' + encodeURIComponent(lessonId);
+    card.innerHTML =
+      '<div class="icon">' + (lesson.icon || '📘') + '</div>' +
+      '<div class="title">' + escapeHtml(lesson.title || 'Untitled lesson') + '</div>' +
+      '<div class="desc">' + escapeHtml(lesson.description || 'No description.') + '</div>' +
+      '<div class="meta"><span>📍 ' + doneCount + ' / ' + totalStages + ' stages</span><span>🏆 <b>' + lessonScore + '</b> / ' + maxScore + '</span></div>' +
+      '<div class="progress-rail"><div class="progress-fill" style="width:' + pct + '%;"></div></div>' +
+      '<button class="open-btn">' + (pct === 0 ? '▶ Start lesson' : (pct === 100 ? '✓ Review lesson' : '▶ Continue')) + '</button>';
+    grid.appendChild(card);
+  });
+}
+
+/* ========== SIGN OUT ========== */
+function signOut(){
+  if (!confirm('Sign out? You can log back in with your code.')) return;
+  localStorage.removeItem('nd_student_code');
+  localStorage.removeItem('nd_student_name');
+  state.currentCode = '';
+  state.currentName = '';
+  document.getElementById('loginScreen').style.display = 'block';
+  document.getElementById('lessonsScreen').style.display = 'none';
+  document.getElementById('loginCode').value = '';
+  document.getElementById('regName').value = '';
+}
+
+/* ========== SHOW CODE INFO ========== */
+function showCodeInfo(){
+  alert('Your student code is:\n\n  ' + state.currentCode + '\n\nWrite it down! You\'ll need it to sign in from another device or after clearing your browser data.');
+}
+
+/* ========== INIT ========== */
+if (state.currentCode && state.currentName) {
+  // Verify code still exists in Firebase
+  db.ref('students/' + state.currentCode).once('value').then(snap => {
+    if (snap.val()) {
+      enterPortal();
+    } else {
+      // Code was deleted by teacher
+      localStorage.removeItem('nd_student_code');
+      localStorage.removeItem('nd_student_name');
+      document.getElementById('loginCode').value = state.currentCode;
+    }
+  });
+} else {
+  setTimeout(() => document.getElementById('loginCode').focus(), 200);
+}
+
+// Enter key support
+document.getElementById('loginCode').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('regName').addEventListener('keydown', e => { if (e.key === 'Enter') doRegister(); });
+</script>
+</body>
+</html>
