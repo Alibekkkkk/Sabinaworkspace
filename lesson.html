@@ -1267,6 +1267,9 @@ function showToast(text){
 }
 /* INIT */
 loadState();
+  // Load lesson from URL if provided
+const lessonFromUrl = new URLSearchParams(window.location.search).get('lesson');
+if (lessonFromUrl) state.currentLessonId = lessonFromUrl;
 const savedCode=getSessionCode();
 if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
 renderSidebar();renderStage();startTimer();updateHUD();
