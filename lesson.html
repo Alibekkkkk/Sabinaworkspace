@@ -281,9 +281,16 @@ function initFirebase(){
   }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
 }
 function getSessionCode(){
-  const urlCode=new URLSearchParams(window.location.search).get('code');
-  if(urlCode){localStorage.setItem('nd_session_code',urlCode.toUpperCase());return urlCode.toUpperCase()}
-  return (localStorage.getItem('nd_session_code')||'').toUpperCase();
+  const params = new URLSearchParams(window.location.search);
+  const urlCode = params.get('code');
+  const urlLesson = params.get('lesson');
+  if (urlCode) {
+    localStorage.setItem('nd_session_code', urlCode.toUpperCase());
+  }
+  if (urlLesson) {
+    localStorage.setItem('nd_current_lesson', urlLesson);
+  }
+  return (urlCode || localStorage.getItem('nd_session_code') || '').toUpperCase();
 }
 function changeSessionCode(){
   const input=document.getElementById('sessionCodeInput');
