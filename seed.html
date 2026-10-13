@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html><head><title>Seed Database</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>body{font-family:system-ui;padding:40px;background:#0f1420;color:#fff;max-width:600px;margin:0 auto}
+button{padding:14px 28px;font-size:18px;background:#ff8a5b;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700}
+button:hover{background:#d94a15}code{background:#232b3d;padding:4px 8px;border-radius:4px;color:#ff8a5b}
+pre{background:#232b3d;padding:16px;border-radius:10px;font-size:13px;overflow:auto;line-height:1.5}</style>
+</head><body>
+<h1>🌱 Seed Curriculum</h1>
+<p>Click the button below to add Lesson 1 to Firebase. This only needs to be done once.</p>
+<pre>Firebase path: /curriculum/lesson_1</pre>
+<button onclick="seed()">🚀 Seed Database</button>
+<div id="result" style="margin-top:20px;"></div>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
+  authDomain: "sabina-s-workspace.firebaseapp.com",
+  databaseURL: "https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sabina-s-workspace",
+  storageBucket: "sabina-s-workspace.firebasestorage.app",
+  messagingSenderId: "64645562064",
+  appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
+};
+firebase.initializeApp(firebaseConfig);
+function seed(){
+  firebase.database().ref('curriculum/lesson_1').set({
+    id: "lesson_1",
+    title: "Lesson 1: Natural Disasters",
+    description: "Learn about ten natural disasters — earthquakes, floods, hurricanes — with reading, vocabulary and grammar practice.",
+    icon: "🌪️",
+    order: 1,
+    published: true,
+    createdAt: Date.now(),
+    maxScore: 80,
+    stages: [
+      {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
+      {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
+      {id:3,label:'Reading',sub:'Passage',icon:'📖'},
+      {id:4,label:'Cloze Reading',sub:'Fill gaps',icon:'✏️'},
+      {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
+      {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
+      {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
+      {id:8,label:'Present Perfect',sub:'New!',icon:'🟢'},
+      {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
+      {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+    ]
+  }).then(() => {
+    document.getElementById('result').innerHTML = '<p style="color:#4caf7d;font-size:18px;font-weight:700;">✓ Seeded successfully! Open the portal now.</p>';
+  }).catch(err => {
+    document.getElementById('result').innerHTML = '<p style="color:#ef5468;">Error: ' + err.message + '</p>';
+  });
+}
+</script>
+</body></html>
