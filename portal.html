@@ -162,7 +162,7 @@ const state = {
   currentCode: localStorage.getItem('nd_student_code') || '',
   currentName: localStorage.getItem('nd_student_name') || '',
   lessons: {},
-  progress: {},
+  progress: { scores: {}, done: {} },
   homework: {}
 };
 
