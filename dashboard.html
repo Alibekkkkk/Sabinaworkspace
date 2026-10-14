@@ -460,26 +460,26 @@ let editingImagesLessonId=null;
 const UNDO_STORAGE_KEY='teacherDashboardUndoV1';
 let undoStack=[];
 /* ========== HOMEWORK QUESTION BANKS (for teacher review) ========== */
-const HOMEWORK_QUESTIONS = {
-  homework_gaziz_sustainable_cities: [
-    {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
-    {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
-    {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
-    {type:'select',prompt:'Choose the word meaning "people who live in one area."',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.',explain_ru:'Community — это люди, живущие в одном районе.'},
-    {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому has + V3: has added.'},
-    {type:'order',prompt:'Build the past simple active sentence.',answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому past simple: cleaned.'},
-    {type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park use to the riverbank project.',explain_ru:'В тексте использование парка связывается с проектом по очистке берега.'},
-    {type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.',explain_ru:'Save означает не позволять чему-то тратиться зря.'},
-    {type:'select',prompt:'Choose a word meaning "an answer to a problem."',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.',explain_ru:'Solution — это решение проблемы.'},
-    {type:'tf',prompt:'The council spent part of its budget on buses last year.',answer:'True',explain:'The passage says it spent part of its budget last year.',explain_ru:'В тексте сказано, что совет потратил часть бюджета в прошлом году.'},
-    {type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.',explain_ru:'In 2023 — завершённое время: collected.'},
-    {type:'choice',prompt:'What does "affect" mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.',explain_ru:'Affect означает изменять или влиять на что-то.'},
-    {type:'order',prompt:'Build the present perfect active sentence.',answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.',explain_ru:'Используйте has + past participle, чтобы показать результат в настоящем.'},
-    {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — деньги, необходимые для покупки или действия.'},
-    {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
-    {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
-  ],
-homework_sabina_sustainable_cities: [
+const GAZIZ_HW_BANK = [
+  {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
+  {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
+  {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
+  {type:'select',prompt:'Choose the word meaning "people who live in one area."',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.',explain_ru:'Community — это люди, живущие в одном районе.'},
+  {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому has + V3: has added.'},
+  {type:'order',prompt:'Build the past simple active sentence.',answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому past simple: cleaned.'},
+  {type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park use to the riverbank project.',explain_ru:'В тексте использование парка связывается с проектом по очистке берега.'},
+  {type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.',explain_ru:'Save означает не позволять чему-то тратиться зря.'},
+  {type:'select',prompt:'Choose a word meaning "an answer to a problem."',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.',explain_ru:'Solution — это решение проблемы.'},
+  {type:'tf',prompt:'The council spent part of its budget on buses last year.',answer:'True',explain:'The passage says it spent part of its budget last year.',explain_ru:'В тексте сказано, что совет потратил часть бюджета в прошлом году.'},
+  {type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.',explain_ru:'In 2023 — завершённое время: collected.'},
+  {type:'choice',prompt:'What does "affect" mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.',explain_ru:'Affect означает изменять или влиять на что-то.'},
+  {type:'order',prompt:'Build the present perfect active sentence.',answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.',explain_ru:'Используйте has + past participle, чтобы показать результат в настоящем.'},
+  {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — деньги, необходимые для покупки или действия.'},
+  {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
+  {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
+];
+
+const SABINA_HW_BANK = [
   {type:'choice',prompt:'What is a blizzard?',options:['A long snowstorm with strong winds','A long period without rain','A rotating column of air'],answer:'A long snowstorm with strong winds',explain:'A blizzard is a long snowstorm with very strong winds.',explain_ru:'Blizzard — длинная снежная буря с очень сильным ветром.'},
   {type:'input',prompt:'Complete: Blizzards are caused by cold air that ___ with warm air.',answers:['collides','collides with'],explain:'Cold air collides with warm air to form a blizzard.',explain_ru:'Холодный воздух сталкивается с тёплым, чтобы сформировать буран.'},
   {type:'tf',prompt:'A drought is caused by too much rain.',answer:'False',explain:'A drought is a long period with very little or no rain.',explain_ru:'Drought — длительный период без дождя.'},
@@ -496,8 +496,28 @@ homework_sabina_sustainable_cities: [
   {type:'select',prompt:'Which word means "to spill over the edge"?',options:['overflow','erupt','collide','swirl'],answer:'overflow',explain:'Overflow means to spill over the edge.',explain_ru:'Overflow — переливаться через край.'},
   {type:'input',prompt:'Use past passive: The streets ___ (flood) after heavy rain yesterday.',answers:['were flooded'],explain:'Past passive with plural subject: were + V3.',explain_ru:'Past passive с множественным подлежащим: were + V3.'},
   {type:'tf',prompt:'Volcanoes can send ash clouds into the air.',answer:'True',explain:'Volcanoes send ash into the air and lava onto the ground.',explain_ru:'Вулканы выбрасывают пепел в воздух и лаву на землю.'}
-]
+];
+
+const HOMEWORK_QUESTIONS = {
+  homework_gaziz_sustainable_cities: GAZIZ_HW_BANK,
+  homework_gaziz: GAZIZ_HW_BANK,
+  homework_sabina_natural_disasters: SABINA_HW_BANK,
+  homework_sabina_sustainable_cities: SABINA_HW_BANK,
+  homework_sabina: SABINA_HW_BANK
 };
+const STAGE_NAMES=['Vocabulary','Word Match','Reading','Close Reading','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
+const ALL_STAGES=[
+  {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
+  {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
+  {id:3,label:'Reading',sub:'Passage',icon:'📖'},
+  {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
+  {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
+  {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
+  {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
+  {id:8,label:'Present Perfect',sub:'New!',icon:'🟢'},
+  {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
+  {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
+];
 const STAGE_NAMES=['Academic Vocabulary','Word Match','Academic Reading','Close Reading','Comprehension','Present Perfect Active','Academic Word Choice','Reporting Verbs','Sentence Builder','Vocabulary Challenge'];
 const ALL_STAGES=[
   {id:1,label:'Academic Vocabulary',sub:'Cards',icon:'📚'},
@@ -871,7 +891,14 @@ function attachActivity(code){
 function detachActivity(){
   if(activityRef){activityRef.off();activityRef=null}
 }
-
+function isStageDone(done, stageNum){
+  if(!done)return false;
+  if(done[stageNum])return true;
+  const suffix='_'+stageNum;
+  return Object.keys(done).some(function(k){
+    return (k===String(stageNum)||k.slice(-suffix.length)===suffix)&&!!done[k];
+  });
+}
 function renderSelectedView(){
   if(!activeCode)return;
   const stageNames=getStudentStageNames(activeCode);
@@ -879,9 +906,11 @@ function renderSelectedView(){
   const score=meta.score||0;
   const stage=meta.stage||0;
   const done=meta.done||{};
+  let doneCount=0;
+  for(let i=1;i<=10;i++){if(isStageDone(done,i))doneCount++;}
   document.getElementById('scoreBig').textContent=score;
   document.getElementById('currentStage').textContent=stage?('Stage '+stage+' — '+stageNames[stage-1]):'—';
-  document.getElementById('stagesDone').textContent=Object.values(done).filter(Boolean).length+' / 10';
+  document.getElementById('stagesDone').textContent=doneCount+' / 10';
   document.getElementById('streakVal').textContent=(meta.streak||0)+' 🔥';
   const m=String(Math.floor((meta.elapsed||0)/60)).padStart(2,'0');
   const s=String((meta.elapsed||0)%60).padStart(2,'0');
@@ -895,6 +924,8 @@ function renderSelectedView(){
   renderStudentHomework();updateSelectedClassworkLink();
 }
 function getStudentStageNames(code){
+  const student=studentsMap[code]||{};
+  if(String(student.name||'').trim().toLowerCase()==='gaziz')return SUSTAINABLE_STAGES.map(function(item){return item.label});
   const lesson=curriculum.lesson_1||{};const assigned=lesson.assignedTo||[];
   if(String(lesson.customUrl||'').indexOf('lesson_gaziz.html')!==-1&&(!assigned.length||assigned.indexOf(code)!==-1))return SUSTAINABLE_STAGES.map(function(item){return item.label});
   return STAGE_NAMES;
@@ -905,7 +936,7 @@ function renderStageVis(stage,done,names){
   for(let i=1;i<=10;i++){
     const chip=document.createElement('div');chip.className='stage-chip';
     if(stage===i)chip.classList.add('current');
-    if(done[i])chip.classList.add('done');
+    if(isStageDone(done,i))chip.classList.add('done');
     chip.textContent=i+'. '+names[i-1].substring(0,14);
     el.appendChild(chip);
   }
