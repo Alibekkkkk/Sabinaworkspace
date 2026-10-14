@@ -284,7 +284,7 @@ function initFirebase(){
     const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
     if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(snap){customImages=snap.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderFCModal();});
     fbDb.ref('curriculum').on('value',function(snap){curriculumCache=snap.val()||{};renderSidebar()});
-    fbDb.ref('curriculum/lesson_1/questionEdits').on('value',function(snap){if(teacherEditsReady(snap.val())){applyTeacherQuestionEdits(snap.val());if(teacherMode)renderStage()}});
+    fbDb.ref('curriculum/'+state.currentLessonId+'/questionEdits').on('value',function(snap){if(teacherEditsReady(snap.val())){applyTeacherQuestionEdits(snap.val());if(teacherMode)renderStage()}});
     if(teacherPreviewRequested){
       document.querySelector('.session-input').style.display='none';
       firebase.auth().onAuthStateChanged(function(user){
@@ -1269,7 +1269,7 @@ function editTeacherQuestion(bank,index){
   else if(bank==='sentence'){const answer=prompt('Correct sentence:',(next.correct||[]).join(' '));if(answer===null)return;next.correct=answer.trim().split(/\s+/);next.words=next.correct.slice();}
   if(Object.prototype.hasOwnProperty.call(next,'exp')){const exp=prompt('Explanation shown after the answer:',next.exp);if(exp===null)return;next.exp=exp.trim()}
   if(Object.prototype.hasOwnProperty.call(next,'explain')){const explain=prompt('Explanation shown after the answer:',next.explain);if(explain===null)return;next.explain=explain.trim()}
-  fbDb.ref('curriculum/lesson_1/questionEdits/'+bank+'/'+index).set(next).then(function(){Object.assign(item,next);renderStage();showToast('Question saved')}).catch(function(err){alert('Could not save question: '+err.message)});
+  fbDb.ref('curriculum/'+state.currentLessonId+'/questionEdits/'+bank+'/'+index).set(next).then(function(){Object.assign(item,next);renderStage();showToast('Question saved')}).catch(function(err){alert('Could not save question: '+err.message)});
 }
 /* INIT */
 if(!teacherPreviewRequested)loadState();
