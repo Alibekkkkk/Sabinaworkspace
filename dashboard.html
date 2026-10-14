@@ -647,11 +647,26 @@ function undoLastChange(){
   const refs=action.changes.map(function(change){return fbDb.ref(change.path)});
   Promise.all(refs.map(function(ref){return ref.once('value')})).then(function(snaps){
     const matches=action.changes.every(function(change,i){return sameValue(snaps[i].val(),change.after)});
-    if(!matches){alert('This change has since been modified in Firebase, so undo was skipped to protect the newer data.');return}
-    return Promise.all(action.changes.map(function(change){const ref=fbDb.ref(change.path);return change.before===null?ref.remove():ref.set(change.before)})).then(function(){
+    if(!matches){
+      alert('This change has since been modified in Firebase, so undo was skipped to protect the newer data.');
+      return;
+    }
+    return Promise.all(action.changes.map(function(change){
+      const ref=fbDb.ref(change.path);
+      return change.before===null?ref.remove():ref.set(change.before);
+    })).then(function(){
       undoStack.pop();
       try{sessionStorage.setItem(UNDO_STORAGE_KEY,JSON.stringify(undoStack))}catch(e){}
-      updateUndoButton();showToast('Undid: '+action.label);
+      updateUndoButton();
+      // NEW: Refresh curriculum and re-render UI so undo reflects everywhere
+      return fbDb.ref('curriculum').once('value').then(function(snap){
+        curriculum=snap.val()||{};
+        renderLessons();
+        if(activeCode)renderStudentHomework();
+        updateSelectedClassworkLink();
+      });
+    }).then(function(){
+      showToast('Undid: '+action.label);
     });
   }).catch(function(err){alert('Undo failed: '+err.message)});
 }
@@ -821,14 +836,24 @@ function sendReset(){
   if(!activeCode){alert('Select a student first.');return}
   if(!confirm('Reset all saved progress and points for this student? The student page will apply the reset when it reconnects.'))return;
   const resetAt=Date.now();
-  const paths=[
-    {path:'sessions/'+activeCode+'/state',value:{stage:1,score:0,streak:0,done:{},scores:{},notes:'',elapsed:0,resetAt:resetAt}},
-    {path:'sessions/'+activeCode+'/activity',value:null},
-    {path:'sessions/'+activeCode+'/command',value:{action:'reset',ts:resetAt}}
-  ];
-  writeChangesWithUndo(paths,'reset '+(studentsMap[activeCode].name||activeCode)+' progress').then(function(){
-    studentMeta[activeCode]={score:0,stage:1,done:{},notes:'',elapsed:0,streak:0,lastSeen:0};
-    renderSelectedView();renderStudentsList();clearFeed();showToast('Student progress and points reset');
+  // 1. Send the reset command FIRST so the student clears their local state
+  fbDb.ref('sessions/'+activeCode+'/command').set({action:'reset',ts:resetAt}).then(function(){
+    // 2. Then write the empty state
+    return fbDb.ref('sessions/'+activeCode+'/state').set({
+      stage:1,score:0,streak:0,done:{},scores:{},notes:'',elapsed:0,resetAt:resetAt,lastUpdate:Date.now()
+    });
+  }).then(function(){
+    // 3. Clear the activity feed
+    return fbDb.ref('sessions/'+activeCode+'/activity').remove();
+  }).then(function(){
+    // 4. Also clear any homework answers
+    return fbDb.ref('sessions/'+activeCode+'/homework').remove();
+  }).then(function(){
+    studentMeta[activeCode]={score:0,stage:1,done:{},notes:'',elapsed:0,streak:0,lastSeen:0,homework:{}};
+    renderSelectedView();
+    renderStudentsList();
+    clearFeed();
+    showToast('Student progress and homework reset');
   }).catch(function(err){alert('Reset failed: '+err.message)});
 }
 function jumpToStage(n){sendCommand('goto',{stage:n})}
