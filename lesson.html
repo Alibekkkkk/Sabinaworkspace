@@ -319,7 +319,7 @@ CURRICULUM.forEach(y=>y.months.forEach(m=>m.lessons.forEach(l=>l.stages.forEach(
 function getCurrentLesson(){
   const year=CURRICULUM.find(y=>y.year===state.currentYear);if(!year)return null;
   const month=year.months.find(m=>m.month===state.currentMonth);if(!month)return null;
-  return month.lessons.find(l=>l.id===state.currentLessonId);
+  return month.lessons.find(l=>l.id===state.currentLessonId)||month.lessons[0]||null;
 }
 function totalScore(){
   const lesson=getCurrentLesson();if(!lesson)return 0;
@@ -1336,7 +1336,16 @@ function showToast(text){
 /* ========== INIT ========== */
 if(!teacherPreviewRequested)loadState();
 const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
-if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
+if(lessonFromUrl){
+  state.currentLessonId=lessonFromUrl;
+  CURRICULUM[0].months[0].lessons[0].id=lessonFromUrl;
+  CURRICULUM[0].months[0].lessons[0].stages.forEach(s=>{
+    const key=lessonFromUrl+"_"+s.id;
+    if(state.scores[key]===undefined)state.scores[key]=0;
+    if(state.done[key]===undefined)state.done[key]=false;
+  });
+  if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl);
+}
 const savedCode=teacherPreviewRequested?'':getSessionCode();
 if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
 renderSidebar();renderStage();startTimer();updateHUD();
