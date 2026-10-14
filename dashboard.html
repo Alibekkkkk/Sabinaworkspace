@@ -166,6 +166,38 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 #teacherLogin #teacherAuthError{color:var(--error);font-size:14px;min-height:20px;margin:10px 0}
 #teacherLogin .btn.primary{min-height:44px;background:var(--accent);border-color:var(--accent);color:#fff}
 #teacherLogin .btn:not(.primary){min-height:44px;background:var(--panel-2);border-color:var(--border);color:var(--ink)}
+/* ===== Homework Review ===== */
+.rev-header{padding:0 0 18px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.rev-header h2{font-size:26px;margin:0 0 8px;font-weight:800;color:var(--ink)}
+.rev-meta{font-size:15px;color:var(--ink-soft);margin-bottom:14px;font-family:'Fira Code',monospace}
+.rev-meta b{color:var(--accent)}
+.rev-stats{display:flex;gap:10px;flex-wrap:wrap}
+.rev-stat{padding:8px 14px;border-radius:10px;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.rev-stat b{font-size:16px}
+.rev-stat.correct{background:rgba(76,175,125,.18);color:var(--success)}
+.rev-stat.wrong{background:rgba(239,84,104,.18);color:var(--error)}
+.rev-stat.skipped{background:rgba(255,183,77,.18);color:var(--warn)}
+.rev-stat.score{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;margin-left:auto}
+.rev-card{padding:16px 18px;border-radius:12px;background:var(--panel-2);border:1px solid var(--border);border-left:4px solid var(--border);margin-bottom:12px}
+.rev-card.is-correct{border-left-color:var(--success)}
+.rev-card.is-wrong{border-left-color:var(--error)}
+.rev-card.is-skipped{border-left-color:var(--warn);opacity:.85}
+.rev-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.rev-num{font:700 11px 'Fira Code',monospace;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase}
+.rev-badge{padding:4px 10px;border-radius:10px;font-size:12px;font-weight:800;letter-spacing:.5px}
+.rev-badge.correct{background:rgba(76,175,125,.2);color:var(--success)}
+.rev-badge.wrong{background:rgba(239,84,104,.2);color:var(--error)}
+.rev-badge.skipped{background:rgba(255,183,77,.2);color:var(--warn)}
+.rev-prompt{font-size:16px;line-height:1.55;font-weight:600;margin-bottom:12px;color:var(--ink)}
+.rev-answers{margin-bottom:12px;padding:10px 14px;background:var(--bg);border-radius:8px;font-size:15px;line-height:1.7}
+.rev-line{margin-bottom:4px}
+.rev-line:last-child{margin-bottom:0}
+.rev-label{font-weight:800;color:var(--ink-soft);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-right:8px}
+.rev-value{font-weight:600;color:var(--ink)}
+.rev-value.correct-val{color:var(--success)}
+.rev-explain{padding:12px 14px;border-radius:8px;background:rgba(74,127,200,.09);border-left:3px solid var(--primary);font-size:14px;line-height:1.6}
+.rev-exp-en{margin-bottom:6px;color:var(--ink);font-weight:500}
+.rev-exp-ru{font-style:italic;color:var(--ink-soft);font-size:13px}
 @media(max-width:600px){body{padding:12px}#teacherLogin{margin:7vh auto!important;padding:24px!important}.header{padding:16px}.header-actions{width:100%}.lesson-tile .tile-actions{flex-wrap:wrap}}
 </style>
 </head>
@@ -309,6 +341,12 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
   </div>
 </div>
 
+<div class="modal-backdrop" id="homeworkReviewModal" style="z-index:600;">
+  <div class="modal" style="max-width:820px;max-height:92vh;overflow-y:auto;position:relative;">
+    <button onclick="closeHomeworkReview()" style="position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--paper);color:var(--ink);font-size:20px;cursor:pointer;z-index:10;margin-left:auto;display:flex;align-items:center;justify-content:center;">×</button>
+    <div id="homeworkReviewContent"></div>
+  </div>
+</div>
 <div class="modal-backdrop" id="addStudentModal">
   <div class="modal">
     <h3>Add a new student</h3>
@@ -727,15 +765,35 @@ function updateSelectedClassworkLink(){
 function renderStudentHomework(){
   const list=document.getElementById('studentHomeworkList');
   if(!list||!activeCode)return;
-  const assigned=Object.keys(curriculum||{}).map(function(id){return{id:id,lesson:curriculum[id]||{}}}).filter(function(row){return Array.isArray(row.lesson.assignedTo)&&row.lesson.assignedTo.indexOf(activeCode)!==-1&&row.lesson.homework});
+  const assigned=Object.keys(curriculum||{}).map(function(id){return{id:id,lesson:curriculum[id]||{}}}).filter(function(row){
+    return Array.isArray(row.lesson.assignedTo)&&row.lesson.assignedTo.indexOf(activeCode)!==-1&&row.lesson.homework;
+  });
   if(!assigned.length){list.innerHTML='No homework assigned to this student.';return}
   const done=(studentMeta[activeCode]||{}).done||{};
+  const allHomework=(studentMeta[activeCode]||{}).homework||{};
   list.innerHTML=assigned.map(function(row){
-    const lesson=row.lesson;const stages=lesson.stages||[];const finished=stages.filter(function(stage){return !!done[stage.id]||!!done[row.id+'_'+stage.id]}).length;
-    const progress=((studentMeta[activeCode]||{}).homework||{})[row.id]||{};
-    const status=progress.completed?'Completed · ':progress.updatedAt?'In progress · ':'';
-    const base=lesson.customUrl||'lesson.html';const url=new URL(base,window.location.href);url.searchParams.set('code',activeCode);url.searchParams.set('lesson',row.id);
-    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);flex-wrap:wrap;"><div><b>'+escapeHtml(lesson.title||row.id)+'</b><div style="font-size:14px;color:var(--ink-soft);">'+(lesson.homeworkDue?'Due: '+escapeHtml(lesson.homeworkDue)+' · ':'')+(lesson.customUrl&&lesson.customUrl.indexOf('homework.html')!==-1?status+((progress.score||0)+' / '+(progress.total||16)+' correct'):(finished+' / '+stages.length+' stages complete'))+'</div></div><a class="btn small" style="text-decoration:none;" href="'+escapeAttr(url.href)+'">Open homework</a></div>';
+    const lesson=row.lesson;const stages=lesson.stages||[];
+    const finished=stages.filter(function(stage){return !!done[stage.id]||!!done[row.id+'_'+stage.id]}).length;
+    const progress=allHomework[row.id]||{};
+    const isSubmitted=!!progress.submitted;
+    const status=isSubmitted?'✓ Submitted · ':progress.updatedAt?'In progress · ':'';
+    const base=lesson.customUrl||'lesson.html';
+    const url=new URL(base,window.location.href);
+    url.searchParams.set('code',activeCode);
+    url.searchParams.set('lesson',row.id);
+    const scoreInfo=lesson.customUrl&&lesson.customUrl.indexOf('homework.html')!==-1
+      ? status+((progress.score||0)+' / '+(progress.total||16)+' correct')
+      : (finished+' / '+stages.length+' stages complete');
+    const submittedDate=isSubmitted&&progress.updatedAt?' · '+new Date(progress.updatedAt).toLocaleString():'';
+    const reviewBtn=isSubmitted
+      ? '<button class="btn small" style="background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;border:none;cursor:pointer;text-decoration:none;font-weight:700;" onclick="showHomeworkReview(\''+row.id+'\')">📋 View Submission</button>'
+      : '';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);flex-wrap:wrap;">'+
+      '<div style="flex:1;min-width:200px;"><b>'+escapeHtml(lesson.title||row.id)+'</b>'+
+      '<div style="font-size:14px;color:var(--ink-soft);">'+(lesson.homeworkDue?'Due: '+escapeHtml(lesson.homeworkDue)+' · ':'')+scoreInfo+submittedDate+'</div></div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">'+reviewBtn+
+      '<a class="btn small" style="text-decoration:none;" href="'+escapeAttr(url.href)+'">Open homework</a></div>'+
+    '</div>';
   }).join('');
 }
 function renderStudentsList(){
@@ -1224,7 +1282,84 @@ function deleteLesson(id){
   }).catch(function(err){alert('Error: '+err.message)});
 }
 
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAddStudent();closeLessonModal()}});
+/* ========== HOMEWORK REVIEW ========== */
+function showHomeworkReview(homeworkId){
+  if(!activeCode)return;
+  const homework=(studentMeta[activeCode]||{}).homework||{};
+  const data=homework[homeworkId];
+  if(!data){alert('No submission data found for this homework.');return;}
+  const questions=HOMEWORK_QUESTIONS[homeworkId];
+  if(!questions){alert('Question bank for this homework is not available in the dashboard. You may need to update dashboard.html.');return;}
+  const answers=data.answers||{};
+  const studentName=(studentsMap[activeCode]||{}).name||activeCode;
+  const lesson=curriculum[homeworkId]||{};
+  const lessonTitle=lesson.title||homeworkId;
+  const submittedDate=data.updatedAt?new Date(data.updatedAt).toLocaleString():'—';
+  let correctCount=0,wrongCount=0,skippedCount=0;
+  let cardsHtml='';
+  questions.forEach(function(q,i){
+    const userAnswer=answers[i]!==undefined?answers[i]:answers[String(i)];
+    const isAnswered=userAnswer!==undefined&&userAnswer!==null&&userAnswer!=='';
+    let isCorrect=false;
+    if(isAnswered){
+      if(q.type==='input'){
+        const norm=function(s){return String(s).toLowerCase().trim().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ')};
+        isCorrect=q.answers.some(function(a){return norm(a)===norm(userAnswer)});
+      } else if(q.type==='order'){
+        isCorrect=Array.isArray(userAnswer)&&userAnswer.length===q.answer.length&&userAnswer.every(function(w,k){return w===q.answer[k]});
+      } else {
+        isCorrect=String(userAnswer)===String(q.answer);
+      }
+    }
+    if(isCorrect)correctCount++;
+    else if(isAnswered)wrongCount++;
+    else skippedCount++;
+    const typeLabel={choice:'Choose',select:'Vocabulary',input:'Complete',tf:'True or False',order:'Word Order'}[q.type]||q.type;
+    const statusBadge=!isAnswered?'<span class="rev-badge skipped">— Not answered</span>':isCorrect?'<span class="rev-badge correct">✓ Correct</span>':'<span class="rev-badge wrong">✗ Wrong</span>';
+    const studentAnswerText=formatStudentAnswer(userAnswer);
+    const correctAnswerText=formatCorrectAnswer(q);
+    const cardClass=isCorrect?'is-correct':(isAnswered?'is-wrong':'is-skipped');
+    cardsHtml+='<div class="rev-card '+cardClass+'">'+
+      '<div class="rev-head"><span class="rev-num">Q'+(i+1)+' · '+typeLabel+'</span>'+statusBadge+'</div>'+
+      '<div class="rev-prompt">'+escapeHtml(q.prompt||'')+'</div>'+
+      '<div class="rev-answers">'+
+        '<div class="rev-line"><span class="rev-label">Student:</span><span class="rev-value">'+studentAnswerText+'</span></div>'+
+        ((!isCorrect&&isAnswered)?'<div class="rev-line"><span class="rev-label">Correct:</span><span class="rev-value correct-val">'+correctAnswerText+'</span></div>':'')+
+        ((isCorrect&&q.type==='input')?'<div class="rev-line"><span class="rev-label">Also accepted:</span><span class="rev-value">'+correctAnswerText+'</span></div>':'')+
+      '</div>'+
+      '<div class="rev-explain">'+
+        '<div class="rev-exp-en">'+(isCorrect?'✓ ':'')+escapeHtml(q.explain||'')+'</div>'+
+        (q.explain_ru?'<div class="rev-exp-ru">'+escapeHtml(q.explain_ru)+'</div>':'')+
+      '</div>'+
+    '</div>';
+  });
+  const html='<div class="rev-header">'+
+    '<h2>📋 Homework Review</h2>'+
+    '<div class="rev-meta"><b>'+escapeHtml(lessonTitle)+'</b><br>Student: <b>'+escapeHtml(studentName)+'</b> ('+escapeHtml(activeCode)+') · Submitted: '+escapeHtml(submittedDate)+'</div>'+
+    '<div class="rev-stats">'+
+      '<span class="rev-stat correct">✓ <b>'+correctCount+'</b> Correct</span>'+
+      '<span class="rev-stat wrong">✗ <b>'+wrongCount+'</b> Wrong</span>'+
+      (skippedCount>0?'<span class="rev-stat skipped">— <b>'+skippedCount+'</b> Skipped</span>':'')+
+      '<span class="rev-stat score">🏆 <b>'+correctCount+'</b> / '+(data.total||questions.length)+'</span>'+
+    '</div>'+
+  '</div>'+cardsHtml;
+  document.getElementById('homeworkReviewContent').innerHTML=html;
+  document.getElementById('homeworkReviewModal').classList.add('open');
+}
+function formatStudentAnswer(ans){
+  if(ans===undefined||ans===null||ans==='')return '<em style="color:var(--ink-soft);font-style:italic;">Not answered</em>';
+  if(Array.isArray(ans))return escapeHtml(ans.join(' '));
+  return escapeHtml(String(ans));
+}
+function formatCorrectAnswer(q){
+  if(q.type==='input')return q.answers.map(escapeHtml).join(' <span style="color:var(--ink-soft);">or</span> ');
+  if(q.type==='order')return q.answer.map(escapeHtml).join(' ');
+  return escapeHtml(String(q.answer));
+}
+function closeHomeworkReview(){
+  document.getElementById('homeworkReviewModal').classList.remove('open');
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAddStudent();closeLessonModal();closeHomeworkReview()}});
 document.getElementById('newStudentName').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
 document.getElementById('newStudentCode').addEventListener('keydown',function(e){if(e.key==='Enter')submitAddStudent()});
 
