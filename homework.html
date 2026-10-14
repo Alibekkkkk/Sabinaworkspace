@@ -8,72 +8,552 @@
 <style>
 :root{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--soft:#a0a6b0;--accent:#ff8a5b;--accent-dark:#ee5a24;--good:#4caf7d;--bad:#ef5468;--border:#333944;--shadow:0 12px 30px rgba(0,0,0,.18)}
 html.light{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--soft:#6c757d;--accent:#ee5a24;--accent-dark:#d94a15;--good:#2e9e5b;--bad:#dc3545;--border:#e0dbd0;--shadow:0 8px 24px rgba(0,0,0,.08)}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:18px 'EB Garamond','Times New Roman',serif;transition:background .2s,color .2s}.wrap{width:min(1100px,calc(100% - 32px));margin:22px auto 56px}.top{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:12px 16px;box-shadow:var(--shadow)}.mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:grid;place-items:center}.brand{font-size:22px;font-weight:800}.sub,.eyebrow,.qhead{font:12px 'Fira Code',monospace;letter-spacing:1.3px;text-transform:uppercase;color:var(--soft)}.spacer{flex:1}.top button,.top a{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:9px;padding:8px 12px;text-decoration:none;font:700 15px 'EB Garamond','Times New Roman',serif;cursor:pointer}.hero{padding:32px 4px 20px;display:grid;grid-template-columns:1.4fr .8fr;gap:24px;align-items:center}.eyebrow{color:var(--accent)}h1{font-size:clamp(38px,6vw,62px);line-height:.98;margin:10px 0 14px}.hero p{font-size:20px;line-height:1.5;color:var(--soft);max-width:680px;margin:0}.art{min-height:150px;background:var(--panel);border:1px solid var(--border);border-radius:18px;display:grid;place-items:center;font-size:54px;box-shadow:var(--shadow)}.progress,.panel,.question,.summary{background:var(--panel);border:1px solid var(--border);border-radius:15px;box-shadow:var(--shadow)}.progress{display:flex;align-items:center;gap:12px;padding:12px 16px;color:var(--soft)}.rail{height:8px;background:var(--bg);border-radius:10px;overflow:hidden;flex:1}.fill{height:100%;width:0;background:var(--accent);transition:width .25s}.panel{padding:22px;margin-top:18px}.panel h2{font-size:28px;margin:0 0 14px}.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px}.word{padding:12px 14px;border-radius:11px;background:var(--paper);border:1px solid var(--border)}.word b{display:block;color:var(--accent);font-size:19px}.word span{color:var(--soft);font-size:16px}.passage{font-size:21px;line-height:1.75}.passage h2{color:var(--accent)}.passage p{margin:0 0 14px}.question{padding:18px 20px;margin-top:14px}.qhead{color:var(--accent);margin-bottom:8px}.prompt{font-size:21px;line-height:1.4;margin-bottom:12px}.options{display:flex;flex-wrap:wrap;gap:9px}.pick,.chip,.check{cursor:pointer;border:1px solid var(--border);border-radius:10px;padding:10px 15px;background:var(--paper);color:var(--ink);font:700 17px 'EB Garamond','Times New Roman',serif}.pick:hover,.chip:hover{border-color:var(--accent)}.row{display:flex;gap:9px;flex-wrap:wrap}.answer{flex:1;min-width:230px;padding:11px 14px;background:var(--paper);color:var(--ink);border:1px solid var(--border);border-radius:10px;font:18px 'EB Garamond','Times New Roman',serif}.check{background:var(--accent);color:#fff;border-color:var(--accent-dark)}button:disabled,select:disabled,input:disabled{opacity:.55;cursor:default}.orderbank,.orderline{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.orderline{min-height:42px;border:1px dashed var(--border);padding:8px;border-radius:10px}.feedback{min-height:23px;margin-top:10px;color:var(--soft)}.feedback.ok{color:var(--good)}.feedback.no{color:var(--bad)}.summary{text-align:center;margin-top:18px;padding:20px;color:var(--good);font-size:22px}
-@media(max-width:700px){.wrap{width:calc(100% - 18px);margin:10px auto 32px}.top{flex-wrap:wrap}.hero{grid-template-columns:1fr;padding-top:24px}.art{min-height:90px}.badge{display:none}.panel{padding:16px}.passage{font-size:19px}.answer{min-width:100%}}
-</style></head>
-<body><main class="wrap">
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:18px 'EB Garamond','Times New Roman',serif;transition:background .2s,color .2s}
+.wrap{width:min(1100px,calc(100% - 32px));margin:22px auto 56px}
+.top{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:12px 16px;box-shadow:var(--shadow);position:sticky;top:10px;z-index:50}
+.mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:grid;place-items:center}
+.brand{font-size:22px;font-weight:800}
+.sub,.eyebrow{font:12px 'Fira Code',monospace;letter-spacing:1.3px;text-transform:uppercase;color:var(--soft)}
+.spacer{flex:1}
+.top button,.top a{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:9px;padding:8px 12px;text-decoration:none;font:700 15px 'EB Garamond','Times New Roman',serif;cursor:pointer}
+.hero{padding:32px 4px 20px;display:grid;grid-template-columns:1.4fr .8fr;gap:24px;align-items:center}
+.eyebrow{color:var(--accent)}
+h1{font-size:clamp(38px,6vw,62px);line-height:.98;margin:10px 0 14px}
+.hero p{font-size:20px;line-height:1.5;color:var(--soft);max-width:680px;margin:0}
+.art{min-height:150px;background:var(--panel);border:1px solid var(--border);border-radius:18px;display:grid;place-items:center;font-size:54px;box-shadow:var(--shadow)}
+.progress,.panel,.question,.summary{background:var(--panel);border:1px solid var(--border);border-radius:15px;box-shadow:var(--shadow)}
+.progress{display:flex;align-items:center;gap:12px;padding:12px 16px;color:var(--soft);position:sticky;top:74px;z-index:40}
+.rail{height:8px;background:var(--bg);border-radius:10px;overflow:hidden;flex:1}.fill{height:100%;width:0;background:var(--accent);transition:width .25s}
+.panel{padding:22px;margin-top:18px}.panel h2{font-size:28px;margin:0 0 14px}
+.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.word{padding:12px 14px;border-radius:11px;background:var(--paper);border:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:.15s}
+.word:hover{border-color:var(--accent);transform:translateY(-2px)}
+.word .w-emoji{font-size:24px}
+.word b{display:block;color:var(--accent);font-size:19px}.word span{color:var(--soft);font-size:14px}
+.passage{font-size:21px;line-height:1.75}.passage h2{color:var(--accent)}.passage p{margin:0 0 14px}
+.kw{display:inline;background:rgba(238,90,36,.14);color:var(--accent);font-weight:700;border:0;padding:1px 5px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:inherit;border-bottom:2px dotted var(--accent);transition:.15s}
+.kw:hover{background:var(--accent);color:#fff}
+.question{padding:22px 24px;margin-top:16px}
+.qhead{display:inline-block;padding:6px 14px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-radius:20px;font:700 13px 'Fira Code',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;box-shadow:0 4px 10px rgba(238,90,36,.25)}
+.prompt{font-size:22px;line-height:1.4;margin-bottom:14px;font-weight:600}
+.options{display:flex;flex-wrap:wrap;gap:9px}
+.pick,.chip,.check{cursor:pointer;border:1px solid var(--border);border-radius:10px;padding:11px 16px;background:var(--paper);color:var(--ink);font:700 17px 'EB Garamond','Times New Roman',serif;transition:.15s}
+.pick:hover:not(:disabled),.chip:hover:not(:disabled){border-color:var(--accent)}
+.pick.selected{background:var(--accent);color:#fff;border-color:var(--accent-dark)}
+.pick.correct,.chip.correct{background:#e5f1e7;border-color:#70a980;color:#2c6653}
+.pick.wrong,.chip.wrong{background:#fce4dc;border-color:#d9856e;color:#a94f38}
+.row{display:flex;gap:9px;flex-wrap:wrap}
+.answer{flex:1;min-width:230px;padding:12px 14px;background:var(--paper);color:var(--ink);border:1px solid var(--border);border-radius:10px;font:18px 'EB Garamond','Times New Roman',serif}
+.answer:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.answer.correct{border-color:#70a980;background:#e5f1e7}
+.answer.wrong{border-color:#d9856e;background:#fce4dc}
+.answer:disabled{opacity:.85}
+.orderbank,.orderline{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.orderline{min-height:44px;border:1px dashed var(--border);padding:8px;border-radius:10px;align-items:center}
+.feedback{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:16px;line-height:1.55;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#e5f1e7;border-left:4px solid var(--good);color:#2c6653}
+.feedback.no{background:#fce4dc;border-left:4px solid var(--bad);color:#a94f38}
+.feedback .en{display:block;font-weight:600;margin-bottom:4px}
+.feedback .ru{display:block;font-style:italic;color:var(--soft);font-size:15px}
+.summary{text-align:center;margin-top:18px;padding:20px;color:var(--good);font-size:22px;display:none}
+.summary.show{display:block}
+.finish-bar{margin-top:28px;padding:22px;background:var(--panel);border:2px dashed var(--accent);border-radius:16px;text-align:center;display:none}
+.finish-bar.show{display:block}
+.finish-bar .count{font-size:16px;color:var(--soft);margin-bottom:12px}
+.finish-btn{padding:16px 40px;font-size:19px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:0;border-radius:12px;cursor:pointer;box-shadow:0 6px 0 var(--accent-dark);font-family:inherit;transition:.15s}
+.finish-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 0 var(--accent-dark)}
+.finish-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:0 6px 0 #999}
+/* Keyword modal */
+.kw-backdrop{position:fixed;inset:0;background:rgba(20,25,40,.75);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.kw-backdrop.open{display:flex}
+.kw-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:32px 28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;animation:kwPop .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes kwPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.kw-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--paper);color:var(--soft);font-size:20px;cursor:pointer}
+.kw-close:hover{color:var(--bad);border-color:var(--bad)}
+.kw-emoji{font-size:80px;line-height:1;margin-bottom:14px}
+.kw-word{font-size:32px;font-weight:800;color:var(--accent);margin-bottom:6px}
+.kw-ru{font-size:20px;color:var(--soft);margin-bottom:20px;font-style:italic}
+.kw-listen{padding:12px 24px;font-size:16px;font-weight:700;background:var(--accent);color:#fff;border:0;border-radius:10px;cursor:pointer;font-family:inherit}
+.kw-listen:hover{background:var(--accent-dark)}
+@media(max-width:700px){.wrap{width:calc(100% - 18px);margin:10px auto 32px}.top{flex-wrap:wrap}.hero{grid-template-columns:1fr;padding-top:24px}.art{min-height:90px}.badge{display:none}.panel{padding:16px}.passage{font-size:19px}.answer{min-width:100%}.progress{top:auto;position:static}}
+</style>
+</head>
+<body>
+<main class="wrap">
 <header class="top"><div class="mark">🏙️</div><div><div class="brand" id="studentTitle">Homework 1</div><div class="sub">Sustainable Cities · Active tenses</div></div><span class="spacer"></span><a id="classworkLink" href="lesson_gaziz.html">← Classwork</a><button onclick="toggleTheme()" id="themeButton">☀️ Light theme</button></header>
 <section class="hero"><div><div class="eyebrow" id="variantLabel">Topic 1 · Sustainable Cities</div><h1 id="headline">A new city vocabulary set</h1><p id="intro"></p></div><div class="art" aria-hidden="true">🌳 → 🚌 → ☀️</div></section>
 <div class="progress"><span id="progressText">0 / 0 complete</span><div class="rail"><div class="fill" id="progressFill"></div></div><span id="scoreText">0 points</span></div>
-<section class="panel"><h2>Useful words for this homework</h2><div class="words" id="words"></div></section>
-<section class="panel passage" id="passage"></section><section id="questions"></section><section class="summary" id="summary" hidden></section>
-</main><script>
+<section class="panel"><h2>Useful words for this homework</h2><p style="color:var(--soft);font-size:14px;margin:-6px 0 14px;">Tap any word to see its picture, translation, and hear the British pronunciation.</p><div class="words" id="words"></div></section>
+<section class="panel passage" id="passage"></section>
+<section id="questions"></section>
+<div class="finish-bar" id="finishBar">
+  <div class="count" id="finishCount">Answer all questions to finish</div>
+  <button class="finish-btn" id="finishBtn" onclick="submitAll()" disabled>✓ Finish & Submit</button>
+</div>
+<section class="summary" id="summary"></section>
+</main>
+
+<div class="kw-backdrop" id="kwBackdrop" onclick="if(event.target===this)closeKw()">
+  <div class="kw-card">
+    <button class="kw-close" onclick="closeKw()">×</button>
+    <div class="kw-emoji" id="kwEmoji">📖</div>
+    <div class="kw-word" id="kwWord"></div>
+    <div class="kw-ru" id="kwRu"></div>
+    <button class="kw-listen" id="kwListen" onclick="speakCurrentKw()">🔊 Listen</button>
+  </div>
+</div>
+
+<script>
 const firebaseConfig={apiKey:'AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w',authDomain:'sabina-s-workspace.firebaseapp.com',databaseURL:'https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app',projectId:'sabina-s-workspace',storageBucket:'sabina-s-workspace.firebasestorage.app',messagingSenderId:'64645562064',appId:'1:64645562064:web:2c5b5a37b5ab9a685be8d5'};
-const params=new URLSearchParams(location.search),variant=params.get('variant')==='sabina'?'sabina':'gaziz',code=(params.get('code')||'').toUpperCase(),homeworkId=params.get('lesson')||('homework_'+variant+'_sustainable_cities'),homeworkVersion=2,teacherPreviewRequested=params.get('teacher')==='1';
-const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];let teacherMode=false;
-const classWords=[['environment','the natural world around us'],['pollution','harmful material in air, water, or land'],['transport','ways of moving people or goods'],['community','people who live in one area'],['improve','make something better'],['increase','become or make greater'],['reduce','make or become smaller'],['provide','give or make something available'],['affect','change or influence something'],['result','something that happens because of an action'],['benefit','a good or helpful result'],['cost','the money needed to buy or do something'],['issue','a subject or problem people discuss'],['solution','an answer to a problem'],['public','for everyone to use'],['local','connected with a nearby place'],['energy','power used for heat, light, or movement'],['resource','a useful supply or material'],['develop','grow or make something over time'],['support','help someone or something']];
-const gazizWords=[['area','a particular part of a place'],['change','something that becomes different'],['plan','an idea for what to do'],['service','work or help provided to people'],['choice','one thing selected from several'],['need','something necessary'],['effect','a change caused by an action'],['reason','why something happens'],['use','the act of doing something with a thing'],['save','keep something from being wasted'],['spend','use money, time, or energy'],['build','make something by putting parts together'],['move','go from one place to another'],['clean','free from dirt or pollution'],['safe','not likely to cause harm'],['crowded','full of many people or things'],['travel','go from one place to another'],['waste','use more of something than needed'],['recycle','use material again'],['protect','keep someone or something safe']];
+const params=new URLSearchParams(location.search);
+const variant=params.get('variant')==='sabina'?'sabina':'gaziz';
+const code=(params.get('code')||'').toUpperCase();
+const homeworkId=params.get('lesson')||('homework_'+variant+'_sustainable_cities');
+const homeworkVersion=3; // bumped to reset old per-question data
+const teacherPreviewRequested=params.get('teacher')==='1';
+const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
+let teacherMode=false;
+
+/* ========== VOCABULARY: [word, definition, russian, emoji] ========== */
+const classWords=[
+  ['environment','the natural world around us','окружающая среда','🌍'],
+  ['pollution','harmful material in air, water, or land','загрязнение','💨'],
+  ['transport','ways of moving people or goods','транспорт','🚌'],
+  ['community','people who live in one area','сообщество','👥'],
+  ['improve','make something better','улучшать','✨'],
+  ['increase','become or make greater','увеличивать(ся)','📈'],
+  ['reduce','make or become smaller','уменьшать(ся)','📉'],
+  ['provide','give or make something available','предоставлять','🎁'],
+  ['affect','change or influence something','влиять','🔄'],
+  ['result','something that happens because of an action','результат','🎯'],
+  ['benefit','a good or helpful result','польза','👍'],
+  ['cost','the money needed to buy or do something','стоимость','💰'],
+  ['issue','a subject or problem people discuss','вопрос, проблема','❔'],
+  ['solution','an answer to a problem','решение','💡'],
+  ['public','for everyone to use','общественный','🏛️'],
+  ['local','connected with a nearby place','местный','📍'],
+  ['energy','power used for heat, light, or movement','энергия','⚡'],
+  ['resource','a useful supply or material','ресурс','🧰'],
+  ['develop','grow or make something over time','развивать(ся)','🌱'],
+  ['support','help someone or something','поддерживать','🤝']
+];
+const gazizWords=[
+  ['area','a particular part of a place','район, область','📍'],
+  ['change','something that becomes different','изменение','🔄'],
+  ['plan','an idea for what to do','план','📋'],
+  ['service','work or help provided to people','служба, сервис','🛎️'],
+  ['choice','one thing selected from several','выбор','🎯'],
+  ['need','something necessary','потребность','❗'],
+  ['effect','a change caused by an action','эффект, результат','🎯'],
+  ['reason','why something happens','причина','❓'],
+  ['use','the act of doing something with a thing','использование','🔧'],
+  ['save','keep something from being wasted','экономить','💾'],
+  ['spend','use money, time, or energy','тратить','💸'],
+  ['build','make something by putting parts together','строить','🏗️'],
+  ['move','go from one place to another','двигать(ся)','🚶'],
+  ['clean','free from dirt or pollution','чистый','🧼'],
+  ['safe','not likely to cause harm','безопасный','🛡️'],
+  ['crowded','full of many people or things','переполненный','👥'],
+  ['travel','go from one place to another','путешествовать','✈️'],
+  ['waste','use more of something than needed','отходы; тратить зря','🗑️'],
+  ['recycle','use material again','перерабатывать','♻️'],
+  ['protect','keep someone or something safe','защищать','🛡️']
+];
+
+/* ========== PASSAGES ========== */
 const cityText='<h2>Rivergate makes changes for its residents</h2><p>Rivergate is a growing city beside a wide river. In recent years, the local council has improved public transport. It has provided more buses in the evening, and it has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. The project had a good result: families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>These plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. The changes have affected daily life in different ways. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn and decide what to improve next.</p>';
-const sabinaText='<h2>Rivergate has improved travel and public spaces</h2><p>Rivergate has improved its public transport over the past two years. The city has provided more buses in the evening and has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. Families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>The plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. Some people have found it easier to travel, while others still wait a long time at busy stops. The council will review the service this autumn.</p>';
+const sabinaText='<h2>Rivergate has improved travel and public spaces</h2><p>Rivergate has improved its public transport over the past two years. The city has provided more buses in the evening and has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. Families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>The plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn.</p>';
+
+/* ========== QUESTIONS with bilingual explanations ========== */
 const gazizQuestions=[
-{type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.'},
-{type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.'},
-{type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.'},
-{type:'select',prompt:'Choose the word meaning “people who live in one area.”',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.'},
-{type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.'},
-{type:'order',prompt:'Build the past simple active sentence.',words:['Volunteers','cleaned','the','riverbank','in','2023.'],answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.'},
-{type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park’s use to the riverbank project.'},
-{type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.'},
-{type:'select',prompt:'Choose a word meaning “an answer to a problem.”',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.'},
-{type:'tf',prompt:'The council spent part of its budget on buses last year.',answer:'True',explain:'The passage says it spent part of its budget last year.'},
-{type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.'},
-{type:'choice',prompt:'What does “affect” mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.'},
-{type:'order',prompt:'Build the present perfect active sentence.',words:['The','city','has','planted','trees','along','two','roads.'],answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.'},
-{type:'select',prompt:'Which word means “money needed to do something”?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.'},
-{type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.'},
-{type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.'}
+  {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
+  {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
+  {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
+  {type:'select',prompt:'Choose the word meaning "people who live in one area."',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.',explain_ru:'Community — это люди, живущие в одном районе.'},
+  {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому используем has + V3: has added.'},
+  {type:'order',prompt:'Build the past simple active sentence.',words:['Volunteers','cleaned','the','riverbank','in','2023.'],answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому используем past simple: cleaned.'},
+  {type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park use to the riverbank project.',explain_ru:'В тексте использование парка связывается с проектом по очистке берега.'},
+  {type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.',explain_ru:'Save означает не позволять чему-то тратиться зря.'},
+  {type:'select',prompt:'Choose a word meaning "an answer to a problem."',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.',explain_ru:'Solution — это решение проблемы.'},
+  {type:'tf',prompt:'The council spent part of its budget on buses last year.',answer:'True',explain:'The passage says it spent part of its budget last year.',explain_ru:'В тексте сказано, что совет потратил часть бюджета в прошлом году.'},
+  {type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.',explain_ru:'In 2023 — завершённое время: collected.'},
+  {type:'choice',prompt:'What does "affect" mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.',explain_ru:'Affect означает изменять или влиять на что-то.'},
+  {type:'order',prompt:'Build the present perfect active sentence.',words:['The','city','has','planted','trees','along','two','roads.'],answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.',explain_ru:'Используйте has + past participle, чтобы показать результат в настоящем.'},
+  {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — это деньги, необходимые для покупки или действия.'},
+  {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
+  {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
 ];
 const sabinaQuestions=[
-{type:'select',prompt:'Choose the word that means “ways of moving people or goods.”',options:['transport','community','energy','issue'],answer:'transport',explain:'Transport means ways of moving people or goods.'},
-{type:'input',prompt:'Complete: The council has ___ more buses in the evening.',answers:['provided'],explain:'Provide means to give or make something available.'},
-{type:'choice',prompt:'When did the council open the new bus station?',options:['Last spring','In 2023','This autumn'],answer:'Last spring',explain:'The passage says it opened last spring.'},
-{type:'tf',prompt:'The city planted trees along two busy roads.',answer:'True',explain:'The passage says the city has planted trees along two roads.'},
-{type:'order',prompt:'Put the words in order to make a present perfect sentence.',words:['Rivergate','has','improved','public','transport.'],answer:['Rivergate','has','improved','public','transport.'],explain:'The city has improved it, with a result now.'},
-{type:'input',prompt:'Use past simple active: Volunteers ___ (clean) the riverbank in 2023.',answers:['cleaned'],explain:'In 2023 is a finished time: cleaned.'},
-{type:'select',prompt:'Which word means “a good or helpful result”?',options:['benefit','effect','cost','need'],answer:'benefit',explain:'A benefit is a good or helpful result.'},
-{type:'choice',prompt:'What did residents do at the public meeting?',options:['Shared their ideas','Built a bus station','Bought new street lights'],answer:'Shared their ideas',explain:'Residents tested routes and shared ideas.'},
-{type:'input',prompt:'Use present perfect active: The city ___ (create) a small park beside the river.',answers:['has created'],explain:'The result is still present: has created.'},
-{type:'tf',prompt:'The council used better lights to save energy.',answer:'True',explain:'The passage says it has saved energy with better lights.'},
-{type:'select',prompt:'Choose a word meaning “why something happens.”',options:['reason','change','service','area'],answer:'reason',explain:'A reason explains why something happens.'},
-{type:'order',prompt:'Build a past simple active sentence.',words:['The','council','spent','money','on','buses','last','year.'],answer:['The','council','spent','money','on','buses','last','year.'],explain:'Last year is finished; spent is past simple.'},
-{type:'choice',prompt:'What did volunteers collect?',options:['Plastic waste','Bus maps','Street lights'],answer:'Plastic waste',explain:'The volunteers collected plastic waste.'},
-{type:'input',prompt:'Complete: A ___ keeps a person or thing safe.',answers:['protect'],explain:'Protect means to keep someone or something safe.'},
-{type:'select',prompt:'Which word means “use something again”?',options:['recycle','spend','develop','move'],answer:'recycle',explain:'Recycle means use material again.'},
-{type:'input',prompt:'Use present perfect active: Families ___ (use) the park more often since then.',answers:['have used'],explain:'Since then connects the past action to now: have used.'}
+  {type:'select',prompt:'Choose the word that means "ways of moving people or goods."',options:['transport','community','energy','issue'],answer:'transport',explain:'Transport means ways of moving people or goods.',explain_ru:'Transport — это способы перемещения людей или товаров.'},
+  {type:'input',prompt:'Complete: The council has ___ more buses in the evening.',answers:['provided'],explain:'Provide means to give or make something available.',explain_ru:'Provide означает давать или делать что-то доступным.'},
+  {type:'choice',prompt:'When did the council open the new bus station?',options:['Last spring','In 2023','This autumn'],answer:'Last spring',explain:'The passage says it opened last spring.',explain_ru:'В тексте сказано, что станция открылась прошлой весной.'},
+  {type:'tf',prompt:'The city planted trees along two busy roads.',answer:'True',explain:'The passage says the city has planted trees along two roads.',explain_ru:'В тексте сказано, что город посадил деревья вдоль двух дорог.'},
+  {type:'order',prompt:'Put the words in order to make a present perfect sentence.',words:['Rivergate','has','improved','public','transport.'],answer:['Rivergate','has','improved','public','transport.'],explain:'The city has improved it, with a result now.',explain_ru:'Город улучшил это — результат виден сейчас.'},
+  {type:'input',prompt:'Use past simple active: Volunteers ___ (clean) the riverbank in 2023.',answers:['cleaned'],explain:'In 2023 is a finished time: cleaned.',explain_ru:'In 2023 — завершённое время: cleaned.'},
+  {type:'select',prompt:'Which word means "a good or helpful result"?',options:['benefit','effect','cost','need'],answer:'benefit',explain:'A benefit is a good or helpful result.',explain_ru:'Benefit — хороший или полезный результат.'},
+  {type:'choice',prompt:'What did residents do at the public meeting?',options:['Shared their ideas','Built a bus station','Bought new street lights'],answer:'Shared their ideas',explain:'Residents tested routes and shared ideas.',explain_ru:'Жители проверили маршруты и поделились идеями.'},
+  {type:'input',prompt:'Use present perfect active: The city ___ (create) a small park beside the river.',answers:['has created'],explain:'The result is still present: has created.',explain_ru:'Результат всё ещё важен: has created.'},
+  {type:'tf',prompt:'The council used better lights to save energy.',answer:'True',explain:'The passage says it has saved energy with better lights.',explain_ru:'В тексте сказано, что город сэкономил энергию благодаря новым лампам.'},
+  {type:'select',prompt:'Choose a word meaning "why something happens."',options:['reason','change','service','area'],answer:'reason',explain:'A reason explains why something happens.',explain_ru:'Reason объясняет, почему что-то происходит.'},
+  {type:'order',prompt:'Build a past simple active sentence.',words:['The','council','spent','money','on','buses','last','year.'],answer:['The','council','spent','money','on','buses','last','year.'],explain:'Last year is finished; spent is past simple.',explain_ru:'Last year — завершённое время; spent — past simple.'},
+  {type:'choice',prompt:'What did volunteers collect?',options:['Plastic waste','Bus maps','Street lights'],answer:'Plastic waste',explain:'The volunteers collected plastic waste.',explain_ru:'Волонтёры собрали пластиковые отходы.'},
+  {type:'input',prompt:'Complete: A ___ keeps a person or thing safe.',answers:['protect'],explain:'Protect means to keep someone or something safe.',explain_ru:'Protect означает защищать кого-то или что-то.'},
+  {type:'select',prompt:'Which word means "use something again"?',options:['recycle','spend','develop','move'],answer:'recycle',explain:'Recycle means use material again.',explain_ru:'Recycle — использовать материал снова.'},
+  {type:'input',prompt:'Use present perfect active: Families ___ (use) the park more often since then.',answers:['have used'],explain:'Since then connects the past action to now: have used.',explain_ru:'Since then связывает прошлое действие с настоящим: have used.'}
 ];
-const lesson={gaziz:{title:'Gaziz · Homework 1',headline:'City life: changes and choices',intro:'Read a new Rivergate case study. Practise common IELTS words and use present perfect or past simple in the active voice.',passage:cityText,words:gazizWords,questions:gazizQuestions},sabina:{title:'Sabina · Homework 1',headline:'Rivergate: travel and shared spaces',intro:'Use the same class topic and key facts, but answer a fresh set of question types. Practise present perfect and past simple in the active voice.',passage:sabinaText,words:classWords,questions:sabinaQuestions}}[variant];
-let db=null,ref=null,score=0,answers={};
+
+const lesson={
+  gaziz:{title:'Gaziz · Homework 1',headline:'City life: changes and choices',intro:'Read a new Rivergate case study. Practise common IELTS words and use present perfect or past simple in the active voice.',passage:cityText,words:gazizWords,questions:gazizQuestions},
+  sabina:{title:'Sabina · Homework 1',headline:'Rivergate: travel and shared spaces',intro:'Use the same class topic and key facts, but answer a fresh set of question types. Practise present perfect and past simple in the active voice.',passage:sabinaText,words:classWords,questions:sabinaQuestions}
+}[variant];
+
+/* ========== STATE ========== */
+let db=null,ref=null,answers={},submitted=false,currentKwWord='';
+const WORD_LOOKUP={};lesson.words.forEach(([en,def,ru,emo])=>{WORD_LOOKUP[en.toLowerCase()]={en,def,ru,emo}});
+
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-document.title=lesson.title;document.getElementById('studentTitle').textContent=lesson.title;document.getElementById('headline').textContent=lesson.headline;document.getElementById('intro').textContent=lesson.intro;document.getElementById('passage').insertAdjacentHTML('beforeend',lesson.passage);document.getElementById('variantLabel').textContent='Topic 1 · Sustainable Cities · Homework';document.getElementById('words').innerHTML=lesson.words.map(r=>'<div class="word"><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></div>').join('');
-const classworkFile = (variant === 'sabina') ? 'lesson.html' : 'lesson_gaziz.html';
-document.getElementById('classworkLink').href = classworkFile + '?lesson=lesson_1&code=' + encodeURIComponent(code);
-function toggleTheme(){document.documentElement.classList.toggle('light');const light=document.documentElement.classList.contains('light');localStorage.setItem('nd_homework_theme',light?'light':'dark');document.getElementById('themeButton').textContent=light?'🌙 Dark theme':'☀️ Light theme'}
-try{const savedTheme=localStorage.getItem('nd_homework_theme');if(savedTheme==='light')document.documentElement.classList.add('light')}catch(e){}document.getElementById('themeButton').textContent=document.documentElement.classList.contains('light')?'🌙 Dark theme':'☀️ Light theme';
-function render(){const root=document.getElementById('questions');root.innerHTML='';lesson.questions.forEach((q,i)=>{const card=document.createElement('article');card.className='question';const fb=document.createElement('div');fb.className='feedback';fb.id='fb'+i;card.innerHTML='<div class="qhead">Question '+(i+1)+' of '+lesson.questions.length+' · '+({choice:'Choose',select:'Vocabulary',input:'Complete',tf:'True or false',order:'Word order'}[q.type])+'</div><div class="prompt">'+esc(q.prompt)+'</div>';if(q.type==='choice'||q.type==='tf'){const opts=q.type==='tf'?['True','False']:q.options;const box=document.createElement('div');box.className='options';opts.forEach(o=>{const b=document.createElement('button');b.className='pick';b.textContent=o;b.onclick=()=>check(i,o,fb,card);box.appendChild(b)});card.appendChild(box)}else if(q.type==='select'){const row=document.createElement('div');row.className='row';const s=document.createElement('select');s.className='answer';s.innerHTML='<option value="">Choose an answer…</option>'+q.options.map(o=>'<option>'+esc(o)+'</option>').join('');const b=document.createElement('button');b.className='check';b.textContent='Check';b.onclick=()=>check(i,s.value,fb,card);row.append(s,b);card.appendChild(row)}else if(q.type==='input'){const row=document.createElement('div');row.className='row';const input=document.createElement('input');input.className='answer';input.placeholder='Type your answer';const b=document.createElement('button');b.className='check';b.textContent='Check';b.onclick=()=>check(i,input.value,fb,card);input.onkeydown=e=>{if(e.key==='Enter')b.click()};row.append(input,b);card.appendChild(row)}else{const bank=document.createElement('div');bank.className='orderbank';const line=document.createElement('div');line.className='orderline';let picked=[];q.words.slice().sort(()=>Math.random()-.5).forEach(w=>{const b=document.createElement('button');b.className='chip';b.textContent=w;b.onclick=()=>{picked.push(w);b.disabled=true;line.textContent=picked.join(' ')};bank.appendChild(b)});const checkBtn=document.createElement('button');checkBtn.className='check';checkBtn.textContent='Check order';checkBtn.onclick=()=>check(i,picked,fb,card);const reset=document.createElement('button');reset.className='pick';reset.textContent='Reset';reset.onclick=()=>{picked=[];line.textContent='';bank.querySelectorAll('button').forEach(b=>{b.disabled=false})};card.append(bank,line,checkBtn,reset)}card.appendChild(fb);root.appendChild(card);if(answers[i])completeCard(card,fb,q.explain)});updateProgress()}
-function check(i,value,fb,card){if(answers[i])return;const q=lesson.questions[i];let ok=q.type==='input'?q.answers.some(a=>String(a).toLowerCase().trim()===String(value).toLowerCase().trim()):q.type==='order'?Array.isArray(value)&&value.length===q.answer.length&&value.every((w,k)=>w===q.answer[k]):String(value)===String(q.answer);if(!ok){fb.className='feedback no';fb.textContent='Not quite yet. Review the text and try again.';return}answers[i]=true;score=Object.keys(answers).length;completeCard(card,fb,q.explain);updateProgress();saveProgress()}
-function completeCard(card,fb,explain){card.querySelectorAll('button,select,input').forEach(e=>e.disabled=true);fb.className='feedback ok';fb.textContent='✓ '+explain}
-function updateProgress(){const total=lesson.questions.length;document.getElementById('progressText').textContent=score+' / '+total+' complete';document.getElementById('progressFill').style.width=Math.round(score/total*100)+'%';document.getElementById('scoreText').textContent=score+' points';const summary=document.getElementById('summary');summary.hidden=score<total;summary.textContent=score===total?'Homework completed. Your teacher can see your score and completion. Great work!':''}
-function saveProgress(){if(ref&&!teacherMode)ref.update({version:homeworkVersion,answers:answers,score:score,total:lesson.questions.length,completed:score===lesson.questions.length,updatedAt:Date.now()}).catch(console.error)}
-function init(){if(teacherMode){render();return}if(!code){render();document.getElementById('intro').textContent+=' Open this page from your student portal so your progress can be saved.';return}try{if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);db=firebase.database();ref=db.ref('sessions/'+code+'/homework/'+homeworkId);ref.once('value').then(s=>{const data=s.val()||{};if(Number(data.version)!==homeworkVersion){answers={};score=0;ref.set({version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false}).catch(console.error)}else{answers=data.answers||{};score=Object.keys(answers).length}render()}).catch(e=>{document.getElementById('intro').textContent+=' Saved progress could not be loaded: '+e.message;render()})}catch(e){render()}}
-if(teacherPreviewRequested){try{if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);firebase.auth().onAuthStateChanged(function(user){teacherMode=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));if(teacherMode){document.querySelector('.sub').textContent='Teacher preview · student progress is unchanged';document.getElementById('intro').textContent='Teacher preview. Review this homework without changing the student’s saved answers.';init()}else init()})}catch(e){init()}}else init();
-</script></body></html>
+
+/* ========== HEADER / HERO ========== */
+document.title=lesson.title;
+document.getElementById('studentTitle').textContent=lesson.title;
+document.getElementById('headline').textContent=lesson.headline;
+document.getElementById('intro').textContent=lesson.intro;
+document.getElementById('variantLabel').textContent='Topic 1 · Sustainable Cities · Homework';
+document.getElementById('classworkLink').href=(variant==='sabina'?'lesson.html':'lesson_gaziz.html')+'?lesson=lesson_1&code='+encodeURIComponent(code);
+
+/* ========== WORDS GRID (with click to open modal) ========== */
+function renderWords(){
+  const el=document.getElementById('words');
+  el.innerHTML=lesson.words.map(([en,def,ru,emo])=>
+    '<div class="word" data-word="'+esc(en)+'">'+
+      '<span class="w-emoji">'+emo+'</span>'+
+      '<div><b>'+esc(en)+'</b><span>'+esc(ru)+'</span></div>'+
+    '</div>'
+  ).join('');
+  el.querySelectorAll('.word').forEach(w=>{
+    w.onclick=()=>openKw(w.dataset.word);
+  });
+}
+
+/* ========== PASSAGE with interactive keywords ========== */
+function renderPassage(){
+  const container=document.getElementById('passage');
+  container.innerHTML=lesson.passage;
+  // Wrap keywords in text nodes only
+  const words=lesson.words.map(([en])=>en);
+  wrapKeywordsInNode(container, words);
+  container.querySelectorAll('.kw').forEach(btn=>{
+    btn.onclick=()=>openKw(btn.dataset.kw);
+  });
+}
+function wrapKeywordsInNode(node,words){
+  if(node.nodeType===3){ // text
+    const text=node.textContent;
+    let result=text;
+    words.forEach(w=>{
+      const escW=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const re=new RegExp('\\b('+escW+')\\b','gi');
+      result=result.replace(re,'\u0001'+(w.toLowerCase())+'\u0002$1\u0003');
+    });
+    if(result!==text){
+      const span=document.createElement('span');
+      span.innerHTML=result
+        .replace(/\u0001/g,'<button class="kw" data-kw="')
+        .replace(/\u0002/g,'">')
+        .replace(/\u0003/g,'</button>');
+      node.parentNode.replaceChild(span,node);
+    }
+  } else if(node.nodeType===1&&!node.classList.contains('kw')){
+    Array.from(node.childNodes).forEach(c=>wrapKeywordsInNode(c,words));
+  }
+}
+
+/* ========== KEYWORD MODAL ========== */
+function openKw(word){
+  const key=String(word).toLowerCase();
+  const data=WORD_LOOKUP[key];
+  if(!data)return;
+  currentKwWord=data.en;
+  document.getElementById('kwEmoji').textContent=data.emo;
+  document.getElementById('kwWord').textContent=data.en;
+  document.getElementById('kwRu').textContent=data.ru;
+  document.getElementById('kwBackdrop').classList.add('open');
+  speakBritish(data.en);
+}
+function closeKw(){document.getElementById('kwBackdrop').classList.remove('open')}
+function speakCurrentKw(){if(currentKwWord)speakBritish(currentKwWord)}
+
+/* ========== SPEECH (British) ========== */
+function speakBritish(text){
+  if(!('speechSynthesis' in window))return;
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-GB';
+    u.rate=.9;
+    // Try to pick an actual UK voice
+    const voices=window.speechSynthesis.getVoices();
+    const uk=voices.find(v=>v.lang==='en-GB')||voices.find(v=>v.lang.indexOf('en-GB')===0);
+    if(uk)u.voice=uk;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged=()=>{}; // preload
+}
+
+/* ========== THEME ========== */
+function toggleTheme(){
+  document.documentElement.classList.toggle('light');
+  const light=document.documentElement.classList.contains('light');
+  localStorage.setItem('nd_homework_theme',light?'light':'dark');
+  document.getElementById('themeButton').textContent=light?'🌙 Dark theme':'☀️ Light theme';
+}
+try{const t=localStorage.getItem('nd_homework_theme');if(t==='light')document.documentElement.classList.add('light')}catch(e){}
+document.getElementById('themeButton').textContent=document.documentElement.classList.contains('light')?'🌙 Dark theme':'☀️ Light theme';
+
+/* ========== QUESTIONS: render, record, submit ========== */
+function renderQuestions(){
+  const root=document.getElementById('questions');
+  root.innerHTML='';
+  lesson.questions.forEach((q,i)=>{
+    const card=document.createElement('article');
+    card.className='question';
+    card.id='q'+i;
+    const typeLabel={choice:'Choose',select:'Vocabulary',input:'Complete',tf:'True or false',order:'Word order'}[q.type];
+    card.innerHTML='<div class="qhead">Question '+(i+1)+' of '+lesson.questions.length+' · '+typeLabel+'</div>'+
+      '<div class="prompt">'+esc(q.prompt)+'</div>';
+
+    if(q.type==='choice'||q.type==='tf'){
+      const opts=q.type==='tf'?['True','False']:q.options;
+      const box=document.createElement('div');box.className='options';
+      opts.forEach(o=>{
+        const b=document.createElement('button');b.className='pick';b.textContent=o;b.dataset.value=o;
+        b.onclick=()=>{selectOption(i,card,o)};
+        box.appendChild(b);
+      });
+      card.appendChild(box);
+    } else if(q.type==='select'){
+      const row=document.createElement('div');row.className='row';
+      const s=document.createElement('select');s.className='answer';
+      s.innerHTML='<option value="">Choose an answer…</option>'+q.options.map(o=>'<option>'+esc(o)+'</option>').join('');
+      s.onchange=()=>{recordAnswer(i,s.value);if(s.value)s.classList.add('correct');};
+      s.dataset.field='select';
+      row.appendChild(s);
+      card.appendChild(row);
+    } else if(q.type==='input'){
+      const row=document.createElement('div');row.className='row';
+      const input=document.createElement('input');input.className='answer';input.placeholder='Type your answer';input.autocomplete='off';
+      input.oninput=()=>{recordAnswer(i,input.value.trim())};
+      input.dataset.field='input';
+      row.appendChild(input);
+      card.appendChild(row);
+    } else { // order
+      const bank=document.createElement('div');bank.className='orderbank';
+      const line=document.createElement('div');line.className='orderline';line.dataset.field='orderline';
+      let picked=[];
+      const shuffled=q.words.slice().sort(()=>Math.random()-.5);
+      shuffled.forEach(w=>{
+        const b=document.createElement('button');b.className='chip';b.textContent=w;
+        b.onclick=()=>{if(submitted)return;picked.push(w);b.disabled=true;line.innerHTML=picked.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');recordAnswer(i,picked.slice());};
+        bank.appendChild(b);
+      });
+      const reset=document.createElement('button');reset.className='pick';reset.textContent='Reset';reset.style.marginTop='10px';
+      reset.onclick=()=>{if(submitted)return;picked=[];line.innerHTML='';bank.querySelectorAll('button').forEach(b=>{if(b!==reset)b.disabled=false});recordAnswer(i,[]);};
+      card.append(bank,line,reset);
+    }
+    const fb=document.createElement('div');fb.className='feedback';fb.id='fb'+i;
+    card.appendChild(fb);
+    root.appendChild(card);
+
+    if(answers[i]!==undefined)restoreAnswer(i,answers[i]);
+  });
+  updateFinishBar();
+}
+function selectOption(i,card,value){
+  if(submitted)return;
+  card.querySelectorAll('.pick').forEach(p=>p.classList.remove('selected'));
+  card.querySelector('.pick[data-value="'+CSS.escape(value)+'"]').classList.add('selected');
+  recordAnswer(i,value);
+}
+function recordAnswer(i,value){
+  if(submitted)return;
+  const isComplete=Array.isArray(value)?value.length>0:(value!==undefined&&value!==null&&value!=='');
+  if(isComplete)answers[i]=value;else delete answers[i];
+  updateFinishBar();
+}
+function restoreAnswer(i,value){
+  const card=document.getElementById('q'+i);
+  if(!card)return;
+  const q=lesson.questions[i];
+  if(q.type==='choice'||q.type==='tf'){
+    card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===value)p.classList.add('selected')});
+  } else if(q.type==='select'){
+    const s=card.querySelector('select');if(s)s.value=value;
+  } else if(q.type==='input'){
+    const inp=card.querySelector('input');if(inp)inp.value=value;
+  } else if(q.type==='order'){
+    const line=card.querySelector('.orderline');
+    if(line&&Array.isArray(value))line.innerHTML=value.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');
+    // Disable used chips
+    card.querySelectorAll('.chip').forEach(c=>{
+      if(Array.isArray(value)&&value.indexOf(c.textContent)!==-1)c.disabled=true;
+    });
+  }
+}
+function updateFinishBar(){
+  const total=lesson.questions.length;
+  const count=Object.keys(answers).length;
+  document.getElementById('finishCount').textContent=count+' of '+total+' questions answered';
+  document.getElementById('finishBtn').disabled=count<total;
+  document.getElementById('progressText').textContent=count+' / '+total+' answered';
+  document.getElementById('progressFill').style.width=Math.round(count/total*100)+'%';
+  document.getElementById('scoreText').textContent='(score revealed after submit)';
+}
+
+/* ========== SUBMIT ALL ========== */
+function submitAll(){
+  if(submitted)return;
+  if(Object.keys(answers).length<lesson.questions.length){
+    if(!confirm('Some questions are still blank. Submit anyway?'))return;
+  }
+  submitted=true;
+  let score=0;
+  lesson.questions.forEach((q,i)=>{
+    const card=document.getElementById('q'+i);
+    const fb=document.getElementById('fb'+i);
+    const userAns=answers[i];
+    let ok=false;
+    // Disable all inputs in this card
+    card.querySelectorAll('button,select,input').forEach(el=>el.disabled=true);
+    // Compare
+    if(q.type==='input'){
+      const norm=s=>String(s).toLowerCase().trim().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
+      ok=q.answers.some(a=>norm(a)===norm(userAns));
+      const inp=card.querySelector('input');
+      inp.classList.add(ok?'correct':'wrong');
+    } else if(q.type==='order'){
+      ok=Array.isArray(userAns)&&userAns.length===q.answer.length&&userAns.every((w,k)=>w===q.answer[k]);
+      const line=card.querySelector('.orderline');
+      line.classList.add(ok?'correct':'wrong');
+      if(!ok){
+        // Show correct order below
+        const correctDiv=document.createElement('div');
+        correctDiv.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
+        correctDiv.innerHTML='<b>Correct order:</b> '+q.answer.map(esc).join(' ');
+        card.appendChild(correctDiv);
+      }
+    } else if(q.type==='tf'){
+      ok=String(userAns)===q.answer;
+      card.querySelectorAll('.pick').forEach(p=>{
+        if(p.dataset.value===q.answer)p.classList.add('correct');
+        else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong');
+      });
+    } else { // choice or select
+      ok=String(userAns)===String(q.answer);
+      if(q.type==='select'){
+        const s=card.querySelector('select');
+        s.classList.add(ok?'correct':'wrong');
+        if(!ok){
+          const correctDiv=document.createElement('div');
+          correctDiv.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
+          correctDiv.innerHTML='<b>Correct answer:</b> '+esc(q.answer);
+          card.appendChild(correctDiv);
+        }
+      } else {
+        card.querySelectorAll('.pick').forEach(p=>{
+          if(p.dataset.value===q.answer)p.classList.add('correct');
+          else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong');
+        });
+      }
+    }
+    if(ok)score++;
+    // Feedback in EN + RU
+    fb.className='feedback show '+(ok?'ok':'no');
+    fb.innerHTML='<span class="en">'+(ok?'✓ Correct. ':'✗ Not quite. ')+esc(q.explain)+'</span>'+
+                 '<span class="ru">'+esc(q.explain_ru||'')+'</span>';
+  });
+  // Show summary
+  const total=lesson.questions.length;
+  const summary=document.getElementById('summary');
+  summary.className='summary show';
+  summary.innerHTML='🎉 Homework finished! Score: <b>'+score+' / '+total+'</b>';
+  document.getElementById('progressText').textContent=score+' / '+total+' correct';
+  document.getElementById('progressFill').style.width=Math.round(score/total*100)+'%';
+  document.getElementById('scoreText').textContent=score+' / '+total+' points';
+  document.getElementById('finishBar').style.display='none';
+  saveProgress(score,total);
+  window.scrollTo({top:document.getElementById('summary').offsetTop-100,behavior:'smooth'});
+}
+
+/* ========== FIREBASE ========== */
+function saveProgress(score,total){
+  if(!ref||teacherMode)return;
+  ref.update({
+    version:homeworkVersion,
+    answers:answers,
+    score:score,
+    total:total,
+    submitted:true,
+    completed:true,
+    updatedAt:Date.now()
+  }).catch(console.error);
+}
+function initFirebase(){
+  if(teacherMode){renderQuestions();return}
+  if(!code){
+    renderQuestions();
+    document.getElementById('intro').textContent+=' Open this page from your student portal so your progress can be saved.';
+    return;
+  }
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+    db=firebase.database();
+    ref=db.ref('sessions/'+code+'/homework/'+homeworkId);
+    ref.once('value').then(s=>{
+      const data=s.val()||{};
+      if(Number(data.version)!==homeworkVersion){
+        answers={};submitted=false;
+        ref.set({version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false}).catch(console.error);
+      }else{
+        answers=data.answers||{};
+        submitted=!!data.submitted;
+      }
+      renderQuestions();
+      if(submitted)restoreSubmittedView(data.score||0,data.total||lesson.questions.length);
+    }).catch(e=>{
+      document.getElementById('intro').textContent+=' Saved progress could not be loaded: '+e.message;
+      renderQuestions();
+    });
+  }catch(e){renderQuestions()}
+}
+function restoreSubmittedView(score,total){
+  // Re-run submit without re-saving
+  const savedTeacherMode=teacherMode;
+  teacherMode=true; // prevent re-save
+  submitAll();
+  teacherMode=savedTeacherMode;
+}
+
+/* ========== INIT ========== */
+renderWords();
+renderPassage();
+if(teacherPreviewRequested){
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+    firebase.auth().onAuthStateChanged(function(user){
+      teacherMode=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
+      if(teacherMode){
+        document.querySelector('.sub').textContent='Teacher preview · student progress is unchanged';
+        document.getElementById('intro').textContent='Teacher preview. Review this homework without changing the student’s saved answers.';
+        document.getElementById('finishBar').style.display='none';
+      }
+      initFirebase();
+    });
+  }catch(e){initFirebase()}
+}else{
+  initFirebase();
+}
+</script>
+</body></html>
