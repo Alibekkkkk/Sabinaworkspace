@@ -421,6 +421,45 @@ let lessonVisibility='all';
 let editingImagesLessonId=null;
 const UNDO_STORAGE_KEY='teacherDashboardUndoV1';
 let undoStack=[];
+/* ========== HOMEWORK QUESTION BANKS (for teacher review) ========== */
+const HOMEWORK_QUESTIONS = {
+  homework_gaziz_sustainable_cities: [
+    {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
+    {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
+    {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
+    {type:'select',prompt:'Choose the word meaning "people who live in one area."',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.',explain_ru:'Community — это люди, живущие в одном районе.'},
+    {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому has + V3: has added.'},
+    {type:'order',prompt:'Build the past simple active sentence.',answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому past simple: cleaned.'},
+    {type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park use to the riverbank project.',explain_ru:'В тексте использование парка связывается с проектом по очистке берега.'},
+    {type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.',explain_ru:'Save означает не позволять чему-то тратиться зря.'},
+    {type:'select',prompt:'Choose a word meaning "an answer to a problem."',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.',explain_ru:'Solution — это решение проблемы.'},
+    {type:'tf',prompt:'The council spent part of its budget on buses last year.',answer:'True',explain:'The passage says it spent part of its budget last year.',explain_ru:'В тексте сказано, что совет потратил часть бюджета в прошлом году.'},
+    {type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.',explain_ru:'In 2023 — завершённое время: collected.'},
+    {type:'choice',prompt:'What does "affect" mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.',explain_ru:'Affect означает изменять или влиять на что-то.'},
+    {type:'order',prompt:'Build the present perfect active sentence.',answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.',explain_ru:'Используйте has + past participle, чтобы показать результат в настоящем.'},
+    {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — деньги, необходимые для покупки или действия.'},
+    {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
+    {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
+  ],
+  homework_sabina_sustainable_cities: [
+    {type:'select',prompt:'Choose the word that means "ways of moving people or goods."',options:['transport','community','energy','issue'],answer:'transport',explain:'Transport means ways of moving people or goods.',explain_ru:'Transport — способы перемещения людей или товаров.'},
+    {type:'input',prompt:'Complete: The council has ___ more buses in the evening.',answers:['provided'],explain:'Provide means to give or make something available.',explain_ru:'Provide означает давать или делать что-то доступным.'},
+    {type:'choice',prompt:'When did the council open the new bus station?',options:['Last spring','In 2023','This autumn'],answer:'Last spring',explain:'The passage says it opened last spring.',explain_ru:'В тексте сказано, что станция открылась прошлой весной.'},
+    {type:'tf',prompt:'The city planted trees along two busy roads.',answer:'True',explain:'The passage says the city has planted trees along two roads.',explain_ru:'В тексте сказано, что город посадил деревья вдоль двух дорог.'},
+    {type:'order',prompt:'Put the words in order to make a present perfect sentence.',answer:['Rivergate','has','improved','public','transport.'],explain:'The city has improved it, with a result now.',explain_ru:'Город улучшил это — результат виден сейчас.'},
+    {type:'input',prompt:'Use past simple active: Volunteers ___ (clean) the riverbank in 2023.',answers:['cleaned'],explain:'In 2023 is a finished time: cleaned.',explain_ru:'In 2023 — завершённое время: cleaned.'},
+    {type:'select',prompt:'Which word means "a good or helpful result"?',options:['benefit','effect','cost','need'],answer:'benefit',explain:'A benefit is a good or helpful result.',explain_ru:'Benefit — хороший или полезный результат.'},
+    {type:'choice',prompt:'What did residents do at the public meeting?',options:['Shared their ideas','Built a bus station','Bought new street lights'],answer:'Shared their ideas',explain:'Residents tested routes and shared ideas.',explain_ru:'Жители проверили маршруты и поделились идеями.'},
+    {type:'input',prompt:'Use present perfect active: The city ___ (create) a small park beside the river.',answers:['has created'],explain:'The result is still present: has created.',explain_ru:'Результат всё ещё важен: has created.'},
+    {type:'tf',prompt:'The council used better lights to save energy.',answer:'True',explain:'The passage says it has saved energy with better lights.',explain_ru:'В тексте сказано, что город сэкономил энергию благодаря новым лампам.'},
+    {type:'select',prompt:'Choose a word meaning "why something happens."',options:['reason','change','service','area'],answer:'reason',explain:'A reason explains why something happens.',explain_ru:'Reason объясняет, почему что-то происходит.'},
+    {type:'order',prompt:'Build a past simple active sentence.',answer:['The','council','spent','money','on','buses','last','year.'],explain:'Last year is finished; spent is past simple.',explain_ru:'Last year — завершённое время; spent — past simple.'},
+    {type:'choice',prompt:'What did volunteers collect?',options:['Plastic waste','Bus maps','Street lights'],answer:'Plastic waste',explain:'The volunteers collected plastic waste.',explain_ru:'Волонтёры собрали пластиковые отходы.'},
+    {type:'input',prompt:'Complete: A ___ keeps a person or thing safe.',answers:['protect'],explain:'Protect means to keep someone or something safe.',explain_ru:'Protect означает защищать кого-то или что-то.'},
+    {type:'select',prompt:'Which word means "use something again"?',options:['recycle','spend','develop','move'],answer:'recycle',explain:'Recycle means use material again.',explain_ru:'Recycle — использовать материал снова.'},
+    {type:'input',prompt:'Use present perfect active: Families ___ (use) the park more often since then.',answers:['have used'],explain:'Since then connects the past action to now: have used.',explain_ru:'Since then связывает прошлое действие с настоящим: have used.'}
+  ]
+};
 const STAGE_NAMES=['Academic Vocabulary','Word Match','Academic Reading','Close Reading','Comprehension','Present Perfect Active','Academic Word Choice','Reporting Verbs','Sentence Builder','Vocabulary Challenge'];
 const ALL_STAGES=[
   {id:1,label:'Academic Vocabulary',sub:'Cards',icon:'📚'},
