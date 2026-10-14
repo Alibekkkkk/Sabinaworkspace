@@ -1226,37 +1226,35 @@ function saveFlashcardImages(){
 }
 function assignStudentHomework(variant){
   const studentName=variant==='gaziz'?'Gaziz':'Sabina';
-  const code=Object.keys(studentsMap).find(function(key){return String((studentsMap[key]||{}).name||'').trim().toLowerCase()===studentName.toLowerCase()});
+  const code=Object.keys(studentsMap).find(function(key){
+    return String((studentsMap[key]||{}).name||'').trim().toLowerCase()===studentName.toLowerCase();
+  });
   if(!code){alert(studentName+' was not found in the student list.');return}
 
-  /* --- Per-variant configuration --- */
-  const cfg = variant==='gaziz'
-    ? {
-        homeworkId: 'homework_gaziz_sustainable_cities',
-        homeworkTitle: 'Gaziz — Sustainable Cities Homework',
-        homeworkDesc: 'A separate case study, new vocabulary, and new question types. Practise present perfect and past simple active.',
-        homeworkIcon: '🏙️',
-        homeworkUrl: 'homework.html?variant=gaziz',
-        classworkId: 'lesson_1',
-        classworkTitle: 'Lesson 1: Sustainable Cities — Vocabulary and Active Tenses',
-        classworkDesc: 'Explore city sustainability vocabulary and practise present perfect and past simple in active voice.',
-        classworkIcon: '🏙️',
-        classworkUrl: 'lesson_gaziz.html'
-      }
-    : {
-        homeworkId: 'homework_sabina_natural_disasters',
-        homeworkTitle: 'Sabina — Natural Disasters Homework',
-        homeworkDesc: 'Read about ten natural disasters. Practise passive voice and present perfect with disaster vocabulary.',
-        homeworkIcon: '🌪️',
-        homeworkUrl: 'homework.html?variant=sabina',
-        classworkId: 'lesson_1_sabina',
-        classworkTitle: 'Lesson 1: Natural Disasters — Vocabulary and Passive Voice',
-        classworkDesc: 'Learn about ten natural disasters and practise passive voice and present perfect.',
-        classworkIcon: '🌪️',
-        classworkUrl: 'lesson.html'
-      };
+  const cfg = variant==='gaziz' ? {
+    homeworkId: 'homework_gaziz_sustainable_cities',
+    homeworkTitle: 'Gaziz — Sustainable Cities Homework',
+    homeworkDesc: 'A separate case study, new vocabulary, and new question types. Practise present perfect and past simple active.',
+    homeworkIcon: '🏙️',
+    homeworkUrl: 'homework.html?variant=gaziz',
+    classworkId: 'lesson_1',
+    classworkTitle: 'Lesson 1: Sustainable Cities — Vocabulary and Active Tenses',
+    classworkDesc: 'Explore city sustainability vocabulary and practise present perfect and past simple in active voice.',
+    classworkIcon: '🏙️',
+    classworkUrl: 'lesson_gaziz.html'
+  } : {
+    homeworkId: 'homework_sabina_natural_disasters',
+    homeworkTitle: 'Sabina — Natural Disasters Homework',
+    homeworkDesc: 'Read about ten natural disasters. Practise passive voice and present perfect with disaster vocabulary.',
+    homeworkIcon: '🌪️',
+    homeworkUrl: 'homework.html?variant=sabina',
+    classworkId: 'lesson_1_sabina',
+    classworkTitle: 'Lesson 1: Natural Disasters — Vocabulary and Passive Voice',
+    classworkDesc: 'Learn about ten natural disasters and practise passive voice and present perfect.',
+    classworkIcon: '🌪️',
+    classworkUrl: 'lesson.html'
+  };
 
-  /* --- Build homework payload --- */
   const oldHw = curriculum[cfg.homeworkId] || {};
   const homeworkPayload = Object.assign({}, oldHw, {
     id: cfg.homeworkId,
@@ -1273,7 +1271,6 @@ function assignStudentHomework(variant){
     maxScore: 16
   });
 
-  /* --- Build classwork payload --- */
   const oldCw = curriculum[cfg.classworkId] || {};
   const existingAssigned = Array.isArray(oldCw.assignedTo) ? oldCw.assignedTo.slice() : [];
   if (existingAssigned.indexOf(code) === -1) existingAssigned.push(code);
@@ -1291,13 +1288,12 @@ function assignStudentHomework(variant){
     maxScore: 100
   });
 
-  /* --- Commit both writes atomically via the undo stack --- */
   const changes = [
     { path: 'curriculum/' + cfg.homeworkId, value: homeworkPayload },
     { path: 'curriculum/' + cfg.classworkId, value: classworkPayload }
   ];
 
-  writeChangesWithUndo(changes, 'assign ' + studentName + ' homework and classwork').then(function(){
+  writeChangesWithUndo(changes, 'assign ' + studentName + ' homework').then(function(){
     curriculum[cfg.homeworkId] = homeworkPayload;
     curriculum[cfg.classworkId] = classworkPayload;
     renderLessons();
@@ -1307,29 +1303,6 @@ function assignStudentHomework(variant){
   }).catch(function(err){
     alert('Could not assign ' + studentName + ' homework: ' + err.message);
   });
-}
-  const changes=[{path:'curriculum/'+id,value:payload}];
-  const oldClasswork=curriculum.lesson_1||{};
-  const classAssigned=Array.isArray(oldClasswork.assignedTo)?oldClasswork.assignedTo.slice():[];
-  if(!curriculum.lesson_1&&classAssigned.indexOf(code)===-1)classAssigned.push(code);
-  else if(classAssigned.length&&classAssigned.indexOf(code)===-1)classAssigned.push(code);
-  const classwork=Object.assign({},oldClasswork,{
-    id:'lesson_1',order:oldClasswork.order||1,published:true,
-    title:'Lesson 1: Sustainable Cities — Vocabulary and Active Tenses',
-    description:'Explore city sustainability vocabulary and practise present perfect and past simple in active voice.',
-    icon:'🏙️',customUrl:variant==='sabina'?'lesson.html':'lesson_gaziz.html',stages:SUSTAINABLE_STAGES,
-    assignedTo:classAssigned,homework:false,maxScore:100
-  });
-  changes.push({path:'curriculum/lesson_1',value:classwork});
-  Object.keys(curriculum).forEach(function(oldId){
-    if(oldId===id||oldId==='lesson_1')return;
-    const oldLesson=curriculum[oldId]||{};const oldAssigned=oldLesson.assignedTo||[];
-    if(oldLesson.homework&&oldAssigned.indexOf(code)!==-1&&String(oldLesson.customUrl||'').toLowerCase().indexOf('lesson_gaziz.html')!==-1)changes.push({path:'curriculum/'+oldId,value:null});
-  });
-  writeChangesWithUndo(changes,'assign '+studentName+' Sustainable Cities homework').then(function(){
-    changes.slice(1).forEach(function(change){if(change.value===null)delete curriculum[change.path.split('/').pop()];else curriculum[change.path.split('/').pop()]=change.value});
-    curriculum[id]=payload;renderLessons();renderStudentHomework();updateSelectedClassworkLink();showToast(studentName+' homework assigned with its own activities');
-  }).catch(function(err){alert('Could not assign '+studentName+' homework: '+err.message)});
 }
 function assignGazizHomework(){assignStudentHomework('gaziz')}
 function togglePublish(id){
