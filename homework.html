@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sustainable Cities — Homework 1</title>
+<title>Sustainable Cities — Homework</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
 :root{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--soft:#a0a6b0;--accent:#ff8a5b;--accent-dark:#ee5a24;--good:#4caf7d;--bad:#ef5468;--border:#333944;--shadow:0 12px 30px rgba(0,0,0,.18)}
 html.light{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--soft:#6c757d;--accent:#ee5a24;--accent-dark:#d94a15;--good:#2e9e5b;--bad:#dc3545;--border:#e0dbd0;--shadow:0 8px 24px rgba(0,0,0,.08)}
@@ -25,19 +27,18 @@ h1{font-size:clamp(38px,6vw,62px);line-height:.98;margin:10px 0 14px}
 .progress{display:flex;align-items:center;gap:12px;padding:12px 16px;color:var(--soft);position:sticky;top:74px;z-index:40}
 .rail{height:8px;background:var(--bg);border-radius:10px;overflow:hidden;flex:1}.fill{height:100%;width:0;background:var(--accent);transition:width .25s}
 .panel{padding:22px;margin-top:18px}.panel h2{font-size:28px;margin:0 0 14px}
-.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
 .word{padding:12px 14px;border-radius:11px;background:var(--paper);border:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:.15s}
 .word:hover{border-color:var(--accent);transform:translateY(-2px)}
-.word .w-emoji{font-size:24px}
-.word b{display:block;color:var(--accent);font-size:19px}.word span{color:var(--soft);font-size:14px}
-.passage{font-size:21px;line-height:1.75}.passage h2{color:var(--accent)}.passage p{margin:0 0 14px}
+.word .w-emoji{font-size:26px}.word b{display:block;color:var(--accent);font-size:18px}.word span{color:var(--soft);font-size:14px}
+.passage{font-size:21px;line-height:1.8}.passage h2{color:var(--accent)}.passage p{margin:0 0 14px}
 .kw{display:inline;background:rgba(238,90,36,.14);color:var(--accent);font-weight:700;border:0;padding:1px 5px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:inherit;border-bottom:2px dotted var(--accent);transition:.15s}
 .kw:hover{background:var(--accent);color:#fff}
 .question{padding:22px 24px;margin-top:16px}
 .qhead{display:inline-block;padding:6px 14px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-radius:20px;font:700 13px 'Fira Code',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;box-shadow:0 4px 10px rgba(238,90,36,.25)}
 .prompt{font-size:22px;line-height:1.4;margin-bottom:14px;font-weight:600}
 .options{display:flex;flex-wrap:wrap;gap:9px}
-.pick,.chip,.check{cursor:pointer;border:1px solid var(--border);border-radius:10px;padding:11px 16px;background:var(--paper);color:var(--ink);font:700 17px 'EB Garamond','Times New Roman',serif;transition:.15s}
+.pick,.chip{cursor:pointer;border:1px solid var(--border);border-radius:10px;padding:11px 16px;background:var(--paper);color:var(--ink);font:700 17px 'EB Garamond','Times New Roman',serif;transition:.15s}
 .pick:hover:not(:disabled),.chip:hover:not(:disabled){border-color:var(--accent)}
 .pick.selected{background:var(--accent);color:#fff;border-color:var(--accent-dark)}
 .pick.correct,.chip.correct{background:#e5f1e7;border-color:#70a980;color:#2c6653}
@@ -64,32 +65,33 @@ h1{font-size:clamp(38px,6vw,62px);line-height:.98;margin:10px 0 14px}
 .finish-btn{padding:16px 40px;font-size:19px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:0;border-radius:12px;cursor:pointer;box-shadow:0 6px 0 var(--accent-dark);font-family:inherit;transition:.15s}
 .finish-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 0 var(--accent-dark)}
 .finish-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:0 6px 0 #999}
-/* Keyword modal */
 .kw-backdrop{position:fixed;inset:0;background:rgba(20,25,40,.75);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
 .kw-backdrop.open{display:flex}
-.kw-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:32px 28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;animation:kwPop .25s cubic-bezier(.34,1.56,.64,1)}
+.kw-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:32px 28px 24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;animation:kwPop .25s cubic-bezier(.34,1.56,.64,1)}
 @keyframes kwPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 .kw-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--paper);color:var(--soft);font-size:20px;cursor:pointer}
 .kw-close:hover{color:var(--bad);border-color:var(--bad)}
-.kw-emoji{font-size:80px;line-height:1;margin-bottom:14px}
+.kw-emoji{font-size:80px;line-height:1;margin-bottom:14px;position:relative;display:inline-block}
+.kw-edit-btn{position:absolute;bottom:-8px;right:-8px;width:32px;height:32px;border-radius:50%;border:2px solid var(--panel);background:var(--accent);color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.kw-edit-btn.show{display:flex}
 .kw-word{font-size:32px;font-weight:800;color:var(--accent);margin-bottom:6px}
 .kw-ru{font-size:20px;color:var(--soft);margin-bottom:20px;font-style:italic}
 .kw-listen{padding:12px 24px;font-size:16px;font-weight:700;background:var(--accent);color:#fff;border:0;border-radius:10px;cursor:pointer;font-family:inherit}
 .kw-listen:hover{background:var(--accent-dark)}
-@media(max-width:700px){.wrap{width:calc(100% - 18px);margin:10px auto 32px}.top{flex-wrap:wrap}.hero{grid-template-columns:1fr;padding-top:24px}.art{min-height:90px}.badge{display:none}.panel{padding:16px}.passage{font-size:19px}.answer{min-width:100%}.progress{top:auto;position:static}}
+@media(max-width:700px){.wrap{width:calc(100% - 18px);margin:10px auto 32px}.top{flex-wrap:wrap}.hero{grid-template-columns:1fr;padding-top:24px}.art{min-height:90px}.panel{padding:16px}.passage{font-size:19px}.answer{min-width:100%}.progress{top:auto;position:static}}
 </style>
 </head>
 <body>
 <main class="wrap">
 <header class="top"><div class="mark">🏙️</div><div><div class="brand" id="studentTitle">Homework 1</div><div class="sub">Sustainable Cities · Active tenses</div></div><span class="spacer"></span><a id="classworkLink" href="lesson_gaziz.html">← Classwork</a><button onclick="toggleTheme()" id="themeButton">☀️ Light theme</button></header>
 <section class="hero"><div><div class="eyebrow" id="variantLabel">Topic 1 · Sustainable Cities</div><h1 id="headline">A new city vocabulary set</h1><p id="intro"></p></div><div class="art" aria-hidden="true">🌳 → 🚌 → ☀️</div></section>
-<div class="progress"><span id="progressText">0 / 0 complete</span><div class="rail"><div class="fill" id="progressFill"></div></div><span id="scoreText">0 points</span></div>
-<section class="panel"><h2>Useful words for this homework</h2><p style="color:var(--soft);font-size:14px;margin:-6px 0 14px;">Tap any word to see its picture, translation, and hear the British pronunciation.</p><div class="words" id="words"></div></section>
+<div class="progress"><span id="progressText">0 / 0 answered</span><div class="rail"><div class="fill" id="progressFill"></div></div><span id="scoreText">(score revealed after submit)</span></div>
+<section class="panel"><h2>Key vocabulary for this homework</h2><p style="color:var(--soft);font-size:14px;margin:-6px 0 14px;">Tap any word to see its picture, Russian translation, and hear British pronunciation.</p><div class="words" id="words"></div></section>
 <section class="panel passage" id="passage"></section>
 <section id="questions"></section>
 <div class="finish-bar" id="finishBar">
   <div class="count" id="finishCount">Answer all questions to finish</div>
-  <button class="finish-btn" id="finishBtn" onclick="submitAll()" disabled>✓ Finish & Submit</button>
+  <button class="finish-btn" id="finishBtn" onclick="submitAll()" disabled>✓ Finish &amp; Submit</button>
 </div>
 <section class="summary" id="summary"></section>
 </main>
@@ -97,10 +99,10 @@ h1{font-size:clamp(38px,6vw,62px);line-height:.98;margin:10px 0 14px}
 <div class="kw-backdrop" id="kwBackdrop" onclick="if(event.target===this)closeKw()">
   <div class="kw-card">
     <button class="kw-close" onclick="closeKw()">×</button>
-    <div class="kw-emoji" id="kwEmoji">📖</div>
+    <div class="kw-emoji"><span id="kwEmoji">📖</span><button class="kw-edit-btn" id="kwEditBtn" onclick="editPicture()" title="Set custom picture">✏️</button></div>
     <div class="kw-word" id="kwWord"></div>
     <div class="kw-ru" id="kwRu"></div>
-    <button class="kw-listen" id="kwListen" onclick="speakCurrentKw()">🔊 Listen</button>
+    <button class="kw-listen" onclick="speakCurrentKw()">🔊 Listen</button>
   </div>
 </div>
 
@@ -110,13 +112,73 @@ const params=new URLSearchParams(location.search);
 const variant=params.get('variant')==='sabina'?'sabina':'gaziz';
 const code=(params.get('code')||'').toUpperCase();
 const homeworkId=params.get('lesson')||('homework_'+variant+'_sustainable_cities');
-const homeworkVersion=3; // bumped to reset old per-question data
+const homeworkVersion=4;
 const teacherPreviewRequested=params.get('teacher')==='1';
 const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
-let teacherMode=false;
+let teacherMode=false,teacherCanEdit=false,fbDb=null,imageRef=null;
+let customImages={};
 
-/* ========== VOCABULARY: [word, definition, russian, emoji] ========== */
-const classWords=[
+/* ============ VOCABULARY — expanded list [en, def, ru, emoji] ============ */
+const gazizWords=[
+  ['area','a particular part of a place','район, область','📍'],
+  ['change','something that becomes different','изменение','🔄'],
+  ['plan','an idea for what to do','план','📋'],
+  ['service','work or help provided to people','служба','🛎️'],
+  ['choice','one thing selected from several','выбор','🎯'],
+  ['need','something necessary','потребность','❗'],
+  ['effect','a change caused by an action','эффект','🎯'],
+  ['reason','why something happens','причина','❓'],
+  ['use','the act of doing something with a thing','использование','🔧'],
+  ['save','keep something from being wasted','экономить','💾'],
+  ['spend','use money, time, or energy','тратить','💸'],
+  ['build','make something by putting parts together','строить','🏗️'],
+  ['move','go from one place to another','двигать(ся)','🚶'],
+  ['clean','free from dirt or pollution','чистый','🧼'],
+  ['safe','not likely to cause harm','безопасный','🛡️'],
+  ['crowded','full of many people or things','переполненный','👥'],
+  ['travel','go from one place to another','путешествовать','✈️'],
+  ['waste','use more than needed','отходы','🗑️'],
+  ['recycle','use material again','перерабатывать','♻️'],
+  ['protect','keep someone or something safe','защищать','🛡️'],
+  /* --- new additions --- */
+  ['council','a group that governs a town','городской совет','🏛️'],
+  ['market','a place where people buy and sell','рынок','🛒'],
+  ['station','a place where buses or trains stop','станция','🚉'],
+  ['hospital','a place where sick people are treated','больница','🏥'],
+  ['evening','the time after the afternoon','вечер','🌆'],
+  ['route','the path from one place to another','маршрут','🛣️'],
+  ['project','a planned piece of work','проект','📋'],
+  ['budget','the money available for a plan','бюджет','💰'],
+  ['volunteer','a person who works without pay','волонтёр','🙋'],
+  ['rubbish','things people throw away','мусор','🗑️'],
+  ['bin','a container for rubbish','мусорный бак','🗑️'],
+  ['path','a narrow way for walking','дорожка','🛤️'],
+  ['meeting','when people gather to discuss','встреча','🤝'],
+  ['resident','a person who lives somewhere','житель','🏠'],
+  ['resident’s','belonging to a resident','жителя','👤'],
+  ['improve','make better','улучшать','✨'],
+  ['provide','give or make available','предоставлять','🎁'],
+  ['reduce','make or become smaller','уменьшать','📉'],
+  ['energy','power used for heat or light','энергия','⚡'],
+  ['benefit','a good or helpful result','польза','👍'],
+  ['cost','the money needed to buy','стоимость','💰'],
+  ['affect','change or influence','влиять','🔄'],
+  ['result','something that happens because of an action','результат','🎯'],
+  ['issue','a problem people discuss','проблема','❔'],
+  ['solution','an answer to a problem','решение','💡'],
+  ['public','for everyone to use','общественный','🏛️'],
+  ['local','connected with a nearby place','местный','📍'],
+  ['transport','ways of moving people or goods','транспорт','🚌'],
+  ['pollution','harmful material in air or water','загрязнение','💨'],
+  ['environment','the natural world around us','окружающая среда','🌍'],
+  ['popular','liked by many people','популярный','⭐'],
+  ['review','look at something again','пересматривать','🔍'],
+  ['traffic','vehicles moving on roads','дорожное движение','🚗'],
+  ['fuel','material used for energy','топливо','⛽'],
+  ['light','brightness from the sun or a lamp','свет','💡'],
+  ['activity','something people do','деятельность','🎯']
+];
+const sabinaWords=[
   ['environment','the natural world around us','окружающая среда','🌍'],
   ['pollution','harmful material in air, water, or land','загрязнение','💨'],
   ['transport','ways of moving people or goods','транспорт','🚌'],
@@ -136,43 +198,45 @@ const classWords=[
   ['energy','power used for heat, light, or movement','энергия','⚡'],
   ['resource','a useful supply or material','ресурс','🧰'],
   ['develop','grow or make something over time','развивать(ся)','🌱'],
-  ['support','help someone or something','поддерживать','🤝']
-];
-const gazizWords=[
-  ['area','a particular part of a place','район, область','📍'],
-  ['change','something that becomes different','изменение','🔄'],
-  ['plan','an idea for what to do','план','📋'],
-  ['service','work or help provided to people','служба, сервис','🛎️'],
-  ['choice','one thing selected from several','выбор','🎯'],
-  ['need','something necessary','потребность','❗'],
-  ['effect','a change caused by an action','эффект, результат','🎯'],
-  ['reason','why something happens','причина','❓'],
-  ['use','the act of doing something with a thing','использование','🔧'],
-  ['save','keep something from being wasted','экономить','💾'],
-  ['spend','use money, time, or energy','тратить','💸'],
-  ['build','make something by putting parts together','строить','🏗️'],
-  ['move','go from one place to another','двигать(ся)','🚶'],
-  ['clean','free from dirt or pollution','чистый','🧼'],
+  ['support','help someone or something','поддерживать','🤝'],
+  /* --- new additions --- */
+  ['council','a group that governs a town','городской совет','🏛️'],
+  ['market','a place where people buy and sell','рынок','🛒'],
+  ['station','a place where buses or trains stop','станция','🚉'],
+  ['hospital','a place where sick people are treated','больница','🏥'],
+  ['evening','the time after the afternoon','вечер','🌆'],
+  ['route','the path from one place to another','маршрут','🛣️'],
+  ['project','a planned piece of work','проект','📋'],
+  ['budget','the money available for a plan','бюджет','💰'],
+  ['volunteer','a person who works without pay','волонтёр','🙋'],
+  ['rubbish','things people throw away','мусор','🗑️'],
+  ['bin','a container for rubbish','мусорный бак','🗑️'],
+  ['path','a narrow way for walking','дорожка','🛤️'],
+  ['meeting','when people gather to discuss','встреча','🤝'],
+  ['resident','a person who lives somewhere','житель','🏠'],
+  ['population','the people living in a place','население','👥'],
+  ['visitor','a person who comes to a place','посетитель','🧑‍🦱'],
+  ['traffic','vehicles moving on roads','дорожное движение','🚗'],
+  ['fuel','material used for energy','топливо','⛽'],
+  ['light','brightness from the sun or a lamp','свет','💡'],
+  ['review','look at something again','пересматривать','🔍'],
+  ['popular','liked by many people','популярный','⭐'],
   ['safe','not likely to cause harm','безопасный','🛡️'],
-  ['crowded','full of many people or things','переполненный','👥'],
-  ['travel','go from one place to another','путешествовать','✈️'],
-  ['waste','use more of something than needed','отходы; тратить зря','🗑️'],
+  ['waste','use more than needed','отходы','🗑️'],
   ['recycle','use material again','перерабатывать','♻️'],
-  ['protect','keep someone or something safe','защищать','🛡️']
+  ['travel','go from one place to another','путешествовать','✈️']
 ];
 
-/* ========== PASSAGES ========== */
 const cityText='<h2>Rivergate makes changes for its residents</h2><p>Rivergate is a growing city beside a wide river. In recent years, the local council has improved public transport. It has provided more buses in the evening, and it has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. The project had a good result: families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>These plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. The changes have affected daily life in different ways. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn and decide what to improve next.</p>';
 const sabinaText='<h2>Rivergate has improved travel and public spaces</h2><p>Rivergate has improved its public transport over the past two years. The city has provided more buses in the evening and has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. Families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>The plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn.</p>';
 
-/* ========== QUESTIONS with bilingual explanations ========== */
 const gazizQuestions=[
   {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
   {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
   {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
   {type:'select',prompt:'Choose the word meaning "people who live in one area."',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.',explain_ru:'Community — это люди, живущие в одном районе.'},
-  {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому используем has + V3: has added.'},
-  {type:'order',prompt:'Build the past simple active sentence.',words:['Volunteers','cleaned','the','riverbank','in','2023.'],answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому используем past simple: cleaned.'},
+  {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому has + V3: has added.'},
+  {type:'order',prompt:'Build the past simple active sentence.',words:['Volunteers','cleaned','the','riverbank','in','2023.'],answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому past simple: cleaned.'},
   {type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park use to the riverbank project.',explain_ru:'В тексте использование парка связывается с проектом по очистке берега.'},
   {type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.',explain_ru:'Save означает не позволять чему-то тратиться зря.'},
   {type:'select',prompt:'Choose a word meaning "an answer to a problem."',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.',explain_ru:'Solution — это решение проблемы.'},
@@ -180,12 +244,12 @@ const gazizQuestions=[
   {type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.',explain_ru:'In 2023 — завершённое время: collected.'},
   {type:'choice',prompt:'What does "affect" mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.',explain_ru:'Affect означает изменять или влиять на что-то.'},
   {type:'order',prompt:'Build the present perfect active sentence.',words:['The','city','has','planted','trees','along','two','roads.'],answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.',explain_ru:'Используйте has + past participle, чтобы показать результат в настоящем.'},
-  {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — это деньги, необходимые для покупки или действия.'},
+  {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — деньги, необходимые для покупки или действия.'},
   {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
   {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
 ];
 const sabinaQuestions=[
-  {type:'select',prompt:'Choose the word that means "ways of moving people or goods."',options:['transport','community','energy','issue'],answer:'transport',explain:'Transport means ways of moving people or goods.',explain_ru:'Transport — это способы перемещения людей или товаров.'},
+  {type:'select',prompt:'Choose the word that means "ways of moving people or goods."',options:['transport','community','energy','issue'],answer:'transport',explain:'Transport means ways of moving people or goods.',explain_ru:'Transport — способы перемещения людей или товаров.'},
   {type:'input',prompt:'Complete: The council has ___ more buses in the evening.',answers:['provided'],explain:'Provide means to give or make something available.',explain_ru:'Provide означает давать или делать что-то доступным.'},
   {type:'choice',prompt:'When did the council open the new bus station?',options:['Last spring','In 2023','This autumn'],answer:'Last spring',explain:'The passage says it opened last spring.',explain_ru:'В тексте сказано, что станция открылась прошлой весной.'},
   {type:'tf',prompt:'The city planted trees along two busy roads.',answer:'True',explain:'The passage says the city has planted trees along two roads.',explain_ru:'В тексте сказано, что город посадил деревья вдоль двух дорог.'},
@@ -205,16 +269,14 @@ const sabinaQuestions=[
 
 const lesson={
   gaziz:{title:'Gaziz · Homework 1',headline:'City life: changes and choices',intro:'Read a new Rivergate case study. Practise common IELTS words and use present perfect or past simple in the active voice.',passage:cityText,words:gazizWords,questions:gazizQuestions},
-  sabina:{title:'Sabina · Homework 1',headline:'Rivergate: travel and shared spaces',intro:'Use the same class topic and key facts, but answer a fresh set of question types. Practise present perfect and past simple in the active voice.',passage:sabinaText,words:classWords,questions:sabinaQuestions}
+  sabina:{title:'Sabina · Homework 1',headline:'Rivergate: travel and shared spaces',intro:'Use the same class topic and key facts, but answer a fresh set of question types. Practise present perfect and past simple in the active voice.',passage:sabinaText,words:sabinaWords,questions:sabinaQuestions}
 }[variant];
 
-/* ========== STATE ========== */
-let db=null,ref=null,answers={},submitted=false,currentKwWord='';
+let answers={},submitted=false,currentKwWord='';
 const WORD_LOOKUP={};lesson.words.forEach(([en,def,ru,emo])=>{WORD_LOOKUP[en.toLowerCase()]={en,def,ru,emo}});
 
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
-/* ========== HEADER / HERO ========== */
 document.title=lesson.title;
 document.getElementById('studentTitle').textContent=lesson.title;
 document.getElementById('headline').textContent=lesson.headline;
@@ -222,69 +284,87 @@ document.getElementById('intro').textContent=lesson.intro;
 document.getElementById('variantLabel').textContent='Topic 1 · Sustainable Cities · Homework';
 document.getElementById('classworkLink').href=(variant==='sabina'?'lesson.html':'lesson_gaziz.html')+'?lesson=lesson_1&code='+encodeURIComponent(code);
 
-/* ========== WORDS GRID (with click to open modal) ========== */
 function renderWords(){
   const el=document.getElementById('words');
   el.innerHTML=lesson.words.map(([en,def,ru,emo])=>
-    '<div class="word" data-word="'+esc(en)+'">'+
-      '<span class="w-emoji">'+emo+'</span>'+
-      '<div><b>'+esc(en)+'</b><span>'+esc(ru)+'</span></div>'+
-    '</div>'
+    '<div class="word" data-word="'+esc(en)+'"><span class="w-emoji">'+emo+'</span><div><b>'+esc(en)+'</b><span>'+esc(ru)+'</span></div></div>'
   ).join('');
-  el.querySelectorAll('.word').forEach(w=>{
-    w.onclick=()=>openKw(w.dataset.word);
-  });
+  el.querySelectorAll('.word').forEach(w=>{w.onclick=()=>openKw(w.dataset.word)});
 }
 
-/* ========== PASSAGE with interactive keywords ========== */
 function renderPassage(){
   const container=document.getElementById('passage');
   container.innerHTML=lesson.passage;
-  // Wrap keywords in text nodes only
   const words=lesson.words.map(([en])=>en);
-  wrapKeywordsInNode(container, words);
-  container.querySelectorAll('.kw').forEach(btn=>{
-    btn.onclick=()=>openKw(btn.dataset.kw);
-  });
+  wrapKeywordsInNode(container,words);
+  container.querySelectorAll('.kw').forEach(btn=>{btn.onclick=()=>openKw(btn.dataset.kw)});
 }
 function wrapKeywordsInNode(node,words){
-  if(node.nodeType===3){ // text
+  if(node.nodeType===3){
     const text=node.textContent;
     let result=text;
     words.forEach(w=>{
       const escW=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       const re=new RegExp('\\b('+escW+')\\b','gi');
-      result=result.replace(re,'\u0001'+(w.toLowerCase())+'\u0002$1\u0003');
+      result=result.replace(re,'\u0001'+w.toLowerCase()+'\u0002$1\u0003');
     });
     if(result!==text){
       const span=document.createElement('span');
-      span.innerHTML=result
-        .replace(/\u0001/g,'<button class="kw" data-kw="')
-        .replace(/\u0002/g,'">')
-        .replace(/\u0003/g,'</button>');
+      span.innerHTML=result.replace(/\u0001/g,'<button class="kw" data-kw="').replace(/\u0002/g,'">').replace(/\u0003/g,'</button>');
       node.parentNode.replaceChild(span,node);
     }
-  } else if(node.nodeType===1&&!node.classList.contains('kw')){
+  } else if(node.nodeType===1&&!node.classList.contains('kw')&&!node.classList.contains('kw-emoji')){
     Array.from(node.childNodes).forEach(c=>wrapKeywordsInNode(c,words));
   }
 }
 
-/* ========== KEYWORD MODAL ========== */
 function openKw(word){
   const key=String(word).toLowerCase();
   const data=WORD_LOOKUP[key];
   if(!data)return;
   currentKwWord=data.en;
-  document.getElementById('kwEmoji').textContent=data.emo;
+  const custom=customImages[data.en];
+  document.getElementById('kwEmoji').textContent=custom?'':data.emo;
+  if(custom){
+    document.getElementById('kwEmoji').innerHTML='<img src="'+esc(custom)+'" style="max-width:120px;max-height:120px;border-radius:12px;" onerror="this.parentNode.textContent=\''+data.emo+'\'">';
+  }
   document.getElementById('kwWord').textContent=data.en;
   document.getElementById('kwRu').textContent=data.ru;
   document.getElementById('kwBackdrop').classList.add('open');
+  document.getElementById('kwEditBtn').classList.toggle('show',teacherCanEdit);
   speakBritish(data.en);
 }
 function closeKw(){document.getElementById('kwBackdrop').classList.remove('open')}
 function speakCurrentKw(){if(currentKwWord)speakBritish(currentKwWord)}
+function editPicture(){
+  if(!teacherCanEdit)return;
+  const current=customImages[currentKwWord]||'';
+  const url=prompt('Paste an image URL for "'+currentKwWord+'". Leave blank to remove.',current);
+  if(url===null)return;
+  const trimmed=url.trim();
+  if(trimmed&&!/^https?:\/\//i.test(trimmed)){alert('Use a URL starting with http:// or https://');return}
+  const updated=Object.assign({},customImages);
+  if(trimmed)updated[currentKwWord]=trimmed;else delete updated[currentKwWord];
+  if(imageRef){
+    imageRef.set(updated).then(function(){customImages=updated;openKw(currentKwWord);alert('Picture saved!')}).catch(function(e){alert('Could not save: '+e.message)});
+  }
+}
 
-/* ========== SPEECH (British) ========== */
+/* ============ BRITISH ACCENT ============ */
+let ukVoice=null;
+function pickUKVoice(){
+  if(!('speechSynthesis' in window))return null;
+  const voices=window.speechSynthesis.getVoices();
+  // Priority: exact en-GB → starts with en-GB → contains "British" or "UK" → null
+  return voices.find(v=>v.lang==='en-GB')||
+         voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('en-gb'))||
+         voices.find(v=>v.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(v.name))||
+         null;
+}
+if('speechSynthesis' in window){
+  ukVoice=pickUKVoice();
+  window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()};
+}
 function speakBritish(text){
   if(!('speechSynthesis' in window))return;
   try{
@@ -292,18 +372,12 @@ function speakBritish(text){
     const u=new SpeechSynthesisUtterance(text);
     u.lang='en-GB';
     u.rate=.9;
-    // Try to pick an actual UK voice
-    const voices=window.speechSynthesis.getVoices();
-    const uk=voices.find(v=>v.lang==='en-GB')||voices.find(v=>v.lang.indexOf('en-GB')===0);
-    if(uk)u.voice=uk;
+    u.pitch=1;
+    if(ukVoice)u.voice=ukVoice;
     window.speechSynthesis.speak(u);
   }catch(e){}
 }
-if('speechSynthesis' in window){
-  window.speechSynthesis.onvoiceschanged=()=>{}; // preload
-}
 
-/* ========== THEME ========== */
 function toggleTheme(){
   document.documentElement.classList.toggle('light');
   const light=document.documentElement.classList.contains('light');
@@ -313,52 +387,37 @@ function toggleTheme(){
 try{const t=localStorage.getItem('nd_homework_theme');if(t==='light')document.documentElement.classList.add('light')}catch(e){}
 document.getElementById('themeButton').textContent=document.documentElement.classList.contains('light')?'🌙 Dark theme':'☀️ Light theme';
 
-/* ========== QUESTIONS: render, record, submit ========== */
+/* ============ QUESTIONS ============ */
 function renderQuestions(){
   const root=document.getElementById('questions');
   root.innerHTML='';
   lesson.questions.forEach((q,i)=>{
     const card=document.createElement('article');
-    card.className='question';
-    card.id='q'+i;
+    card.className='question';card.id='q'+i;
     const typeLabel={choice:'Choose',select:'Vocabulary',input:'Complete',tf:'True or false',order:'Word order'}[q.type];
-    card.innerHTML='<div class="qhead">Question '+(i+1)+' of '+lesson.questions.length+' · '+typeLabel+'</div>'+
-      '<div class="prompt">'+esc(q.prompt)+'</div>';
-
+    card.innerHTML='<div class="qhead">Question '+(i+1)+' of '+lesson.questions.length+' · '+typeLabel+'</div><div class="prompt">'+esc(q.prompt)+'</div>';
     if(q.type==='choice'||q.type==='tf'){
       const opts=q.type==='tf'?['True','False']:q.options;
       const box=document.createElement('div');box.className='options';
-      opts.forEach(o=>{
-        const b=document.createElement('button');b.className='pick';b.textContent=o;b.dataset.value=o;
-        b.onclick=()=>{selectOption(i,card,o)};
-        box.appendChild(b);
-      });
+      opts.forEach(o=>{const b=document.createElement('button');b.className='pick';b.textContent=o;b.dataset.value=o;b.onclick=()=>selectOption(i,card,o);box.appendChild(b)});
       card.appendChild(box);
     } else if(q.type==='select'){
       const row=document.createElement('div');row.className='row';
       const s=document.createElement('select');s.className='answer';
       s.innerHTML='<option value="">Choose an answer…</option>'+q.options.map(o=>'<option>'+esc(o)+'</option>').join('');
-      s.onchange=()=>{recordAnswer(i,s.value);if(s.value)s.classList.add('correct');};
-      s.dataset.field='select';
-      row.appendChild(s);
-      card.appendChild(row);
+      s.onchange=()=>{if(submitted)return;recordAnswer(i,s.value)};
+      row.appendChild(s);card.appendChild(row);
     } else if(q.type==='input'){
       const row=document.createElement('div');row.className='row';
       const input=document.createElement('input');input.className='answer';input.placeholder='Type your answer';input.autocomplete='off';
-      input.oninput=()=>{recordAnswer(i,input.value.trim())};
-      input.dataset.field='input';
-      row.appendChild(input);
-      card.appendChild(row);
-    } else { // order
+      input.oninput=()=>{if(submitted)return;recordAnswer(i,input.value.trim())};
+      row.appendChild(input);card.appendChild(row);
+    } else {
       const bank=document.createElement('div');bank.className='orderbank';
       const line=document.createElement('div');line.className='orderline';line.dataset.field='orderline';
       let picked=[];
       const shuffled=q.words.slice().sort(()=>Math.random()-.5);
-      shuffled.forEach(w=>{
-        const b=document.createElement('button');b.className='chip';b.textContent=w;
-        b.onclick=()=>{if(submitted)return;picked.push(w);b.disabled=true;line.innerHTML=picked.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');recordAnswer(i,picked.slice());};
-        bank.appendChild(b);
-      });
+      shuffled.forEach(w=>{const b=document.createElement('button');b.className='chip';b.textContent=w;b.onclick=()=>{if(submitted)return;picked.push(w);b.disabled=true;line.innerHTML=picked.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');recordAnswer(i,picked.slice())};bank.appendChild(b)});
       const reset=document.createElement('button');reset.className='pick';reset.textContent='Reset';reset.style.marginTop='10px';
       reset.onclick=()=>{if(submitted)return;picked=[];line.innerHTML='';bank.querySelectorAll('button').forEach(b=>{if(b!==reset)b.disabled=false});recordAnswer(i,[]);};
       card.append(bank,line,reset);
@@ -366,7 +425,6 @@ function renderQuestions(){
     const fb=document.createElement('div');fb.className='feedback';fb.id='fb'+i;
     card.appendChild(fb);
     root.appendChild(card);
-
     if(answers[i]!==undefined)restoreAnswer(i,answers[i]);
   });
   updateFinishBar();
@@ -374,7 +432,8 @@ function renderQuestions(){
 function selectOption(i,card,value){
   if(submitted)return;
   card.querySelectorAll('.pick').forEach(p=>p.classList.remove('selected'));
-  card.querySelector('.pick[data-value="'+CSS.escape(value)+'"]').classList.add('selected');
+  const btn=Array.from(card.querySelectorAll('.pick')).find(p=>p.dataset.value===value);
+  if(btn)btn.classList.add('selected');
   recordAnswer(i,value);
 }
 function recordAnswer(i,value){
@@ -384,22 +443,16 @@ function recordAnswer(i,value){
   updateFinishBar();
 }
 function restoreAnswer(i,value){
-  const card=document.getElementById('q'+i);
-  if(!card)return;
+  const card=document.getElementById('q'+i);if(!card)return;
   const q=lesson.questions[i];
   if(q.type==='choice'||q.type==='tf'){
     card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===value)p.classList.add('selected')});
-  } else if(q.type==='select'){
-    const s=card.querySelector('select');if(s)s.value=value;
-  } else if(q.type==='input'){
-    const inp=card.querySelector('input');if(inp)inp.value=value;
-  } else if(q.type==='order'){
+  } else if(q.type==='select'){const s=card.querySelector('select');if(s)s.value=value}
+  else if(q.type==='input'){const inp=card.querySelector('input');if(inp)inp.value=value}
+  else if(q.type==='order'){
     const line=card.querySelector('.orderline');
     if(line&&Array.isArray(value))line.innerHTML=value.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');
-    // Disable used chips
-    card.querySelectorAll('.chip').forEach(c=>{
-      if(Array.isArray(value)&&value.indexOf(c.textContent)!==-1)c.disabled=true;
-    });
+    card.querySelectorAll('.chip').forEach(c=>{if(Array.isArray(value)&&value.indexOf(c.textContent)!==-1)c.disabled=true});
   }
 }
 function updateFinishBar(){
@@ -409,10 +462,11 @@ function updateFinishBar(){
   document.getElementById('finishBtn').disabled=count<total;
   document.getElementById('progressText').textContent=count+' / '+total+' answered';
   document.getElementById('progressFill').style.width=Math.round(count/total*100)+'%';
-  document.getElementById('scoreText').textContent='(score revealed after submit)';
+  // ***** BUG FIX: actually SHOW the finish bar *****
+  if(!teacherMode)document.getElementById('finishBar').classList.add('show');
 }
 
-/* ========== SUBMIT ALL ========== */
+/* ============ SUBMIT ============ */
 function submitAll(){
   if(submitted)return;
   if(Object.keys(answers).length<lesson.questions.length){
@@ -425,56 +479,47 @@ function submitAll(){
     const fb=document.getElementById('fb'+i);
     const userAns=answers[i];
     let ok=false;
-    // Disable all inputs in this card
     card.querySelectorAll('button,select,input').forEach(el=>el.disabled=true);
-    // Compare
     if(q.type==='input'){
       const norm=s=>String(s).toLowerCase().trim().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
       ok=q.answers.some(a=>norm(a)===norm(userAns));
-      const inp=card.querySelector('input');
-      inp.classList.add(ok?'correct':'wrong');
+      card.querySelector('input').classList.add(ok?'correct':'wrong');
+      if(!ok){
+        const c=document.createElement('div');
+        c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
+        c.innerHTML='<b>Correct:</b> '+esc(q.answers[0]);
+        card.appendChild(c);
+      }
     } else if(q.type==='order'){
       ok=Array.isArray(userAns)&&userAns.length===q.answer.length&&userAns.every((w,k)=>w===q.answer[k]);
-      const line=card.querySelector('.orderline');
-      line.classList.add(ok?'correct':'wrong');
+      card.querySelector('.orderline').classList.add(ok?'correct':'wrong');
       if(!ok){
-        // Show correct order below
-        const correctDiv=document.createElement('div');
-        correctDiv.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
-        correctDiv.innerHTML='<b>Correct order:</b> '+q.answer.map(esc).join(' ');
-        card.appendChild(correctDiv);
+        const c=document.createElement('div');
+        c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
+        c.innerHTML='<b>Correct order:</b> '+q.answer.map(esc).join(' ');
+        card.appendChild(c);
       }
     } else if(q.type==='tf'){
       ok=String(userAns)===q.answer;
-      card.querySelectorAll('.pick').forEach(p=>{
-        if(p.dataset.value===q.answer)p.classList.add('correct');
-        else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong');
-      });
-    } else { // choice or select
+      card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===q.answer)p.classList.add('correct');else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong')});
+    } else {
       ok=String(userAns)===String(q.answer);
       if(q.type==='select'){
-        const s=card.querySelector('select');
-        s.classList.add(ok?'correct':'wrong');
+        const s=card.querySelector('select');s.classList.add(ok?'correct':'wrong');
         if(!ok){
-          const correctDiv=document.createElement('div');
-          correctDiv.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
-          correctDiv.innerHTML='<b>Correct answer:</b> '+esc(q.answer);
-          card.appendChild(correctDiv);
+          const c=document.createElement('div');
+          c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
+          c.innerHTML='<b>Correct answer:</b> '+esc(q.answer);
+          card.appendChild(c);
         }
       } else {
-        card.querySelectorAll('.pick').forEach(p=>{
-          if(p.dataset.value===q.answer)p.classList.add('correct');
-          else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong');
-        });
+        card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===q.answer)p.classList.add('correct');else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong')});
       }
     }
     if(ok)score++;
-    // Feedback in EN + RU
     fb.className='feedback show '+(ok?'ok':'no');
-    fb.innerHTML='<span class="en">'+(ok?'✓ Correct. ':'✗ Not quite. ')+esc(q.explain)+'</span>'+
-                 '<span class="ru">'+esc(q.explain_ru||'')+'</span>';
+    fb.innerHTML='<span class="en">'+(ok?'✓ Correct. ':'✗ Not quite. ')+esc(q.explain)+'</span><span class="ru">'+esc(q.explain_ru||'')+'</span>';
   });
-  // Show summary
   const total=lesson.questions.length;
   const summary=document.getElementById('summary');
   summary.className='summary show';
@@ -482,34 +527,47 @@ function submitAll(){
   document.getElementById('progressText').textContent=score+' / '+total+' correct';
   document.getElementById('progressFill').style.width=Math.round(score/total*100)+'%';
   document.getElementById('scoreText').textContent=score+' / '+total+' points';
-  document.getElementById('finishBar').style.display='none';
+  document.getElementById('finishBar').classList.remove('show');
   saveProgress(score,total);
-  window.scrollTo({top:document.getElementById('summary').offsetTop-100,behavior:'smooth'});
+  window.scrollTo({top:summary.offsetTop-100,behavior:'smooth'});
 }
 
-/* ========== FIREBASE ========== */
 function saveProgress(score,total){
   if(!ref||teacherMode)return;
-  ref.update({
-    version:homeworkVersion,
-    answers:answers,
-    score:score,
-    total:total,
-    submitted:true,
-    completed:true,
-    updatedAt:Date.now()
-  }).catch(console.error);
+  ref.update({version:homeworkVersion,answers:answers,score:score,total:total,submitted:true,completed:true,updatedAt:Date.now()}).catch(console.error);
 }
+
+/* ============ INIT ============ */
+let db=null,ref=null;
+renderWords();
+renderPassage();
+
 function initFirebase(){
-  if(teacherMode){renderQuestions();return}
-  if(!code){
-    renderQuestions();
-    document.getElementById('intro').textContent+=' Open this page from your student portal so your progress can be saved.';
-    return;
-  }
   try{
     if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
     db=firebase.database();
+    // Listen for teacher-edited pictures
+    imageRef=db.ref('curriculum/'+homeworkId+'/flashcardImages');
+    imageRef.on('value',s=>{customImages=s.val()||{}});
+    if(teacherPreviewRequested){
+      firebase.auth().onAuthStateChanged(function(user){
+        teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
+        teacherMode=teacherCanEdit;
+        if(teacherCanEdit){
+          document.querySelector('.sub').textContent='Teacher preview · student progress is unchanged';
+          document.getElementById('intro').textContent='Teacher preview. Review this homework without changing the student’s answers. Click any keyword, then the ✏️ button to set a custom picture.';
+        } else {
+          document.getElementById('main').innerHTML='';
+        }
+        renderQuestions();
+      });
+      return;
+    }
+    if(!code){
+      renderQuestions();
+      document.getElementById('intro').textContent+=' Open this page from your student portal so your progress can be saved.';
+      return;
+    }
     ref=db.ref('sessions/'+code+'/homework/'+homeworkId);
     ref.once('value').then(s=>{
       const data=s.val()||{};
@@ -521,39 +579,18 @@ function initFirebase(){
         submitted=!!data.submitted;
       }
       renderQuestions();
-      if(submitted)restoreSubmittedView(data.score||0,data.total||lesson.questions.length);
+      if(submitted){
+        const savedTeacher=teacherMode;teacherMode=true;
+        submitAll();
+        teacherMode=savedTeacher;
+      }
     }).catch(e=>{
-      document.getElementById('intro').textContent+=' Saved progress could not be loaded: '+e.message;
+      document.getElementById('intro').textContent+=' Progress could not be loaded: '+e.message;
       renderQuestions();
     });
   }catch(e){renderQuestions()}
 }
-function restoreSubmittedView(score,total){
-  // Re-run submit without re-saving
-  const savedTeacherMode=teacherMode;
-  teacherMode=true; // prevent re-save
-  submitAll();
-  teacherMode=savedTeacherMode;
-}
 
-/* ========== INIT ========== */
-renderWords();
-renderPassage();
-if(teacherPreviewRequested){
-  try{
-    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-    firebase.auth().onAuthStateChanged(function(user){
-      teacherMode=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
-      if(teacherMode){
-        document.querySelector('.sub').textContent='Teacher preview · student progress is unchanged';
-        document.getElementById('intro').textContent='Teacher preview. Review this homework without changing the student’s saved answers.';
-        document.getElementById('finishBar').style.display='none';
-      }
-      initFirebase();
-    });
-  }catch(e){initFirebase()}
-}else{
-  initFirebase();
-}
+initFirebase();
 </script>
 </body></html>
