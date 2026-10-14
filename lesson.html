@@ -382,13 +382,24 @@ function confetti(){
     document.body.appendChild(c);setTimeout(function(){c.remove()},3600);
   }
 }
+let ukVoice=null;
+function pickUKVoice(){
+  if(!('speechSynthesis' in window))return null;
+  const voices=window.speechSynthesis.getVoices();
+  return voices.find(v=>v.lang==='en-GB')||
+         voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('en-gb'))||
+         voices.find(v=>v.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(v.name))||
+         null;
+}
+if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()}}
 function speak(text){
   if(!soundOn)return;
   if(!('speechSynthesis'in window))return;
   try{
     window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
-    u.lang='en-US';u.rate=.9;
+    u.lang='en-GB';u.rate=.9;u.pitch=1;
+    if(ukVoice)u.voice=ukVoice;
     window.speechSynthesis.speak(u);
   }catch(e){}
 }
