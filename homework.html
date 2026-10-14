@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sustainable Cities — Homework</title>
+<title>Sustainable Cities · Homework</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -83,8 +83,8 @@ h1{font-size:clamp(38px,6vw,62px);line-height:.98;margin:10px 0 14px}
 </head>
 <body>
 <main class="wrap">
-<header class="top"><div class="mark">🏙️</div><div><div class="brand" id="studentTitle">Homework 1</div><div class="sub">Sustainable Cities · Active tenses</div></div><span class="spacer"></span><a id="classworkLink" href="lesson_gaziz.html">← Classwork</a><button onclick="toggleTheme()" id="themeButton">☀️ Light theme</button></header>
-<section class="hero"><div><div class="eyebrow" id="variantLabel">Topic 1 · Sustainable Cities</div><h1 id="headline">A new city vocabulary set</h1><p id="intro"></p></div><div class="art" aria-hidden="true">🌳 → 🚌 → ☀️</div></section>
+<header class="top"><div class="mark" id="markIcon">🏙️</div><div><div class="brand" id="studentTitle">Homework</div><div class="sub" id="subTitle">Topic · Homework</div></div><span class="spacer"></span><a id="classworkLink" href="lesson.html">← Classwork</a><button onclick="toggleTheme()" id="themeButton">☀️ Light theme</button></header>
+<section class="hero"><div><div class="eyebrow" id="variantLabel">Topic 1</div><h1 id="headline">Homework</h1><p id="intro"></p></div><div class="art" id="heroArt" aria-hidden="true">❄️ → 🌪️ → 🌊</div></section>
 <div class="progress"><span id="progressText">0 / 0 answered</span><div class="rail"><div class="fill" id="progressFill"></div></div><span id="scoreText">(score revealed after submit)</span></div>
 <section class="panel"><h2>Key vocabulary for this homework</h2><p style="color:var(--soft);font-size:14px;margin:-6px 0 14px;">Tap any word to see its picture, Russian translation, and hear British pronunciation.</p><div class="words" id="words"></div></section>
 <section class="panel passage" id="passage"></section>
@@ -111,15 +111,15 @@ const firebaseConfig={apiKey:'AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w',authDomai
 const params=new URLSearchParams(location.search);
 const variant=params.get('variant')==='sabina'?'sabina':'gaziz';
 const code=(params.get('code')||'').toUpperCase();
-const homeworkId=params.get('lesson')||('homework_'+variant+'_sustainable_cities');
-const homeworkVersion=4;
+const homeworkId=params.get('lesson')||('homework_'+variant);
+const homeworkVersion=5;
 const teacherPreviewRequested=params.get('teacher')==='1';
 const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
 let teacherMode=false,teacherCanEdit=false,fbDb=null,imageRef=null;
 let customImages={};
 
-/* ============ VOCABULARY — expanded list [en, def, ru, emoji] ============ */
-const gazizWords=[
+/* ================= SUSTAINABLE CITIES (Gaziz) ================= */
+const sustainableWords=[
   ['area','a particular part of a place','район, область','📍'],
   ['change','something that becomes different','изменение','🔄'],
   ['plan','an idea for what to do','план','📋'],
@@ -140,66 +140,6 @@ const gazizWords=[
   ['waste','use more than needed','отходы','🗑️'],
   ['recycle','use material again','перерабатывать','♻️'],
   ['protect','keep someone or something safe','защищать','🛡️'],
-  /* --- new additions --- */
-  ['council','a group that governs a town','городской совет','🏛️'],
-  ['market','a place where people buy and sell','рынок','🛒'],
-  ['station','a place where buses or trains stop','станция','🚉'],
-  ['hospital','a place where sick people are treated','больница','🏥'],
-  ['evening','the time after the afternoon','вечер','🌆'],
-  ['route','the path from one place to another','маршрут','🛣️'],
-  ['project','a planned piece of work','проект','📋'],
-  ['budget','the money available for a plan','бюджет','💰'],
-  ['volunteer','a person who works without pay','волонтёр','🙋'],
-  ['rubbish','things people throw away','мусор','🗑️'],
-  ['bin','a container for rubbish','мусорный бак','🗑️'],
-  ['path','a narrow way for walking','дорожка','🛤️'],
-  ['meeting','when people gather to discuss','встреча','🤝'],
-  ['resident','a person who lives somewhere','житель','🏠'],
-  ['resident’s','belonging to a resident','жителя','👤'],
-  ['improve','make better','улучшать','✨'],
-  ['provide','give or make available','предоставлять','🎁'],
-  ['reduce','make or become smaller','уменьшать','📉'],
-  ['energy','power used for heat or light','энергия','⚡'],
-  ['benefit','a good or helpful result','польза','👍'],
-  ['cost','the money needed to buy','стоимость','💰'],
-  ['affect','change or influence','влиять','🔄'],
-  ['result','something that happens because of an action','результат','🎯'],
-  ['issue','a problem people discuss','проблема','❔'],
-  ['solution','an answer to a problem','решение','💡'],
-  ['public','for everyone to use','общественный','🏛️'],
-  ['local','connected with a nearby place','местный','📍'],
-  ['transport','ways of moving people or goods','транспорт','🚌'],
-  ['pollution','harmful material in air or water','загрязнение','💨'],
-  ['environment','the natural world around us','окружающая среда','🌍'],
-  ['popular','liked by many people','популярный','⭐'],
-  ['review','look at something again','пересматривать','🔍'],
-  ['traffic','vehicles moving on roads','дорожное движение','🚗'],
-  ['fuel','material used for energy','топливо','⛽'],
-  ['light','brightness from the sun or a lamp','свет','💡'],
-  ['activity','something people do','деятельность','🎯']
-];
-const sabinaWords=[
-  ['environment','the natural world around us','окружающая среда','🌍'],
-  ['pollution','harmful material in air, water, or land','загрязнение','💨'],
-  ['transport','ways of moving people or goods','транспорт','🚌'],
-  ['community','people who live in one area','сообщество','👥'],
-  ['improve','make something better','улучшать','✨'],
-  ['increase','become or make greater','увеличивать(ся)','📈'],
-  ['reduce','make or become smaller','уменьшать(ся)','📉'],
-  ['provide','give or make something available','предоставлять','🎁'],
-  ['affect','change or influence something','влиять','🔄'],
-  ['result','something that happens because of an action','результат','🎯'],
-  ['benefit','a good or helpful result','польза','👍'],
-  ['cost','the money needed to buy or do something','стоимость','💰'],
-  ['issue','a subject or problem people discuss','вопрос, проблема','❔'],
-  ['solution','an answer to a problem','решение','💡'],
-  ['public','for everyone to use','общественный','🏛️'],
-  ['local','connected with a nearby place','местный','📍'],
-  ['energy','power used for heat, light, or movement','энергия','⚡'],
-  ['resource','a useful supply or material','ресурс','🧰'],
-  ['develop','grow or make something over time','развивать(ся)','🌱'],
-  ['support','help someone or something','поддерживать','🤝'],
-  /* --- new additions --- */
   ['council','a group that governs a town','городской совет','🏛️'],
   ['market','a place where people buy and sell','рынок','🛒'],
   ['station','a place where buses or trains stop','станция','🚉'],
@@ -215,22 +155,30 @@ const sabinaWords=[
   ['meeting','when people gather to discuss','встреча','🤝'],
   ['resident','a person who lives somewhere','житель','🏠'],
   ['population','the people living in a place','население','👥'],
-  ['visitor','a person who comes to a place','посетитель','🧑‍🦱'],
+  ['visitor','a person who comes to a place','посетитель','🧑'],
   ['traffic','vehicles moving on roads','дорожное движение','🚗'],
   ['fuel','material used for energy','топливо','⛽'],
   ['light','brightness from the sun or a lamp','свет','💡'],
   ['review','look at something again','пересматривать','🔍'],
   ['popular','liked by many people','популярный','⭐'],
-  ['safe','not likely to cause harm','безопасный','🛡️'],
-  ['waste','use more than needed','отходы','🗑️'],
-  ['recycle','use material again','перерабатывать','♻️'],
-  ['travel','go from one place to another','путешествовать','✈️']
+  ['improve','make better','улучшать','✨'],
+  ['provide','give or make available','предоставлять','🎁'],
+  ['reduce','make or become smaller','уменьшать','📉'],
+  ['energy','power used for heat or light','энергия','⚡'],
+  ['benefit','a good or helpful result','польза','👍'],
+  ['cost','the money needed to buy','стоимость','💰'],
+  ['affect','change or influence','влиять','🔄'],
+  ['result','something that happens because of an action','результат','🎯'],
+  ['issue','a problem people discuss','проблема','❔'],
+  ['solution','an answer to a problem','решение','💡'],
+  ['public','for everyone to use','общественный','🏛️'],
+  ['local','connected with a nearby place','местный','📍'],
+  ['transport','ways of moving people or goods','транспорт','🚌'],
+  ['pollution','harmful material in air or water','загрязнение','💨'],
+  ['environment','the natural world around us','окружающая среда','🌍']
 ];
-
-const cityText='<h2>Rivergate makes changes for its residents</h2><p>Rivergate is a growing city beside a wide river. In recent years, the local council has improved public transport. It has provided more buses in the evening, and it has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. The project had a good result: families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>These plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. The changes have affected daily life in different ways. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn and decide what to improve next.</p>';
-const sabinaText='<h2>Rivergate has improved travel and public spaces</h2><p>Rivergate has improved its public transport over the past two years. The city has provided more buses in the evening and has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. Families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>The plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn.</p>';
-
-const gazizQuestions=[
+const sustainableText='<h2>Rivergate makes changes for its residents</h2><p>Rivergate is a growing city beside a wide river. In recent years, the local council has improved public transport. It has provided more buses in the evening, and it has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. The project had a good result: families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>These plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. The changes have affected daily life in different ways. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn and decide what to improve next.</p>';
+const sustainableQuestions=[
   {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
   {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
   {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
@@ -248,28 +196,103 @@ const gazizQuestions=[
   {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
   {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
 ];
-const sabinaQuestions=[
-  {type:'select',prompt:'Choose the word that means "ways of moving people or goods."',options:['transport','community','energy','issue'],answer:'transport',explain:'Transport means ways of moving people or goods.',explain_ru:'Transport — способы перемещения людей или товаров.'},
-  {type:'input',prompt:'Complete: The council has ___ more buses in the evening.',answers:['provided'],explain:'Provide means to give or make something available.',explain_ru:'Provide означает давать или делать что-то доступным.'},
-  {type:'choice',prompt:'When did the council open the new bus station?',options:['Last spring','In 2023','This autumn'],answer:'Last spring',explain:'The passage says it opened last spring.',explain_ru:'В тексте сказано, что станция открылась прошлой весной.'},
-  {type:'tf',prompt:'The city planted trees along two busy roads.',answer:'True',explain:'The passage says the city has planted trees along two roads.',explain_ru:'В тексте сказано, что город посадил деревья вдоль двух дорог.'},
-  {type:'order',prompt:'Put the words in order to make a present perfect sentence.',words:['Rivergate','has','improved','public','transport.'],answer:['Rivergate','has','improved','public','transport.'],explain:'The city has improved it, with a result now.',explain_ru:'Город улучшил это — результат виден сейчас.'},
-  {type:'input',prompt:'Use past simple active: Volunteers ___ (clean) the riverbank in 2023.',answers:['cleaned'],explain:'In 2023 is a finished time: cleaned.',explain_ru:'In 2023 — завершённое время: cleaned.'},
-  {type:'select',prompt:'Which word means "a good or helpful result"?',options:['benefit','effect','cost','need'],answer:'benefit',explain:'A benefit is a good or helpful result.',explain_ru:'Benefit — хороший или полезный результат.'},
-  {type:'choice',prompt:'What did residents do at the public meeting?',options:['Shared their ideas','Built a bus station','Bought new street lights'],answer:'Shared their ideas',explain:'Residents tested routes and shared ideas.',explain_ru:'Жители проверили маршруты и поделились идеями.'},
-  {type:'input',prompt:'Use present perfect active: The city ___ (create) a small park beside the river.',answers:['has created'],explain:'The result is still present: has created.',explain_ru:'Результат всё ещё важен: has created.'},
-  {type:'tf',prompt:'The council used better lights to save energy.',answer:'True',explain:'The passage says it has saved energy with better lights.',explain_ru:'В тексте сказано, что город сэкономил энергию благодаря новым лампам.'},
-  {type:'select',prompt:'Choose a word meaning "why something happens."',options:['reason','change','service','area'],answer:'reason',explain:'A reason explains why something happens.',explain_ru:'Reason объясняет, почему что-то происходит.'},
-  {type:'order',prompt:'Build a past simple active sentence.',words:['The','council','spent','money','on','buses','last','year.'],answer:['The','council','spent','money','on','buses','last','year.'],explain:'Last year is finished; spent is past simple.',explain_ru:'Last year — завершённое время; spent — past simple.'},
-  {type:'choice',prompt:'What did volunteers collect?',options:['Plastic waste','Bus maps','Street lights'],answer:'Plastic waste',explain:'The volunteers collected plastic waste.',explain_ru:'Волонтёры собрали пластиковые отходы.'},
-  {type:'input',prompt:'Complete: A ___ keeps a person or thing safe.',answers:['protect'],explain:'Protect means to keep someone or something safe.',explain_ru:'Protect означает защищать кого-то или что-то.'},
-  {type:'select',prompt:'Which word means "use something again"?',options:['recycle','spend','develop','move'],answer:'recycle',explain:'Recycle means use material again.',explain_ru:'Recycle — использовать материал снова.'},
-  {type:'input',prompt:'Use present perfect active: Families ___ (use) the park more often since then.',answers:['have used'],explain:'Since then connects the past action to now: have used.',explain_ru:'Since then связывает прошлое действие с настоящим: have used.'}
+
+/* ================= NATURAL DISASTERS (Sabina) ================= */
+const disasterWords=[
+  ['blizzard','a long snowstorm with strong winds','снежная буря','❄️'],
+  ['drought','a long time with very little rain','засуха','🏜️'],
+  ['earthquake','a sudden shaking of the ground','землетрясение','🏚️'],
+  ['flood','water covering dry land','наводнение','🌊'],
+  ['heat wave','a period of unusually hot weather','волна жары','🥵'],
+  ['hurricane','a giant swirling storm with strong winds','ураган','🌀'],
+  ['thunderstorm','a storm with lightning and rain','гроза','⛈️'],
+  ['tornado','a rotating column of air','торнадо','🌪️'],
+  ['tsunami','a very large ocean wave','цунами','🌊'],
+  ['wildfire','a large fire that spreads quickly','лесной пожар','🔥'],
+  ['landslide','rocks and earth sliding down a slope','оползень','⛰️'],
+  ['avalanche','snow and ice sliding down a mountain','лавина','🏔️'],
+  ['volcano','a mountain that can erupt','вулкан','🌋'],
+  ['eruption','when a volcano sends out lava','извержение','💥'],
+  ['lava','hot liquid rock from a volcano','лава','🟠'],
+  ['ash','small grey dust from a fire','пепел','🌫️'],
+  ['hail','small balls of ice from the sky','град','🧊'],
+  ['sleet','rain mixed with snow','мокрый снег','🌧️'],
+  ['humid','warm and slightly wet in the air','влажный','💧'],
+  ['crust','the hard outer layer of the Earth','земная кора','🪨'],
+  ['tremor','a small shaking movement','толчок','📳'],
+  ['magnitude','the size or strength of something','магнитуда','📊'],
+  ['topple','to make something fall over','опрокидывать','🏚️'],
+  ['overflow','to spill over the edge','выходить из берегов','🌊'],
+  ['surge','a sudden, powerful movement forward','нахлынуть','🌊'],
+  ['funnel','a tube-shaped cloud or shape','воронка','🌪️'],
+  ['column','a tall, narrow shape','столб','🏛️'],
+  ['erupt','to send out lava or ash','извергаться','💥'],
+  ['atmosphere','the air around the Earth','атмосфера','🌍'],
+  ['pressure','the force of air or water','давление','📊'],
+  ['region','an area or part of a country','регион','🗺️'],
+  ['deforestation','the removal of many trees','вырубка лесов','🪓'],
+  ['unpredictable','hard to know in advance','непредсказуемый','❓'],
+  ['structure','a building or other construction','сооружение','🏢'],
+  ['brush fire','a fire in low bushes and plants','пожар в кустарнике','🔥'],
+  ['soil','the top layer of earth for plants','почва','🟫'],
+  ['collide','to hit something with force','сталкиваться','💥'],
+  ['disrupt','to interrupt or disturb','нарушать','⚡'],
+  ['vibration','a fast shaking movement','вибрация','📳'],
+  ['swirl','to move in circles','кружиться','🌀'],
+  ['species','a group of similar living things','вид (биология)','🦌'],
+  ['survive','to stay alive after danger','выживать','💪'],
+  ['prepare','to get ready for something','готовиться','🛠️'],
+  ['warning','a message about possible danger','предупреждение','⚠️'],
+  ['rescue','to save someone from danger','спасать','🚁']
+];
+const disasterText='<h2>Ten disasters that shape our world</h2><p>A blizzard is a long snowstorm with very strong winds. It often lasts for three hours or more and is caused by cold air that collides with warm air. A drought is different: it is a long period with very little or no rain. Human activity such as deforestation can also cause droughts, because the soil becomes dry and hard.</p><p>An earthquake happens when the Earth\'s crust moves suddenly and violently. The shaking can be minor, with only a few tremors, or very strong, with a high magnitude. A powerful earthquake can topple buildings and damage bridges and other structures. The vibrations can also disrupt water and gas lines.</p><p>Floods happen when heavy rain or melting snow makes rivers and other bodies of water overflow. The water then covers dry land. Floods are the most common natural disaster in the United States; FEMA says nearly 90% of disasters there involve flooding. A heat wave is a period of unusually hot weather in a region. High pressure in the Earth\'s atmosphere holds hot air near the surface. This makes rain less likely, so a drought may follow.</p><p>A hurricane is a giant, swirling storm with severe thunderstorms and winds that can reach 160 miles per hour. In some parts of the world, hurricanes are called typhoons. A thunderstorm often brings lightning, high winds, and heavy rain, although it can also bring hail, sleet, or snow. These storms can begin when warm, humid air rises quickly into the sky. A tornado is a destructive, rotating column of air. Its winds may reach 100 to 300 miles per hour, and it often looks like a funnel.</p><p>A tsunami is a very large ocean wave that surges onto land. The waves can reach 100 feet high. Most tsunamis are caused by underwater earthquakes; the vibrations disturb the water and send waves outward. A wildfire is a forest, bush, or brush fire that can spread quickly and unpredictably. People start many wildfires, but dry weather and strong winds can help them spread. Landslides and avalanches can follow earthquakes, heavy rain, or snow. When volcanoes erupt, they send ash into the air and lava onto the ground. Each event is different, so learning about hazards helps people prepare and survive.</p>';
+const disasterQuestions=[
+  {type:'choice',prompt:'What is a blizzard?',options:['A long snowstorm with strong winds','A long period without rain','A rotating column of air'],answer:'A long snowstorm with strong winds',explain:'The passage defines a blizzard as a long snowstorm with very strong winds.',explain_ru:'В тексте blizzard — это длинная снежная буря с очень сильным ветром.'},
+  {type:'input',prompt:'Complete: Blizzards are caused by cold air that ___ with warm air.',answers:['collides','collides with'],explain:'Cold air collides with warm air to form a blizzard.',explain_ru:'Холодный воздух сталкивается с тёплым, чтобы сформировать буран.'},
+  {type:'tf',prompt:'A drought is caused by too much rain.',answer:'False',explain:'False. A drought is a long period with very little or no rain.',explain_ru:'Неверно. Drought — это длительный период без дождя.'},
+  {type:'select',prompt:'Which word means "the Earth\'s hard outer layer"?',options:['crust','tremor','magnitude','region'],answer:'crust',explain:'The crust is the hard outer layer of the Earth.',explain_ru:'Crust — это твёрдый внешний слой Земли.'},
+  {type:'input',prompt:'Use present passive: Tsunamis ___ by underwater earthquakes. (cause)',answers:['are caused'],explain:'Present passive with plural subject: are + V3.',explain_ru:'Present passive с множественным подлежащим: are + V3.'},
+  {type:'order',prompt:'Build the past passive sentence.',words:['The','wildfire','was','caused','by','the','drought.'],answer:['The','wildfire','was','caused','by','the','drought.'],explain:'Past passive: was + V3.',explain_ru:'Past passive: was + V3.'},
+  {type:'choice',prompt:'What can cause a heat wave?',options:['High pressure in the atmosphere','Cold air from the sea','A rotating column of air'],answer:'High pressure in the atmosphere',explain:'High pressure holds hot air near the ground.',explain_ru:'Высокое давление удерживает горячий воздух у поверхности.'},
+  {type:'input',prompt:'Complete: The ___ of an earthquake describes its strength.',answers:['magnitude'],explain:'Magnitude is the size or strength of an earthquake.',explain_ru:'Magnitude — это величина или сила землетрясения.'},
+  {type:'select',prompt:'Which word means "the removal of many trees"?',options:['deforestation','eruption','structure','warning'],answer:'deforestation',explain:'Deforestation is the removal of many trees.',explain_ru:'Deforestation — вырубка большого количества деревьев.'},
+  {type:'tf',prompt:'Floods are the most common natural disaster in the U.S.',answer:'True',explain:'FEMA says nearly 90% of U.S. disasters involve flooding.',explain_ru:'FEMA: около 90% катастроф в США связаны с наводнениями.'},
+  {type:'input',prompt:'Use present perfect passive: Many homes ___ (destroy) by floods in recent years.',answers:['have been destroyed'],explain:'Plural + present perfect passive: have been + V3.',explain_ru:'Множественное число + present perfect passive: have been + V3.'},
+  {type:'order',prompt:'Build the present passive sentence.',words:['Many','buildings','are','destroyed','by','hurricanes.'],answer:['Many','buildings','are','destroyed','by','hurricanes.'],explain:'Present passive with plural subject: are + V3.',explain_ru:'Present passive с множественным подлежащим: are + V3.'},
+  {type:'choice',prompt:'What is a tornado?',options:['A rotating column of air','A large ocean wave','A long period without rain'],answer:'A rotating column of air',explain:'A tornado is a rotating column of air with fast winds.',explain_ru:'Tornado — вращающийся столб воздуха с быстрым ветром.'},
+  {type:'select',prompt:'Which word means "to spill over the edge"?',options:['overflow','erupt','collide','swirl'],answer:'overflow',explain:'Overflow means to spill over the edge.',explain_ru:'Overflow — переливаться через край.'},
+  {type:'input',prompt:'Use past passive: The streets ___ (flood) after heavy rain yesterday.',answers:['were flooded'],explain:'Past passive with plural subject: were + V3.',explain_ru:'Past passive с множественным подлежащим: were + V3.'},
+  {type:'tf',prompt:'Volcanoes can send ash clouds into the air.',answer:'True',explain:'The passage says volcanoes send ash into the air and lava onto the ground.',explain_ru:'В тексте говорится: вулканы выбрасывают пепел в воздух и лаву на землю.'}
 ];
 
+/* ================= SELECT LESSON ================= */
 const lesson={
-  gaziz:{title:'Gaziz · Homework 1',headline:'City life: changes and choices',intro:'Read a new Rivergate case study. Practise common IELTS words and use present perfect or past simple in the active voice.',passage:cityText,words:gazizWords,questions:gazizQuestions},
-  sabina:{title:'Sabina · Homework 1',headline:'Rivergate: travel and shared spaces',intro:'Use the same class topic and key facts, but answer a fresh set of question types. Practise present perfect and past simple in the active voice.',passage:sabinaText,words:sabinaWords,questions:sabinaQuestions}
+  gaziz:{
+    title:'Gaziz · Sustainable Cities Homework',
+    headline:'City life: changes and choices',
+    intro:'Read the Rivergate case study. Practise common IELTS words and use present perfect or past simple in the active voice.',
+    passage:sustainableText,
+    words:sustainableWords,
+    questions:sustainableQuestions,
+    mark:'🏙️',
+    sub:'Sustainable Cities · Active tenses',
+    hero:'🏙️ → 🚌 → ☀️',
+    label:'Topic · Sustainable Cities · Homework',
+    classwork:'lesson_gaziz.html'
+  },
+  sabina:{
+    title:'Sabina · Natural Disasters Homework',
+    headline:'Big weather. Clear English.',
+    intro:'Read about ten natural disasters. Practise passive voice and present perfect with disaster vocabulary.',
+    passage:disasterText,
+    words:disasterWords,
+    questions:disasterQuestions,
+    mark:'🌪️',
+    sub:'Natural Disasters · Passive & Perfect',
+    hero:'❄️ → 🌪️ → 🌊',
+    label:'Topic · Natural Disasters · Homework',
+    classwork:'lesson.html'
+  }
 }[variant];
 
 let answers={},submitted=false,currentKwWord='';
@@ -281,8 +304,11 @@ document.title=lesson.title;
 document.getElementById('studentTitle').textContent=lesson.title;
 document.getElementById('headline').textContent=lesson.headline;
 document.getElementById('intro').textContent=lesson.intro;
-document.getElementById('variantLabel').textContent='Topic 1 · Sustainable Cities · Homework';
-document.getElementById('classworkLink').href=(variant==='sabina'?'lesson.html':'lesson_gaziz.html')+'?lesson=lesson_1&code='+encodeURIComponent(code);
+document.getElementById('variantLabel').textContent=lesson.label;
+document.getElementById('subTitle').textContent=lesson.sub;
+document.getElementById('markIcon').textContent=lesson.mark;
+document.getElementById('heroArt').textContent=lesson.hero;
+document.getElementById('classworkLink').href=lesson.classwork+'?lesson=lesson_1&code='+encodeURIComponent(code);
 
 function renderWords(){
   const el=document.getElementById('words');
@@ -291,7 +317,6 @@ function renderWords(){
   ).join('');
   el.querySelectorAll('.word').forEach(w=>{w.onclick=()=>openKw(w.dataset.word)});
 }
-
 function renderPassage(){
   const container=document.getElementById('passage');
   container.innerHTML=lesson.passage;
@@ -317,17 +342,15 @@ function wrapKeywordsInNode(node,words){
     Array.from(node.childNodes).forEach(c=>wrapKeywordsInNode(c,words));
   }
 }
-
 function openKw(word){
   const key=String(word).toLowerCase();
   const data=WORD_LOOKUP[key];
   if(!data)return;
   currentKwWord=data.en;
   const custom=customImages[data.en];
-  document.getElementById('kwEmoji').textContent=custom?'':data.emo;
-  if(custom){
-    document.getElementById('kwEmoji').innerHTML='<img src="'+esc(custom)+'" style="max-width:120px;max-height:120px;border-radius:12px;" onerror="this.parentNode.textContent=\''+data.emo+'\'">';
-  }
+  const emojiEl=document.getElementById('kwEmoji');
+  if(custom){emojiEl.innerHTML='<img src="'+esc(custom)+'" style="max-width:120px;max-height:120px;border-radius:12px;" onerror="this.parentNode.textContent=\''+data.emo+'\'">'}
+  else{emojiEl.textContent=data.emo}
   document.getElementById('kwWord').textContent=data.en;
   document.getElementById('kwRu').textContent=data.ru;
   document.getElementById('kwBackdrop').classList.add('open');
@@ -355,24 +378,18 @@ let ukVoice=null;
 function pickUKVoice(){
   if(!('speechSynthesis' in window))return null;
   const voices=window.speechSynthesis.getVoices();
-  // Priority: exact en-GB → starts with en-GB → contains "British" or "UK" → null
   return voices.find(v=>v.lang==='en-GB')||
          voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('en-gb'))||
          voices.find(v=>v.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(v.name))||
          null;
 }
-if('speechSynthesis' in window){
-  ukVoice=pickUKVoice();
-  window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()};
-}
+if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()}}
 function speakBritish(text){
   if(!('speechSynthesis' in window))return;
   try{
     window.speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
-    u.lang='en-GB';
-    u.rate=.9;
-    u.pitch=1;
+    u.lang='en-GB';u.rate=.9;u.pitch=1;
     if(ukVoice)u.voice=ukVoice;
     window.speechSynthesis.speak(u);
   }catch(e){}
@@ -387,10 +404,8 @@ function toggleTheme(){
 try{const t=localStorage.getItem('nd_homework_theme');if(t==='light')document.documentElement.classList.add('light')}catch(e){}
 document.getElementById('themeButton').textContent=document.documentElement.classList.contains('light')?'🌙 Dark theme':'☀️ Light theme';
 
-/* ============ QUESTIONS ============ */
 function renderQuestions(){
-  const root=document.getElementById('questions');
-  root.innerHTML='';
+  const root=document.getElementById('questions');root.innerHTML='';
   lesson.questions.forEach((q,i)=>{
     const card=document.createElement('article');
     card.className='question';card.id='q'+i;
@@ -414,7 +429,7 @@ function renderQuestions(){
       row.appendChild(input);card.appendChild(row);
     } else {
       const bank=document.createElement('div');bank.className='orderbank';
-      const line=document.createElement('div');line.className='orderline';line.dataset.field='orderline';
+      const line=document.createElement('div');line.className='orderline';
       let picked=[];
       const shuffled=q.words.slice().sort(()=>Math.random()-.5);
       shuffled.forEach(w=>{const b=document.createElement('button');b.className='chip';b.textContent=w;b.onclick=()=>{if(submitted)return;picked.push(w);b.disabled=true;line.innerHTML=picked.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');recordAnswer(i,picked.slice())};bank.appendChild(b)});
@@ -422,8 +437,7 @@ function renderQuestions(){
       reset.onclick=()=>{if(submitted)return;picked=[];line.innerHTML='';bank.querySelectorAll('button').forEach(b=>{if(b!==reset)b.disabled=false});recordAnswer(i,[]);};
       card.append(bank,line,reset);
     }
-    const fb=document.createElement('div');fb.className='feedback';fb.id='fb'+i;
-    card.appendChild(fb);
+    const fb=document.createElement('div');fb.className='feedback';fb.id='fb'+i;card.appendChild(fb);
     root.appendChild(card);
     if(answers[i]!==undefined)restoreAnswer(i,answers[i]);
   });
@@ -445,9 +459,8 @@ function recordAnswer(i,value){
 function restoreAnswer(i,value){
   const card=document.getElementById('q'+i);if(!card)return;
   const q=lesson.questions[i];
-  if(q.type==='choice'||q.type==='tf'){
-    card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===value)p.classList.add('selected')});
-  } else if(q.type==='select'){const s=card.querySelector('select');if(s)s.value=value}
+  if(q.type==='choice'||q.type==='tf'){card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===value)p.classList.add('selected')})}
+  else if(q.type==='select'){const s=card.querySelector('select');if(s)s.value=value}
   else if(q.type==='input'){const inp=card.querySelector('input');if(inp)inp.value=value}
   else if(q.type==='order'){
     const line=card.querySelector('.orderline');
@@ -462,11 +475,9 @@ function updateFinishBar(){
   document.getElementById('finishBtn').disabled=count<total;
   document.getElementById('progressText').textContent=count+' / '+total+' answered';
   document.getElementById('progressFill').style.width=Math.round(count/total*100)+'%';
-  // ***** BUG FIX: actually SHOW the finish bar *****
   if(!teacherMode)document.getElementById('finishBar').classList.add('show');
 }
 
-/* ============ SUBMIT ============ */
 function submitAll(){
   if(submitted)return;
   if(Object.keys(answers).length<lesson.questions.length){
@@ -484,21 +495,11 @@ function submitAll(){
       const norm=s=>String(s).toLowerCase().trim().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
       ok=q.answers.some(a=>norm(a)===norm(userAns));
       card.querySelector('input').classList.add(ok?'correct':'wrong');
-      if(!ok){
-        const c=document.createElement('div');
-        c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
-        c.innerHTML='<b>Correct:</b> '+esc(q.answers[0]);
-        card.appendChild(c);
-      }
+      if(!ok){const c=document.createElement('div');c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';c.innerHTML='<b>Correct:</b> '+esc(q.answers[0]);card.appendChild(c);}
     } else if(q.type==='order'){
       ok=Array.isArray(userAns)&&userAns.length===q.answer.length&&userAns.every((w,k)=>w===q.answer[k]);
       card.querySelector('.orderline').classList.add(ok?'correct':'wrong');
-      if(!ok){
-        const c=document.createElement('div');
-        c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
-        c.innerHTML='<b>Correct order:</b> '+q.answer.map(esc).join(' ');
-        card.appendChild(c);
-      }
+      if(!ok){const c=document.createElement('div');c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';c.innerHTML='<b>Correct order:</b> '+q.answer.map(esc).join(' ');card.appendChild(c);}
     } else if(q.type==='tf'){
       ok=String(userAns)===q.answer;
       card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===q.answer)p.classList.add('correct');else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong')});
@@ -506,12 +507,7 @@ function submitAll(){
       ok=String(userAns)===String(q.answer);
       if(q.type==='select'){
         const s=card.querySelector('select');s.classList.add(ok?'correct':'wrong');
-        if(!ok){
-          const c=document.createElement('div');
-          c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';
-          c.innerHTML='<b>Correct answer:</b> '+esc(q.answer);
-          card.appendChild(c);
-        }
+        if(!ok){const c=document.createElement('div');c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';c.innerHTML='<b>Correct answer:</b> '+esc(q.answer);card.appendChild(c);}
       } else {
         card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===q.answer)p.classList.add('correct');else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong')});
       }
@@ -537,7 +533,6 @@ function saveProgress(score,total){
   ref.update({version:homeworkVersion,answers:answers,score:score,total:total,submitted:true,completed:true,updatedAt:Date.now()}).catch(console.error);
 }
 
-/* ============ INIT ============ */
 let db=null,ref=null;
 renderWords();
 renderPassage();
@@ -546,7 +541,6 @@ function initFirebase(){
   try{
     if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
     db=firebase.database();
-    // Listen for teacher-edited pictures
     imageRef=db.ref('curriculum/'+homeworkId+'/flashcardImages');
     imageRef.on('value',s=>{customImages=s.val()||{}});
     if(teacherPreviewRequested){
@@ -555,9 +549,7 @@ function initFirebase(){
         teacherMode=teacherCanEdit;
         if(teacherCanEdit){
           document.querySelector('.sub').textContent='Teacher preview · student progress is unchanged';
-          document.getElementById('intro').textContent='Teacher preview. Review this homework without changing the student’s answers. Click any keyword, then the ✏️ button to set a custom picture.';
-        } else {
-          document.getElementById('main').innerHTML='';
+          document.getElementById('intro').textContent='Teacher preview. Click any keyword, then the ✏️ button to set a custom picture.';
         }
         renderQuestions();
       });
@@ -580,9 +572,9 @@ function initFirebase(){
       }
       renderQuestions();
       if(submitted){
-        const savedTeacher=teacherMode;teacherMode=true;
+        const saved=teacherMode;teacherMode=true;
         submitAll();
-        teacherMode=savedTeacher;
+        teacherMode=saved;
       }
     }).catch(e=>{
       document.getElementById('intro').textContent+=' Progress could not be loaded: '+e.message;
@@ -590,7 +582,6 @@ function initFirebase(){
     });
   }catch(e){renderQuestions()}
 }
-
 initFirebase();
 </script>
 </body></html>
