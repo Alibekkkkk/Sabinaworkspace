@@ -582,6 +582,15 @@ function initFirebase(){
     });
   }catch(e){renderQuestions()}
 }
-initFirebase();
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!user) { document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif;"><h2>Please sign in</h2><p>Open the <a href="portal.html">student portal</a> first.</p></div>'; return; }
+  const urlCode = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
+  if (!urlCode) { initFirebase(); return; }
+  firebase.database().ref('students/' + urlCode).once('value').then(function(snap) {
+    const s = snap.val();
+    if (!s || s.uid !== user.uid) { document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif;"><h2>Access denied</h2><p>Your account is not linked to this student code.</p></div>'; return; }
+    initFirebase();
+  });
+});
 </script>
 </body></html>
