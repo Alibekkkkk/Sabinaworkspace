@@ -133,7 +133,14 @@ function studentGoogleSignIn() {
   document.getElementById('authError').textContent = 'Opening Google sign-in…';
   const provider = new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
-  auth.signInWithRedirect(provider).catch(function(err) {
+  auth.signInWithPopup(provider).then(function(result) {
+    document.getElementById('authError').textContent = '';
+  }).catch(function(err) {
+    if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment')) {
+      document.getElementById('authError').textContent = 'Popup was blocked — trying redirect instead…';
+      auth.signInWithRedirect(provider);
+      return;
+    }
     document.getElementById('authError').textContent = (err && err.message) || 'Sign-in failed.';
   });
 }
