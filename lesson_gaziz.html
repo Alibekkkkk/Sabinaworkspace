@@ -289,7 +289,7 @@ const CURRICULUM=[{year:"2026",months:[{month:"October",lessons:[{id:"lesson_1",
 
 /* ================== STATE ================== */
 const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
-CURRICULUM.forEach(y=>y.months.forEach(m=>m.lessons.forEach(l=>l.stages.forEach(s=>{const k=l.id+"_"+s.id;state.scores[k]=0;state.done[k]=false})));
+CURRICULUM.forEach(y=>y.months.forEach(m=>m.lessons.forEach(l=>l.stages.forEach(s=>{const k=l.id+"_"+s.id;state.scores[k]=0;state.done[k]=false}))));
 function getCurrentLesson(){const y=CURRICULUM.find(x=>x.year===state.currentYear);if(!y)return null;const m=y.months.find(x=>x.month===state.currentMonth);if(!m)return null;return m.lessons.find(l=>l.id===state.currentLessonId)||null}
 function totalScore(){const l=getCurrentLesson();if(!l)return 0;return l.stages.reduce((s,st)=>s+(state.scores[l.id+"_"+st.id]||0),0)}
 
