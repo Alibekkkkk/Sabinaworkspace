@@ -3,71 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Teacher Dashboard — Multi-Student</title>
+<title>Teacher Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
 :root{--bg:#f5f3ed;--panel:#fffefa;--panel-2:#edf4ed;--ink:#18302b;--ink-soft:#677771;--primary:#2c6653;--accent:#2c6653;--success:#43845a;--warn:#916313;--error:#b33e37;--border:#dce1d8;}
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px}.wrap{max-width:1400px;margin:0 auto}
-.header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--panel);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);flex-wrap:wrap;gap:14px}.header-left{display:flex;align-items:center;gap:14px}.header-left .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#1f5141);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}.header-left h1{font-size:24px}.header-left .sub{font-size:14px;color:var(--ink-soft);margin-top:2px}.header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.connection{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:20px;background:var(--panel-2);font-size:13px;font-weight:700}.connection .dot{width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}.connection.live .dot{background:var(--success);animation:pulse 1.5s infinite}.connection.off .dot{background:var(--error)}@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,125,.7)}50%{box-shadow:0 0 0 8px rgba(76,175,125,0)}}
-.btn{padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}.btn:hover{border-color:var(--accent);color:var(--accent)}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.primary:hover{background:#1f5141}.btn.danger:hover{border-color:var(--error);color:var(--error)}.btn.small{padding:6px 10px;font-size:13px}
-.tabs{display:flex;gap:6px;margin-bottom:18px;padding:6px;background:var(--panel);border-radius:14px;border:1px solid var(--border)}.tab{flex:1;padding:12px 16px;background:transparent;border:none;border-radius:10px;color:var(--ink-soft);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}.tab:hover{color:var(--accent)}.tab.active{background:var(--panel-2);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.2)}.tab-view{display:none}.tab-view.active{display:block}
-.layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}@media(max-width:960px){.layout{grid-template-columns:1fr}}.students-panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);overflow:hidden;position:sticky;top:20px;max-height:calc(100vh - 40px);display:flex;flex-direction:column}.students-header{padding:16px 16px 12px;border-bottom:1px solid var(--border)}.students-header h2{font-size:14px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}.students-header h2 .count{padding:2px 8px;background:var(--panel-2);border-radius:10px;font-size:12px;color:var(--accent)}
-.students-search{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:14px;outline:none}.students-search:focus{border-color:var(--accent)}.students-search::placeholder{color:var(--ink-soft)}.students-list{flex:1;overflow-y:auto;padding:8px;min-height:100px}.students-list::-webkit-scrollbar{width:6px}.students-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
-.student-item{padding:11px 13px;border-radius:12px;cursor:pointer;transition:all .15s;border:1px solid transparent;margin-bottom:4px;position:relative}.student-item:hover{background:var(--panel-2)}.student-item.active{background:var(--panel-2);border-color:var(--accent)}.student-item .top-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}.student-item .name{font-size:16px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.student-item .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-soft);flex-shrink:0}.student-item .dot.live{background:var(--success);animation:pulse 1.5s infinite}.student-item .dot.stale{background:var(--warn)}.student-item .dot.off{background:var(--error)}.student-item .unread{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}.student-item .code{font-size:12px;font-family:'Fira Code','Courier New',monospace;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);margin-bottom:6px}.student-item .stats{display:flex;gap:10px;font-size:13px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap}.student-item .stats b{color:var(--accent)}.students-footer{padding:12px;border-top:1px solid var(--border)}.students-footer .btn{width:100%;justify-content:center;text-align:center}
-.main-area{min-width:0}.selected-header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap}.selected-header .info h2{font-size:24px;color:var(--ink);margin-bottom:4px}.selected-header .info .meta{font-size:14px;color:var(--ink-soft);font-family:'Fira Code','Courier New',monospace;letter-spacing:1px}.selected-header .info .meta b{color:var(--accent)}.selected-actions{display:flex;gap:8px;flex-wrap:wrap}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}@media(max-width:1100px){.grid-3{grid-template-columns:1fr 1fr}}@media(max-width:700px){.grid-3,.grid{grid-template-columns:1fr}}.card{background:var(--panel);border-radius:16px;padding:22px 24px;border:1px solid var(--border)}.card h2{font-size:14px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}.card h2 .live-tag{padding:3px 8px;background:rgba(76,175,125,.2);color:var(--success);border-radius:10px;font-size:11px;letter-spacing:1px}.card h2 .live-tag.off{background:rgba(239,84,104,.2);color:var(--error)}
-.big-stat{text-align:center;padding:18px 0}.big-stat .num{font-size:56px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px}.big-stat .lbl{color:var(--ink-soft);font-size:15px;font-weight:600}.stage-vis{display:flex;gap:4px;margin-top:16px;flex-wrap:wrap}.stage-chip{padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:var(--panel-2);color:var(--ink-soft);border:1px solid var(--border);transition:all .3s}.stage-chip.current{background:linear-gradient(135deg,var(--accent),#1f5141);color:#fff;border-color:var(--accent);transform:scale(1.05);box-shadow:0 4px 12px rgba(44,102,83,.24)}.stage-chip.done{background:rgba(76,175,125,.2);color:var(--success);border-color:var(--success)}.stage-chip.done.current{background:linear-gradient(135deg,var(--success),#2e7d5b);color:#fff}
-.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:16px}.info-row:last-child{border-bottom:none}.info-row .k{color:var(--ink-soft);font-weight:600}.info-row .v{font-weight:700}.activity-feed{max-height:480px;overflow-y:auto;margin:-4px;padding:4px}.activity-feed::-webkit-scrollbar{width:6px}.activity-feed::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}.feed-item{padding:10px 14px;border-radius:10px;background:var(--panel-2);margin-bottom:8px;font-size:15px;display:flex;align-items:flex-start;gap:10px;animation:feedIn .4s;border-left:3px solid var(--border)}@keyframes feedIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}.feed-item.correct{border-left-color:var(--success)}.feed-item.wrong{border-left-color:var(--error)}.feed-item.info{border-left-color:var(--primary)}.feed-item.action{border-left-color:var(--accent)}.feed-item .time{font-size:11px;color:var(--ink-soft);font-weight:700;white-space:nowrap;padding-top:2px}.feed-item .msg{flex:1;line-height:1.4}.feed-item .msg strong{color:var(--accent)}.no-data{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:16px}.no-data .icon{font-size:48px;margin-bottom:10px;opacity:.5}.notes-view{background:var(--panel-2);border-radius:10px;padding:14px 16px;font-family:'Fira Code','Courier New',monospace;font-size:14px;line-height:1.6;color:var(--ink);min-height:120px;white-space:pre-wrap;word-break:break-word}.typing-live{background:rgba(76,175,125,.1);border:1px dashed var(--success);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink);margin-top:10px;min-height:44px;display:none}.typing-live.show{display:block}.typing-live .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--success);text-transform:uppercase;display:block;margin-bottom:4px}.typing-live .txt{font-family:'Fira Code','Courier New',monospace;color:var(--accent);font-weight:700}
-.control-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}.ctrl-btn{padding:12px 10px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}.ctrl-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}.ctrl-btn.current{background:linear-gradient(135deg,var(--accent),#1f5141);color:#fff;border-color:var(--accent)}.ctrl-btn .num{font-size:11px;opacity:.65;display:block;margin-bottom:2px;letter-spacing:1px}
-.overview-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}.overview-stat{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 20px;text-align:center}.overview-stat .num{font-size:36px;font-weight:800;color:var(--accent);line-height:1}.overview-stat .lbl{font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:8px}.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}.overview-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all .15s;position:relative}.overview-card:hover{border-color:var(--accent);transform:translateY(-2px)}.overview-card .name{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:4px}.overview-card .code{font-size:13px;color:var(--ink-soft);font-family:'Fira Code','Courier New',monospace;letter-spacing:1.5px;font-weight:700;margin-bottom:14px}.overview-card .big-num{font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px}.overview-card .big-lbl{font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}.overview-card .mini-stats{display:flex;gap:12px;font-size:13px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border)}.overview-card .status-pill{position:absolute;top:16px;right:16px;width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}.overview-card .status-pill.live{background:var(--success);animation:pulse 1.5s infinite}.overview-card .status-pill.stale{background:var(--warn)}.overview-card .status-pill.off{background:var(--error)}
-.empty-state{text-align:center;padding:80px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border)}.empty-state .icon{font-size:64px;margin-bottom:16px;opacity:.5}.empty-state h3{font-size:24px;color:var(--ink);margin-bottom:10px}.empty-state p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}.lessons-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}.lesson-tile{background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:all .15s}.lesson-tile:hover{border-color:var(--accent);transform:translateY(-2px)}.lesson-tile .icon{font-size:38px;margin-bottom:10px}.lesson-tile .title{font-size:19px;font-weight:800;margin-bottom:6px;color:var(--ink)}.lesson-tile .desc{font-size:14px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;min-height:42px}.lesson-tile .meta{font-size:12px;color:var(--ink-soft);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:12px;padding-top:10px;border-top:1px solid var(--border)}.lesson-tile .tile-actions{display:flex;gap:6px}.lesson-tile .tile-actions .btn{flex:1;padding:8px;font-size:13px}.lesson-tile .badge{position:absolute;top:14px;right:14px;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:800;letter-spacing:.5px}.lesson-tile .badge.published{background:rgba(76,175,125,.2);color:var(--success)}.lesson-tile .badge.draft{background:rgba(255,183,77,.2);color:var(--warn)}
-.modal-backdrop{position:fixed;inset:0;background:rgba(24,48,43,.48);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}.modal-backdrop.open{display:flex}.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:560px;width:100%;box-shadow:0 20px 50px rgba(24,48,43,.18);border:1px solid var(--border);animation:modalIn .25s ease;margin:auto}@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}.modal h3{font-size:24px;margin-bottom:6px;color:var(--ink)}.modal .sub{font-size:15px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5}.modal label{display:block;font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:6px}.modal input,.modal textarea{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px;font-weight:700;outline:none;margin-bottom:16px}.modal input:focus,.modal textarea:focus{border-color:var(--accent)}.modal textarea{font-family:inherit;font-weight:500;resize:vertical;min-height:70px;font-size:15px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
-#teacherLogin{max-width:520px!important;margin:8vh auto!important;padding:34px!important;background:var(--panel)!important;border:1px solid var(--border)!important;border-radius:18px!important;box-shadow:0 18px 50px rgba(24,48,43,.1)}#teacherLogin h1{font-size:34px;line-height:1.1;color:var(--ink)}#teacherLogin p{font-size:16px;line-height:1.5}#teacherLogin label{display:block;color:var(--ink-soft);font-size:14px;font-weight:700;margin:14px 0 6px}#teacherLogin input{display:block;width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--ink);font:16px 'EB Garamond','Times New Roman',serif}#teacherLogin input:focus{outline:2px solid rgba(44,102,83,.25);border-color:var(--accent)}#teacherLogin form{display:flex;flex-direction:column}#teacherLogin #teacherAuthError{color:var(--error);font-size:14px;min-height:20px;margin:10px 0}#teacherLogin .btn.primary{min-height:44px;background:var(--accent);border-color:var(--accent);color:#fff}#teacherLogin .btn:not(.primary){min-height:44px;background:var(--panel-2);border-color:var(--border);color:var(--ink)}
-.rev-header{padding:0 0 18px;border-bottom:1px solid var(--border);margin-bottom:20px}.rev-header h2{font-size:26px;margin:0 0 8px;font-weight:800;color:var(--ink)}.rev-meta{font-size:15px;color:var(--ink-soft);margin-bottom:14px;font-family:'Fira Code',monospace}.rev-meta b{color:var(--accent)}.rev-stats{display:flex;gap:10px;flex-wrap:wrap}.rev-stat{padding:8px 14px;border-radius:10px;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px}.rev-stat b{font-size:16px}.rev-stat.correct{background:rgba(76,175,125,.18);color:var(--success)}.rev-stat.wrong{background:rgba(239,84,104,.18);color:var(--error)}.rev-stat.skipped{background:rgba(255,183,77,.18);color:var(--warn)}.rev-stat.score{background:linear-gradient(135deg,var(--accent),#d94a15);color:#fff;margin-left:auto}.rev-card{padding:16px 18px;border-radius:12px;background:var(--panel-2);border:1px solid var(--border);border-left:4px solid var(--border);margin-bottom:12px}.rev-card.is-correct{border-left-color:var(--success)}.rev-card.is-wrong{border-left-color:var(--error)}.rev-card.is-skipped{border-left-color:var(--warn);opacity:.85}.rev-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}.rev-num{font:700 11px 'Fira Code',monospace;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase}.rev-badge{padding:4px 10px;border-radius:10px;font-size:12px;font-weight:800;letter-spacing:.5px}.rev-badge.correct{background:rgba(76,175,125,.2);color:var(--success)}.rev-badge.wrong{background:rgba(239,84,104,.2);color:var(--error)}.rev-badge.skipped{background:rgba(255,183,77,.2);color:var(--warn)}.rev-prompt{font-size:16px;line-height:1.55;font-weight:600;margin-bottom:12px;color:var(--ink)}.rev-answers{margin-bottom:12px;padding:10px 14px;background:var(--bg);border-radius:8px;font-size:15px;line-height:1.7}.rev-line{margin-bottom:4px}.rev-line:last-child{margin-bottom:0}.rev-label{font-weight:800;color:var(--ink-soft);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-right:8px}.rev-value{font-weight:600;color:var(--ink)}.rev-value.correct-val{color:var(--success)}.rev-explain{padding:12px 14px;border-radius:8px;background:rgba(74,127,200,.09);border-left:3px solid var(--primary);font-size:14px;line-height:1.6}.rev-exp-en{margin-bottom:6px;color:var(--ink);font-weight:500}.rev-exp-ru{font-style:italic;color:var(--ink-soft);font-size:13px}
-@media(max-width:600px){body{padding:12px}#teacherLogin{margin:7vh auto!important;padding:24px!important}.header{padding:16px}.header-actions{width:100%}.lesson-tile .tile-actions{flex-wrap:wrap}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px}
+.wrap{max-width:1400px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--panel);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);flex-wrap:wrap;gap:14px}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-left .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#1f5141);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}
+.header-left h1{font-size:24px}
+.header-left .sub{font-size:14px;color:var(--ink-soft);margin-top:2px}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.connection{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:20px;background:var(--panel-2);font-size:13px;font-weight:700}
+.connection .dot{width:10px;height:10px;border-radius:50%;background:var(--ink-soft)}
+.connection.live .dot{background:var(--success);animation:pulse 1.5s infinite}
+.connection.off .dot{background:var(--error)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(76,175,125,.7)}50%{box-shadow:0 0 0 8px rgba(76,175,125,0)}}
+.btn{padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#1f5141}
+.btn.danger:hover{border-color:var(--error);color:var(--error)}
+.btn.small{padding:6px 10px;font-size:13px}
+.tabs{display:flex;gap:6px;margin-bottom:18px;padding:6px;background:var(--panel);border-radius:14px;border:1px solid var(--border)}
+.tab{flex:1;padding:12px 16px;background:transparent;border:none;border-radius:10px;color:var(--ink-soft);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.tab:hover{color:var(--accent)}
+.tab.active{background:var(--panel-2);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.tab-view{display:none}
+.tab-view.active{display:block}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+@media(max-width:960px){.layout{grid-template-columns:1fr}}
+.students-panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);overflow:hidden;position:sticky;top:20px;max-height:calc(100vh - 40px);display:flex;flex-direction:column}
+.students-header{padding:16px 16px 12px;border-bottom:1px solid var(--border)}
+.students-header h2{font-size:14px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.students-header h2 .count{padding:2px 8px;background:var(--panel-2);border-radius:10px;font-size:12px;color:var(--accent)}
+.students-search{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:14px;outline:none}
+.students-search:focus{border-color:var(--accent)}
+.students-list{flex:1;overflow-y:auto;padding:8px;min-height:100px}
+.student-item{padding:11px 13px;border-radius:12px;cursor:pointer;transition:all .15s;border:1px solid transparent;margin-bottom:4px;position:relative}
+.student-item:hover{background:var(--panel-2)}
+.student-item.active{background:var(--panel-2);border-color:var(--accent)}
+.student-item .top-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}
+.student-item .name{font-size:16px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.student-item .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-soft);flex-shrink:0}
+.student-item .dot.live{background:var(--success);animation:pulse 1.5s infinite}
+.student-item .dot.stale{background:var(--warn)}
+.student-item .dot.off{background:var(--error)}
+.student-item .code{font-size:12px;font-family:'Fira Code',monospace;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);margin-bottom:6px}
+.student-item .stats{display:flex;gap:10px;font-size:13px;color:var(--ink-soft);font-weight:700;flex-wrap:wrap}
+.student-item .stats b{color:var(--accent)}
+.students-footer{padding:12px;border-top:1px solid var(--border)}
+.students-footer .btn{width:100%}
+.main-area{min-width:0}
+.card{background:var(--panel);border-radius:16px;padding:22px 24px;border:1px solid var(--border);margin-bottom:18px}
+.card h2{font-size:14px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.selected-header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border);margin-bottom:18px;flex-wrap:wrap}
+.selected-header .info h2{font-size:24px;color:var(--ink);margin-bottom:4px}
+.selected-header .info .meta{font-size:14px;color:var(--ink-soft);font-family:'Fira Code',monospace;letter-spacing:1px}
+.selected-header .info .meta b{color:var(--accent)}
+.selected-actions{display:flex;gap:8px;flex-wrap:wrap}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:1100px){.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.grid-3,.grid{grid-template-columns:1fr}}
+.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:16px}
+.info-row:last-child{border-bottom:none}
+.info-row .k{color:var(--ink-soft);font-weight:600}
+.info-row .v{font-weight:700}
+.big-stat{text-align:center;padding:18px 0}
+.big-stat .num{font-size:56px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px}
+.big-stat .lbl{color:var(--ink-soft);font-size:15px;font-weight:600}
+.stage-vis{display:flex;gap:4px;margin-top:16px;flex-wrap:wrap}
+.stage-chip{padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:var(--panel-2);color:var(--ink-soft);border:1px solid var(--border);transition:all .3s}
+.stage-chip.current{background:linear-gradient(135deg,var(--accent),#1f5141);color:#fff;border-color:var(--accent);transform:scale(1.05)}
+.stage-chip.done{background:rgba(76,175,125,.2);color:var(--success);border-color:var(--success)}
+.activity-feed{max-height:480px;overflow-y:auto;margin:-4px;padding:4px}
+.feed-item{padding:10px 14px;border-radius:10px;background:var(--panel-2);margin-bottom:8px;font-size:15px;display:flex;align-items:flex-start;gap:10px;border-left:3px solid var(--border)}
+.feed-item.correct{border-left-color:var(--success)}
+.feed-item.wrong{border-left-color:var(--error)}
+.feed-item.info{border-left-color:var(--primary)}
+.feed-item.action{border-left-color:var(--accent)}
+.feed-item .time{font-size:11px;color:var(--ink-soft);font-weight:700;white-space:nowrap;padding-top:2px}
+.feed-item .msg{flex:1;line-height:1.4}
+.feed-item .msg strong{color:var(--accent)}
+.no-data{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:16px}
+.notes-view{background:var(--panel-2);border-radius:10px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:14px;line-height:1.6;color:var(--ink);min-height:120px;white-space:pre-wrap;word-break:break-word}
+.typing-live{background:rgba(76,175,125,.1);border:1px dashed var(--success);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink);margin-top:10px;min-height:44px;display:none}
+.typing-live.show{display:block}
+.typing-live .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--success);text-transform:uppercase;display:block;margin-bottom:4px}
+.typing-live .txt{font-family:'Fira Code',monospace;color:var(--accent);font-weight:700}
+.control-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.ctrl-btn{padding:12px 10px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.ctrl-btn.current{background:linear-gradient(135deg,var(--accent),#1f5141);color:#fff;border-color:var(--accent)}
+.ctrl-btn .num{font-size:11px;opacity:.65;display:block;margin-bottom:2px;letter-spacing:1px}
+.empty-state{text-align:center;padding:80px 20px;background:var(--panel);border-radius:16px;border:1px solid var(--border)}
+.empty-state .icon{font-size:64px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-size:24px;color:var(--ink);margin-bottom:10px}
+.empty-state p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}
+.lessons-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
+.lesson-tile{background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:all .15s}
+.lesson-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
+.lesson-tile .icon{font-size:38px;margin-bottom:10px}
+.lesson-tile .title{font-size:19px;font-weight:800;margin-bottom:6px;color:var(--ink)}
+.lesson-tile .desc{font-size:14px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;min-height:42px}
+.lesson-tile .meta{font-size:12px;color:var(--ink-soft);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:12px;padding-top:10px;border-top:1px solid var(--border)}
+.lesson-tile .tile-actions{display:flex;gap:6px}
+.lesson-tile .tile-actions .btn{flex:1;padding:8px;font-size:13px}
+.lesson-tile .badge{position:absolute;top:14px;right:14px;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:800;letter-spacing:.5px}
+.lesson-tile .badge.published{background:rgba(76,175,125,.2);color:var(--success)}
+.lesson-tile .badge.draft{background:rgba(255,183,77,.2);color:var(--warn)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(24,48,43,.48);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:560px;width:100%;box-shadow:0 20px 50px rgba(24,48,43,.18);border:1px solid var(--border);margin:auto}
+.modal h3{font-size:24px;margin-bottom:6px;color:var(--ink)}
+.modal .sub{font-size:15px;color:var(--ink-soft);margin-bottom:22px;line-height:1.5}
+.modal label{display:block;font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:6px;margin-top:14px}
+.modal input,.modal textarea,.modal select{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px;font-weight:700;outline:none;margin-bottom:6px}
+.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--accent)}
+.modal textarea{font-weight:500;resize:vertical;min-height:70px;font-size:15px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.pending-card{background:linear-gradient(135deg,rgba(255,183,77,.08),rgba(255,183,77,.02));border:1px solid rgba(145,99,19,.3)}
+.pending-card h2{color:var(--warn)}
+.pending-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.pending-item:last-child{border-bottom:none}
+.pending-item .who{font-weight:700;font-size:15px}
+.pending-item .email{font-size:13px;color:var(--ink-soft);font-family:'Fira Code',monospace}
+.pending-item .actions{display:flex;gap:6px;flex-wrap:wrap}
+#teacherLogin{max-width:520px;margin:8vh auto;padding:34px;background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:0 18px 50px rgba(24,48,43,.1);text-align:center}
+#teacherLogin h1{font-size:34px;line-height:1.1;color:var(--ink);margin-bottom:10px}
+#teacherLogin p{font-size:16px;line-height:1.5;color:var(--ink-soft);margin-bottom:22px}
+#teacherLogin .btn.primary{min-height:46px;background:var(--accent);border-color:var(--accent);color:#fff;width:100%;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+#teacherLogin .btn.primary:hover{background:#1f5141}
+#authError{color:var(--error);font-size:14px;min-height:20px;margin-top:14px;line-height:1.5}
+.g-google-icon{width:20px;height:20px;background:#fff;border-radius:4px;display:grid;place-items:center;font-weight:800;color:#4285f4;font-family:Arial,sans-serif;font-size:14px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:9999;opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
-<div id="teacherLogin" style="max-width:460px;margin:8vh auto;padding:28px;background:var(--panel);border:1px solid var(--border);border-radius:16px;">
-  <h1 style="margin-bottom:8px;">Teacher sign in</h1>
-  <p style="color:var(--ink-soft);margin-bottom:20px;">Sign in with Google or email and password using one of the three approved teacher accounts.</p>
-  <form onsubmit="teacherSignIn(event)">
-    <label for="teacherEmail">Email</label><input id="teacherEmail" type="email" autocomplete="username" required>
-    <label for="teacherPassword">Password</label><input id="teacherPassword" type="password" autocomplete="current-password" required>
-    <p id="teacherAuthError" role="alert" style="color:var(--error);margin:10px 0;min-height:20px;"></p>
-    <button class="btn primary" type="submit" style="width:100%;">Sign in</button>
-  </form>
-  <button class="btn" type="button" onclick="teacherGoogleSignIn()" style="width:100%;margin-top:10px;">Continue with Google</button>
-  <p style="font-size:13px;color:var(--ink-soft);margin-top:14px;">If sign-in reports that authentication is not configured, enable Google and Email/Password in this Firebase project’s Authentication settings.</p>
-  <a href="https://console.firebase.google.com/project/sabina-s-workspace/authentication/providers" target="_blank" rel="noopener" style="display:inline-block;color:var(--primary);font-size:14px;margin-top:4px;">Open Firebase Authentication settings</a>
+
+<div id="teacherLogin" style="display:none;">
+  <h1>Teacher sign in</h1>
+  <p>Sign in with the teacher Google account to manage students and lessons.</p>
+  <button class="btn primary" id="googleBtn" onclick="teacherGoogleSignIn()">
+    <span class="g-google-icon">G</span>
+    Continue with Google
+  </button>
+  <div id="authError" role="alert"></div>
 </div>
+
 <div class="wrap" style="display:none;">
   <div class="header">
     <div class="header-left">
       <div class="mark">📊</div>
       <div>
         <h1>Teacher Dashboard</h1>
-        <div class="sub">Manage students and lessons — everything syncs live</div>
+        <div class="sub">Signed in as <span id="teacherEmail" style="font-family:'Fira Code',monospace;"></span></div>
       </div>
     </div>
     <div class="header-actions">
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
       <a class="btn" href="portal.html" style="text-decoration:none;">🎓 Student Portal</a>
       <a class="btn" id="selectedClassworkLink" href="#" style="text-decoration:none;display:none;">📘 Classwork</a>
-      <button class="btn" id="undoButton" onclick="undoLastChange()" disabled title="Undo the last teacher dashboard change">↶ Undo</button>
+      <button class="btn" id="undoButton" onclick="undoLastChange()" disabled title="Undo last change">↶ Undo</button>
       <button class="btn" onclick="teacherSignOut()">Sign out</button>
       <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
     </div>
   </div>
+
   <div class="tabs">
     <button class="tab active" id="tabStudents" onclick="switchMainTab('students')">👥 Students</button>
     <button class="tab" id="tabLessons" onclick="switchMainTab('lessons')">📚 Lessons</button>
   </div>
+
   <div class="tab-view active" id="viewStudents">
+    <div class="card pending-card" id="pendingCard" style="display:none;">
+      <h2>Pending Student Approvals <span class="count" id="pendingCount" style="padding:2px 10px;background:rgba(145,99,19,.2);border-radius:10px;font-size:12px;">0</span></h2>
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:14px;">These people signed in with Google but are not yet approved. Approve them to give them a new code, or link them to an existing student record.</p>
+      <div id="pendingList"></div>
+    </div>
+
     <div class="layout">
       <aside class="students-panel">
         <div class="students-header">
@@ -92,13 +213,15 @@
               <button class="btn small danger" onclick="deleteStudent()">🗑 Delete</button>
             </div>
           </div>
-          <div class="card" id="studentHomeworkCard" style="margin:0 0 18px;">
+
+          <div class="card" id="studentHomeworkCard">
             <h2>Assigned Homework</h2>
             <div id="studentHomeworkList" style="color:var(--ink-soft);">No homework assigned to this student.</div>
           </div>
+
           <div class="grid-3">
             <div class="card">
-              <h2>Live Score <span class="live-tag" id="liveTag">OFFLINE</span></h2>
+              <h2>Live Score</h2>
               <div class="big-stat">
                 <div class="num" id="scoreBig">0</div>
                 <div class="lbl">Total points</div>
@@ -115,23 +238,20 @@
             <div class="card">
               <h2>Stage Map</h2>
               <div class="stage-vis" id="stageVis"></div>
-              <div style="margin-top:16px;font-size:14px;color:var(--ink-soft);line-height:1.6;">
-                <div>🟩 Green = completed</div>
-                <div>🟧 Orange = current stage</div>
-                <div>⬛ Grey = not started</div>
-              </div>
             </div>
           </div>
-          <div class="card" style="margin-bottom:18px;">
+
+          <div class="card">
             <h2>Send Command to Student</h2>
             <div class="control-grid" id="controlGrid"></div>
-            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;">
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
               <button class="btn" onclick="sendReset()">🔄 Reset student progress</button>
             </div>
           </div>
+
           <div class="grid">
             <div class="card">
-              <h2>Live Activity Feed <span class="live-tag" id="feedLive">LIVE</span></h2>
+              <h2>Live Activity Feed</h2>
               <div class="activity-feed" id="feed"></div>
               <div class="typing-live" id="typingLive">
                 <span class="lbl">⌨️ Student typing now</span>
@@ -148,27 +268,25 @@
       </main>
     </div>
   </div>
+
   <div class="tab-view" id="viewLessons">
-    <div class="card" style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
       <div>
         <h2 style="margin:0;">📚 Your Curriculum</h2>
         <p style="font-size:15px;color:var(--ink-soft);margin-top:6px;">Lessons here appear in student portals instantly.</p>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" onclick="assignStudentHomework('gaziz')">📌 Assign Gaziz homework</button><button class="btn" onclick="assignStudentHomework('sabina')">📌 Assign Sabina homework</button><button class="btn primary" onclick="openLessonModal()">+ New Lesson</button></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn primary" onclick="openLessonModal()">+ New Lesson</button>
+      </div>
     </div>
     <div id="lessonsContainer"></div>
   </div>
 </div>
-<div class="modal-backdrop" id="homeworkReviewModal" style="z-index:600;">
-  <div class="modal" style="max-width:820px;max-height:92vh;overflow-y:auto;position:relative;">
-    <button onclick="closeHomeworkReview()" style="position:sticky;top:0;float:right;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--panel);color:var(--ink);font-size:20px;cursor:pointer;z-index:10;margin-left:auto;display:flex;align-items:center;justify-content:center;">×</button>
-    <div id="homeworkReviewContent"></div>
-  </div>
-</div>
+
 <div class="modal-backdrop" id="addStudentModal">
   <div class="modal">
     <h3>Add a new student</h3>
-    <p class="sub">Give your student a name. A unique session code will be generated automatically.</p>
+    <p class="sub">The student will later sign in with Google and you will link their UID to this code.</p>
     <label for="newStudentName">Student name</label>
     <input type="text" id="newStudentName" placeholder="e.g. Alice Smith" maxlength="40" autocomplete="off">
     <label for="newStudentCode">Session code (optional — leave empty to auto-generate)</label>
@@ -179,19 +297,33 @@
     </div>
   </div>
 </div>
+
+<div class="modal-backdrop" id="linkStudentModal">
+  <div class="modal">
+    <h3>Link to existing student</h3>
+    <p class="sub">Choose which existing student code this Google account belongs to. The student's progress and homework stay intact.</p>
+    <label for="linkCodeSelect">Existing code</label>
+    <select id="linkCodeSelect"></select>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeLinkModal()">Cancel</button>
+      <button class="btn primary" onclick="confirmLinkStudent()">Link account</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="lessonModal">
   <div class="modal">
     <h3 id="lessonModalTitle">Create a new lesson</h3>
-    <p class="sub">Lessons appear in student portals instantly. You can make them public for everyone, or private for specific students.</p>
+    <p class="sub">Lessons appear in student portals instantly.</p>
     <label for="lessonTitle">Lesson title</label>
-    <input type="text" id="lessonTitle" placeholder="e.g. Lesson 2: Volcanoes and Earthquakes" maxlength="80">
+    <input type="text" id="lessonTitle" placeholder="e.g. Lesson 2: Volcanoes" maxlength="80">
     <label for="lessonDesc">Short description</label>
-    <textarea id="lessonDesc" placeholder="What will students learn in this lesson?"></textarea>
-    <label style="display:flex;align-items:center;gap:8px;margin:0 0 12px;text-transform:none;letter-spacing:0;color:var(--ink);font-size:15px;"><input type="checkbox" id="lessonHomework" style="width:auto;margin:0;"> Assign this lesson as homework</label>
+    <textarea id="lessonDesc" placeholder="What will students learn?"></textarea>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:14px;text-transform:none;letter-spacing:0;color:var(--ink);font-size:15px;"><input type="checkbox" id="lessonHomework" style="width:auto;margin:0;"> Assign as homework</label>
     <label for="lessonDue">Homework due (date or note)</label>
     <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
     <label for="lessonIcon">Icon (emoji)</label>
-    <input type="text" id="lessonIcon" placeholder="🌋" maxlength="4" style="text-transform:none;width:80px;">
+    <input type="text" id="lessonIcon" placeholder="📘" maxlength="4" style="text-transform:none;width:80px;">
     <label>Who can see this lesson?</label>
     <div style="display:flex;gap:8px;margin-bottom:16px;">
       <button type="button" class="btn" id="visAllBtn" onclick="setLessonVisibility('all')" style="flex:1;">👥 All students</button>
@@ -199,38 +331,20 @@
     </div>
     <div id="studentPickList" style="display:none;max-height:220px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;margin-bottom:16px;border:1px solid var(--border);"></div>
     <label for="lessonCustomUrl">Custom lesson URL (optional)</label>
-    <input type="text" id="lessonCustomUrl" placeholder="e.g. lesson_gaziz.html (leave empty for standard lesson)" style="text-transform:none;">
-    <label>Stages to include</label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_1" checked style="width:auto;margin:0;"> 📚 Vocabulary</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_2" checked style="width:auto;margin:0;"> 🔗 Word Match</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_3" checked style="width:auto;margin:0;"> 📖 Reading</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_4" checked style="width:auto;margin:0;"> 🔎 Close Reading</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_5" checked style="width:auto;margin:0;"> ✅ Comprehension</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_6" checked style="width:auto;margin:0;"> 🔵 Present Passive</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_7" checked style="width:auto;margin:0;"> 🟣 Past Passive</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_8" checked style="width:auto;margin:0;"> 🟢 Present Perfect</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_9" checked style="width:auto;margin:0;"> 🧩 Sentence Builder</label>
-      <label style="display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg);border-radius:10px;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);"><input type="checkbox" id="stage_10" checked style="width:auto;margin:0;"> ⚡ Speed Round</label>
-    </div>
+    <input type="text" id="lessonCustomUrl" placeholder="e.g. lesson_gaziz.html" style="text-transform:none;">
     <div class="modal-actions">
       <button class="btn" onclick="closeLessonModal()">Cancel</button>
       <button class="btn primary" id="lessonSubmitBtn" onclick="submitLesson()">Create lesson</button>
     </div>
   </div>
 </div>
-<div class="modal-backdrop" id="imagesModal">
-  <div class="modal">
-    <h3>Vocabulary flashcard images</h3>
-    <p class="sub">Add a vocabulary word and its public image URL. Students see these images on their flashcards; only teachers can change them.</p>
-    <div id="imageRows"></div>
-    <div class="modal-actions" style="justify-content:space-between;">
-      <button class="btn" onclick="addImageRow()">+ Add image</button>
-      <div style="display:flex;gap:10px;"><button class="btn" onclick="closeImagesModal()">Cancel</button><button class="btn primary" onclick="saveFlashcardImages()">Save images</button></div>
-    </div>
-  </div>
-</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
+/* ============================================================
+   FIREBASE + CONFIG
+============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
   authDomain: "sabina-s-workspace.firebaseapp.com",
@@ -240,356 +354,752 @@ const firebaseConfig = {
   messagingSenderId: "64645562064",
   appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
 };
-const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
-let fbApp=null,fbDb=null,fbAuth=null,teacherUid=null;
-let studentsRef=null,allSessionsRef=null,curriculumRef=null;
-let studentsMap={},studentMeta={},curriculum={},activeCode=null,activityRef=null,unreadMap={},editingLessonId=null,lessonVisibility='all',editingImagesLessonId=null;
-const UNDO_STORAGE_KEY='teacherDashboardUndoV1';
-let undoStack=[];
+const TEACHER_EMAIL = 'alibek.alpysbayev@gmail.com';
 
-const GAZIZ_HW_BANK = [
-  {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
-  {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
-  {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
-  {type:'select',prompt:'Choose the word meaning "people who live in one area."',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.',explain_ru:'Community — это люди, живущие в одном районе.'},
-  {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому has + V3: has added.'},
-  {type:'order',prompt:'Build the past simple active sentence.',answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому past simple: cleaned.'},
-  {type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park use to the riverbank project.',explain_ru:'В тексте использование парка связывается с проектом по очистке берега.'},
-  {type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.',explain_ru:'Save означает не позволять чему-то тратиться зря.'},
-  {type:'select',prompt:'Choose a word meaning "an answer to a problem."',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.',explain_ru:'Solution — это решение проблемы.'},
-  {type:'tf',prompt:'The council spent part of its budget on buses last year.',answer:'True',explain:'The passage says it spent part of its budget last year.',explain_ru:'В тексте сказано, что совет потратил часть бюджета в прошлом году.'},
-  {type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.',explain_ru:'In 2023 — завершённое время: collected.'},
-  {type:'choice',prompt:'What does "affect" mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.',explain_ru:'Affect означает изменять или влиять на что-то.'},
-  {type:'order',prompt:'Build the present perfect active sentence.',answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.',explain_ru:'Используйте has + past participle, чтобы показать результат в настоящем.'},
-  {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — деньги, необходимые для покупки или действия.'},
-  {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
-  {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
+let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
+let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, studentByUid = {};
+let activeCode = null, activeFeedRef = null;
+let editingLessonId = null, lessonVisibility = 'all', pendingLinkUid = null;
+const UNDO_STORAGE_KEY = 'teacherDashboardUndoV2';
+let undoStack = [];
+
+const STAGE_NAMES = ['Vocabulary','Word Match','Reading','Close Reading','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
+const STAGE_LIST = [
+  {id:1,label:'Vocabulary'},{id:2,label:'Word Match'},{id:3,label:'Reading'},
+  {id:4,label:'Close Reading'},{id:5,label:'Comprehension'},{id:6,label:'Present Passive'},
+  {id:7,label:'Past Passive'},{id:8,label:'Present Perfect'},{id:9,label:'Sentence Builder'},
+  {id:10,label:'Speed Round'}
 ];
 
-const SABINA_HW_BANK = [
-  {type:'choice',prompt:'What is a blizzard?',options:['A long snowstorm with strong winds','A long period without rain','A rotating column of air'],answer:'A long snowstorm with strong winds',explain:'A blizzard is a long snowstorm with very strong winds.',explain_ru:'Blizzard — длинная снежная буря с очень сильным ветром.'},
-  {type:'input',prompt:'Complete: Blizzards are caused by cold air that ___ with warm air.',answers:['collides','collides with'],explain:'Cold air collides with warm air to form a blizzard.',explain_ru:'Холодный воздух сталкивается с тёплым, чтобы сформировать буран.'},
-  {type:'tf',prompt:'A drought is caused by too much rain.',answer:'False',explain:'A drought is a long period with very little or no rain.',explain_ru:'Drought — длительный период без дождя.'},
-  {type:'select',prompt:'Which word means "the Earth\'s hard outer layer"?',options:['crust','tremor','magnitude','region'],answer:'crust',explain:'The crust is the hard outer layer of the Earth.',explain_ru:'Crust — твёрдый внешний слой Земли.'},
-  {type:'input',prompt:'Use present passive: Tsunamis ___ by underwater earthquakes. (cause)',answers:['are caused'],explain:'Present passive with plural subject: are + V3.',explain_ru:'Present passive с множественным подлежащим: are + V3.'},
-  {type:'order',prompt:'Build the past passive sentence.',answer:['The','wildfire','was','caused','by','the','drought.'],explain:'Past passive: was + V3.',explain_ru:'Past passive: was + V3.'},
-  {type:'choice',prompt:'What can cause a heat wave?',options:['High pressure in the atmosphere','Cold air from the sea','A rotating column of air'],answer:'High pressure in the atmosphere',explain:'High pressure holds hot air near the ground.',explain_ru:'Высокое давление удерживает горячий воздух у поверхности.'},
-  {type:'input',prompt:'Complete: The ___ of an earthquake describes its strength.',answers:['magnitude'],explain:'Magnitude is the size or strength of an earthquake.',explain_ru:'Magnitude — величина или сила землетрясения.'},
-  {type:'select',prompt:'Which word means "the removal of many trees"?',options:['deforestation','eruption','structure','warning'],answer:'deforestation',explain:'Deforestation is the removal of many trees.',explain_ru:'Deforestation — вырубка большого количества деревьев.'},
-  {type:'tf',prompt:'Floods are the most common natural disaster in the U.S.',answer:'True',explain:'FEMA says nearly 90% of U.S. disasters involve flooding.',explain_ru:'FEMA: около 90% катастроф в США связаны с наводнениями.'},
-  {type:'input',prompt:'Use present perfect passive: Many homes ___ (destroy) by floods in recent years.',answers:['have been destroyed'],explain:'Plural + present perfect passive: have been + V3.',explain_ru:'Множественное число + present perfect passive: have been + V3.'},
-  {type:'order',prompt:'Build the present passive sentence.',answer:['Many','buildings','are','destroyed','by','hurricanes.'],explain:'Present passive with plural subject: are + V3.',explain_ru:'Present passive с множественным подлежащим: are + V3.'},
-  {type:'choice',prompt:'What is a tornado?',options:['A rotating column of air','A large ocean wave','A long period without rain'],answer:'A rotating column of air',explain:'A tornado is a rotating column of air with fast winds.',explain_ru:'Tornado — вращающийся столб воздуха с быстрым ветром.'},
-  {type:'select',prompt:'Which word means "to spill over the edge"?',options:['overflow','erupt','collide','swirl'],answer:'overflow',explain:'Overflow means to spill over the edge.',explain_ru:'Overflow — переливаться через край.'},
-  {type:'input',prompt:'Use past passive: The streets ___ (flood) after heavy rain yesterday.',answers:['were flooded'],explain:'Past passive with plural subject: were + V3.',explain_ru:'Past passive с множественным подлежащим: were + V3.'},
-  {type:'tf',prompt:'Volcanoes can send ash clouds into the air.',answer:'True',explain:'Volcanoes send ash into the air and lava onto the ground.',explain_ru:'Вулканы выбрасывают пепел в воздух и лаву на землю.'}
-];
+/* ============================================================
+   FIREBASE INIT + AUTH
+============================================================ */
+function initFirebase() {
+  try {
+    fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+    fbAuth = firebase.auth();
+    fbDb = firebase.database();
 
-const HOMEWORK_QUESTIONS = {
-  homework_gaziz_sustainable_cities: GAZIZ_HW_BANK,
-  homework_gaziz: GAZIZ_HW_BANK,
-  homework_sabina_natural_disasters: SABINA_HW_BANK,
-  homework_sabina_sustainable_cities: SABINA_HW_BANK,
-  homework_sabina: SABINA_HW_BANK
-};
-const STAGE_NAMES=['Vocabulary','Word Match','Reading','Close Reading','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
-const ALL_STAGES=[
-  {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
-  {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
-  {id:3,label:'Reading',sub:'Passage',icon:'📖'},
-  {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
-  {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
-  {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
-  {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
-  {id:8,label:'Present Perfect',sub:'New!',icon:'🟢'},
-  {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
-  {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
-];
-const SUSTAINABLE_STAGES=[
-  {id:1,label:'Sustainable Cities Vocabulary',sub:'Cards',icon:'🏙️'},
-  {id:2,label:'Word Match',sub:'Match definitions',icon:'🔗'},
-  {id:3,label:'Rivergate Reading',sub:'Sustainable transport',icon:'📖'},
-  {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
-  {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
-  {id:6,label:'Present Perfect Active',sub:'Grammar',icon:'⏳'},
-  {id:7,label:'Past Simple Active',sub:'Grammar',icon:'🕰️'},
-  {id:8,label:'Choose the Tense',sub:'Grammar',icon:'🧭'},
-  {id:9,label:'Sentence Builder',sub:'Active voice',icon:'🧩'},
-  {id:10,label:'City Vocabulary Review',sub:'Review',icon:'⚡'}
-];
+    fbAuth.getRedirectResult().catch(function(err) {
+      console.error('Redirect error:', err);
+      document.getElementById('authError').textContent = authErrorMessage(err);
+    });
 
-function initFirebase(){
-  try{
-    fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
-    fbAuth=firebase.auth();
-    fbDb=firebase.database();
-    fbAuth.onAuthStateChanged(function(user){
-      const allowed=user&&user.email&&TEACHER_EMAILS.indexOf(user.email.toLowerCase())!==-1;
-      if(!allowed){
-        teacherUid=null;
-        document.querySelector('.wrap').style.display='none';
-        document.getElementById('teacherLogin').style.display='block';
-        if(user){
-          document.getElementById('teacherAuthError').textContent='Signed in as '+user.email+', which is not on the teacher allowlist. Please choose one of the approved teacher accounts.';
+    fbAuth.onAuthStateChanged(function(user) {
+      const allowed = user && user.email && user.email.toLowerCase() === TEACHER_EMAIL;
+      if (!allowed) {
+        teacherUid = null;
+        document.querySelector('.wrap').style.display = 'none';
+        document.getElementById('teacherLogin').style.display = 'block';
+        if (user) {
+          document.getElementById('authError').textContent =
+            'Signed in as ' + user.email + ', which is not the teacher account. Signing you out…';
           fbAuth.signOut();
         }
         return;
       }
-      teacherUid=user.uid;
-      document.getElementById('teacherAuthError').textContent='';
-      document.getElementById('teacherLogin').style.display='none';
-      document.querySelector('.wrap').style.display='block';
+      teacherUid = user.uid;
+      document.getElementById('authError').textContent = '';
+      document.getElementById('teacherLogin').style.display = 'none';
+      document.querySelector('.wrap').style.display = 'block';
+      document.getElementById('teacherEmail').textContent = user.email;
       initTeacherData();
-    },function(err){
-      console.error('Firebase Authentication error:',err);
-      document.getElementById('teacherAuthError').textContent=teacherAuthErrorMessage(err);
     });
-  }catch(e){console.error(e);document.getElementById('teacherAuthError').textContent=teacherAuthErrorMessage(e);}
-}
-function teacherAuthErrorMessage(err){
-  const code=(err&&err.code)||'';
-  if(code.indexOf('configuration-not-found')!==-1||code.indexOf('operation-not-allowed')!==-1){
-    return 'Firebase Authentication is not configured for this project yet. Open Authentication settings, click Get started if shown, enable Google and Email/Password, then Save and reload this page.';
+  } catch (err) {
+    console.error('Firebase init failed:', err);
+    document.getElementById('authError').textContent = authErrorMessage(err);
   }
-  if(code.indexOf('unauthorized-domain')!==-1)return 'This website domain is not authorized for Firebase sign-in. Add alibekkkkk.github.io under Authentication → Settings → Authorized domains.';
-  if(code.indexOf('invalid-credential')!==-1||code.indexOf('wrong-password')!==-1)return 'The email/password sign-in failed. Check the password, or use Continue with Google for a Google account.';
-  return (err&&err.message)||'Sign-in failed. Check Firebase Authentication settings and try again.';
 }
-function teacherSignIn(event){
-  event.preventDefault();
-  const email=document.getElementById('teacherEmail').value.trim().toLowerCase();
-  const error=document.getElementById('teacherAuthError');
-  if(TEACHER_EMAILS.indexOf(email)===-1){error.textContent='This email is not on the teacher allowlist.';return}
-  error.textContent='';
-  fbAuth.signInWithEmailAndPassword(email,document.getElementById('teacherPassword').value).catch(function(err){error.textContent=teacherAuthErrorMessage(err);});
+
+function authErrorMessage(err) {
+  const code = (err && err.code) || '';
+  if (code.indexOf('unauthorized-domain') !== -1) {
+    return 'This domain is not authorized for Firebase sign-in. Add alibekkkkk.github.io under Authentication → Settings → Authorized domains.';
+  }
+  if (code.indexOf('operation-not-allowed') !== -1) {
+    return 'Google sign-in is not enabled in Firebase Authentication → Sign-in method.';
+  }
+  if (code.indexOf('popup') !== -1) {
+    return 'Popup blocked. Using redirect sign-in instead.';
+  }
+  return (err && err.message) || 'Sign-in failed. Check the console for details.';
 }
-function teacherSignOut(){if(fbAuth)fbAuth.signOut()}
-function teacherGoogleSignIn(){
-  const errorEl=document.getElementById('teacherAuthError');
-  errorEl.textContent='Opening Google sign-in…';
-  if(!fbAuth){
-    errorEl.textContent='Firebase is not initialized yet. Please refresh the page.';
+
+function teacherGoogleSignIn() {
+  document.getElementById('authError').textContent = 'Opening Google sign-in…';
+  if (!fbAuth) {
+    document.getElementById('authError').textContent = 'Firebase not initialized. Refresh the page.';
     return;
   }
-  const provider=new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({prompt:'select_account'});
-  fbAuth.signInWithPopup(provider).catch(function(err){
-    if(err&&err.code==='auth/popup-blocked'){
-      fbAuth.signInWithRedirect(provider);
-      return;
-    }
-    errorEl.textContent=teacherAuthErrorMessage(err);
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  fbAuth.signInWithRedirect(provider).catch(function(err) {
+    document.getElementById('authError').textContent = authErrorMessage(err);
   });
 }
-function initTeacherData(){
-  if(!teacherUid)return;
+
+function teacherSignOut() {
+  if (fbAuth) fbAuth.signOut();
+}
+
+/* ============================================================
+   DATA LOAD
+============================================================ */
+function initTeacherData() {
+  if (!teacherUid) return;
   loadUndoStack();
-  studentsRef=fbDb.ref('students');
-  studentsRef.on('value',function(snap){
-    studentsMap=snap.val()||{};
+
+  fbDb.ref('students').on('value', function(snap) {
+    studentsMap = snap.val() || {};
     updateConnUI('live');
     renderStudentsList();
-    if(!activeCode)renderOverview();
     updateSelectedClassworkLink();
-  },function(err){console.error(err);updateConnUI('error')});
-  allSessionsRef=fbDb.ref('sessions');
-  allSessionsRef.on('value',function(snap){
-    const data=snap.val()||{};
-    studentMeta={};
-    Object.keys(data).forEach(function(code){
-      const st=(data[code]&&data[code].state)||{};
-      studentMeta[code]={
-        score:st.score||0,stage:st.stage||0,done:st.done||{},
-        notes:st.notes||'',elapsed:st.elapsed||0,streak:st.streak||0,
-        lastSeen:st.lastUpdate||0,homework:(data[code]&&data[code].homework)||{}
+    if (!activeCode) renderOverview();
+  }, function(err) {
+    console.error('students read failed:', err);
+    updateConnUI('error');
+  });
+
+  fbDb.ref('pendingStudents').on('value', function(snap) {
+    pendingMap = snap.val() || {};
+    renderPendingApprovals();
+  }, function(err) {
+    console.error('pendingStudents read failed:', err);
+  });
+
+  fbDb.ref('studentByUid').on('value', function(snap) {
+    studentByUid = snap.val() || {};
+  });
+
+  fbDb.ref('sessions').on('value', function(snap) {
+    const data = snap.val() || {};
+    studentMeta = {};
+    Object.keys(data).forEach(function(code) {
+      const st = (data[code] && data[code].state) || {};
+      studentMeta[code] = {
+        score: st.score || 0,
+        stage: st.stage || 0,
+        done: st.done || {},
+        notes: st.notes || '',
+        elapsed: st.elapsed || 0,
+        streak: st.streak || 0,
+        lastSeen: st.lastUpdate || 0,
+        homework: (data[code] && data[code].homework) || {}
       };
     });
-    if(activeCode)renderSelectedView();
+    if (activeCode) renderSelectedView();
     else renderOverview();
     renderStudentsList();
-    updateSelectedClassworkLink();
   });
-  curriculumRef=fbDb.ref('curriculum');
-  curriculumRef.on('value',function(snap){
-    curriculum=snap.val()||{};
+
+  fbDb.ref('curriculum').on('value', function(snap) {
+    curriculum = snap.val() || {};
     renderLessons();
     updateSelectedClassworkLink();
-    if(activeCode)renderStudentHomework();
+    if (activeCode) renderStudentHomework();
   });
 }
-function updateConnUI(status){
-  const el=document.getElementById('conn');
-  const txt=document.getElementById('connText');
-  el.classList.remove('live','off');
-  if(status==='live'){el.classList.add('live');txt.textContent='Live · Synced'}
-  else if(status==='error'){el.classList.add('off');txt.textContent='Connection error'}
-  else txt.textContent='Connecting…';
+
+function updateConnUI(status) {
+  const el = document.getElementById('conn');
+  const txt = document.getElementById('connText');
+  el.classList.remove('live', 'off');
+  if (status === 'live') { el.classList.add('live'); txt.textContent = 'Live · Synced'; }
+  else if (status === 'error') { el.classList.add('off'); txt.textContent = 'Connection error'; }
+  else { txt.textContent = 'Connecting…'; }
 }
-function switchMainTab(tab){
+
+/* ============================================================
+   PENDING APPROVALS
+============================================================ */
+function renderPendingApprovals() {
+  const card = document.getElementById('pendingCard');
+  const list = document.getElementById('pendingList');
+  const count = document.getElementById('pendingCount');
+  const uids = Object.keys(pendingMap);
+  if (!uids.length) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  count.textContent = uids.length;
+  list.innerHTML = uids.map(function(uid) {
+    const p = pendingMap[uid] || {};
+    return '<div class="pending-item">' +
+      '<div><div class="who">' + escapeHtml(p.name || 'Student') + '</div>' +
+      '<div class="email">' + escapeHtml(p.email || uid) + '</div></div>' +
+      '<div class="actions">' +
+      '<button class="btn small primary" onclick="approvePendingStudent(\'' + uid + '\')">✓ Create new student</button>' +
+      '<button class="btn small" onclick="openLinkModal(\'' + uid + '\')">🔗 Link to existing</button>' +
+      '<button class="btn small danger" onclick="rejectPendingStudent(\'' + uid + '\')">✕ Reject</button>' +
+      '</div></div>';
+  }).join('');
+}
+
+function approvePendingStudent(uid) {
+  const p = pendingMap[uid];
+  if (!p) return;
+  const code = generateCode(studentsMap);
+  const payload = {
+    name: p.name || 'Student',
+    code: code,
+    email: p.email || '',
+    uid: uid,
+    approved: true,
+    createdAt: Date.now()
+  };
+  const changes = [
+    { path: 'students/' + code, value: payload },
+    { path: 'studentByUid/' + uid, value: code },
+    { path: 'pendingStudents/' + uid, value: null }
+  ];
+  writeChangesWithUndo(changes, 'approve ' + payload.name).then(function() {
+    showToast('Approved ' + payload.name + ' — code ' + code);
+  }).catch(function(err) {
+    alert('Approval failed: ' + err.message);
+  });
+}
+
+function rejectPendingStudent(uid) {
+  if (!confirm('Reject this registration request?')) return;
+  fbDb.ref('pendingStudents/' + uid).remove().catch(function(err) {
+    alert('Reject failed: ' + err.message);
+  });
+}
+
+function openLinkModal(uid) {
+  pendingLinkUid = uid;
+  const unlinked = Object.keys(studentsMap).filter(function(code) {
+    return !studentsMap[code].uid;
+  });
+  const sel = document.getElementById('linkCodeSelect');
+  if (!unlinked.length) {
+    alert('No unlinked students available. Create a new student instead.');
+    return;
+  }
+  sel.innerHTML = unlinked.map(function(code) {
+    const s = studentsMap[code];
+    return '<option value="' + code + '">' + escapeHtml(s.name || code) + ' — ' + code + '</option>';
+  }).join('');
+  document.getElementById('linkStudentModal').classList.add('open');
+}
+
+function closeLinkModal() {
+  pendingLinkUid = null;
+  document.getElementById('linkStudentModal').classList.remove('open');
+}
+
+function confirmLinkStudent() {
+  const uid = pendingLinkUid;
+  const code = document.getElementById('linkCodeSelect').value;
+  if (!uid || !code) return;
+  const p = pendingMap[uid] || {};
+  const existing = studentsMap[code] || {};
+  const updated = Object.assign({}, existing, {
+    uid: uid,
+    email: p.email || existing.email || '',
+    approved: true,
+    linkedAt: Date.now()
+  });
+  const changes = [
+    { path: 'students/' + code, value: updated },
+    { path: 'studentByUid/' + uid, value: code },
+    { path: 'pendingStudents/' + uid, value: null }
+  ];
+  writeChangesWithUndo(changes, 'link ' + code).then(function() {
+    closeLinkModal();
+    showToast('Linked ' + (updated.name || code) + ' to Google account.');
+  }).catch(function(err) {
+    alert('Link failed: ' + err.message);
+  });
+}
+
+/* ============================================================
+   TABS
+============================================================ */
+function switchMainTab(tab) {
   document.getElementById('tabStudents').classList.toggle('active', tab === 'students');
   document.getElementById('tabLessons').classList.toggle('active', tab === 'lessons');
   document.getElementById('viewStudents').classList.toggle('active', tab === 'students');
   document.getElementById('viewLessons').classList.toggle('active', tab === 'lessons');
   if (tab === 'lessons') renderLessons();
 }
-function generateCode(existing){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+/* ============================================================
+   STUDENT LIST
+============================================================ */
+function generateCode(existing) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code;
-  do{code='S';for(let i=0;i<4;i++)code+=chars[Math.floor(Math.random()*chars.length)]}while(existing[code]);
+  do {
+    code = 'S';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  } while (existing && existing[code]);
   return code;
 }
-function openAddStudent(){
-  document.getElementById('newStudentName').value='';
-  document.getElementById('newStudentCode').value='';
-  document.getElementById('addStudentModal').classList.add('open');
-  setTimeout(function(){document.getElementById('newStudentName').focus()},50);
-}
-function closeAddStudent(){document.getElementById('addStudentModal').classList.remove('open')}
-function submitAddStudent(){
-  const name=(document.getElementById('newStudentName').value||'').trim();
-  if(!name){alert('Please enter a student name.');return}
-  let code=(document.getElementById('newStudentCode').value||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
-  if(!code)code=generateCode(studentsMap);
-  else{
-    if(studentsMap[code]){alert('That code is already taken. Please choose another one.');return}
-    if(code.length<3){alert('Code must be at least 3 characters.');return}
+
+function renderStudentsList() {
+  const list = document.getElementById('studentsList');
+  const query = (document.getElementById('studentSearch').value || '').toLowerCase().trim();
+  const codes = Object.keys(studentsMap).filter(function(code) {
+    const s = studentsMap[code];
+    const n = (s.name || '').toLowerCase();
+    return !query || n.indexOf(query) !== -1 || code.toLowerCase().indexOf(query) !== -1;
+  });
+  document.getElementById('studentsCount').textContent = Object.keys(studentsMap).length;
+  if (!codes.length) {
+    list.innerHTML = '<div class="no-data" style="padding:20px;">No students yet.</div>';
+    return;
   }
-  writeChangesWithUndo([{path:'students/'+code,value:{name:name,code:code,createdAt:Date.now()}}],'add student '+name).then(function(){
-    closeAddStudent();
-    selectStudent(code);
-  }).catch(function(err){alert('Could not add student: '+err.message)});
+  list.innerHTML = codes.map(function(code) {
+    const s = studentsMap[code];
+    const meta = studentMeta[code] || {};
+    const lastSeen = meta.lastSeen || 0;
+    const ageMs = Date.now() - lastSeen;
+    let dotClass = 'off';
+    if (lastSeen && ageMs < 60000) dotClass = 'live';
+    else if (lastSeen && ageMs < 600000) dotClass = 'stale';
+    const linked = s.uid ? '🔗' : '⚠️';
+    return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(\'' + code + '\')">' +
+      '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
+      '<div class="code">' + linked + ' ' + code + '</div>' +
+      '<div class="stats"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span></div>' +
+      '</div>';
+  }).join('');
 }
-function deleteStudent(){
-  if(!activeCode)return;
-  const s=studentsMap[activeCode]||{};
-  const name=s.name||activeCode;
-  if(!confirm('Delete "'+name+'" and all their progress? You can undo this from the dashboard.'))return;
-  const code=activeCode;
-  writeChangesWithUndo([{path:'students/'+code,value:null},{path:'sessions/'+code,value:null}],'delete student '+name).then(function(){
-    deselectStudent();
-  }).catch(function(err){alert('Delete failed: '+err.message)});
+
+function selectStudent(code) {
+  activeCode = code;
+  renderStudentsList();
+  document.getElementById('selectedView').style.display = 'block';
+  document.getElementById('overviewView').style.display = 'none';
+  renderSelectedView();
+  attachFeedListener();
 }
-function renameStudent(){
-  if(!activeCode)return;
-  const s=studentsMap[activeCode]||{};
-  const current=s.name||'';
-  const newName=(prompt('New name for this student:',current)||'').trim();
-  if(!newName||newName===current)return;
-  writeChangesWithUndo([{path:'students/'+activeCode,value:Object.assign({},s,{name:newName})}],'rename student to '+newName).catch(function(err){alert('Rename failed: '+err.message)});
+
+function deselectStudent() {
+  activeCode = null;
+  if (activeFeedRef) { activeFeedRef.off(); activeFeedRef = null; }
+  document.getElementById('selectedView').style.display = 'none';
+  document.getElementById('overviewView').style.display = 'block';
+  renderStudentsList();
+  renderOverview();
+  updateSelectedClassworkLink();
 }
-function copyLessonLink(){
-  if(!activeCode)return;
-  const url=new URL('portal.html',window.location.href).href;
-  copyText(url,'Portal link copied! Send this to your student.');
+
+/* ============================================================
+   SELECTED STUDENT VIEW
+============================================================ */
+function renderSelectedView() {
+  if (!activeCode || !studentsMap[activeCode]) return;
+  const s = studentsMap[activeCode];
+  const meta = studentMeta[activeCode] || {};
+  document.getElementById('selectedName').textContent = s.name || activeCode;
+  document.getElementById('selectedCode').textContent = activeCode;
+  document.getElementById('selectedAdded').textContent = s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—';
+  document.getElementById('scoreBig').textContent = meta.score || 0;
+  document.getElementById('currentStage').textContent = STAGE_NAMES[(meta.stage || 1) - 1] || '—';
+  const sec = meta.elapsed || 0;
+  document.getElementById('elapsedTime').textContent = String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0');
+  const doneCount = Object.keys(meta.done || {}).filter(function(k) { return meta.done[k]; }).length;
+  document.getElementById('stagesDone').textContent = doneCount + ' / 10';
+  document.getElementById('streakVal').textContent = (meta.streak || 0) + ' 🔥';
+  document.getElementById('lastActivity').textContent = meta.lastSeen ? new Date(meta.lastSeen).toLocaleTimeString() : '—';
+  document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
+
+  document.getElementById('stageVis').innerHTML = STAGE_LIST.map(function(st) {
+    const isDone = meta.done && meta.done[st.id];
+    const isCurrent = (meta.stage || 1) === st.id;
+    const cls = 'stage-chip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '');
+    return '<div class="' + cls + '">' + st.id + '. ' + st.label + '</div>';
+  }).join('');
+
+  document.getElementById('controlGrid').innerHTML = STAGE_LIST.map(function(st) {
+    const isCurrent = (meta.stage || 1) === st.id;
+    return '<button class="ctrl-btn ' + (isCurrent ? 'current' : '') + '" onclick="sendGoto(' + st.id + ')">' +
+      '<span class="num">' + st.id + '</span>' + st.label + '</button>';
+  }).join('');
+
+  renderStudentHomework();
+  updateSelectedClassworkLink();
 }
-function copyText(text,msg){
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(function(){showToast(msg)},function(){fallbackCopy(text,msg)});
-  }else fallbackCopy(text,msg);
-}
-function fallbackCopy(text,msg){
-  const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);
-  ta.select();try{document.execCommand('copy');showToast(msg)}catch(e){}ta.remove();
-}
-function showToast(text){
-  let t=document.getElementById('toast');
-  if(!t){
-    t=document.createElement('div');t.id='toast';
-    t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:9999;opacity:0;transition:all .25s;pointer-events:none;';
-    document.body.appendChild(t);
-  }
-  t.textContent=text;
-  requestAnimationFrame(function(){t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)'});
-  clearTimeout(window.__toastT);
-  window.__toastT=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)'},2400);
-}
-function loadUndoStack(){
-  try{undoStack=JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY)||'[]')}catch(e){undoStack=[]}
-  updateUndoButton();
-}
-function updateUndoButton(){
-  const button=document.getElementById('undoButton');
-  if(!button)return;
-  button.disabled=!undoStack.length;
-  button.title=undoStack.length?'Undo: '+undoStack[undoStack.length-1].label:'No teacher changes to undo in this browser session';
-}
-function rememberUndo(action){
-  undoStack.push(action);
-  if(undoStack.length>30)undoStack.shift();
-  try{sessionStorage.setItem(UNDO_STORAGE_KEY,JSON.stringify(undoStack))}catch(e){}
-  updateUndoButton();
-}
-function sameValue(a,b){return JSON.stringify(a===undefined?null:a)===JSON.stringify(b===undefined?null:b)}
-function writeChangesWithUndo(changes,label){
-  const refs=changes.map(function(change){return fbDb.ref(change.path)});
-  return Promise.all(refs.map(function(ref){return ref.once('value')})).then(function(snaps){
-    const action={label:label,changes:changes.map(function(change,i){return{path:change.path,before:snaps[i].val(),after:change.value===undefined?null:change.value}})};
-    return Promise.all(action.changes.map(function(change){const ref=fbDb.ref(change.path);return change.after===null?ref.remove():ref.set(change.after)})).then(function(){rememberUndo(action);return action});
+
+function attachFeedListener() {
+  if (activeFeedRef) activeFeedRef.off();
+  const feedEl = document.getElementById('feed');
+  feedEl.innerHTML = '<div class="no-data">Loading activity…</div>';
+  activeFeedRef = fbDb.ref('sessions/' + activeCode + '/activity').limitToLast(40);
+  activeFeedRef.on('child_added', function(snap) {
+    const item = snap.val() || {};
+    const el = document.createElement('div');
+    const type = item.type || 'info';
+    let cls = 'feed-item ';
+    if (type.indexOf('correct') !== -1 || type === 'know' || type === 'match_correct') cls += 'correct';
+    else if (type.indexOf('wrong') !== -1 || type === 'practise' || type === 'match_wrong') cls += 'wrong';
+    else if (type === 'stage_complete' || type === 'stage_done') cls += 'action';
+    else cls += 'info';
+    el.className = cls;
+    const t = item.ts ? new Date(item.ts).toLocaleTimeString() : '—';
+    el.innerHTML = '<span class="time">' + t + '</span><span class="msg">' +
+      (item.detail ? escapeHtml(item.detail) : escapeHtml(type)) + '</span>';
+    if (feedEl.querySelector('.no-data')) feedEl.innerHTML = '';
+    feedEl.insertBefore(el, feedEl.firstChild);
+    while (feedEl.children.length > 40) feedEl.removeChild(feedEl.lastChild);
+    if (type === 'typing') {
+      const tl = document.getElementById('typingLive');
+      tl.classList.add('show');
+      document.getElementById('typingText').textContent = item.detail || '';
+      clearTimeout(window.__typingTimer);
+      window.__typingTimer = setTimeout(function() { tl.classList.remove('show'); }, 4000);
+    }
   });
 }
-function undoLastChange(){
-  if(!undoStack.length)return;
-  const action=undoStack[undoStack.length-1];
-  const refs=action.changes.map(function(change){return fbDb.ref(change.path)});
-  Promise.all(refs.map(function(ref){return ref.once('value')})).then(function(snaps){
-    const matches=action.changes.every(function(change,i){return sameValue(snaps[i].val(),change.after)});
-    if(!matches){
-      alert('This change has since been modified in Firebase, so undo was skipped to protect the newer data.');
+
+function sendGoto(stage) {
+  if (!activeCode) return;
+  fbDb.ref('sessions/' + activeCode + '/command').set({
+    action: 'goto', stage: stage, ts: Date.now()
+  }).then(function() { showToast('Sent: go to stage ' + stage); })
+    .catch(function(err) { alert('Command failed: ' + err.message); });
+}
+
+function sendReset() {
+  if (!activeCode) return;
+  if (!confirm('Reset all progress for this student? You can undo this.')) return;
+  fbDb.ref('sessions/' + activeCode + '/command').set({
+    action: 'reset', ts: Date.now()
+  }).then(function() { showToast('Reset command sent'); })
+    .catch(function(err) { alert('Reset failed: ' + err.message); });
+}
+
+function renderStudentHomework() {
+  const list = document.getElementById('studentHomeworkList');
+  if (!list || !activeCode) return;
+  const assigned = Object.keys(curriculum || {}).map(function(id) {
+    return { id: id, lesson: curriculum[id] || {} };
+  }).filter(function(row) {
+    return Array.isArray(row.lesson.assignedTo) &&
+      row.lesson.assignedTo.indexOf(activeCode) !== -1 &&
+      row.lesson.homework;
+  });
+  if (!assigned.length) {
+    list.innerHTML = 'No homework assigned to this student.';
+    return;
+  }
+  const progress = (studentMeta[activeCode] || {}).homework || {};
+  list.innerHTML = assigned.map(function(row) {
+    const lesson = row.lesson;
+    const prog = progress[row.id] || {};
+    const isSubmitted = !!prog.submitted;
+    const status = isSubmitted ? '✓ Submitted' : (prog.updatedAt ? 'In progress' : 'Not started');
+    const score = isSubmitted ? ((prog.score || 0) + ' / ' + (prog.total || 16) + ' correct') : '';
+    const base = lesson.customUrl || 'homework.html';
+    const url = new URL(base, window.location.href);
+    url.searchParams.set('code', activeCode);
+    url.searchParams.set('lesson', row.id);
+    return '<div class="info-row"><span class="k">' + escapeHtml(lesson.title || row.id) + '</span>' +
+      '<span class="v">' + status + (score ? ' · ' + score : '') + ' · <a href="' + url.href + '" target="_blank" style="color:var(--accent);">open</a></span></div>';
+  }).join('');
+}
+
+function updateSelectedClassworkLink() {
+  const link = document.getElementById('selectedClassworkLink');
+  if (!link) return;
+  if (!activeCode || !studentsMap[activeCode]) { link.style.display = 'none'; return; }
+  const lessonOne = curriculum.lesson_1 || curriculum[Object.keys(curriculum)[0]] || {};
+  const base = lessonOne.customUrl ||
+    (String((studentsMap[activeCode].name || '').toLowerCase()).indexOf('gaziz') !== -1 ? 'lesson_gaziz.html' : 'lesson.html');
+  const url = new URL(base, window.location.href);
+  url.searchParams.set('code', activeCode);
+  url.searchParams.set('teacher', '1');
+  link.href = url.href;
+  link.style.display = 'inline-flex';
+}
+
+/* ============================================================
+   OVERVIEW
+============================================================ */
+function renderOverview() {
+  const el = document.getElementById('overviewContent');
+  const codes = Object.keys(studentsMap);
+  if (!codes.length) {
+    el.innerHTML = '<div class="empty-state"><div class="icon">👥</div><h3>No students yet</h3>' +
+      '<p>Click <b>+ Add Student</b> to create your first student code. Students will sign in with Google and you will link their account to the code.</p></div>';
+    return;
+  }
+  const totalScore = codes.reduce(function(sum, c) { return sum + ((studentMeta[c] || {}).score || 0); }, 0);
+  const active = codes.filter(function(c) { return ((studentMeta[c] || {}).lastSeen || 0) > Date.now() - 120000; }).length;
+  el.innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;">' +
+    '<div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:800;color:var(--accent);">' + codes.length + '</div><div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Students</div></div>' +
+    '<div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:800;color:var(--accent);">' + active + '</div><div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Active now</div></div>' +
+    '<div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:800;color:var(--accent);">' + totalScore + '</div><div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Total points</div></div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">' +
+    codes.map(function(code) {
+      const s = studentsMap[code];
+      const meta = studentMeta[code] || {};
+      return '<div class="card" style="cursor:pointer;" onclick="selectStudent(\'' + code + '\')">' +
+        '<div style="font-size:18px;font-weight:800;margin-bottom:4px;">' + escapeHtml(s.name || code) + '</div>' +
+        '<div style="font-size:13px;color:var(--ink-soft);font-family:\'Fira Code\',monospace;letter-spacing:1.5px;margin-bottom:14px;">' + code + ' · ' + (s.uid ? '🔗 linked' : '⚠️ not linked') + '</div>' +
+        '<div style="font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px;">' + (meta.score || 0) + '</div>' +
+        '<div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">points</div>' +
+        '</div>';
+    }).join('') + '</div>';
+}
+
+/* ============================================================
+   ADD / RENAME / DELETE STUDENT
+============================================================ */
+function openAddStudent() {
+  document.getElementById('newStudentName').value = '';
+  document.getElementById('newStudentCode').value = '';
+  document.getElementById('addStudentModal').classList.add('open');
+  setTimeout(function() { document.getElementById('newStudentName').focus(); }, 50);
+}
+function closeAddStudent() { document.getElementById('addStudentModal').classList.remove('open'); }
+function submitAddStudent() {
+  const name = (document.getElementById('newStudentName').value || '').trim();
+  if (!name) { alert('Please enter a student name.'); return; }
+  let code = (document.getElementById('newStudentCode').value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!code) code = generateCode(studentsMap);
+  else {
+    if (studentsMap[code]) { alert('That code is already taken.'); return; }
+    if (code.length < 3) { alert('Code must be at least 3 characters.'); return; }
+  }
+  writeChangesWithUndo([{ path: 'students/' + code, value: { name: name, code: code, createdAt: Date.now() } }], 'add student ' + name)
+    .then(function() { closeAddStudent(); selectStudent(code); })
+    .catch(function(err) { alert('Could not add student: ' + err.message); });
+}
+function renameStudent() {
+  if (!activeCode) return;
+  const s = studentsMap[activeCode] || {};
+  const newName = (prompt('New name for this student:', s.name || '') || '').trim();
+  if (!newName || newName === s.name) return;
+  writeChangesWithUndo([{ path: 'students/' + activeCode, value: Object.assign({}, s, { name: newName }) }], 'rename to ' + newName)
+    .catch(function(err) { alert('Rename failed: ' + err.message); });
+}
+function deleteStudent() {
+  if (!activeCode) return;
+  const s = studentsMap[activeCode] || {};
+  if (!confirm('Delete "' + (s.name || activeCode) + '" and all their progress? You can undo this.')) return;
+  const code = activeCode;
+  const changes = [
+    { path: 'students/' + code, value: null },
+    { path: 'sessions/' + code, value: null }
+  ];
+  if (s.uid) changes.push({ path: 'studentByUid/' + s.uid, value: null });
+  writeChangesWithUndo(changes, 'delete student ' + code)
+    .then(function() { deselectStudent(); })
+    .catch(function(err) { alert('Delete failed: ' + err.message); });
+}
+function copyLessonLink() {
+  if (!activeCode) return;
+  const url = new URL('portal.html', window.location.href).href;
+  copyText(url, 'Portal link copied! Send this to your student.');
+}
+function copyText(text, msg) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() { showToast(msg); }, function() { fallbackCopy(text, msg); });
+  } else fallbackCopy(text, msg);
+}
+function fallbackCopy(text, msg) {
+  const ta = document.createElement('textarea');
+  ta.value = text; document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast(msg); } catch (e) {}
+  ta.remove();
+}
+
+/* ============================================================
+   UNDO
+============================================================ */
+function loadUndoStack() {
+  try { undoStack = JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY) || '[]'); }
+  catch (e) { undoStack = []; }
+  updateUndoButton();
+}
+function updateUndoButton() {
+  const button = document.getElementById('undoButton');
+  if (!button) return;
+  button.disabled = !undoStack.length;
+  button.title = undoStack.length ? 'Undo: ' + undoStack[undoStack.length - 1].label : 'No changes to undo';
+}
+function rememberUndo(action) {
+  undoStack.push(action);
+  if (undoStack.length > 30) undoStack.shift();
+  try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
+  updateUndoButton();
+}
+function sameValue(a, b) {
+  return JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b);
+}
+function writeChangesWithUndo(changes, label) {
+  const refs = changes.map(function(c) { return fbDb.ref(c.path); });
+  return Promise.all(refs.map(function(r) { return r.once('value'); })).then(function(snaps) {
+    const action = {
+      label: label,
+      changes: changes.map(function(c, i) {
+        return { path: c.path, before: snaps[i].val(), after: c.value === undefined ? null : c.value };
+      })
+    };
+    return Promise.all(action.changes.map(function(c) {
+      const r = fbDb.ref(c.path);
+      return c.after === null ? r.remove() : r.set(c.after);
+    })).then(function() { rememberUndo(action); return action; });
+  });
+}
+function undoLastChange() {
+  if (!undoStack.length) return;
+  const action = undoStack[undoStack.length - 1];
+  const refs = action.changes.map(function(c) { return fbDb.ref(c.path); });
+  Promise.all(refs.map(function(r) { return r.once('value'); })).then(function(snaps) {
+    const matches = action.changes.every(function(c, i) { return sameValue(snaps[i].val(), c.after); });
+    if (!matches) {
+      alert('The data changed since this action, so undo was skipped to protect newer data.');
       return;
     }
-    return Promise.all(action.changes.map(function(change){
-      const ref=fbDb.ref(change.path);
-      return change.before===null?ref.remove():ref.set(change.before);
-    })).then(function(){
+    return Promise.all(action.changes.map(function(c) {
+      const r = fbDb.ref(c.path);
+      return c.before === null ? r.remove() : r.set(c.before);
+    })).then(function() {
       undoStack.pop();
-      try{sessionStorage.setItem(UNDO_STORAGE_KEY,JSON.stringify(undoStack))}catch(e){}
+      try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
       updateUndoButton();
-      return fbDb.ref('curriculum').once('value').then(function(snap){
-        curriculum=snap.val()||{};
-        renderLessons();
-        if(activeCode)renderStudentHomework();
-        updateSelectedClassworkLink();
-      });
-    }).then(function(){
-      showToast('Undid: '+action.label);
+      showToast('Undid: ' + action.label);
     });
-  }).catch(function(err){alert('Undo failed: '+err.message)});
+  }).catch(function(err) { alert('Undo failed: ' + err.message); });
 }
-function updateSelectedClassworkLink(){
-  const link=document.getElementById('selectedClassworkLink');
-  if(!link)return;
-  if(!activeCode||!studentsMap[activeCode]){link.style.display='none';return}
-  const student=studentsMap[activeCode]||{};
-  const assigned=Object.keys(curriculum||{}).filter(function(id){const lesson=curriculum[id]||{};const codes=Array.isArray(lesson.assignedTo)?lesson.assignedTo:[];return !lesson.homework&&(!codes.length||codes.indexOf(activeCode)!==-1)&&lesson.published!==false});
-  const lessonOne=curriculum.lesson_1||{};const lessonOneCodes=Array.isArray(lessonOne.assignedTo)?lessonOne.assignedTo:[];
-  const id=lessonOne.customUrl&&String(lessonOne.customUrl).indexOf('lesson_gaziz.html')!==-1&&!lessonOne.homework&&(!lessonOneCodes.length||lessonOneCodes.indexOf(activeCode)!==-1)?'lesson_1':(assigned.length?assigned[0]:null);
-  const lesson=id?curriculum[id]:null;
-  const base=(lesson&&lesson.customUrl)||(String(student.name||'').toLowerCase()==='gaziz'?'lesson_gaziz.html':'lesson.html');
-  const separator=base.indexOf('?')===-1?'?':'&';
-  link.href=base+separator+'code='+encodeURIComponent(activeCode)+(id?'&lesson='+encodeURIComponent(id):'')+'&teacher=1';
-  link.textContent='📘 '+(student.name||'Student')+' Classwork';
-  link.style.display='inline-flex';
+
+/* ============================================================
+   LESSONS
+============================================================ */
+function renderLessons() {
+  const container = document.getElementById('lessonsContainer');
+  if (!container) return;
+  const ids = Object.keys(curriculum || {});
+  if (!ids.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📚</div><h3>No lessons yet</h3>' +
+      '<p>Create your first lesson to make it appear in student portals.</p>' +
+      '<button class="btn primary" onclick="openLessonModal()">+ New Lesson</button></div>';
+    return;
+  }
+  container.innerHTML = '<div class="lessons-list">' + ids.map(function(id) {
+    const l = curriculum[id] || {};
+    const assigned = (l.assignedTo || []).length ? '🔒 Private (' + l.assignedTo.length + ')' : '👥 All students';
+    const badge = l.published === false ? '<span class="badge draft">DRAFT</span>' : '<span class="badge published">PUBLISHED</span>';
+    const hwBtn = l.homework ? '' : '<button class="btn small" onclick="assignStudentHomework(\'' + id + '\')">📌 Assign as homework</button>';
+    return '<div class="lesson-tile">' + badge +
+      '<div class="icon">' + (l.icon || '📘') + '</div>' +
+      '<div class="title">' + escapeHtml(l.title || id) + '</div>' +
+      '<div class="desc">' + escapeHtml(l.description || 'No description.') + '</div>' +
+      '<div class="meta">' + assigned + ' · ' + ((l.stages || STAGE_LIST).length) + ' stages</div>' +
+      '<div class="tile-actions">' +
+      '<button class="btn small" onclick="editLesson(\'' + id + '\')">✏️ Edit</button>' +
+      hwBtn +
+      '<button class="btn small danger" onclick="deleteLesson(\'' + id + '\')">🗑</button>' +
+      '</div></div>';
+  }).join('') + '</div>';
 }
-function renderStudentHomework(){
-  const list=document.getElementById('studentHomeworkList');
-  if(!list||!activeCode)return;
-  const assigned=Object.keys(curriculum||{}).map(function(id){return{id:id,lesson:curriculum[id]||{}}}).filter(function(row){
-    return Array.isArray(row.lesson.assignedTo)&&row.lesson.assignedTo.indexOf(activeCode)!==-1&&row.lesson.homework;
+
+function openLessonModal(id) {
+  editingLessonId = id || null;
+  const l = id ? (curriculum[id] || {}) : {};
+  document.getElementById('lessonModalTitle').textContent = id ? 'Edit lesson' : 'Create a new lesson';
+  document.getElementById('lessonTitle').value = l.title || '';
+  document.getElementById('lessonDesc').value = l.description || '';
+  document.getElementById('lessonIcon').value = l.icon || '📘';
+  document.getElementById('lessonCustomUrl').value = l.customUrl || '';
+  document.getElementById('lessonHomework').checked = !!l.homework;
+  document.getElementById('lessonDue').value = l.homeworkDue || '';
+  lessonVisibility = (l.assignedTo && l.assignedTo.length) ? 'some' : 'all';
+  renderStudentPickList(l.assignedTo || []);
+  setLessonVisibility(lessonVisibility);
+  document.getElementById('lessonSubmitBtn').textContent = id ? 'Save lesson' : 'Create lesson';
+  document.getElementById('lessonModal').classList.add('open');
+}
+function editLesson(id) { openLessonModal(id); }
+function closeLessonModal() {
+  editingLessonId = null;
+  document.getElementById('lessonModal').classList.remove('open');
+}
+function setLessonVisibility(vis) {
+  lessonVisibility = vis;
+  document.getElementById('visAllBtn').classList.toggle('primary', vis === 'all');
+  document.getElementById('visSomeBtn').classList.toggle('primary', vis === 'some');
+  document.getElementById('studentPickList').style.display = vis === 'some' ? 'block' : 'none';
+}
+function renderStudentPickList(selected) {
+  const list = document.getElementById('studentPickList');
+  list.innerHTML = Object.keys(studentsMap).map(function(code) {
+    const checked = selected.indexOf(code) !== -1 ? ' checked' : '';
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);margin:0;"><input type="checkbox" value="' + code + '"' + checked + ' style="width:auto;margin:0;"> ' + escapeHtml(studentsMap[code].name || code) + ' (' + code + ')</label>';
+  }).join('') || '<div style="color:var(--ink-soft);font-size:14px;">No students yet.</div>';
+}
+function submitLesson() {
+  const title = (document.getElementById('lessonTitle').value || '').trim();
+  if (!title) { alert('Please enter a lesson title.'); return; }
+  const id = editingLessonId || ('lesson_' + Date.now());
+  const assignedTo = lessonVisibility === 'some'
+    ? Array.from(document.querySelectorAll('#studentPickList input:checked')).map(function(x) { return x.value; })
+    : [];
+  const payload = {
+    title: title,
+    description: (document.getElementById('lessonDesc').value || '').trim(),
+    icon: (document.getElementById('lessonIcon').value || '📘').trim() || '📘',
+    customUrl: (document.getElementById('lessonCustomUrl').value || '').trim(),
+    homework: document.getElementById('lessonHomework').checked,
+    homeworkDue: (document.getElementById('lessonDue').value || '').trim(),
+    assignedTo: assignedTo,
+    stages: (curriculum[id] && curriculum[id].stages) || STAGE_LIST,
+    published: true,
+    updatedAt: Date.now()
+  };
+  if (!editingLessonId) payload.order = Date.now();
+  writeChangesWithUndo([{ path: 'curriculum/' + id, value: payload }], (editingLessonId ? 'edit ' : 'create ') + title)
+    .then(function() { closeLessonModal(); showToast(editingLessonId ? 'Lesson saved' : 'Lesson created'); })
+    .catch(function(err) { alert('Save failed: ' + err.message); });
+}
+function deleteLesson(id) {
+  if (!confirm('Delete this lesson?')) return;
+  writeChangesWithUndo([{ path: 'curriculum/' + id, value: null }], 'delete lesson ' + id)
+    .catch(function(err) { alert('Delete failed: ' + err.message); });
+}
+function assignStudentHomework(lessonId) {
+  const l = curriculum[lessonId];
+  if (!l) return;
+  const nameInput = prompt('Which student should receive this homework? Type their code or name:', activeCode || '');
+  if (!nameInput) return;
+  const q = nameInput.trim().toLowerCase();
+  const code = Object.keys(studentsMap).find(function(c) {
+    return c.toLowerCase() === q || (studentsMap[c].name || '').toLowerCase() === q;
   });
-  if(!assigned.length){list.innerHTML='No homework assigned to this student.';return}
-  const done=(studentMeta[activeCode]||{}).done||{};
-  const allHomework=(studentMeta[activeCode]||{}).homework||{};
-  list.innerHTML=assigned.map(function(row){
-    const lesson=row.lesson;const stages=lesson.stages||[];
-    const finished=stages.filter(function(stage){return !!done[stage.id]||!!done[row.id+'_'+stage.id]}).length;
-    const progress=allHomework[row.id]||{};
-    const isSubmitted=!!progress.submitted;
-    const status=isSubmitted?'✓ Submitted · ':progress.updatedAt?'In progress · ':'';
-    const base=lesson.customUrl||'lesson.html';
-    const url=new URL(base,window.location.href);
-    url.searchParams.set('code',activeCode);
-    url.searchParams.set('lesson',row.id);
-    const scoreInfo=lesson.customUrl&&lesson.customUrl.indexOf('homework.html')!==-1
-      ? status+((progress.score||0)+' / '+(progress.total||16)+' correct')
-      : (finished+' / '+stages.length+' stages complete');
-    const submittedDate=isSubmitted&&progress.updatedAt?'
+  if (!code) { alert('Student not found.'); return; }
+  const updated = Object.assign({}, l, { homework: true, assignedTo: [code] });
+  writeChangesWithUndo([{ path: 'curriculum/' + lessonId, value: updated }], 'assign homework to ' + code)
+    .then(function() { showToast('Homework assigned to ' + (studentsMap[code].name || code)); })
+    .catch(function(err) { alert('Assignment failed: ' + err.message); });
+}
+
+/* ============================================================
+   HELPERS
+============================================================ */
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(ch) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+  });
+}
+function showToast(text) {
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(window.__toastT);
+  window.__toastT = setTimeout(function() { t.classList.remove('show'); }, 2400);
+}
+
+/* ============================================================
+   BOOT
+============================================================ */
+initFirebase();
+window.addEventListener('beforeunload', function() {
+  if (activeFeedRef) activeFeedRef.off();
+});
+</script>
+</body>
+</html>
