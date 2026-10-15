@@ -433,11 +433,18 @@ function teacherGoogleSignIn() {
   }
   const provider = new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
-  fbAuth.signInWithRedirect(provider).catch(function(err) {
+  fbAuth.signInWithPopup(provider).then(function(result) {
+    document.getElementById('authError').textContent = '';
+  }).catch(function(err) {
+    if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment')) {
+      // Fallback: use redirect only if the popup was genuinely blocked
+      document.getElementById('authError').textContent = 'Popup was blocked — trying redirect instead…';
+      fbAuth.signInWithRedirect(provider);
+      return;
+    }
     document.getElementById('authError').textContent = authErrorMessage(err);
   });
 }
-
 function teacherSignOut() {
   if (fbAuth) fbAuth.signOut();
 }
