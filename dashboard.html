@@ -9,10 +9,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
-:root{--bg:#f5f3ed;--panel:#fffefa;--panel-2:#edf4ed;--ink:#18302b;--ink-soft:#677771;--primary:#2c6653;--accent:#2c6653;--success:#43845a;--warn:#916313;--error:#b33e37;--border:#dce1d8;}
+:root{--bg:#f5f3ed;--panel:#fffefa;--panel-2:#edf4ed;--ink:#18302b;--ink-soft:#677771;--primary:#2c6653;--accent:#2c6653;--success:#43845a;--warn:#916313;--error:#b33e37;--border:#dce1d8}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:20px}
-.wrap{max-width:1400px;margin:0 auto}
+.wrap{max-width:1500px;margin:0 auto}
 .header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--panel);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);flex-wrap:wrap;gap:14px}
 .header-left{display:flex;align-items:center;gap:14px}
 .header-left .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#1f5141);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}
@@ -36,6 +36,10 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .tab.active{background:var(--panel-2);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .tab-view{display:none}
 .tab-view.active{display:block}
+.filter-banner{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(44,102,83,.08);border:1px solid rgba(44,102,83,.25);border-radius:12px;font-size:14px;font-weight:700;margin-bottom:14px}
+.filter-banner.show{display:flex}
+.filter-banner .x{margin-left:auto;background:transparent;border:1px solid var(--border);border-radius:8px;padding:4px 10px;cursor:pointer;font-family:inherit;font-weight:700;font-size:13px}
+.filter-banner .x:hover{border-color:var(--error);color:var(--error)}
 .layout{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
 @media(max-width:960px){.layout{grid-template-columns:1fr}}
 .students-panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);overflow:hidden;position:sticky;top:20px;max-height:calc(100vh - 40px);display:flex;flex-direction:column}
@@ -106,18 +110,13 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .empty-state .icon{font-size:64px;margin-bottom:16px;opacity:.5}
 .empty-state h3{font-size:24px;color:var(--ink);margin-bottom:10px}
 .empty-state p{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto}
-.lessons-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:20px}
-.lesson-tile{background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:all .15s}
-.lesson-tile:hover{border-color:var(--accent);transform:translateY(-2px)}
-.lesson-tile .icon{font-size:38px;margin-bottom:10px}
-.lesson-tile .title{font-size:19px;font-weight:800;margin-bottom:6px;color:var(--ink)}
-.lesson-tile .desc{font-size:14px;color:var(--ink-soft);line-height:1.5;margin-bottom:14px;min-height:42px}
-.lesson-tile .meta{font-size:12px;color:var(--ink-soft);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:12px;padding-top:10px;border-top:1px solid var(--border)}
-.lesson-tile .tile-actions{display:flex;gap:6px}
-.lesson-tile .tile-actions .btn{flex:1;padding:8px;font-size:13px}
-.lesson-tile .badge{position:absolute;top:14px;right:14px;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:800;letter-spacing:.5px}
-.lesson-tile .badge.published{background:rgba(76,175,125,.2);color:var(--success)}
-.lesson-tile .badge.draft{background:rgba(255,183,77,.2);color:var(--warn)}
+.pending-card{background:linear-gradient(135deg,rgba(255,183,77,.08),rgba(255,183,77,.02));border:1px solid rgba(145,99,19,.3)}
+.pending-card h2{color:var(--warn)}
+.pending-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.pending-item:last-child{border-bottom:none}
+.pending-item .who{font-weight:700;font-size:15px}
+.pending-item .email{font-size:13px;color:var(--ink-soft);font-family:'Fira Code',monospace}
+.pending-item .actions{display:flex;gap:6px;flex-wrap:wrap}
 .modal-backdrop{position:fixed;inset:0;background:rgba(24,48,43,.48);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .modal-backdrop.open{display:flex}
 .modal{background:var(--panel);border-radius:20px;padding:28px 30px;max-width:560px;width:100%;box-shadow:0 20px 50px rgba(24,48,43,.18);border:1px solid var(--border);margin:auto}
@@ -128,13 +127,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--accent)}
 .modal textarea{font-weight:500;resize:vertical;min-height:70px;font-size:15px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
-.pending-card{background:linear-gradient(135deg,rgba(255,183,77,.08),rgba(255,183,77,.02));border:1px solid rgba(145,99,19,.3)}
-.pending-card h2{color:var(--warn)}
-.pending-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.pending-item:last-child{border-bottom:none}
-.pending-item .who{font-weight:700;font-size:15px}
-.pending-item .email{font-size:13px;color:var(--ink-soft);font-family:'Fira Code',monospace}
-.pending-item .actions{display:flex;gap:6px;flex-wrap:wrap}
 #teacherLogin{max-width:520px;margin:8vh auto;padding:34px;background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:0 18px 50px rgba(24,48,43,.1);text-align:center}
 #teacherLogin h1{font-size:34px;line-height:1.1;color:var(--ink);margin-bottom:10px}
 #teacherLogin p{font-size:16px;line-height:1.5;color:var(--ink-soft);margin-bottom:22px}
@@ -144,6 +136,37 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .g-google-icon{width:20px;height:20px;background:#fff;border-radius:4px;display:grid;place-items:center;font-weight:800;color:#4285f4;font-family:Arial,sans-serif;font-size:14px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;padding:12px 22px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:9999;opacity:0;transition:all .25s;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ---- Classwork / Homework split layout ---- */
+.split-layout{display:grid;grid-template-columns:280px 1fr;gap:16px;height:calc(100vh - 260px);min-height:600px}
+@media(max-width:900px){.split-layout{grid-template-columns:1fr;height:auto}}
+.tree-panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.tree-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.tree-header h2{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase}
+.tree-body{flex:1;overflow-y:auto;padding:8px}
+.tree-year{padding:9px 12px;border-radius:9px;cursor:pointer;font-weight:800;font-size:14px;display:flex;align-items:center;gap:8px;background:var(--panel-2);margin-bottom:4px}
+.tree-year .arrow{margin-left:auto;font-size:11px;transition:transform .2s}
+.tree-year.open .arrow{transform:rotate(90deg)}
+.tree-month{padding:7px 12px 7px 26px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.tree-month:hover{background:var(--panel-2);color:var(--ink)}
+.tree-month .arrow{margin-left:auto;font-size:10px;transition:transform .2s}
+.tree-month.open .arrow{transform:rotate(90deg)}
+.tree-lesson{padding:8px 12px 8px 40px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--ink-soft);font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.tree-lesson:hover{background:var(--panel-2);color:var(--ink)}
+.tree-lesson.active{background:linear-gradient(135deg,var(--accent),#1f5141);color:#fff;font-weight:800}
+.tree-lesson .dot-private{width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0}
+.tree-empty{padding:20px;color:var(--ink-soft);font-size:14px;text-align:center}
+.viewer-panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.viewer-bar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.viewer-bar .title{font-weight:800;font-size:16px}
+.viewer-bar .actions{display:flex;gap:8px;flex-wrap:wrap}
+.viewer-frame{flex:1;border:0;background:#fff;min-height:400px}
+.viewer-placeholder{flex:1;display:grid;place-items:center;color:var(--ink-soft);font-size:16px;text-align:center;padding:40px}
+.viewer-placeholder .icon{font-size:56px;opacity:.4;margin-bottom:14px}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.meta-grid label{display:block;font-size:11px;font-weight:800;letter-spacing:1px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:5px}
+.meta-grid input,.meta-grid select,.meta-grid textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:9px;background:var(--bg);font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);outline:none}
+.meta-grid input:focus,.meta-grid select:focus,.meta-grid textarea:focus{border-color:var(--accent)}
+.meta-grid .full{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -169,8 +192,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     </div>
     <div class="header-actions">
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
-      <a class="btn" href="portal.html" style="text-decoration:none;">🎓 Student Portal</a>
-      <a class="btn" id="selectedClassworkLink" href="#" style="text-decoration:none;display:none;">📘 Classwork</a>
+      <a class="btn" href="portal.html" style="text-decoration:none;" target="_blank">🎓 Student Portal</a>
       <button class="btn" id="undoButton" onclick="undoLastChange()" disabled title="Undo last change">↶ Undo</button>
       <button class="btn" onclick="teacherSignOut()">Sign out</button>
       <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
@@ -179,13 +201,15 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 
   <div class="tabs">
     <button class="tab active" id="tabStudents" onclick="switchMainTab('students')">👥 Students</button>
-    <button class="tab" id="tabLessons" onclick="switchMainTab('lessons')">📚 Lessons</button>
+    <button class="tab" id="tabClasswork" onclick="switchMainTab('classwork')">📚 Classwork Lessons</button>
+    <button class="tab" id="tabHomework" onclick="switchMainTab('homework')">📌 Homework Assignments</button>
   </div>
 
+  <!-- ================= STUDENTS TAB ================= -->
   <div class="tab-view active" id="viewStudents">
     <div class="card pending-card" id="pendingCard" style="display:none;">
       <h2>Pending Student Approvals <span class="count" id="pendingCount" style="padding:2px 10px;background:rgba(145,99,19,.2);border-radius:10px;font-size:12px;">0</span></h2>
-      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:14px;">These people signed in with Google but are not yet approved. Approve them to give them a new code, or link them to an existing student record.</p>
+      <p style="font-size:14px;color:var(--ink-soft);margin-bottom:14px;">Signed in with Google but not yet approved. Approve to create a new code, or link to an existing student record.</p>
       <div id="pendingList"></div>
     </div>
 
@@ -208,13 +232,14 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
               <div class="meta">Code: <b id="selectedCode">—</b> · Added: <span id="selectedAdded">—</span></div>
             </div>
             <div class="selected-actions">
-              <button class="btn small" onclick="copyLessonLink()">🔗 Copy lesson link</button>
+              <button class="btn small" onclick="openStudentClasswork()">📚 View classwork</button>
+              <button class="btn small" onclick="openStudentHomework()">📌 View homework</button>
               <button class="btn small" onclick="renameStudent()">✏️ Rename</button>
               <button class="btn small danger" onclick="deleteStudent()">🗑 Delete</button>
             </div>
           </div>
 
-          <div class="card" id="studentHomeworkCard">
+          <div class="card">
             <h2>Assigned Homework</h2>
             <div id="studentHomeworkList" style="color:var(--ink-soft);">No homework assigned to this student.</div>
           </div>
@@ -243,6 +268,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 
           <div class="card">
             <h2>Send Command to Student</h2>
+            <p style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">If the student's lesson page is open, these commands fire immediately.</p>
             <div class="control-grid" id="controlGrid"></div>
             <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
               <button class="btn" onclick="sendReset()">🔄 Reset student progress</button>
@@ -269,27 +295,77 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     </div>
   </div>
 
-  <div class="tab-view" id="viewLessons">
-    <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-      <div>
-        <h2 style="margin:0;">📚 Your Curriculum</h2>
-        <p style="font-size:15px;color:var(--ink-soft);margin-top:6px;">Lessons here appear in student portals instantly.</p>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn primary" onclick="openLessonModal()">+ New Lesson</button>
-      </div>
+  <!-- ================= CLASSWORK TAB ================= -->
+  <div class="tab-view" id="viewClasswork">
+    <div class="filter-banner" id="classworkFilter">
+      <span id="classworkFilterText"></span>
+      <button class="x" onclick="clearClassworkFilter()">✕ Clear filter</button>
     </div>
-    <div id="lessonsContainer"></div>
+    <div class="split-layout">
+      <aside class="tree-panel">
+        <div class="tree-header">
+          <h2>📚 Curriculum</h2>
+          <button class="btn small primary" onclick="openLessonModal()">+ New</button>
+        </div>
+        <div class="tree-body" id="classworkTree"></div>
+      </aside>
+      <main class="viewer-panel">
+        <div class="viewer-bar" id="classworkBar" style="display:none;">
+          <div class="title" id="classworkTitle">Lesson</div>
+          <div class="actions">
+            <button class="btn small" onclick="openCurrentClassworkInTab()">↗ Open in tab</button>
+            <button class="btn small" onclick="editLessonMeta(currentClassworkId)">✏️ Edit info</button>
+            <button class="btn small danger" onclick="deleteLesson(currentClassworkId)">🗑 Delete</button>
+          </div>
+        </div>
+        <div class="viewer-placeholder" id="classworkPlaceholder">
+          <div>
+            <div class="icon">📖</div>
+            <div>Select a lesson from the left to preview and edit it.</div>
+          </div>
+        </div>
+        <iframe class="viewer-frame" id="classworkFrame" style="display:none;" title="Classwork preview"></iframe>
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= HOMEWORK TAB ================= -->
+  <div class="tab-view" id="viewHomework">
+    <div class="split-layout">
+      <aside class="tree-panel">
+        <div class="tree-header">
+          <h2>📌 Homework</h2>
+        </div>
+        <div class="tree-body" id="homeworkTree"></div>
+      </aside>
+      <main class="viewer-panel">
+        <div class="viewer-bar" id="homeworkBar" style="display:none;">
+          <div class="title" id="homeworkTitle">Homework</div>
+          <div class="actions">
+            <button class="btn small" onclick="openCurrentHomeworkInTab()">↗ Open in tab</button>
+            <button class="btn small" onclick="editLessonMeta(currentHomeworkId)">✏️ Edit info</button>
+          </div>
+        </div>
+        <div class="viewer-placeholder" id="homeworkPlaceholder">
+          <div>
+            <div class="icon">📌</div>
+            <div>Select a homework assignment from the left to preview.</div>
+          </div>
+        </div>
+        <iframe class="viewer-frame" id="homeworkFrame" style="display:none;" title="Homework preview"></iframe>
+      </main>
+    </div>
   </div>
 </div>
 
+<!-- ============ MODALS ============ -->
 <div class="modal-backdrop" id="addStudentModal">
   <div class="modal">
     <h3>Add a new student</h3>
-    <p class="sub">The student will later sign in with Google and you will link their UID to this code.</p>
+    <p class="sub">The student will later sign in with Google and you will link their account to this code.</p>
     <label for="newStudentName">Student name</label>
     <input type="text" id="newStudentName" placeholder="e.g. Alice Smith" maxlength="40" autocomplete="off">
-    <label for="newStudentCode">Session code (optional — leave empty to auto-generate)</label>
+    <label for="newStudentCode">Session code (optional)</label>
     <input type="text" id="newStudentCode" placeholder="AUTO" maxlength="12" autocomplete="off" style="text-transform:uppercase;">
     <div class="modal-actions">
       <button class="btn" onclick="closeAddStudent()">Cancel</button>
@@ -301,7 +377,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 <div class="modal-backdrop" id="linkStudentModal">
   <div class="modal">
     <h3>Link to existing student</h3>
-    <p class="sub">Choose which existing student code this Google account belongs to. The student's progress and homework stay intact.</p>
+    <p class="sub">Choose which existing student code this Google account belongs to. Progress and homework stay intact.</p>
     <label for="linkCodeSelect">Existing code</label>
     <select id="linkCodeSelect"></select>
     <div class="modal-actions">
@@ -313,28 +389,40 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 
 <div class="modal-backdrop" id="lessonModal">
   <div class="modal">
-    <h3 id="lessonModalTitle">Create a new lesson</h3>
-    <p class="sub">Lessons appear in student portals instantly.</p>
-    <label for="lessonTitle">Lesson title</label>
+    <h3 id="lessonModalTitle">Create lesson</h3>
+    <p class="sub">Basic info. Content (questions/flashcards) is edited in the preview.</p>
+    <label for="lessonTitle">Title</label>
     <input type="text" id="lessonTitle" placeholder="e.g. Lesson 2: Volcanoes" maxlength="80">
     <label for="lessonDesc">Short description</label>
     <textarea id="lessonDesc" placeholder="What will students learn?"></textarea>
-    <label style="display:flex;align-items:center;gap:8px;margin-top:14px;text-transform:none;letter-spacing:0;color:var(--ink);font-size:15px;"><input type="checkbox" id="lessonHomework" style="width:auto;margin:0;"> Assign as homework</label>
-    <label for="lessonDue">Homework due (date or note)</label>
-    <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
     <label for="lessonIcon">Icon (emoji)</label>
-    <input type="text" id="lessonIcon" placeholder="📘" maxlength="4" style="text-transform:none;width:80px;">
-    <label>Who can see this lesson?</label>
-    <div style="display:flex;gap:8px;margin-bottom:16px;">
-      <button type="button" class="btn" id="visAllBtn" onclick="setLessonVisibility('all')" style="flex:1;">👥 All students</button>
-      <button type="button" class="btn" id="visSomeBtn" onclick="setLessonVisibility('some')" style="flex:1;">🔒 Only selected</button>
+    <input type="text" id="lessonIcon" placeholder="📘" maxlength="4" style="width:80px;">
+    <label>Type</label>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button type="button" class="btn" id="typeClassworkBtn" onclick="setLessonType('classwork')" style="flex:1;">📚 Classwork</button>
+      <button type="button" class="btn" id="typeHomeworkBtn" onclick="setLessonType('homework')" style="flex:1;">📌 Homework</button>
     </div>
-    <div id="studentPickList" style="display:none;max-height:220px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;margin-bottom:16px;border:1px solid var(--border);"></div>
-    <label for="lessonCustomUrl">Custom lesson URL (optional)</label>
+    <label for="lessonCustomUrl">Custom URL (optional — leave blank for default)</label>
     <input type="text" id="lessonCustomUrl" placeholder="e.g. lesson_gaziz.html" style="text-transform:none;">
+    <div id="homeworkExtras" style="display:none;">
+      <label for="lessonDue">Homework due (date or note)</label>
+      <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
+      <label for="homeworkVariant">Homework variant</label>
+      <select id="homeworkVariant">
+        <option value="gaziz">Sustainable Cities (Gaziz style)</option>
+        <option value="sabina">Natural Disasters (Sabina style)</option>
+      </select>
+    </div>
+    <label>Visibility</label>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button type="button" class="btn" id="visAllBtn" onclick="setLessonVisibility('all')" style="flex:1;">👥 All</button>
+      <button type="button" class="btn" id="visSomeBtn" onclick="setLessonVisibility('some')" style="flex:1;">🔒 Selected</button>
+    </div>
+    <div id="studentPickList" style="display:none;max-height:180px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;margin-bottom:14px;border:1px solid var(--border);"></div>
+    <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink);margin-top:8px;"><input type="checkbox" id="lessonPublished" style="width:auto;margin:0;" checked> Published (visible to students)</label>
     <div class="modal-actions">
       <button class="btn" onclick="closeLessonModal()">Cancel</button>
-      <button class="btn primary" id="lessonSubmitBtn" onclick="submitLesson()">Create lesson</button>
+      <button class="btn primary" onclick="submitLesson()">Save</button>
     </div>
   </div>
 </div>
@@ -343,7 +431,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 
 <script>
 /* ============================================================
-   FIREBASE + CONFIG
+   CONFIG
 ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
@@ -357,9 +445,12 @@ const firebaseConfig = {
 const TEACHER_EMAIL = 'alibek.alpysbayev@gmail.com';
 
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
-let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, studentByUid = {};
+let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {};
 let activeCode = null, activeFeedRef = null;
-let editingLessonId = null, lessonVisibility = 'all', pendingLinkUid = null;
+let editingLessonId = null, lessonVisibility = 'all', lessonType = 'classwork';
+let pendingLinkUid = null;
+let currentClassworkId = null, currentHomeworkId = null;
+let expandedYears = {}, expandedMonths = {};
 const UNDO_STORAGE_KEY = 'teacherDashboardUndoV2';
 let undoStack = [];
 
@@ -372,7 +463,7 @@ const STAGE_LIST = [
 ];
 
 /* ============================================================
-   FIREBASE INIT + AUTH
+   FIREBASE + AUTH
 ============================================================ */
 function initFirebase() {
   try {
@@ -413,41 +504,30 @@ function initFirebase() {
 
 function authErrorMessage(err) {
   const code = (err && err.code) || '';
-  if (code.indexOf('unauthorized-domain') !== -1) {
-    return 'This domain is not authorized for Firebase sign-in. Add alibekkkkk.github.io under Authentication → Settings → Authorized domains.';
-  }
-  if (code.indexOf('operation-not-allowed') !== -1) {
-    return 'Google sign-in is not enabled in Firebase Authentication → Sign-in method.';
-  }
-  if (code.indexOf('popup') !== -1) {
-    return 'Popup blocked. Using redirect sign-in instead.';
-  }
-  return (err && err.message) || 'Sign-in failed. Check the console for details.';
+  if (code.indexOf('unauthorized-domain') !== -1) return 'This domain is not authorized. Add alibekkkkk.github.io in Firebase Auth settings.';
+  if (code.indexOf('operation-not-allowed') !== -1) return 'Google sign-in is not enabled in Firebase.';
+  if (code.indexOf('popup') !== -1) return 'Popup blocked. Allow popups for this site.';
+  return (err && err.message) || 'Sign-in failed. Check the console.';
 }
 
 function teacherGoogleSignIn() {
   document.getElementById('authError').textContent = 'Opening Google sign-in…';
-  if (!fbAuth) {
-    document.getElementById('authError').textContent = 'Firebase not initialized. Refresh the page.';
-    return;
-  }
+  if (!fbAuth) { document.getElementById('authError').textContent = 'Firebase not initialized.'; return; }
   const provider = new firebase.auth.GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
-  fbAuth.signInWithPopup(provider).then(function(result) {
+  fbAuth.signInWithPopup(provider).then(function() {
     document.getElementById('authError').textContent = '';
   }).catch(function(err) {
     if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment')) {
-      // Fallback: use redirect only if the popup was genuinely blocked
-      document.getElementById('authError').textContent = 'Popup was blocked — trying redirect instead…';
+      document.getElementById('authError').textContent = 'Popup blocked — trying redirect…';
       fbAuth.signInWithRedirect(provider);
       return;
     }
     document.getElementById('authError').textContent = authErrorMessage(err);
   });
 }
-function teacherSignOut() {
-  if (fbAuth) fbAuth.signOut();
-}
+
+function teacherSignOut() { if (fbAuth) fbAuth.signOut(); }
 
 /* ============================================================
    DATA LOAD
@@ -460,22 +540,14 @@ function initTeacherData() {
     studentsMap = snap.val() || {};
     updateConnUI('live');
     renderStudentsList();
-    updateSelectedClassworkLink();
     if (!activeCode) renderOverview();
-  }, function(err) {
-    console.error('students read failed:', err);
-    updateConnUI('error');
-  });
+    renderClassworkTree();
+    renderHomeworkTree();
+  }, function(err) { console.error(err); updateConnUI('error'); });
 
   fbDb.ref('pendingStudents').on('value', function(snap) {
     pendingMap = snap.val() || {};
     renderPendingApprovals();
-  }, function(err) {
-    console.error('pendingStudents read failed:', err);
-  });
-
-  fbDb.ref('studentByUid').on('value', function(snap) {
-    studentByUid = snap.val() || {};
   });
 
   fbDb.ref('sessions').on('value', function(snap) {
@@ -484,14 +556,9 @@ function initTeacherData() {
     Object.keys(data).forEach(function(code) {
       const st = (data[code] && data[code].state) || {};
       studentMeta[code] = {
-        score: st.score || 0,
-        stage: st.stage || 0,
-        done: st.done || {},
-        notes: st.notes || '',
-        elapsed: st.elapsed || 0,
-        streak: st.streak || 0,
-        lastSeen: st.lastUpdate || 0,
-        homework: (data[code] && data[code].homework) || {}
+        score: st.score || 0, stage: st.stage || 0, done: st.done || {},
+        notes: st.notes || '', elapsed: st.elapsed || 0, streak: st.streak || 0,
+        lastSeen: st.lastUpdate || 0, homework: (data[code] && data[code].homework) || {}
       };
     });
     if (activeCode) renderSelectedView();
@@ -501,8 +568,8 @@ function initTeacherData() {
 
   fbDb.ref('curriculum').on('value', function(snap) {
     curriculum = snap.val() || {};
-    renderLessons();
-    updateSelectedClassworkLink();
+    renderClassworkTree();
+    renderHomeworkTree();
     if (activeCode) renderStudentHomework();
   });
 }
@@ -510,10 +577,10 @@ function initTeacherData() {
 function updateConnUI(status) {
   const el = document.getElementById('conn');
   const txt = document.getElementById('connText');
-  el.classList.remove('live', 'off');
+  el.classList.remove('live','off');
   if (status === 'live') { el.classList.add('live'); txt.textContent = 'Live · Synced'; }
   else if (status === 'error') { el.classList.add('off'); txt.textContent = 'Connection error'; }
-  else { txt.textContent = 'Connecting…'; }
+  else txt.textContent = 'Connecting…';
 }
 
 /* ============================================================
@@ -533,8 +600,8 @@ function renderPendingApprovals() {
       '<div><div class="who">' + escapeHtml(p.name || 'Student') + '</div>' +
       '<div class="email">' + escapeHtml(p.email || uid) + '</div></div>' +
       '<div class="actions">' +
-      '<button class="btn small primary" onclick="approvePendingStudent(\'' + uid + '\')">✓ Create new student</button>' +
-      '<button class="btn small" onclick="openLinkModal(\'' + uid + '\')">🔗 Link to existing</button>' +
+      '<button class="btn small primary" onclick="approvePendingStudent(\'' + uid + '\')">✓ Create new</button>' +
+      '<button class="btn small" onclick="openLinkModal(\'' + uid + '\')">🔗 Link existing</button>' +
       '<button class="btn small danger" onclick="rejectPendingStudent(\'' + uid + '\')">✕ Reject</button>' +
       '</div></div>';
   }).join('');
@@ -544,44 +611,26 @@ function approvePendingStudent(uid) {
   const p = pendingMap[uid];
   if (!p) return;
   const code = generateCode(studentsMap);
-  const payload = {
-    name: p.name || 'Student',
-    code: code,
-    email: p.email || '',
-    uid: uid,
-    approved: true,
-    createdAt: Date.now()
-  };
-  const changes = [
+  const payload = { name: p.name || 'Student', code: code, email: p.email || '', uid: uid, approved: true, createdAt: Date.now() };
+  writeChangesWithUndo([
     { path: 'students/' + code, value: payload },
     { path: 'studentByUid/' + uid, value: code },
     { path: 'pendingStudents/' + uid, value: null }
-  ];
-  writeChangesWithUndo(changes, 'approve ' + payload.name).then(function() {
+  ], 'approve ' + payload.name).then(function() {
     showToast('Approved ' + payload.name + ' — code ' + code);
-  }).catch(function(err) {
-    alert('Approval failed: ' + err.message);
-  });
+  }).catch(function(err) { alert('Approval failed: ' + err.message); });
 }
 
 function rejectPendingStudent(uid) {
   if (!confirm('Reject this registration request?')) return;
-  fbDb.ref('pendingStudents/' + uid).remove().catch(function(err) {
-    alert('Reject failed: ' + err.message);
-  });
+  fbDb.ref('pendingStudents/' + uid).remove().catch(function(err) { alert('Reject failed: ' + err.message); });
 }
 
 function openLinkModal(uid) {
   pendingLinkUid = uid;
-  const unlinked = Object.keys(studentsMap).filter(function(code) {
-    return !studentsMap[code].uid;
-  });
-  const sel = document.getElementById('linkCodeSelect');
-  if (!unlinked.length) {
-    alert('No unlinked students available. Create a new student instead.');
-    return;
-  }
-  sel.innerHTML = unlinked.map(function(code) {
+  const unlinked = Object.keys(studentsMap).filter(function(code) { return !studentsMap[code].uid; });
+  if (!unlinked.length) { alert('No unlinked students available. Create a new one instead.'); return; }
+  document.getElementById('linkCodeSelect').innerHTML = unlinked.map(function(code) {
     const s = studentsMap[code];
     return '<option value="' + code + '">' + escapeHtml(s.name || code) + ' — ' + code + '</option>';
   }).join('');
@@ -599,34 +648,42 @@ function confirmLinkStudent() {
   if (!uid || !code) return;
   const p = pendingMap[uid] || {};
   const existing = studentsMap[code] || {};
-  const updated = Object.assign({}, existing, {
-    uid: uid,
-    email: p.email || existing.email || '',
-    approved: true,
-    linkedAt: Date.now()
-  });
-  const changes = [
+  const updated = Object.assign({}, existing, { uid: uid, email: p.email || existing.email || '', approved: true, linkedAt: Date.now() });
+  writeChangesWithUndo([
     { path: 'students/' + code, value: updated },
     { path: 'studentByUid/' + uid, value: code },
     { path: 'pendingStudents/' + uid, value: null }
-  ];
-  writeChangesWithUndo(changes, 'link ' + code).then(function() {
+  ], 'link ' + code).then(function() {
     closeLinkModal();
-    showToast('Linked ' + (updated.name || code) + ' to Google account.');
-  }).catch(function(err) {
-    alert('Link failed: ' + err.message);
-  });
+    showToast('Linked ' + (updated.name || code) + ' to Google.');
+  }).catch(function(err) { alert('Link failed: ' + err.message); });
 }
 
 /* ============================================================
    TABS
 ============================================================ */
 function switchMainTab(tab) {
-  document.getElementById('tabStudents').classList.toggle('active', tab === 'students');
-  document.getElementById('tabLessons').classList.toggle('active', tab === 'lessons');
-  document.getElementById('viewStudents').classList.toggle('active', tab === 'students');
-  document.getElementById('viewLessons').classList.toggle('active', tab === 'lessons');
-  if (tab === 'lessons') renderLessons();
+  ['students','classwork','homework'].forEach(function(t) {
+    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+    document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
+  });
+  if (tab === 'classwork') {
+    if (activeCode) {
+      const s = studentsMap[activeCode] || {};
+      document.getElementById('classworkFilterText').textContent = 'Showing lessons visible to ' + (s.name || activeCode);
+      document.getElementById('classworkFilter').classList.add('show');
+    } else {
+      document.getElementById('classworkFilter').classList.remove('show');
+    }
+    renderClassworkTree();
+  }
+  if (tab === 'homework') renderHomeworkTree();
+}
+
+function clearClassworkFilter() {
+  activeCode = null;
+  document.getElementById('classworkFilter').classList.remove('show');
+  renderClassworkTree();
 }
 
 /* ============================================================
@@ -635,10 +692,8 @@ function switchMainTab(tab) {
 function generateCode(existing) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code;
-  do {
-    code = 'S';
-    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  } while (existing && existing[code]);
+  do { code = 'S'; for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)]; }
+  while (existing && existing[code]);
   return code;
 }
 
@@ -647,22 +702,18 @@ function renderStudentsList() {
   const query = (document.getElementById('studentSearch').value || '').toLowerCase().trim();
   const codes = Object.keys(studentsMap).filter(function(code) {
     const s = studentsMap[code];
-    const n = (s.name || '').toLowerCase();
-    return !query || n.indexOf(query) !== -1 || code.toLowerCase().indexOf(query) !== -1;
+    return !query || (s.name || '').toLowerCase().indexOf(query) !== -1 || code.toLowerCase().indexOf(query) !== -1;
   });
   document.getElementById('studentsCount').textContent = Object.keys(studentsMap).length;
-  if (!codes.length) {
-    list.innerHTML = '<div class="no-data" style="padding:20px;">No students yet.</div>';
-    return;
-  }
+  if (!codes.length) { list.innerHTML = '<div class="no-data" style="padding:20px;">No students yet.</div>'; return; }
   list.innerHTML = codes.map(function(code) {
     const s = studentsMap[code];
     const meta = studentMeta[code] || {};
     const lastSeen = meta.lastSeen || 0;
-    const ageMs = Date.now() - lastSeen;
+    const age = Date.now() - lastSeen;
     let dotClass = 'off';
-    if (lastSeen && ageMs < 60000) dotClass = 'live';
-    else if (lastSeen && ageMs < 600000) dotClass = 'stale';
+    if (lastSeen && age < 60000) dotClass = 'live';
+    else if (lastSeen && age < 600000) dotClass = 'stale';
     const linked = s.uid ? '🔗' : '⚠️';
     return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(\'' + code + '\')">' +
       '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
@@ -679,6 +730,7 @@ function selectStudent(code) {
   document.getElementById('overviewView').style.display = 'none';
   renderSelectedView();
   attachFeedListener();
+  renderClassworkTree();
 }
 
 function deselectStudent() {
@@ -688,7 +740,7 @@ function deselectStudent() {
   document.getElementById('overviewView').style.display = 'block';
   renderStudentsList();
   renderOverview();
-  updateSelectedClassworkLink();
+  renderClassworkTree();
 }
 
 /* ============================================================
@@ -714,18 +766,15 @@ function renderSelectedView() {
   document.getElementById('stageVis').innerHTML = STAGE_LIST.map(function(st) {
     const isDone = meta.done && meta.done[st.id];
     const isCurrent = (meta.stage || 1) === st.id;
-    const cls = 'stage-chip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '');
-    return '<div class="' + cls + '">' + st.id + '. ' + st.label + '</div>';
+    return '<div class="stage-chip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '') + '">' + st.id + '. ' + st.label + '</div>';
   }).join('');
 
   document.getElementById('controlGrid').innerHTML = STAGE_LIST.map(function(st) {
     const isCurrent = (meta.stage || 1) === st.id;
-    return '<button class="ctrl-btn ' + (isCurrent ? 'current' : '') + '" onclick="sendGoto(' + st.id + ')">' +
-      '<span class="num">' + st.id + '</span>' + st.label + '</button>';
+    return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" onclick="sendGoto(' + st.id + ')"><span class="num">' + st.id + '</span>' + st.label + '</button>';
   }).join('');
 
   renderStudentHomework();
-  updateSelectedClassworkLink();
 }
 
 function attachFeedListener() {
@@ -761,35 +810,25 @@ function attachFeedListener() {
 
 function sendGoto(stage) {
   if (!activeCode) return;
-  fbDb.ref('sessions/' + activeCode + '/command').set({
-    action: 'goto', stage: stage, ts: Date.now()
-  }).then(function() { showToast('Sent: go to stage ' + stage); })
+  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'goto', stage: stage, ts: Date.now() })
+    .then(function() { showToast('Sent: go to stage ' + stage); })
     .catch(function(err) { alert('Command failed: ' + err.message); });
 }
 
 function sendReset() {
   if (!activeCode) return;
   if (!confirm('Reset all progress for this student? You can undo this.')) return;
-  fbDb.ref('sessions/' + activeCode + '/command').set({
-    action: 'reset', ts: Date.now()
-  }).then(function() { showToast('Reset command sent'); })
+  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'reset', ts: Date.now() })
+    .then(function() { showToast('Reset command sent'); })
     .catch(function(err) { alert('Reset failed: ' + err.message); });
 }
 
 function renderStudentHomework() {
   const list = document.getElementById('studentHomeworkList');
   if (!list || !activeCode) return;
-  const assigned = Object.keys(curriculum || {}).map(function(id) {
-    return { id: id, lesson: curriculum[id] || {} };
-  }).filter(function(row) {
-    return Array.isArray(row.lesson.assignedTo) &&
-      row.lesson.assignedTo.indexOf(activeCode) !== -1 &&
-      row.lesson.homework;
-  });
-  if (!assigned.length) {
-    list.innerHTML = 'No homework assigned to this student.';
-    return;
-  }
+  const assigned = Object.keys(curriculum || {}).map(function(id) { return { id: id, lesson: curriculum[id] || {} }; })
+    .filter(function(row) { return Array.isArray(row.lesson.assignedTo) && row.lesson.assignedTo.indexOf(activeCode) !== -1 && row.lesson.homework; });
+  if (!assigned.length) { list.innerHTML = 'No homework assigned to this student.'; return; }
   const progress = (studentMeta[activeCode] || {}).homework || {};
   list.innerHTML = assigned.map(function(row) {
     const lesson = row.lesson;
@@ -806,18 +845,13 @@ function renderStudentHomework() {
   }).join('');
 }
 
-function updateSelectedClassworkLink() {
-  const link = document.getElementById('selectedClassworkLink');
-  if (!link) return;
-  if (!activeCode || !studentsMap[activeCode]) { link.style.display = 'none'; return; }
-  const lessonOne = curriculum.lesson_1 || curriculum[Object.keys(curriculum)[0]] || {};
-  const base = lessonOne.customUrl ||
-    (String((studentsMap[activeCode].name || '').toLowerCase()).indexOf('gaziz') !== -1 ? 'lesson_gaziz.html' : 'lesson.html');
-  const url = new URL(base, window.location.href);
-  url.searchParams.set('code', activeCode);
-  url.searchParams.set('teacher', '1');
-  link.href = url.href;
-  link.style.display = 'inline-flex';
+function openStudentClasswork() {
+  if (!activeCode) return;
+  switchMainTab('classwork');
+}
+function openStudentHomework() {
+  if (!activeCode) return;
+  switchMainTab('homework');
 }
 
 /* ============================================================
@@ -828,10 +862,10 @@ function renderOverview() {
   const codes = Object.keys(studentsMap);
   if (!codes.length) {
     el.innerHTML = '<div class="empty-state"><div class="icon">👥</div><h3>No students yet</h3>' +
-      '<p>Click <b>+ Add Student</b> to create your first student code. Students will sign in with Google and you will link their account to the code.</p></div>';
+      '<p>Click <b>+ Add Student</b> to create your first student code.</p></div>';
     return;
   }
-  const totalScore = codes.reduce(function(sum, c) { return sum + ((studentMeta[c] || {}).score || 0); }, 0);
+  const totalScore = codes.reduce(function(s, c) { return s + ((studentMeta[c] || {}).score || 0); }, 0);
   const active = codes.filter(function(c) { return ((studentMeta[c] || {}).lastSeen || 0) > Date.now() - 120000; }).length;
   el.innerHTML =
     '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;">' +
@@ -864,7 +898,7 @@ function openAddStudent() {
 function closeAddStudent() { document.getElementById('addStudentModal').classList.remove('open'); }
 function submitAddStudent() {
   const name = (document.getElementById('newStudentName').value || '').trim();
-  if (!name) { alert('Please enter a student name.'); return; }
+  if (!name) { alert('Please enter a name.'); return; }
   let code = (document.getElementById('newStudentCode').value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (!code) code = generateCode(studentsMap);
   else {
@@ -873,60 +907,43 @@ function submitAddStudent() {
   }
   writeChangesWithUndo([{ path: 'students/' + code, value: { name: name, code: code, createdAt: Date.now() } }], 'add student ' + name)
     .then(function() { closeAddStudent(); selectStudent(code); })
-    .catch(function(err) { alert('Could not add student: ' + err.message); });
+    .catch(function(err) { alert('Failed: ' + err.message); });
 }
 function renameStudent() {
   if (!activeCode) return;
   const s = studentsMap[activeCode] || {};
-  const newName = (prompt('New name for this student:', s.name || '') || '').trim();
+  const newName = (prompt('New name:', s.name || '') || '').trim();
   if (!newName || newName === s.name) return;
   writeChangesWithUndo([{ path: 'students/' + activeCode, value: Object.assign({}, s, { name: newName }) }], 'rename to ' + newName)
-    .catch(function(err) { alert('Rename failed: ' + err.message); });
+    .catch(function(err) { alert('Failed: ' + err.message); });
 }
 function deleteStudent() {
   if (!activeCode) return;
   const s = studentsMap[activeCode] || {};
-  if (!confirm('Delete "' + (s.name || activeCode) + '" and all their progress? You can undo this.')) return;
+  if (!confirm('Delete "' + (s.name || activeCode) + '" and all progress? You can undo.')) return;
   const code = activeCode;
   const changes = [
     { path: 'students/' + code, value: null },
     { path: 'sessions/' + code, value: null }
   ];
   if (s.uid) changes.push({ path: 'studentByUid/' + s.uid, value: null });
-  writeChangesWithUndo(changes, 'delete student ' + code)
+  writeChangesWithUndo(changes, 'delete ' + code)
     .then(function() { deselectStudent(); })
-    .catch(function(err) { alert('Delete failed: ' + err.message); });
-}
-function copyLessonLink() {
-  if (!activeCode) return;
-  const url = new URL('portal.html', window.location.href).href;
-  copyText(url, 'Portal link copied! Send this to your student.');
-}
-function copyText(text, msg) {
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(function() { showToast(msg); }, function() { fallbackCopy(text, msg); });
-  } else fallbackCopy(text, msg);
-}
-function fallbackCopy(text, msg) {
-  const ta = document.createElement('textarea');
-  ta.value = text; document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); showToast(msg); } catch (e) {}
-  ta.remove();
+    .catch(function(err) { alert('Failed: ' + err.message); });
 }
 
 /* ============================================================
    UNDO
 ============================================================ */
 function loadUndoStack() {
-  try { undoStack = JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY) || '[]'); }
-  catch (e) { undoStack = []; }
+  try { undoStack = JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY) || '[]'); } catch (e) { undoStack = []; }
   updateUndoButton();
 }
 function updateUndoButton() {
-  const button = document.getElementById('undoButton');
-  if (!button) return;
-  button.disabled = !undoStack.length;
-  button.title = undoStack.length ? 'Undo: ' + undoStack[undoStack.length - 1].label : 'No changes to undo';
+  const b = document.getElementById('undoButton');
+  if (!b) return;
+  b.disabled = !undoStack.length;
+  b.title = undoStack.length ? 'Undo: ' + undoStack[undoStack.length - 1].label : 'No changes to undo';
 }
 function rememberUndo(action) {
   undoStack.push(action);
@@ -934,18 +951,13 @@ function rememberUndo(action) {
   try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
   updateUndoButton();
 }
-function sameValue(a, b) {
-  return JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b);
-}
+function sameValue(a, b) { return JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b); }
 function writeChangesWithUndo(changes, label) {
   const refs = changes.map(function(c) { return fbDb.ref(c.path); });
   return Promise.all(refs.map(function(r) { return r.once('value'); })).then(function(snaps) {
-    const action = {
-      label: label,
-      changes: changes.map(function(c, i) {
-        return { path: c.path, before: snaps[i].val(), after: c.value === undefined ? null : c.value };
-      })
-    };
+    const action = { label: label, changes: changes.map(function(c, i) {
+      return { path: c.path, before: snaps[i].val(), after: c.value === undefined ? null : c.value };
+    })};
     return Promise.all(action.changes.map(function(c) {
       const r = fbDb.ref(c.path);
       return c.after === null ? r.remove() : r.set(c.after);
@@ -958,10 +970,7 @@ function undoLastChange() {
   const refs = action.changes.map(function(c) { return fbDb.ref(c.path); });
   Promise.all(refs.map(function(r) { return r.once('value'); })).then(function(snaps) {
     const matches = action.changes.every(function(c, i) { return sameValue(snaps[i].val(), c.after); });
-    if (!matches) {
-      alert('The data changed since this action, so undo was skipped to protect newer data.');
-      return;
-    }
+    if (!matches) { alert('Data changed since this action; undo skipped.'); return; }
     return Promise.all(action.changes.map(function(c) {
       const r = fbDb.ref(c.path);
       return c.before === null ? r.remove() : r.set(c.before);
@@ -975,62 +984,175 @@ function undoLastChange() {
 }
 
 /* ============================================================
-   LESSONS
+   CLASSWORK TREE
 ============================================================ */
-function renderLessons() {
-  const container = document.getElementById('lessonsContainer');
+function renderClassworkTree() {
+  const container = document.getElementById('classworkTree');
   if (!container) return;
-  const ids = Object.keys(curriculum || {});
-  if (!ids.length) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">📚</div><h3>No lessons yet</h3>' +
-      '<p>Create your first lesson to make it appear in student portals.</p>' +
-      '<button class="btn primary" onclick="openLessonModal()">+ New Lesson</button></div>';
+  const entries = Object.keys(curriculum).filter(function(id) {
+    const l = curriculum[id] || {};
+    if (l.homework) return false;
+    if (activeCode && Array.isArray(l.assignedTo) && l.assignedTo.length && l.assignedTo.indexOf(activeCode) === -1) return false;
+    return true;
+  });
+  if (!entries.length) {
+    container.innerHTML = '<div class="tree-empty">No lessons yet.<br><br><button class="btn small primary" onclick="openLessonModal()">+ New Lesson</button></div>';
     return;
   }
-  container.innerHTML = '<div class="lessons-list">' + ids.map(function(id) {
+  const grouped = {};
+  entries.forEach(function(id) {
     const l = curriculum[id] || {};
-    const assigned = (l.assignedTo || []).length ? '🔒 Private (' + l.assignedTo.length + ')' : '👥 All students';
-    const badge = l.published === false ? '<span class="badge draft">DRAFT</span>' : '<span class="badge published">PUBLISHED</span>';
-    const hwBtn = l.homework ? '' : '<button class="btn small" onclick="assignStudentHomework(\'' + id + '\')">📌 Assign as homework</button>';
-    return '<div class="lesson-tile">' + badge +
-      '<div class="icon">' + (l.icon || '📘') + '</div>' +
-      '<div class="title">' + escapeHtml(l.title || id) + '</div>' +
-      '<div class="desc">' + escapeHtml(l.description || 'No description.') + '</div>' +
-      '<div class="meta">' + assigned + ' · ' + ((l.stages || STAGE_LIST).length) + ' stages</div>' +
-      '<div class="tile-actions">' +
-      '<button class="btn small" onclick="editLesson(\'' + id + '\')">✏️ Edit</button>' +
-      hwBtn +
-      '<button class="btn small danger" onclick="deleteLesson(\'' + id + '\')">🗑</button>' +
-      '</div></div>';
-  }).join('') + '</div>';
+    const year = l.year || '2026';
+    const month = l.month || 'October';
+    if (!grouped[year]) grouped[year] = {};
+    if (!grouped[year][month]) grouped[year][month] = [];
+    grouped[year][month].push({ id: id, title: l.title || id, private: Array.isArray(l.assignedTo) && l.assignedTo.length });
+  });
+  const years = Object.keys(grouped).sort().reverse();
+  container.innerHTML = years.map(function(year) {
+    const isYOpen = expandedYears[year] !== false;
+    return '<div class="tree-year' + (isYOpen ? ' open' : '') + '" onclick="toggleYear(\'' + year + '\')"><span>📅 ' + year + '</span><span class="arrow">▶</span></div>' +
+      (isYOpen ? Object.keys(grouped[year]).sort().map(function(month) {
+        const isMOpen = expandedMonths[year + '_' + month] !== false;
+        return '<div class="tree-month' + (isMOpen ? ' open' : '') + '" onclick="toggleMonth(\'' + year + '\',\'' + month + '\')"><span>📁 ' + month + '</span><span class="arrow">▶</span></div>' +
+          (isMOpen ? grouped[year][month].map(function(row) {
+            return '<div class="tree-lesson' + (row.id === currentClassworkId ? ' active' : '') + '" onclick="openClassworkLesson(\'' + row.id + '\')">' +
+              (row.private ? '<span class="dot-private" title="Private"></span>' : '') +
+              '<span>' + escapeHtml(row.title) + '</span></div>';
+          }).join('') : '');
+      }).join('') : '');
+  }).join('');
+}
+function toggleYear(year) { expandedYears[year] = expandedYears[year] === false; renderClassworkTree(); }
+function toggleMonth(year, month) { expandedMonths[year + '_' + month] = expandedMonths[year + '_' + month] === false; renderClassworkTree(); }
+
+function openClassworkLesson(id) {
+  currentClassworkId = id;
+  const l = curriculum[id] || {};
+  document.getElementById('classworkTitle').textContent = l.title || id;
+  document.getElementById('classworkBar').style.display = 'flex';
+  document.getElementById('classworkPlaceholder').style.display = 'none';
+  const frame = document.getElementById('classworkFrame');
+  frame.style.display = 'block';
+  const base = l.customUrl || 'lesson.html';
+  const url = new URL(base, window.location.href);
+  url.searchParams.set('lesson', id);
+  url.searchParams.set('teacher', '1');
+  frame.src = url.href;
+  renderClassworkTree();
 }
 
+function openCurrentClassworkInTab() {
+  if (!currentClassworkId) return;
+  const l = curriculum[currentClassworkId] || {};
+  const base = l.customUrl || 'lesson.html';
+  const url = new URL(base, window.location.href);
+  url.searchParams.set('lesson', currentClassworkId);
+  url.searchParams.set('teacher', '1');
+  window.open(url.href, '_blank');
+}
+
+/* ============================================================
+   HOMEWORK TREE
+============================================================ */
+function renderHomeworkTree() {
+  const container = document.getElementById('homeworkTree');
+  if (!container) return;
+  const hwIds = Object.keys(curriculum).filter(function(id) {
+    const l = curriculum[id] || {};
+    if (!l.homework) return false;
+    if (activeCode && Array.isArray(l.assignedTo) && l.assignedTo.indexOf(activeCode) === -1) return false;
+    return true;
+  });
+  if (!hwIds.length) {
+    container.innerHTML = '<div class="tree-empty">No homework assigned yet.<br><br>Open a classwork lesson and assign it as homework, or click + New in the Classwork tab and mark it as homework.</div>';
+    return;
+  }
+  const grouped = {};
+  hwIds.forEach(function(id) {
+    const l = curriculum[id] || {};
+    const assigned = Array.isArray(l.assignedTo) ? l.assignedTo : [];
+    if (!assigned.length) { if (!grouped['Unassigned']) grouped['Unassigned'] = []; grouped['Unassigned'].push({ id: id, title: l.title || id }); return; }
+    assigned.forEach(function(code) {
+      const name = (studentsMap[code] && studentsMap[code].name) || code;
+      if (!grouped[name]) grouped[name] = [];
+      grouped[name].push({ id: id, title: l.title || id });
+    });
+  });
+  const groups = Object.keys(grouped).sort();
+  container.innerHTML = groups.map(function(name) {
+    const key = 'hw_' + name;
+    const open = expandedYears[key] !== false;
+    return '<div class="tree-year' + (open ? ' open' : '') + '" onclick="toggleHwGroup(\'' + name + '\')"><span>👤 ' + escapeHtml(name) + '</span><span class="arrow">▶</span></div>' +
+      (open ? grouped[name].map(function(row) {
+        return '<div class="tree-lesson' + (row.id === currentHomeworkId ? ' active' : '') + '" onclick="openHomework(\'' + row.id + '\')"><span>' + escapeHtml(row.title) + '</span></div>';
+      }).join('') : '');
+  }).join('');
+}
+function toggleHwGroup(name) { const k = 'hw_' + name; expandedYears[k] = expandedYears[k] === false; renderHomeworkTree(); }
+
+function openHomework(id) {
+  currentHomeworkId = id;
+  const l = curriculum[id] || {};
+  document.getElementById('homeworkTitle').textContent = l.title || id;
+  document.getElementById('homeworkBar').style.display = 'flex';
+  document.getElementById('homeworkPlaceholder').style.display = 'none';
+  const frame = document.getElementById('homeworkFrame');
+  frame.style.display = 'block';
+  const base = l.customUrl || 'homework.html';
+  const url = new URL(base, window.location.href);
+  url.searchParams.set('lesson', id);
+  url.searchParams.set('teacher', '1');
+  if (l.homeworkVariant) url.searchParams.set('variant', l.homeworkVariant);
+  frame.src = url.href;
+  renderHomeworkTree();
+}
+
+function openCurrentHomeworkInTab() {
+  if (!currentHomeworkId) return;
+  const l = curriculum[currentHomeworkId] || {};
+  const base = l.customUrl || 'homework.html';
+  const url = new URL(base, window.location.href);
+  url.searchParams.set('lesson', currentHomeworkId);
+  url.searchParams.set('teacher', '1');
+  if (l.homeworkVariant) url.searchParams.set('variant', l.homeworkVariant);
+  window.open(url.href, '_blank');
+}
+
+/* ============================================================
+   LESSON MODAL
+============================================================ */
 function openLessonModal(id) {
   editingLessonId = id || null;
   const l = id ? (curriculum[id] || {}) : {};
-  document.getElementById('lessonModalTitle').textContent = id ? 'Edit lesson' : 'Create a new lesson';
+  document.getElementById('lessonModalTitle').textContent = id ? 'Edit lesson' : 'Create lesson';
   document.getElementById('lessonTitle').value = l.title || '';
   document.getElementById('lessonDesc').value = l.description || '';
   document.getElementById('lessonIcon').value = l.icon || '📘';
   document.getElementById('lessonCustomUrl').value = l.customUrl || '';
-  document.getElementById('lessonHomework').checked = !!l.homework;
   document.getElementById('lessonDue').value = l.homeworkDue || '';
+  document.getElementById('lessonPublished').checked = l.published !== false;
   lessonVisibility = (l.assignedTo && l.assignedTo.length) ? 'some' : 'all';
-  renderStudentPickList(l.assignedTo || []);
+  lessonType = l.homework ? 'homework' : 'classwork';
+  document.getElementById('homeworkVariant').value = l.homeworkVariant || 'gaziz';
   setLessonVisibility(lessonVisibility);
-  document.getElementById('lessonSubmitBtn').textContent = id ? 'Save lesson' : 'Create lesson';
+  setLessonType(lessonType);
+  renderStudentPickList(l.assignedTo || []);
   document.getElementById('lessonModal').classList.add('open');
 }
-function editLesson(id) { openLessonModal(id); }
-function closeLessonModal() {
-  editingLessonId = null;
-  document.getElementById('lessonModal').classList.remove('open');
-}
+function editLessonMeta(id) { openLessonModal(id); }
+function closeLessonModal() { editingLessonId = null; document.getElementById('lessonModal').classList.remove('open'); }
 function setLessonVisibility(vis) {
   lessonVisibility = vis;
   document.getElementById('visAllBtn').classList.toggle('primary', vis === 'all');
   document.getElementById('visSomeBtn').classList.toggle('primary', vis === 'some');
   document.getElementById('studentPickList').style.display = vis === 'some' ? 'block' : 'none';
+}
+function setLessonType(type) {
+  lessonType = type;
+  document.getElementById('typeClassworkBtn').classList.toggle('primary', type === 'classwork');
+  document.getElementById('typeHomeworkBtn').classList.toggle('primary', type === 'homework');
+  document.getElementById('homeworkExtras').style.display = type === 'homework' ? 'block' : 'none';
 }
 function renderStudentPickList(selected) {
   const list = document.getElementById('studentPickList');
@@ -1051,37 +1173,35 @@ function submitLesson() {
     description: (document.getElementById('lessonDesc').value || '').trim(),
     icon: (document.getElementById('lessonIcon').value || '📘').trim() || '📘',
     customUrl: (document.getElementById('lessonCustomUrl').value || '').trim(),
-    homework: document.getElementById('lessonHomework').checked,
-    homeworkDue: (document.getElementById('lessonDue').value || '').trim(),
+    homework: lessonType === 'homework',
+    homeworkDue: lessonType === 'homework' ? (document.getElementById('lessonDue').value || '').trim() : '',
+    homeworkVariant: lessonType === 'homework' ? document.getElementById('homeworkVariant').value : '',
     assignedTo: assignedTo,
     stages: (curriculum[id] && curriculum[id].stages) || STAGE_LIST,
-    published: true,
+    published: document.getElementById('lessonPublished').checked,
+    year: (curriculum[id] && curriculum[id].year) || String(new Date().getFullYear()),
+    month: (curriculum[id] && curriculum[id].month) || new Date().toLocaleString('en', { month: 'long' }),
     updatedAt: Date.now()
   };
   if (!editingLessonId) payload.order = Date.now();
   writeChangesWithUndo([{ path: 'curriculum/' + id, value: payload }], (editingLessonId ? 'edit ' : 'create ') + title)
-    .then(function() { closeLessonModal(); showToast(editingLessonId ? 'Lesson saved' : 'Lesson created'); })
+    .then(function() {
+      closeLessonModal();
+      showToast(editingLessonId ? 'Lesson saved' : 'Lesson created');
+      if (payload.homework) { renderHomeworkTree(); if (currentHomeworkId === id) openHomework(id); }
+      else { renderClassworkTree(); if (currentClassworkId === id) openClassworkLesson(id); }
+    })
     .catch(function(err) { alert('Save failed: ' + err.message); });
 }
 function deleteLesson(id) {
-  if (!confirm('Delete this lesson?')) return;
+  if (!confirm('Delete this lesson? You can undo this.')) return;
   writeChangesWithUndo([{ path: 'curriculum/' + id, value: null }], 'delete lesson ' + id)
+    .then(function() {
+      if (currentClassworkId === id) { currentClassworkId = null; document.getElementById('classworkBar').style.display = 'none'; document.getElementById('classworkFrame').style.display = 'none'; document.getElementById('classworkPlaceholder').style.display = 'grid'; }
+      if (currentHomeworkId === id) { currentHomeworkId = null; document.getElementById('homeworkBar').style.display = 'none'; document.getElementById('homeworkFrame').style.display = 'none'; document.getElementById('homeworkPlaceholder').style.display = 'grid'; }
+      renderClassworkTree(); renderHomeworkTree();
+    })
     .catch(function(err) { alert('Delete failed: ' + err.message); });
-}
-function assignStudentHomework(lessonId) {
-  const l = curriculum[lessonId];
-  if (!l) return;
-  const nameInput = prompt('Which student should receive this homework? Type their code or name:', activeCode || '');
-  if (!nameInput) return;
-  const q = nameInput.trim().toLowerCase();
-  const code = Object.keys(studentsMap).find(function(c) {
-    return c.toLowerCase() === q || (studentsMap[c].name || '').toLowerCase() === q;
-  });
-  if (!code) { alert('Student not found.'); return; }
-  const updated = Object.assign({}, l, { homework: true, assignedTo: [code] });
-  writeChangesWithUndo([{ path: 'curriculum/' + lessonId, value: updated }], 'assign homework to ' + code)
-    .then(function() { showToast('Homework assigned to ' + (studentsMap[code].name || code)); })
-    .catch(function(err) { alert('Assignment failed: ' + err.message); });
 }
 
 /* ============================================================
@@ -1104,9 +1224,7 @@ function showToast(text) {
    BOOT
 ============================================================ */
 initFirebase();
-window.addEventListener('beforeunload', function() {
-  if (activeFeedRef) activeFeedRef.off();
-});
+window.addEventListener('beforeunload', function() { if (activeFeedRef) activeFeedRef.off(); });
 </script>
 </body>
 </html>
