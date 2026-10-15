@@ -295,7 +295,25 @@ function initFirebase(){
       });
       return;
     }
-    startStudentSession(getSessionCode());
+    firebase.auth().onAuthStateChanged(function(user) {
+  if (!user) {
+    document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px;">' +
+      '<h2 style="margin-bottom:14px;">Please sign in</h2>' +
+      '<p style="color:var(--ink-soft);margin-bottom:22px;">Open the <a href="portal.html" style="color:var(--accent);font-weight:700;">student portal</a> to sign in with Google, then come back.</p>' +
+      '</div>';
+    return;
+  }
+  const code = getSessionCode();
+  if (!code) { document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px;"><h2>No lesson selected</h2><p style="color:var(--ink-soft);">Please open this lesson from your portal.</p></div>'; return; }
+  firebase.database().ref('students/' + code).once('value').then(function(snap) {
+    const s = snap.val();
+    if (!s || s.uid !== user.uid) {
+      document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px;"><h2>Access denied</h2><p style="color:var(--ink-soft);">Your account is not linked to this student code. Ask your teacher to link it.</p></div>';
+      return;
+    }
+    startStudentSession(code);
+  });
+});
   }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
 }
 function startStudentSession(code){
