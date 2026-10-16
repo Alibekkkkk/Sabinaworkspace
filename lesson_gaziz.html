@@ -123,6 +123,10 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .fc-modal-nav button{background:transparent;border:none;cursor:pointer;font-size:15px;font-weight:700;color:var(--ink-soft);padding:8px 14px;border-radius:8px;font-family:inherit}
 .fc-modal-nav .counter{font-size:14px;color:var(--ink-soft);font-weight:700}
 .quiz-progress{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:6px}
+.quiz-hint-row{margin:6px 0 10px}
+.quiz-hint-btn{background:var(--panel);border:1px dashed var(--border);border-radius:8px;padding:7px 16px;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+.quiz-hint-btn:hover{border-color:var(--accent);color:var(--accent);border-style:solid}
+.quiz-context-ru{font-size:14px;color:var(--primary);font-weight:700;margin-bottom:10px;padding:8px 12px;background:var(--bg);border-radius:8px;text-align:left}
 .quiz-context{font-size:13px;color:var(--accent);font-weight:600;margin-bottom:10px;font-style:italic;text-align:left}
 .quiz-question{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:14px;text-align:left}
 .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
@@ -575,6 +579,7 @@ let quizCurrentIdx=0;
 let quizRoundWrongs=0;
 let quizAnswers={};
 let quizOptionsCache={};
+let quizHintShown=false;
 let practiceMode=false;
 let practiceQueue=[];
 let practiceIdx=0;
@@ -613,6 +618,8 @@ function shouldShowPractice(){
 function renderStage1(){
   loadVocabStateLocal();
   const main=document.getElementById('main');
+  if(!main)return;
+  main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
   const counts=getVocabCounts();
   const showPractice=shouldShowPractice();
@@ -626,7 +633,7 @@ function renderStage1(){
   '</div><div class="flash-grid" id="flashGrid"></div>';
   main.appendChild(v);main.appendChild(stageFooter(null,2));
   renderFlashcards();
-  if(fbConnected&&!vocabCloudLoaded){vocabCloudLoaded=true;loadVocabStateCloud().then(function(){renderStage1()})}
+  if(fbConnected&&!vocabCloudLoaded){vocabCloudLoaded=true;loadVocabStateCloud().then(function(){renderStage()})}
 }
 function setFilter(f){s1Filter=f;renderStage1()}
 
@@ -660,6 +667,7 @@ function openQuiz(idx){
 function openQuizWord(word){
   quizWord=word;
   quizOptionsCache={};
+  quizHintShown=false;
   const w=VOCAB.find(function(x){return x.en===word});if(!w)return;
   quizMeanings=w.meanings.slice();
   quizCurrentIdx=0;
@@ -704,7 +712,11 @@ function renderQuizModal(){
   const q=buildQuizOptions(quizWord,quizCurrentIdx);
   const answered=quizAnswers[quizCurrentIdx];
   let html='<div class="quiz-progress">'+(practiceMode?'Practice · ':'')+'Meaning '+(quizCurrentIdx+1)+' of '+w.meanings.length+'</div>';
-  html+='<div class="quiz-context">'+escapeHtml(meaning.context)+'</div>';
+  html+='<div class="quiz-hint-row"><button class="quiz-hint-btn" onclick="toggleQuizHint()">'+(quizHintShown?'🙈 Hide hint':'💡 Show hint')+'</button></div>';
+  if(quizHintShown){
+    html+='<div class="quiz-context">'+escapeHtml(meaning.context)+'</div>';
+    html+='<div class="quiz-context-ru">🇷🇺 '+escapeHtml(meaning.ru)+'</div>';
+  }
   html+='<div class="quiz-question">Choose the correct translation:</div>';
   html+='<div class="quiz-options">';
   q.options.forEach(function(opt){
@@ -762,10 +774,11 @@ function answerQuiz(btn){
 function quizNext(){
   if(!quizAnswers[quizCurrentIdx])return;
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
-  if(quizCurrentIdx<w.meanings.length-1){quizCurrentIdx++;renderQuizModal()}
+  if(quizCurrentIdx<w.meanings.length-1){quizCurrentIdx++;quizHintShown=false;renderQuizModal()}
   else{finalizeRound()}
 }
-function quizPrev(){if(quizCurrentIdx>0){quizCurrentIdx--;renderQuizModal()}}
+function quizPrev(){if(quizCurrentIdx>0){quizCurrentIdx--;quizHintShown=false;renderQuizModal()}}
+function toggleQuizHint(){quizHintShown=!quizHintShown;renderQuizModal()}
 
 function finalizeRound(){
   if(!quizWord)return;
@@ -811,17 +824,25 @@ function showPracticeSummary(){
 function restartPractice(){practiceMode=false;practiceQueue=[];document.getElementById('fcModal').classList.remove('open');setTimeout(function(){startPractice()},200)}
 
 function startPractice(){
-  const toPractice=VOCAB.filter(function(w){
-    const st=getWordStatus(w.en);
-    if(st==='practice')return true;
-    if(st==='learning'&&vocabState[w.en])return true;
-    return false;
-  });
-  if(!toPractice.length){alert('Nothing to practise yet. Open some flashcards first!');return}
-  practiceMode=true;
-  practiceQueue=shuffle(toPractice);
-  practiceIdx=0;
-  openQuizWord(practiceQueue[0]);
+  try{
+    const toPractice=VOCAB.filter(function(w){
+      const st=getWordStatus(w.en);
+      if(st==='practice')return true;
+      if(st==='learning'&&vocabState[w.en])return true;
+      return false;
+    });
+    if(!toPractice.length){
+      showToast('Nothing to practise yet — open some flashcards first!');
+      return;
+    }
+    practiceMode=true;
+    practiceQueue=shuffle(toPractice);
+    practiceIdx=0;
+    openQuizWord(practiceQueue[0]);
+  }catch(err){
+    console.error('startPractice error:',err);
+    showToast('Error: '+err.message);
+  }
 }
 
 function quizSpeak(){if(quizWord)speak(quizWord)}
