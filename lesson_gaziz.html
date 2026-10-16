@@ -366,33 +366,87 @@ let ukVoice=null;
 function pickUKVoice(){if(!('speechSynthesis' in window))return null;const v=window.speechSynthesis.getVoices();return v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang&&x.lang.toLowerCase().startsWith('en-gb'))||v.find(x=>x.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(x.name))||null}
 if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()}}
 function speak(text){if(!soundOn)return;if(!('speechSynthesis' in window))return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=.9;u.pitch=1;if(ukVoice)u.voice=ukVoice;window.speechSynthesis.speak(u)}catch(e){}}
-let ttsState='idle',ttsUtterId=0;
+let ttsState='idle',ttsUtterId=0,ttsFullText='',ttsCharStart=0;
+
 function speakLong(text){
-  if(!soundOn)return;
+  if(typeof soundOn!=='undefined'&&!soundOn)return;
   if(!('speechSynthesis' in window))return;
   try{
     window.speechSynthesis.cancel();
     ttsUtterId++;
     const myId=ttsUtterId;
-    const clean=String(text).replace(/\s+/g,' ').trim();
-    const u=new SpeechSynthesisUtterance(clean);
+    const raw=text!==undefined?text:document.getElementById('passageBody').innerText;
+    ttsFullText=String(raw).replace(/\s+/g,' ').trim();
+    ttsCharStart=0;
+    const u=new SpeechSynthesisUtterance(ttsFullText);
     u.lang='en-GB';u.rate=.9;u.pitch=1;
-    if(ukVoice)u.voice=ukVoice;
-    u.onend=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
+    if(typeof ukVoice!=='undefined'&&ukVoice)u.voice=ukVoice;
+    u.onboundary=function(e){if(ttsUtterId===myId&&typeof e.charIndex==='number')ttsCharStart=e.charIndex};
+    u.onend=function(){if(ttsUtterId===myId){ttsState='idle';ttsCharStart=0;updateTTSButtons()}};
     u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
     window.speechSynthesis.speak(u);
     ttsState='playing';
     updateTTSButtons();
   }catch(e){}
 }
-function pauseTTS(){if(!('speechSynthesis' in window))return;if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){window.speechSynthesis.pause();ttsState='paused';updateTTSButtons()}}
-function resumeTTS(){if(!('speechSynthesis' in window))return;if(window.speechSynthesis.paused){window.speechSynthesis.resume();ttsState='playing';updateTTSButtons()}}
-function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;window.speechSynthesis.cancel();ttsState='idle';updateTTSButtons()}
+function pauseTTS(){
+  if(!('speechSynthesis' in window))return;
+  if(ttsState!=='playing')return;
+  try{window.speechSynthesis.pause()}catch(e){}
+  ttsState='paused';
+  updateTTSButtons();
+}
+function resumeTTS(){
+  if(!('speechSynthesis' in window))return;
+  if(ttsState!=='paused')return;
+  ttsState='playing';
+  updateTTSButtons();
+  try{window.speechSynthesis.resume()}catch(e){}
+  /* Chrome workaround: if native resume didn't actually restart, cancel and re-speak remaining text */
+  setTimeout(function(){
+    if(ttsState!=='playing')return;
+    if(!window.speechSynthesis.speaking||window.speechSynthesis.paused){
+      try{
+        window.speechSynthesis.cancel();
+        ttsUtterId++;
+        const myId=ttsUtterId;
+        const baseOffset=ttsCharStart;
+        const remaining=ttsFullText.substring(Math.max(0,baseOffset)).replace(/^\s+/,'');
+        if(!remaining){ttsState='idle';updateTTSButtons();return}
+        const u=new SpeechSynthesisUtterance(remaining);
+        u.lang='en-GB';u.rate=.9;u.pitch=1;
+        if(typeof ukVoice!=='undefined'&&ukVoice)u.voice=ukVoice;
+        u.onboundary=function(e){if(ttsUtterId===myId&&typeof e.charIndex==='number')ttsCharStart=baseOffset+e.charIndex};
+        u.onend=function(){if(ttsUtterId===myId){ttsState='idle';ttsCharStart=0;updateTTSButtons()}};
+        u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
+        window.speechSynthesis.speak(u);
+      }catch(e){}
+    }
+  },200);
+}
+function stopTTS(){
+  if(!('speechSynthesis' in window))return;
+  ttsUtterId++;
+  try{window.speechSynthesis.cancel()}catch(e){}
+  ttsState='idle';
+  ttsCharStart=0;
+  updateTTSButtons();
+}
 function updateTTSButtons(){
-  const p=document.getElementById('ttsPlay');if(p)p.style.display=ttsState==='playing'?'none':'';
-  const pa=document.getElementById('ttsPause');if(pa)pa.style.display=ttsState==='playing'?'':'none';
-  const r=document.getElementById('ttsResume');if(r)r.style.display=ttsState==='paused'?'':'none';
-  const s=document.getElementById('ttsStop');if(s)s.style.display=ttsState!=='idle'?'':'none';
+  const p=document.getElementById('ttsPlay');
+  const pa=document.getElementById('ttsPause');
+  const r=document.getElementById('ttsResume');
+  const s=document.getElementById('ttsStop');
+  const setVis=function(el,on){
+    if(!el)return;
+    /* Use the .btn class's display for lesson_gaziz (inline-flex); homework buttons default to inline-block.
+       Setting 'inline-block' works fine for both since it's the button default. */
+    el.style.display=on?'inline-flex':'none';
+  };
+  setVis(p,ttsState==='idle');
+  setVis(pa,ttsState==='playing');
+  setVis(r,ttsState==='paused');
+  setVis(s,ttsState!=='idle');
 }
 
 /* ================== SYNC ================== */
