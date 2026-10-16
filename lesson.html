@@ -559,6 +559,7 @@ let quizRoundWrongs=0;
 let quizAnswers={};
 let quizOptionsCache={};
 let quizHintShown=false;
+let quizRoundFinalized=false;
 let practiceMode=false;
 let practiceQueue=[];
 let practiceIdx=0;
@@ -648,6 +649,7 @@ function openQuizWord(word){
     quizWord=word;
     quizOptionsCache={};
     quizHintShown=false;
+    quizRoundFinalized=false;
     const w=VOCAB.find(function(x){return x.en===word});
     if(!w){console.warn('Word not found:',word);return}
     quizMeanings=w.meanings.slice();
@@ -658,10 +660,6 @@ function openQuizWord(word){
     const modal=document.getElementById('fcModal');
     if(!modal){alert('Modal element missing from page');return}
     modal.classList.add('open');
-    modal.style.display='flex';
-    modal.style.position='fixed';
-    modal.style.inset='0';
-    modal.style.zIndex='99999';
     try{sFlip()}catch(e){}
     try{broadcastAction('flashcard_open',word)}catch(e){}
   }catch(err){
@@ -670,9 +668,18 @@ function openQuizWord(word){
   }
 }
 function closeFCModal(){
-  document.getElementById('fcModal').classList.remove('open');
+  const modal=document.getElementById('fcModal');
+  if(modal){
+    modal.classList.remove('open');
+    /* clear any leftover inline styles from older versions */
+    modal.style.display='';
+    modal.style.position='';
+    modal.style.inset='';
+    modal.style.zIndex='';
+  }
   practiceMode=false;
   practiceQueue=[];
+  practiceIdx=0;
   renderStage1();
 }
 
@@ -772,6 +779,8 @@ function toggleQuizHint(){quizHintShown=!quizHintShown;renderQuizModal()}
 
 function finalizeRound(){
   if(!quizWord)return;
+  if(quizRoundFinalized)return;
+  quizRoundFinalized=true;
   const s=vocabState[quizWord];if(!s)return;
   if(quizRoundWrongs===0){
     s.perfectStreak=(s.perfectStreak||0)+1;
@@ -789,12 +798,43 @@ function finalizeRound(){
 
   if(practiceMode){
     practiceIdx++;
-    if(practiceIdx<practiceQueue.length){setTimeout(function(){openQuizWord(practiceQueue[practiceIdx])},400);return}
-    setTimeout(showPracticeSummary,400);
+    if(practiceIdx<practiceQueue.length){
+      setTimeout(function(){openQuizWord(practiceQueue[practiceIdx].en)},400);
+      return;
+    }
+    /* Queue finished — check if anything still needs practice and cycle again */
+    setTimeout(continuePracticeQueue,400);
     return;
   }
-  /* Not in practice mode: automatically load the next card in the current filter */
+  /* Not in practice mode: auto-advance to the next card in the current filter */
   setTimeout(advanceToNextCard,400);
+}
+
+function advanceToNextCard(){
+  if(!s1VisibleList||!s1VisibleList.length){closeFCModal();return}
+  if(s1CurrentIdx<s1VisibleList.length-1){
+    s1CurrentIdx++;
+    openQuizWord(s1VisibleList[s1CurrentIdx].en);
+  }else{
+    closeFCModal();
+  }
+}
+
+function continuePracticeQueue(){
+  const stillNeeds=VOCAB.filter(function(w){
+    const st=getWordStatus(w.en);
+    if(st==='practice')return true;
+    if(st==='learning'&&vocabState[w.en])return true;
+    return false;
+  });
+  if(!stillNeeds.length){
+    showPracticeSummary();
+    return;
+  }
+  /* Cycle: reshuffle the remaining cards and keep going */
+  practiceQueue=shuffle(stillNeeds);
+  practiceIdx=0;
+  openQuizWord(practiceQueue[0].en);
 }
 function advanceToNextCard(){
   if(!s1VisibleList||!s1VisibleList.length){closeFCModal();return}
