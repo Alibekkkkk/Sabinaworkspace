@@ -1,596 +1,777 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sustainable Cities · Homework</title>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
-:root{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--soft:#a0a6b0;--accent:#ff8a5b;--accent-dark:#ee5a24;--good:#4caf7d;--bad:#ef5468;--border:#333944;--shadow:0 12px 30px rgba(0,0,0,.18)}
-html.light{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--soft:#6c757d;--accent:#ee5a24;--accent-dark:#d94a15;--good:#2e9e5b;--bad:#dc3545;--border:#e0dbd0;--shadow:0 8px 24px rgba(0,0,0,.08)}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:18px 'EB Garamond','Times New Roman',serif;transition:background .2s,color .2s}
-.wrap{width:min(1100px,calc(100% - 32px));margin:22px auto 56px}
-.top{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:12px 16px;box-shadow:var(--shadow);position:sticky;top:10px;z-index:50}
-.mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:grid;place-items:center}
-.brand{font-size:22px;font-weight:800}
-.sub,.eyebrow{font:12px 'Fira Code',monospace;letter-spacing:1.3px;text-transform:uppercase;color:var(--soft)}
-.spacer{flex:1}
-.top button,.top a{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:9px;padding:8px 12px;text-decoration:none;font:700 15px 'EB Garamond','Times New Roman',serif;cursor:pointer}
-.hero{padding:32px 4px 20px;display:grid;grid-template-columns:1.4fr .8fr;gap:24px;align-items:center}
-.eyebrow{color:var(--accent)}
-h1{font-size:clamp(38px,6vw,62px);line-height:.98;margin:10px 0 14px}
-.hero p{font-size:20px;line-height:1.5;color:var(--soft);max-width:680px;margin:0}
-.art{min-height:150px;background:var(--panel);border:1px solid var(--border);border-radius:18px;display:grid;place-items:center;font-size:54px;box-shadow:var(--shadow)}
-.progress,.panel,.question,.summary{background:var(--panel);border:1px solid var(--border);border-radius:15px;box-shadow:var(--shadow)}
-.progress{display:flex;align-items:center;gap:12px;padding:12px 16px;color:var(--soft);position:sticky;top:74px;z-index:40}
-.rail{height:8px;background:var(--bg);border-radius:10px;overflow:hidden;flex:1}.fill{height:100%;width:0;background:var(--accent);transition:width .25s}
-.panel{padding:22px;margin-top:18px}.panel h2{font-size:28px;margin:0 0 14px}
-.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.word{padding:12px 14px;border-radius:11px;background:var(--paper);border:1px solid var(--border);display:flex;align-items:center;gap:12px;cursor:pointer;transition:.15s}
-.word:hover{border-color:var(--accent);transform:translateY(-2px)}
-.word .w-emoji{font-size:26px}.word b{display:block;color:var(--accent);font-size:18px}.word span{color:var(--soft);font-size:14px}
-.passage{font-size:21px;line-height:1.8}.passage h2{color:var(--accent)}.passage p{margin:0 0 14px}
-.kw{display:inline;background:rgba(238,90,36,.14);color:var(--accent);font-weight:700;border:0;padding:1px 5px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:inherit;border-bottom:2px dotted var(--accent);transition:.15s}
-.kw:hover{background:var(--accent);color:#fff}
-.question{padding:22px 24px;margin-top:16px}
-.qhead{display:inline-block;padding:6px 14px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-radius:20px;font:700 13px 'Fira Code',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;box-shadow:0 4px 10px rgba(238,90,36,.25)}
-.prompt{font-size:22px;line-height:1.4;margin-bottom:14px;font-weight:600}
-.options{display:flex;flex-wrap:wrap;gap:9px}
-.pick,.chip{cursor:pointer;border:1px solid var(--border);border-radius:10px;padding:11px 16px;background:var(--paper);color:var(--ink);font:700 17px 'EB Garamond','Times New Roman',serif;transition:.15s}
-.pick:hover:not(:disabled),.chip:hover:not(:disabled){border-color:var(--accent)}
-.pick.selected{background:var(--accent);color:#fff;border-color:var(--accent-dark)}
-.pick.correct,.chip.correct{background:#e5f1e7;border-color:#70a980;color:#2c6653}
-.pick.wrong,.chip.wrong{background:#fce4dc;border-color:#d9856e;color:#a94f38}
-.row{display:flex;gap:9px;flex-wrap:wrap}
-.answer{flex:1;min-width:230px;padding:12px 14px;background:var(--paper);color:var(--ink);border:1px solid var(--border);border-radius:10px;font:18px 'EB Garamond','Times New Roman',serif}
-.answer:focus{outline:2px solid var(--accent);border-color:var(--accent)}
-.answer.correct{border-color:#70a980;background:#e5f1e7}
-.answer.wrong{border-color:#d9856e;background:#fce4dc}
-.answer:disabled{opacity:.85}
-.orderbank,.orderline{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.orderline{min-height:44px;border:1px dashed var(--border);padding:8px;border-radius:10px;align-items:center}
-.feedback{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:16px;line-height:1.55;display:none}
-.feedback.show{display:block}
-.feedback.ok{background:#e5f1e7;border-left:4px solid var(--good);color:#2c6653}
-.feedback.no{background:#fce4dc;border-left:4px solid var(--bad);color:#a94f38}
-.feedback .en{display:block;font-weight:600;margin-bottom:4px}
-.feedback .ru{display:block;font-style:italic;color:var(--soft);font-size:15px}
-.summary{text-align:center;margin-top:18px;padding:20px;color:var(--good);font-size:22px;display:none}
-.summary.show{display:block}
-.finish-bar{margin-top:28px;padding:22px;background:var(--panel);border:2px dashed var(--accent);border-radius:16px;text-align:center;display:none}
-.finish-bar.show{display:block}
-.finish-bar .count{font-size:16px;color:var(--soft);margin-bottom:12px}
-.finish-btn{padding:16px 40px;font-size:19px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:0;border-radius:12px;cursor:pointer;box-shadow:0 6px 0 var(--accent-dark);font-family:inherit;transition:.15s}
-.finish-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 0 var(--accent-dark)}
-.finish-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:0 6px 0 #999}
-.kw-backdrop{position:fixed;inset:0;background:rgba(20,25,40,.75);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
-.kw-backdrop.open{display:flex}
-.kw-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:32px 28px 24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);position:relative;animation:kwPop .25s cubic-bezier(.34,1.56,.64,1)}
-@keyframes kwPop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-.kw-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--paper);color:var(--soft);font-size:20px;cursor:pointer}
-.kw-close:hover{color:var(--bad);border-color:var(--bad)}
-.kw-emoji{font-size:80px;line-height:1;margin-bottom:14px;position:relative;display:inline-block}
-.kw-edit-btn{position:absolute;bottom:-8px;right:-8px;width:32px;height:32px;border-radius:50%;border:2px solid var(--panel);background:var(--accent);color:#fff;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.3)}
-.kw-edit-btn.show{display:flex}
-.kw-word{font-size:32px;font-weight:800;color:var(--accent);margin-bottom:6px}
-.kw-ru{font-size:20px;color:var(--soft);margin-bottom:20px;font-style:italic}
-.kw-listen{padding:12px 24px;font-size:16px;font-weight:700;background:var(--accent);color:#fff;border:0;border-radius:10px;cursor:pointer;font-family:inherit}
-.kw-listen:hover{background:var(--accent-dark)}
-@media(max-width:700px){.wrap{width:calc(100% - 18px);margin:10px auto 32px}.top{flex-wrap:wrap}.hero{grid-template-columns:1fr;padding-top:24px}.art{min-height:90px}.panel{padding:16px}.passage{font-size:19px}.answer{min-width:100%}.progress{top:auto;position:static}}
+:root{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
+html.dark{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;transition:background .2s,color .2s}
+.hw-top{display:flex;align-items:center;gap:14px;background:var(--panel);border-bottom:1px solid var(--border);padding:12px 22px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm)}
+.hw-top .mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0}
+.hw-top .title-block{display:flex;flex-direction:column}
+.hw-top .title-block .brand{font-size:20px;font-weight:800;line-height:1.1}
+.hw-top .title-block .sub{font:11px 'Fira Code',monospace;color:var(--ink-soft);letter-spacing:1.3px;text-transform:uppercase;margin-top:2px}
+.hw-top .spacer{flex:1}
+.hw-top .tts-group{display:flex;gap:6px;flex-wrap:wrap}
+.hw-top button,.hw-top a{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:9px;padding:8px 12px;text-decoration:none;font:700 15px 'EB Garamond','Times New Roman',serif;cursor:pointer;transition:all .15s;font-family:inherit}
+.hw-top button:hover,.hw-top a:hover{border-color:var(--accent);color:var(--accent)}
+.hw-top .tts-group button.playing{background:var(--accent);color:#fff;border-color:var(--accent)}
+.wrap{max-width:1500px;margin:20px auto 60px;padding:0 22px}
+.hero{padding:26px 4px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.hero .eyebrow{font:12px 'Fira Code',monospace;letter-spacing:1.3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.hero h1{font-size:clamp(30px,4.5vw,48px);line-height:1.05;margin-bottom:8px;font-weight:800}
+.hero .intro{font-size:18px;line-height:1.55;color:var(--ink-soft);max-width:720px;margin:0}
+.hero .intro .ru{display:block;margin-top:8px;font-style:italic;font-size:15px;color:var(--ink-soft);opacity:.85}
+.progress-shell{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.progress-shell .label{font-size:14px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+.progress-track{flex:1;height:8px;border-radius:99px;background:var(--bg);overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:99px;transition:width .35s}
+.progress-pct{font:700 14px 'Fira Code',monospace;color:var(--accent);white-space:nowrap}
+.hw-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px;align-items:start}
+@media(max-width:980px){.hw-split{grid-template-columns:1fr}}
+.reading-pane{position:sticky;top:80px}
+.questions-pane{min-width:0}
+.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.9;color:var(--ink);box-shadow:var(--shadow-sm);max-height:calc(100vh - 120px);overflow-y:auto}
+.passage h2{font-size:26px;color:var(--accent);margin-bottom:6px;font-weight:800;line-height:1.2}
+.passage .subtitle{font-size:14px;color:var(--ink-soft);font-style:italic;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px}
+.passage p{margin-bottom:16px;text-align:justify}
+.passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
+.v-word{background:rgba(238,90,36,.12);color:var(--accent-dark);font-weight:700;cursor:pointer;padding:1px 5px;border-radius:5px;border-bottom:2px dotted var(--accent);font-family:inherit;font-size:inherit}
+.v-word:hover{background:var(--accent);color:#fff}
+.v-word.learned{background:var(--success-soft);color:var(--success);border-bottom-color:var(--success)}
+.q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.q-num{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
+.q-prompt{font-size:17px;line-height:1.55;color:var(--ink);font-weight:600;margin-bottom:12px}
+.q-opts{display:flex;gap:8px;flex-wrap:wrap}
+.q-opt{padding:10px 16px;background:var(--bg);border:2px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .15s}
+.q-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.q-opt.correct{background:var(--success-soft);border-color:var(--success);color:var(--success)}
+.q-opt.wrong{background:var(--error-soft);border-color:var(--error);color:var(--error)}
+.q-input-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q-input{flex:1;min-width:200px;padding:11px 14px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond','Times New Roman',serif;font-size:16px;font-weight:700;color:var(--ink);background:var(--bg);outline:none}
+.q-input:focus{border-color:var(--accent);background:var(--panel)}
+.q-input.correct{border-color:var(--success);background:var(--success-soft);color:var(--success)}
+.q-input.wrong{border-color:var(--error);background:var(--error-soft);color:var(--error)}
+.q-textarea{width:100%;min-height:90px;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond','Times New Roman',serif;font-size:16px;line-height:1.5;color:var(--ink);background:var(--bg);outline:none;resize:vertical}
+.q-textarea:focus{border-color:var(--accent);background:var(--panel)}
+.q-textarea.correct{border-color:var(--success);background:var(--success-soft)}
+.q-textarea.wrong{border-color:var(--error);background:var(--error-soft)}
+.q-feedback{margin-top:10px;padding:10px 14px;border-radius:10px;font-size:15px;font-weight:600;display:none}
+.q-feedback.correct{background:var(--success-soft);color:var(--success);display:block;border-left:4px solid var(--success)}
+.q-feedback.wrong{background:var(--error-soft);color:var(--error);display:block;border-left:4px solid var(--error)}
+.q-feedback .exp{display:block;font-weight:500;font-size:14px;color:var(--ink-soft);margin-top:6px;font-style:italic}
+.q-feedback .sample{display:block;font-weight:600;font-size:14px;color:var(--ink);margin-top:8px;padding:8px 12px;background:rgba(0,0,0,.04);border-radius:8px;font-style:italic}
+.tfng-opts{display:flex;gap:8px;flex-wrap:wrap}
+.tfng-opts .q-opt{padding:9px 14px;font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 3px 0 var(--accent-dark)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 0 var(--accent-dark)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--accent-dark)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--border);box-shadow:0 2px 0 var(--border)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn.flag{background:var(--warn);box-shadow:0 3px 0 #c96b00;color:#fff;padding:7px 14px;font-size:14px}
+.btn.flag:hover{background:#e08600}
+.btn.flag.done{background:var(--success);box-shadow:0 3px 0 #1e7e34;opacity:.7}
+.review-btn-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.review-btn-row .hint{font-size:12px;color:var(--ink-soft);font-style:italic}
+.submit-bar{position:sticky;bottom:0;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-top:16px;box-shadow:0 -4px 20px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.submit-bar .hint{font-size:14px;color:var(--ink-soft);font-weight:600}
+.submit-bar .hint b{color:var(--accent)}
+.submit-bar .submit-btn{padding:14px 34px;font-size:17px}
+.submit-bar .submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.result-banner{background:linear-gradient(135deg,rgba(46,158,91,.1),rgba(46,158,91,.03));border:2px dashed var(--success);border-radius:16px;padding:28px 22px;margin-bottom:16px;text-align:center}
+.result-banner .icon{font-size:56px;margin-bottom:10px}
+.result-banner h3{font-size:24px;color:var(--success);margin-bottom:8px;font-weight:800}
+.result-banner .big{font-size:60px;font-weight:800;color:var(--accent);line-height:1;margin:14px 0}
+.result-banner p{font-size:16px;color:var(--ink-soft);line-height:1.6}
+.vocab-backdrop{position:fixed;inset:0;background:rgba(20,25,40,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.vocab-backdrop.open{display:flex}
+.vocab-card{background:var(--panel);border-radius:22px;max-width:640px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg);position:relative;padding:28px 30px 24px;text-align:left}
+.vocab-card .close-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--panel);color:var(--ink);font-size:20px;cursor:pointer;font-family:inherit}
+.vocab-card .close-x:hover{color:var(--error);border-color:var(--error)}
+.vocab-card .head{text-align:center;margin-bottom:18px}
+.vocab-card .head .emoji{font-size:64px;line-height:1;margin-bottom:8px}
+.vocab-card .head .word{font-size:30px;font-weight:800;color:var(--primary)}
+.fc-meaning{padding:14px 16px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);margin-bottom:12px}
+.fc-meaning .context{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
+.fc-meaning .translation{font-size:19px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.fc-meaning .example{font-size:14px;line-height:1.6;color:var(--ink-soft);font-style:italic;padding-left:10px;border-left:2px solid var(--border)}
+.fc-meaning .example b{color:var(--primary);font-style:normal}
+.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+::selection{background:var(--accent);color:#fff}
+@media(max-width:640px){.wrap{padding:0 12px}.passage{padding:20px 22px;font-size:17px;max-height:none}.hw-top{padding:10px 12px;gap:8px}.hw-top .title-block .brand{font-size:17px}.hw-top button,.hw-top a{padding:7px 10px;font-size:13px}}
 </style>
 </head>
 <body>
-<main class="wrap">
-<header class="top"><div class="mark" id="markIcon">🏙️</div><div><div class="brand" id="studentTitle">Homework</div><div class="sub" id="subTitle">Topic · Homework</div></div><span class="spacer"></span><a id="classworkLink" href="lesson.html">← Classwork</a><button onclick="toggleTheme()" id="themeButton">☀️ Light theme</button></header>
-<section class="hero"><div><div class="eyebrow" id="variantLabel">Topic 1</div><h1 id="headline">Homework</h1><p id="intro"></p></div><div class="art" id="heroArt" aria-hidden="true">❄️ → 🌪️ → 🌊</div></section>
-<div class="progress"><span id="progressText">0 / 0 answered</span><div class="rail"><div class="fill" id="progressFill"></div></div><span id="scoreText">(score revealed after submit)</span></div>
-<section class="panel"><h2>Key vocabulary for this homework</h2><p style="color:var(--soft);font-size:14px;margin:-6px 0 14px;">Tap any word to see its picture, Russian translation, and hear British pronunciation.</p><div class="words" id="words"></div></section>
-<section class="panel passage" id="passage"></section>
-<section id="questions"></section>
-<div class="finish-bar" id="finishBar">
-  <div class="count" id="finishCount">Answer all questions to finish</div>
-  <button class="finish-btn" id="finishBtn" onclick="submitAll()" disabled>✓ Finish &amp; Submit</button>
-</div>
-<section class="summary" id="summary"></section>
-</main>
 
-<div class="kw-backdrop" id="kwBackdrop" onclick="if(event.target===this)closeKw()">
-  <div class="kw-card">
-    <button class="kw-close" onclick="closeKw()">×</button>
-    <div class="kw-emoji"><span id="kwEmoji">📖</span><button class="kw-edit-btn" id="kwEditBtn" onclick="editPicture()" title="Set custom picture">✏️</button></div>
-    <div class="kw-word" id="kwWord"></div>
-    <div class="kw-ru" id="kwRu"></div>
-    <button class="kw-listen" onclick="speakCurrentKw()">🔊 Listen</button>
+<div class="hw-top">
+  <div class="mark" id="markIcon">📘</div>
+  <div class="title-block">
+    <div class="brand" id="hwTitle">Homework</div>
+    <div class="sub" id="hwSub">Topic · Homework</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="tts-group">
+    <button id="ttsPlay" onclick="speakLong()">▶️ Listen</button>
+    <button id="ttsPause" style="display:none" onclick="pauseTTS()">⏸ Pause</button>
+    <button id="ttsResume" style="display:none" onclick="resumeTTS()">▶️ Resume</button>
+    <button id="ttsStop" style="display:none" onclick="stopTTS()">⏹ Stop</button>
+  </div>
+  <button onclick="toggleTheme()" id="themeButton">🌙 Theme</button>
+  <a href="portal.html">← Classwork</a>
+</div>
+
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow" id="heroEyebrow">Topic · Homework</div>
+      <h1 id="heroHeadline">Homework</h1>
+      <p class="intro" id="heroIntro"></p>
+    </div>
+  </section>
+
+  <div class="progress-shell">
+    <span class="label">Progress</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-pct" id="progressPct">0%</span>
+    <span class="label" id="progressCount">0 / 0 answered</span>
+  </div>
+
+  <div class="hw-split">
+    <section class="reading-pane">
+      <div class="passage" id="passageBody"></div>
+    </section>
+    <section class="questions-pane" id="questionsHost"></section>
+  </div>
+
+  <div class="submit-bar" id="submitBar">
+    <div class="hint" id="submitHint">Answer every question to unlock submission. <b>0 remaining.</b></div>
+    <button class="btn submit-btn" id="submitBtn" onclick="submitAll()" disabled>✓ Submit homework</button>
+  </div>
+</div>
+
+<div class="vocab-backdrop" id="vocabBackdrop" onclick="if(event.target===this)closeVocab()">
+  <div class="vocab-card">
+    <button class="close-x" onclick="closeVocab()">×</button>
+    <div class="head">
+      <div class="emoji" id="vocabEmoji">📖</div>
+      <div class="word" id="vocabWord"></div>
+    </div>
+    <div id="vocabMeanings"></div>
   </div>
 </div>
 
 <script>
-const firebaseConfig={apiKey:'AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w',authDomain:'sabina-s-workspace.firebaseapp.com',databaseURL:'https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app',projectId:'sabina-s-workspace',storageBucket:'sabina-s-workspace.firebasestorage.app',messagingSenderId:'64645562064',appId:'1:64645562064:web:2c5b5a37b5ab9a685be8d5'};
+/* ================== FIREBASE ================== */
+const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
+let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
+
 const params=new URLSearchParams(location.search);
 const variant=params.get('variant')==='sabina'?'sabina':'gaziz';
 const code=(params.get('code')||'').toUpperCase();
 const homeworkId=params.get('lesson')||('homework_'+variant);
-const homeworkVersion=5;
+const homeworkVersion=6;
 const teacherPreviewRequested=params.get('teacher')==='1';
-const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
-let teacherMode=false,teacherCanEdit=false,fbDb=null,imageRef=null;
-let customImages={};
+const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 
-/* ================= SUSTAINABLE CITIES (Gaziz) ================= */
-const sustainableWords=[
-  ['area','a particular part of a place','район, область','📍'],
-  ['change','something that becomes different','изменение','🔄'],
-  ['plan','an idea for what to do','план','📋'],
-  ['service','work or help provided to people','служба','🛎️'],
-  ['choice','one thing selected from several','выбор','🎯'],
-  ['need','something necessary','потребность','❗'],
-  ['effect','a change caused by an action','эффект','🎯'],
-  ['reason','why something happens','причина','❓'],
-  ['use','the act of doing something with a thing','использование','🔧'],
-  ['save','keep something from being wasted','экономить','💾'],
-  ['spend','use money, time, or energy','тратить','💸'],
-  ['build','make something by putting parts together','строить','🏗️'],
-  ['move','go from one place to another','двигать(ся)','🚶'],
-  ['clean','free from dirt or pollution','чистый','🧼'],
-  ['safe','not likely to cause harm','безопасный','🛡️'],
-  ['crowded','full of many people or things','переполненный','👥'],
-  ['travel','go from one place to another','путешествовать','✈️'],
-  ['waste','use more than needed','отходы','🗑️'],
-  ['recycle','use material again','перерабатывать','♻️'],
-  ['protect','keep someone or something safe','защищать','🛡️'],
-  ['council','a group that governs a town','городской совет','🏛️'],
-  ['market','a place where people buy and sell','рынок','🛒'],
-  ['station','a place where buses or trains stop','станция','🚉'],
-  ['hospital','a place where sick people are treated','больница','🏥'],
-  ['evening','the time after the afternoon','вечер','🌆'],
-  ['route','the path from one place to another','маршрут','🛣️'],
-  ['project','a planned piece of work','проект','📋'],
-  ['budget','the money available for a plan','бюджет','💰'],
-  ['volunteer','a person who works without pay','волонтёр','🙋'],
-  ['rubbish','things people throw away','мусор','🗑️'],
-  ['bin','a container for rubbish','мусорный бак','🗑️'],
-  ['path','a narrow way for walking','дорожка','🛤️'],
-  ['meeting','when people gather to discuss','встреча','🤝'],
-  ['resident','a person who lives somewhere','житель','🏠'],
-  ['population','the people living in a place','население','👥'],
-  ['visitor','a person who comes to a place','посетитель','🧑'],
-  ['traffic','vehicles moving on roads','дорожное движение','🚗'],
-  ['fuel','material used for energy','топливо','⛽'],
-  ['light','brightness from the sun or a lamp','свет','💡'],
-  ['review','look at something again','пересматривать','🔍'],
-  ['popular','liked by many people','популярный','⭐'],
-  ['improve','make better','улучшать','✨'],
-  ['provide','give or make available','предоставлять','🎁'],
-  ['reduce','make or become smaller','уменьшать','📉'],
-  ['energy','power used for heat or light','энергия','⚡'],
-  ['benefit','a good or helpful result','польза','👍'],
-  ['cost','the money needed to buy','стоимость','💰'],
-  ['affect','change or influence','влиять','🔄'],
-  ['result','something that happens because of an action','результат','🎯'],
-  ['issue','a problem people discuss','проблема','❔'],
-  ['solution','an answer to a problem','решение','💡'],
-  ['public','for everyone to use','общественный','🏛️'],
-  ['local','connected with a nearby place','местный','📍'],
-  ['transport','ways of moving people or goods','транспорт','🚌'],
-  ['pollution','harmful material in air or water','загрязнение','💨'],
-  ['environment','the natural world around us','окружающая среда','🌍']
-];
-const sustainableText='<h2>Rivergate makes changes for its residents</h2><p>Rivergate is a growing city beside a wide river. In recent years, the local council has improved public transport. It has provided more buses in the evening, and it has added clear maps at busy stops. These changes have helped people travel to work, school, and the hospital. Last spring, the council opened a new bus station near the market. Residents tested the routes and shared their ideas at a public meeting.</p><p>The city has also worked to reduce pollution. It has planted trees along two busy roads and has created a small park beside the river. In 2023, local volunteers cleaned the riverbank and collected plastic waste. The project had a good result: families have used the park more often since then. Some residents have asked the council to add more bins, because visitors sometimes leave rubbish behind.</p><p>These plans have brought benefits, but they have also cost money. The council spent part of its budget on new buses and street lights last year. It has saved energy by using better lights in public buildings. The changes have affected daily life in different ways. Some people have found it easier to travel, while others still wait a long time at the busiest stops. The council will review the service this autumn and decide what to improve next.</p>';
-const sustainableQuestions=[
-  {type:'choice',prompt:'What has the council provided in the evening?',options:['More buses','Free bicycles','A new train'],answer:'More buses',explain:'The passage says the council has provided more buses.',explain_ru:'В тексте сказано, что совет предоставил больше автобусов.'},
-  {type:'input',prompt:'Complete with a word from the bank: The city has worked to reduce ___.',answers:['pollution'],explain:'Pollution is harmful material in air, water, or land.',explain_ru:'Pollution — это вредные вещества в воздухе, воде или на земле.'},
-  {type:'tf',prompt:'The new bus station opened last spring.',answer:'True',explain:'The passage says it opened last spring.',explain_ru:'В тексте говорится, что станция открылась прошлой весной.'},
-  {type:'select',prompt:'Choose the word meaning "people who live in one area."',options:['community','resource','result','cost'],answer:'community',explain:'A community is the people living in one area.',explain_ru:'Community — это люди, живущие в одном районе.'},
-  {type:'input',prompt:'Use present perfect active: The council ___ (add) clear maps at busy stops.',answers:['has added'],explain:'The change connects to now: has added.',explain_ru:'Изменение связано с настоящим, поэтому has + V3: has added.'},
-  {type:'order',prompt:'Build the past simple active sentence.',words:['Volunteers','cleaned','the','riverbank','in','2023.'],answer:['Volunteers','cleaned','the','riverbank','in','2023.'],explain:'In 2023 is a finished time, so cleaned is past simple.',explain_ru:'In 2023 — завершённое время, поэтому past simple: cleaned.'},
-  {type:'choice',prompt:'Why have families used the park more often?',options:['The riverbank project had a good result','The council closed the park','The buses stopped running'],answer:'The riverbank project had a good result',explain:'The text links the park use to the riverbank project.',explain_ru:'В тексте использование парка связывается с проектом по очистке берега.'},
-  {type:'input',prompt:'Complete: The council has ___ energy with better lights.',answers:['saved'],explain:'Save means to keep something from being wasted.',explain_ru:'Save означает не позволять чему-то тратиться зря.'},
-  {type:'select',prompt:'Choose a word meaning "an answer to a problem."',options:['solution','issue','cost','choice'],answer:'solution',explain:'A solution is an answer to a problem.',explain_ru:'Solution — это решение проблемы.'},
-  {type:'tf',prompt:'The council spent part of its budget on buses last year.',answer:'True',explain:'The passage says it spent part of its budget last year.',explain_ru:'В тексте сказано, что совет потратил часть бюджета в прошлом году.'},
-  {type:'input',prompt:'Use past simple active: Local volunteers ___ (collect) plastic waste in 2023.',answers:['collected'],explain:'In 2023 is a finished time: collected.',explain_ru:'In 2023 — завершённое время: collected.'},
-  {type:'choice',prompt:'What does "affect" mean?',options:['change or influence','give for free','travel by bus'],answer:'change or influence',explain:'Affect means to change or influence something.',explain_ru:'Affect означает изменять или влиять на что-то.'},
-  {type:'order',prompt:'Build the present perfect active sentence.',words:['The','city','has','planted','trees','along','two','roads.'],answer:['The','city','has','planted','trees','along','two','roads.'],explain:'Use has + past participle for the present result.',explain_ru:'Используйте has + past participle, чтобы показать результат в настоящем.'},
-  {type:'select',prompt:'Which word means "money needed to do something"?',options:['cost','benefit','energy','service'],answer:'cost',explain:'Cost is the money needed to buy or do something.',explain_ru:'Cost — деньги, необходимые для покупки или действия.'},
-  {type:'input',prompt:'Use present perfect active: People ___ (use) the park more often since the project.',answers:['have used'],explain:'Since links a past action to now: have used.',explain_ru:'Since связывает прошлое действие с настоящим: have used.'},
-  {type:'tf',prompt:'The council plans to review the bus service this autumn.',answer:'True',explain:'The final paragraph says the council will review it this autumn.',explain_ru:'В последнем абзаце сказано, что совет рассмотрит работу автобусов осенью.'}
-];
+/* ================== HELPERS ================== */
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function escapeAttr(s){return escapeHtml(s)}
+function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
+function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
 
-/* ================= NATURAL DISASTERS (Sabina) ================= */
-const disasterWords=[
-  ['blizzard','a long snowstorm with strong winds','снежная буря','❄️'],
-  ['drought','a long time with very little rain','засуха','🏜️'],
-  ['earthquake','a sudden shaking of the ground','землетрясение','🏚️'],
-  ['flood','water covering dry land','наводнение','🌊'],
-  ['heat wave','a period of unusually hot weather','волна жары','🥵'],
-  ['hurricane','a giant swirling storm with strong winds','ураган','🌀'],
-  ['thunderstorm','a storm with lightning and rain','гроза','⛈️'],
-  ['tornado','a rotating column of air','торнадо','🌪️'],
-  ['tsunami','a very large ocean wave','цунами','🌊'],
-  ['wildfire','a large fire that spreads quickly','лесной пожар','🔥'],
-  ['landslide','rocks and earth sliding down a slope','оползень','⛰️'],
-  ['avalanche','snow and ice sliding down a mountain','лавина','🏔️'],
-  ['volcano','a mountain that can erupt','вулкан','🌋'],
-  ['eruption','when a volcano sends out lava','извержение','💥'],
-  ['lava','hot liquid rock from a volcano','лава','🟠'],
-  ['ash','small grey dust from a fire','пепел','🌫️'],
-  ['hail','small balls of ice from the sky','град','🧊'],
-  ['sleet','rain mixed with snow','мокрый снег','🌧️'],
-  ['humid','warm and slightly wet in the air','влажный','💧'],
-  ['crust','the hard outer layer of the Earth','земная кора','🪨'],
-  ['tremor','a small shaking movement','толчок','📳'],
-  ['magnitude','the size or strength of something','магнитуда','📊'],
-  ['topple','to make something fall over','опрокидывать','🏚️'],
-  ['overflow','to spill over the edge','выходить из берегов','🌊'],
-  ['surge','a sudden, powerful movement forward','нахлынуть','🌊'],
-  ['funnel','a tube-shaped cloud or shape','воронка','🌪️'],
-  ['column','a tall, narrow shape','столб','🏛️'],
-  ['erupt','to send out lava or ash','извергаться','💥'],
-  ['atmosphere','the air around the Earth','атмосфера','🌍'],
-  ['pressure','the force of air or water','давление','📊'],
-  ['region','an area or part of a country','регион','🗺️'],
-  ['deforestation','the removal of many trees','вырубка лесов','🪓'],
-  ['unpredictable','hard to know in advance','непредсказуемый','❓'],
-  ['structure','a building or other construction','сооружение','🏢'],
-  ['brush fire','a fire in low bushes and plants','пожар в кустарнике','🔥'],
-  ['soil','the top layer of earth for plants','почва','🟫'],
-  ['collide','to hit something with force','сталкиваться','💥'],
-  ['disrupt','to interrupt or disturb','нарушать','⚡'],
-  ['vibration','a fast shaking movement','вибрация','📳'],
-  ['swirl','to move in circles','кружиться','🌀'],
-  ['species','a group of similar living things','вид (биология)','🦌'],
-  ['survive','to stay alive after danger','выживать','💪'],
-  ['prepare','to get ready for something','готовиться','🛠️'],
-  ['warning','a message about possible danger','предупреждение','⚠️'],
-  ['rescue','to save someone from danger','спасать','🚁']
-];
-const disasterText='<h2>Ten disasters that shape our world</h2><p>A blizzard is a long snowstorm with very strong winds. It often lasts for three hours or more and is caused by cold air that collides with warm air. A drought is different: it is a long period with very little or no rain. Human activity such as deforestation can also cause droughts, because the soil becomes dry and hard.</p><p>An earthquake happens when the Earth\'s crust moves suddenly and violently. The shaking can be minor, with only a few tremors, or very strong, with a high magnitude. A powerful earthquake can topple buildings and damage bridges and other structures. The vibrations can also disrupt water and gas lines.</p><p>Floods happen when heavy rain or melting snow makes rivers and other bodies of water overflow. The water then covers dry land. Floods are the most common natural disaster in the United States; FEMA says nearly 90% of disasters there involve flooding. A heat wave is a period of unusually hot weather in a region. High pressure in the Earth\'s atmosphere holds hot air near the surface. This makes rain less likely, so a drought may follow.</p><p>A hurricane is a giant, swirling storm with severe thunderstorms and winds that can reach 160 miles per hour. In some parts of the world, hurricanes are called typhoons. A thunderstorm often brings lightning, high winds, and heavy rain, although it can also bring hail, sleet, or snow. These storms can begin when warm, humid air rises quickly into the sky. A tornado is a destructive, rotating column of air. Its winds may reach 100 to 300 miles per hour, and it often looks like a funnel.</p><p>A tsunami is a very large ocean wave that surges onto land. The waves can reach 100 feet high. Most tsunamis are caused by underwater earthquakes; the vibrations disturb the water and send waves outward. A wildfire is a forest, bush, or brush fire that can spread quickly and unpredictably. People start many wildfires, but dry weather and strong winds can help them spread. Landslides and avalanches can follow earthquakes, heavy rain, or snow. When volcanoes erupt, they send ash into the air and lava onto the ground. Each event is different, so learning about hazards helps people prepare and survive.</p>';
-const disasterQuestions=[
-  {type:'choice',prompt:'What is a blizzard?',options:['A long snowstorm with strong winds','A long period without rain','A rotating column of air'],answer:'A long snowstorm with strong winds',explain:'The passage defines a blizzard as a long snowstorm with very strong winds.',explain_ru:'В тексте blizzard — это длинная снежная буря с очень сильным ветром.'},
-  {type:'input',prompt:'Complete: Blizzards are caused by cold air that ___ with warm air.',answers:['collides','collides with'],explain:'Cold air collides with warm air to form a blizzard.',explain_ru:'Холодный воздух сталкивается с тёплым, чтобы сформировать буран.'},
-  {type:'tf',prompt:'A drought is caused by too much rain.',answer:'False',explain:'False. A drought is a long period with very little or no rain.',explain_ru:'Неверно. Drought — это длительный период без дождя.'},
-  {type:'select',prompt:'Which word means "the Earth\'s hard outer layer"?',options:['crust','tremor','magnitude','region'],answer:'crust',explain:'The crust is the hard outer layer of the Earth.',explain_ru:'Crust — это твёрдый внешний слой Земли.'},
-  {type:'input',prompt:'Use present passive: Tsunamis ___ by underwater earthquakes. (cause)',answers:['are caused'],explain:'Present passive with plural subject: are + V3.',explain_ru:'Present passive с множественным подлежащим: are + V3.'},
-  {type:'order',prompt:'Build the past passive sentence.',words:['The','wildfire','was','caused','by','the','drought.'],answer:['The','wildfire','was','caused','by','the','drought.'],explain:'Past passive: was + V3.',explain_ru:'Past passive: was + V3.'},
-  {type:'choice',prompt:'What can cause a heat wave?',options:['High pressure in the atmosphere','Cold air from the sea','A rotating column of air'],answer:'High pressure in the atmosphere',explain:'High pressure holds hot air near the ground.',explain_ru:'Высокое давление удерживает горячий воздух у поверхности.'},
-  {type:'input',prompt:'Complete: The ___ of an earthquake describes its strength.',answers:['magnitude'],explain:'Magnitude is the size or strength of an earthquake.',explain_ru:'Magnitude — это величина или сила землетрясения.'},
-  {type:'select',prompt:'Which word means "the removal of many trees"?',options:['deforestation','eruption','structure','warning'],answer:'deforestation',explain:'Deforestation is the removal of many trees.',explain_ru:'Deforestation — вырубка большого количества деревьев.'},
-  {type:'tf',prompt:'Floods are the most common natural disaster in the U.S.',answer:'True',explain:'FEMA says nearly 90% of U.S. disasters involve flooding.',explain_ru:'FEMA: около 90% катастроф в США связаны с наводнениями.'},
-  {type:'input',prompt:'Use present perfect passive: Many homes ___ (destroy) by floods in recent years.',answers:['have been destroyed'],explain:'Plural + present perfect passive: have been + V3.',explain_ru:'Множественное число + present perfect passive: have been + V3.'},
-  {type:'order',prompt:'Build the present passive sentence.',words:['Many','buildings','are','destroyed','by','hurricanes.'],answer:['Many','buildings','are','destroyed','by','hurricanes.'],explain:'Present passive with plural subject: are + V3.',explain_ru:'Present passive с множественным подлежащим: are + V3.'},
-  {type:'choice',prompt:'What is a tornado?',options:['A rotating column of air','A large ocean wave','A long period without rain'],answer:'A rotating column of air',explain:'A tornado is a rotating column of air with fast winds.',explain_ru:'Tornado — вращающийся столб воздуха с быстрым ветром.'},
-  {type:'select',prompt:'Which word means "to spill over the edge"?',options:['overflow','erupt','collide','swirl'],answer:'overflow',explain:'Overflow means to spill over the edge.',explain_ru:'Overflow — переливаться через край.'},
-  {type:'input',prompt:'Use past passive: The streets ___ (flood) after heavy rain yesterday.',answers:['were flooded'],explain:'Past passive with plural subject: were + V3.',explain_ru:'Past passive с множественным подлежащим: were + V3.'},
-  {type:'tf',prompt:'Volcanoes can send ash clouds into the air.',answer:'True',explain:'The passage says volcanoes send ash into the air and lava onto the ground.',explain_ru:'В тексте говорится: вулканы выбрасывают пепел в воздух и лаву на землю.'}
-];
-
-/* ================= SELECT LESSON ================= */
-const lesson={
-  gaziz:{
-    title:'Gaziz · Sustainable Cities Homework',
-    headline:'City life: changes and choices',
-    intro:'Read the Rivergate case study. Practise common IELTS words and use present perfect or past simple in the active voice.',
-    passage:sustainableText,
-    words:sustainableWords,
-    questions:sustainableQuestions,
-    mark:'🏙️',
-    sub:'Sustainable Cities · Active tenses',
-    hero:'🏙️ → 🚌 → ☀️',
-    label:'Topic · Sustainable Cities · Homework',
-    classwork:'lesson_gaziz.html'
-  },
-  sabina:{
-    title:'Sabina · Natural Disasters Homework',
-    headline:'Big weather. Clear English.',
-    intro:'Read about ten natural disasters. Practise passive voice and present perfect with disaster vocabulary.',
-    passage:disasterText,
-    words:disasterWords,
-    questions:disasterQuestions,
-    mark:'🌪️',
-    sub:'Natural Disasters · Passive & Perfect',
-    hero:'❄️ → 🌪️ → 🌊',
-    label:'Topic · Natural Disasters · Homework',
-    classwork:'lesson.html'
-  }
-}[variant];
-
-let answers={},submitted=false,currentKwWord='';
-const WORD_LOOKUP={};lesson.words.forEach(([en,def,ru,emo])=>{WORD_LOOKUP[en.toLowerCase()]={en,def,ru,emo}});
-
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
-document.title=lesson.title;
-document.getElementById('studentTitle').textContent=lesson.title;
-document.getElementById('headline').textContent=lesson.headline;
-document.getElementById('intro').textContent=lesson.intro;
-document.getElementById('variantLabel').textContent=lesson.label;
-document.getElementById('subTitle').textContent=lesson.sub;
-document.getElementById('markIcon').textContent=lesson.mark;
-document.getElementById('heroArt').textContent=lesson.hero;
-document.getElementById('classworkLink').href=lesson.classwork+'?lesson=lesson_1&code='+encodeURIComponent(code);
-
-function renderWords(){
-  const el=document.getElementById('words');
-  el.innerHTML=lesson.words.map(([en,def,ru,emo])=>
-    '<div class="word" data-word="'+esc(en)+'"><span class="w-emoji">'+emo+'</span><div><b>'+esc(en)+'</b><span>'+esc(ru)+'</span></div></div>'
-  ).join('');
-  el.querySelectorAll('.word').forEach(w=>{w.onclick=()=>openKw(w.dataset.word)});
-}
-function renderPassage(){
-  const container=document.getElementById('passage');
-  container.innerHTML=lesson.passage;
-  const words=lesson.words.map(([en])=>en);
-  wrapKeywordsInNode(container,words);
-  container.querySelectorAll('.kw').forEach(btn=>{btn.onclick=()=>openKw(btn.dataset.kw)});
-}
-function wrapKeywordsInNode(node,words){
-  if(node.nodeType===3){
-    const text=node.textContent;
-    let result=text;
-    words.forEach(w=>{
-      const escW=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      const re=new RegExp('\\b('+escW+')\\b','gi');
-      result=result.replace(re,'\u0001'+w.toLowerCase()+'\u0002$1\u0003');
-    });
-    if(result!==text){
-      const span=document.createElement('span');
-      span.innerHTML=result.replace(/\u0001/g,'<button class="kw" data-kw="').replace(/\u0002/g,'">').replace(/\u0003/g,'</button>');
-      node.parentNode.replaceChild(span,node);
-    }
-  } else if(node.nodeType===1&&!node.classList.contains('kw')&&!node.classList.contains('kw-emoji')){
-    Array.from(node.childNodes).forEach(c=>wrapKeywordsInNode(c,words));
-  }
-}
-function openKw(word){
-  const key=String(word).toLowerCase();
-  const data=WORD_LOOKUP[key];
-  if(!data)return;
-  currentKwWord=data.en;
-  const custom=customImages[data.en];
-  const emojiEl=document.getElementById('kwEmoji');
-  if(custom){emojiEl.innerHTML='<img src="'+esc(custom)+'" style="max-width:120px;max-height:120px;border-radius:12px;" onerror="this.parentNode.textContent=\''+data.emo+'\'">'}
-  else{emojiEl.textContent=data.emo}
-  document.getElementById('kwWord').textContent=data.en;
-  document.getElementById('kwRu').textContent=data.ru;
-  document.getElementById('kwBackdrop').classList.add('open');
-  document.getElementById('kwEditBtn').classList.toggle('show',teacherCanEdit);
-  speakBritish(data.en);
-}
-function closeKw(){document.getElementById('kwBackdrop').classList.remove('open')}
-function speakCurrentKw(){if(currentKwWord)speakBritish(currentKwWord)}
-function editPicture(){
-  if(!teacherCanEdit)return;
-  const current=customImages[currentKwWord]||'';
-  const url=prompt('Paste an image URL for "'+currentKwWord+'". Leave blank to remove.',current);
-  if(url===null)return;
-  const trimmed=url.trim();
-  if(trimmed&&!/^https?:\/\//i.test(trimmed)){alert('Use a URL starting with http:// or https://');return}
-  const updated=Object.assign({},customImages);
-  if(trimmed)updated[currentKwWord]=trimmed;else delete updated[currentKwWord];
-  if(imageRef){
-    imageRef.set(updated).then(function(){customImages=updated;openKw(currentKwWord);alert('Picture saved!')}).catch(function(e){alert('Could not save: '+e.message)});
-  }
-}
-
-/* ============ BRITISH ACCENT ============ */
-let ukVoice=null;
-function pickUKVoice(){
-  if(!('speechSynthesis' in window))return null;
-  const voices=window.speechSynthesis.getVoices();
-  return voices.find(v=>v.lang==='en-GB')||
-         voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('en-gb'))||
-         voices.find(v=>v.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(v.name))||
-         null;
-}
+/* ================== TTS ================== */
+let soundOn=true,ukVoice=null,ttsState='idle',ttsUtterId=0;
+function pickUKVoice(){if(!('speechSynthesis' in window))return null;const v=window.speechSynthesis.getVoices();return v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang&&x.lang.toLowerCase().startsWith('en-gb'))||v.find(x=>x.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(x.name))||null}
 if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()}}
-function speakBritish(text){
+function speakLong(){
   if(!('speechSynthesis' in window))return;
   try{
     window.speechSynthesis.cancel();
+    ttsUtterId++;const myId=ttsUtterId;
+    const text=document.getElementById('passageBody').innerText.replace(/\s+/g,' ').trim();
     const u=new SpeechSynthesisUtterance(text);
     u.lang='en-GB';u.rate=.9;u.pitch=1;
     if(ukVoice)u.voice=ukVoice;
+    u.onend=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
+    u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
     window.speechSynthesis.speak(u);
+    ttsState='playing';updateTTSButtons();
   }catch(e){}
 }
+function pauseTTS(){if(!('speechSynthesis' in window))return;if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){window.speechSynthesis.pause();ttsState='paused';updateTTSButtons()}}
+function resumeTTS(){if(!('speechSynthesis' in window))return;if(window.speechSynthesis.paused){window.speechSynthesis.resume();ttsState='playing';updateTTSButtons()}}
+function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;window.speechSynthesis.cancel();ttsState='idle';updateTTSButtons()}
+function updateTTSButtons(){
+  const p=document.getElementById('ttsPlay');if(p)p.style.display=ttsState==='playing'?'none':'';
+  const pa=document.getElementById('ttsPause');if(pa)pa.style.display=ttsState==='playing'?'':'none';
+  const r=document.getElementById('ttsResume');if(r)r.style.display=ttsState==='paused'?'':'none';
+  const s=document.getElementById('ttsStop');if(s)s.style.display=ttsState!=='idle'?'':'none';
+}
 
+/* ================== THEME ================== */
 function toggleTheme(){
-  document.documentElement.classList.toggle('light');
-  const light=document.documentElement.classList.contains('light');
-  localStorage.setItem('nd_homework_theme',light?'light':'dark');
-  document.getElementById('themeButton').textContent=light?'🌙 Dark theme':'☀️ Light theme';
+  document.documentElement.classList.toggle('dark');
+  const dark=document.documentElement.classList.contains('dark');
+  try{localStorage.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){}
+  const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme';
 }
-try{const t=localStorage.getItem('nd_homework_theme');if(t==='light')document.documentElement.classList.add('light')}catch(e){}
-document.getElementById('themeButton').textContent=document.documentElement.classList.contains('light')?'🌙 Dark theme':'☀️ Light theme';
+try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
+document.getElementById('themeButton').textContent=document.documentElement.classList.contains('dark')?'☀️ Theme':'🌙 Theme';
 
-function renderQuestions(){
-  const root=document.getElementById('questions');root.innerHTML='';
-  lesson.questions.forEach((q,i)=>{
-    const card=document.createElement('article');
-    card.className='question';card.id='q'+i;
-    const typeLabel={choice:'Choose',select:'Vocabulary',input:'Complete',tf:'True or false',order:'Word order'}[q.type];
-    card.innerHTML='<div class="qhead">Question '+(i+1)+' of '+lesson.questions.length+' · '+typeLabel+'</div><div class="prompt">'+esc(q.prompt)+'</div>';
-    if(q.type==='choice'||q.type==='tf'){
-      const opts=q.type==='tf'?['True','False']:q.options;
-      const box=document.createElement('div');box.className='options';
-      opts.forEach(o=>{const b=document.createElement('button');b.className='pick';b.textContent=o;b.dataset.value=o;b.onclick=()=>selectOption(i,card,o);box.appendChild(b)});
-      card.appendChild(box);
-    } else if(q.type==='select'){
-      const row=document.createElement('div');row.className='row';
-      const s=document.createElement('select');s.className='answer';
-      s.innerHTML='<option value="">Choose an answer…</option>'+q.options.map(o=>'<option>'+esc(o)+'</option>').join('');
-      s.onchange=()=>{if(submitted)return;recordAnswer(i,s.value)};
-      row.appendChild(s);card.appendChild(row);
-    } else if(q.type==='input'){
-      const row=document.createElement('div');row.className='row';
-      const input=document.createElement('input');input.className='answer';input.placeholder='Type your answer';input.autocomplete='off';
-      input.oninput=()=>{if(submitted)return;recordAnswer(i,input.value.trim())};
-      row.appendChild(input);card.appendChild(row);
-    } else {
-      const bank=document.createElement('div');bank.className='orderbank';
-      const line=document.createElement('div');line.className='orderline';
-      let picked=[];
-      const shuffled=q.words.slice().sort(()=>Math.random()-.5);
-      shuffled.forEach(w=>{const b=document.createElement('button');b.className='chip';b.textContent=w;b.onclick=()=>{if(submitted)return;picked.push(w);b.disabled=true;line.innerHTML=picked.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');recordAnswer(i,picked.slice())};bank.appendChild(b)});
-      const reset=document.createElement('button');reset.className='pick';reset.textContent='Reset';reset.style.marginTop='10px';
-      reset.onclick=()=>{if(submitted)return;picked=[];line.innerHTML='';bank.querySelectorAll('button').forEach(b=>{if(b!==reset)b.disabled=false});recordAnswer(i,[]);};
-      card.append(bank,line,reset);
-    }
-    const fb=document.createElement('div');fb.className='feedback';fb.id='fb'+i;card.appendChild(fb);
-    root.appendChild(card);
-    if(answers[i]!==undefined)restoreAnswer(i,answers[i]);
+/* ================== CONTENT ================== */
+const CONTENT={
+  gaziz:{
+    title:'Gaziz · Sustainable Cities — Homework',
+    headline:'Rivergate revisits its plans',
+    intro:'Read the case study and answer every question. This is a single-page homework: work through the article and the questions on the right. You cannot submit until all questions are answered.',
+    hero:'🏙️ → 🚲 → 🌳',
+    sub:'Sustainable Cities · Reading & Grammar',
+    eyebrow:'Topic · Sustainable Cities · Homework',
+    reading:{
+      title:'Rivergate Revisits Its Plans',
+      subtitle:'A follow-up case study on sustainable urban change',
+      paragraphs:[
+        {label:'A.',text:'In 2018, the small city of Rivergate launched an ambitious programme to reduce its dependence on cars. The council promised to make cycling and public transport the primary ways of moving around by 2030. At the time, few residents believed the plan would succeed. Traffic was heavy, and most families owned at least one car. Yet five years later, the situation has changed dramatically. The number of cyclists has tripled, and the city has become a model for other towns in the region.'},
+        {label:'B.',text:'The transformation did not happen overnight. Council planners began with a modest experiment: they closed one street in the city centre to cars for three months. When the trial ended, local shops reported that their customers had not disappeared — in fact, sales had risen slightly. This surprising result gave the council confidence to expand the programme. In 2020, the council converted five more streets into pedestrian-only zones and installed over a hundred bike racks across the city.'},
+        {label:'C.',text:'The most visible change has been the new network of cycle paths. Rivergate now has more than 200 kilometres of dedicated lanes, many of them separated from car traffic by trees and planters. In winter, cycle paths are cleared of snow before roads, a decision that was controversial at the time but has since become popular. Cyclists are given priority at most intersections. Perhaps most importantly, the city has measured success not by how fast cars move, but by how many people choose to cycle or walk.'},
+        {label:'D.',text:'Alongside transport, Rivergate has invested in public spaces. The old industrial harbour has been cleaned and reopened as a riverside park. Warehouses that once stood empty have been converted into apartments, cafés, and a small theatre. Residents can now swim in the river during the summer months — something that would have been unthinkable ten years ago, when the water was polluted.'},
+        {label:'E.',text:'Not everyone has welcomed the changes. Some shopkeepers complained that removing parking spaces had reduced their customers. Others argued that the new cycle paths mostly served wealthier neighbourhoods. Critics pointed out that the programme had been expensive and that the council had spent millions of euros on projects that would take decades to pay back. Some also questioned whether a small city like Rivergate could really serve as a model for larger urban areas.'},
+        {label:'F.',text:'Despite the criticism, the results have been difficult to dismiss. Air pollution has fallen by 45 per cent. Traffic accidents involving cyclists have dropped sharply. Surveys suggest that residents are more satisfied with their city than they were a decade ago. Rivergate has also attracted new investment: several technology companies have moved their offices to the city centre, citing the pleasant environment as a key factor. The question for other cities is no longer whether sustainable transformation is possible, but how quickly they can follow Rivergate\u2019s example.'}
+      ]
+    },
+    vocab:[
+      {en:'ambitious',emoji:'🚀',meanings:[
+        {context:'demanding or difficult',ru:'амбициозный, масштабный',ex:'The council launched an <b>ambitious</b> programme to reduce car use.'},
+        {context:'having a strong desire to succeed',ru:'целеустремлённый',ex:'She is an <b>ambitious</b> young architect.'}
+      ]},
+      {en:'dependence',emoji:'🔗',meanings:[
+        {context:'relying on something',ru:'зависимость',ex:'The city aims to reduce its <b>dependence</b> on cars.'}
+      ]},
+      {en:'experiment',emoji:'🧪',meanings:[
+        {context:'a test or trial',ru:'эксперимент, испытание',ex:'Planners began with a modest <b>experiment</b>: closing one street for three months.'}
+      ]},
+      {en:'convert',emoji:'🔁',meanings:[
+        {context:'change from one use to another',ru:'преобразовывать',ex:'The council <b>converted</b> five more streets into pedestrian zones.'}
+      ]},
+      {en:'dedicated',emoji:'🎯',meanings:[
+        {context:'made for a specific purpose',ru:'специально выделенный',ex:'Rivergate has 200 kilometres of <b>dedicated</b> cycle lanes.'},
+        {context:'devoted to a task',ru:'преданный',ex:'She is a <b>dedicated</b> teacher.'}
+      ]},
+      {en:'controversial',emoji:'⚔️',meanings:[
+        {context:'causing disagreement',ru:'спорный, вызывающий споры',ex:'Clearing cycle paths before roads was <b>controversial</b> at first.'}
+      ]},
+      {en:'priority',emoji:'🥇',meanings:[
+        {context:'the right to go first',ru:'приоритет',ex:'Cyclists are given <b>priority</b> at most intersections.'}
+      ]},
+      {en:'convert',emoji:'🏭',meanings:[
+        {context:'repurpose a building',ru:'переоборудовать',ex:'Warehouses were <b>converted</b> into apartments and cafés.'}
+      ]},
+      {en:'critics',emoji:'🗣️',meanings:[
+        {context:'people who express disapproval',ru:'критики',ex:'<b>Critics</b> argued the programme had been too expensive.'}
+      ]},
+      {en:'investment',emoji:'💼',meanings:[
+        {context:'money put into a project',ru:'инвестиция',ex:'Rivergate has attracted new <b>investment</b> from technology companies.'}
+      ]}
+    ],
+    questions:[
+      {type:'short',prompt:'In what year did Rivergate launch its programme to reduce car dependence?',answers:['2018'],exp:'The article says the programme launched in 2018.'},
+      {type:'short',prompt:'By what percentage has air pollution fallen in Rivergate?',answers:['45','45%','45 per cent'],exp:'Air pollution has fallen by 45 per cent.'},
+      {type:'short',prompt:'How many kilometres of cycle paths does Rivergate now have?',answers:['200','more than 200'],exp:'The city has more than 200 kilometres of dedicated cycle lanes.'},
+      {type:'short',prompt:'What was installed on the streets after the pilot experiment succeeded?',answers:['bike racks','bike racks across the city'],exp:'The council installed over a hundred bike racks.'},
+      {type:'tfng',prompt:'The pilot experiment showed that sales in local shops fell.',answer:'False',exp:'Sales actually rose slightly.'},
+      {type:'tfng',prompt:'Cycle paths are cleared of snow before roads in winter.',answer:'True',exp:'The passage confirms this.'},
+      {type:'tfng',prompt:'The mayor of Rivergate was re-elected after the programme.',answer:'Not Given',exp:'The article never mentions re-election.'},
+      {type:'mcq',prompt:'What is the main idea of the article?',options:['A small city successfully transformed its urban planning','Cycling is dangerous in winter','Industrial harbours should be demolished'],correct:'A small city successfully transformed its urban planning',exp:'The article tells the story of Rivergate\u2019s transformation.'},
+      {type:'mcq',prompt:'Which of the following is NOT stated as a result of the changes?',options:['Lower air pollution','Attracting technology companies','A rise in average salaries'],correct:'A rise in average salaries',exp:'The article mentions pollution and investment, not salaries.'},
+      {type:'mcq',prompt:'What is the author\u2019s overall tone?',options:['Broadly positive with balanced criticisms','Entirely critical','Neutral and detached'],correct:'Broadly positive with balanced criticisms',exp:'The article praises the results but includes paragraph E\u2019s criticisms.'},
+      {type:'long',prompt:'In your own words, explain why the pilot experiment was important for Rivergate.',
+        keywordGroups:[['experiment','trial','test'],['sales','customers','shops'],['rose','increased','grew','rise'],['confidence','believe','trust'],['expand','continue','more']],
+        minWords:10,minGroups:2,
+        sample:'The pilot experiment was important because it showed that closing a street to cars did not reduce sales in local shops — in fact, sales rose, and this gave the council confidence to expand the programme.',
+        exp:'Key ideas: experiment/trial, sales didn\u2019t fall, confidence, expansion.'},
+      {type:'long',prompt:'Describe TWO benefits of the transformation mentioned in the article.',
+        keywordGroups:[['pollution','cleaner','air'],['accident','safe','safety'],['happy','happier','satisfied'],['investment','company','business'],['cycle','bike','commute']],
+        minWords:10,minGroups:2,
+        sample:'Two benefits are that air pollution has fallen by 45 per cent, and that the city has attracted new investment from technology companies.',
+        exp:'Key ideas: reduced pollution, fewer accidents, happier residents, new investment.'},
+      {type:'complete',prompt:'The city ___ (reduce) its dependence on cars since 2018.',answers:['has reduced']},
+      {type:'complete',prompt:'The council ___ (close) one street to cars in the pilot experiment.',answers:['closed']},
+      {type:'complete',prompt:'Rivergate ___ (attract) several technology companies recently.',answers:['has attracted']}
+    ]
+  },
+  sabina:{
+    title:'Sabina · Natural Disasters — Homework',
+    headline:'The summer the weather changed',
+    intro:'Read the report and answer every question. This is a single-page homework: work through the article and the questions on the right. You cannot submit until all questions are answered.',
+    hero:'⛈️ → 🌊 → 🔥',
+    sub:'Natural Disasters · Reading & Grammar',
+    eyebrow:'Topic · Natural Disasters · Homework',
+    reading:{
+      title:'The Summer the Weather Changed',
+      subtitle:'A report on three linked natural disasters',
+      paragraphs:[
+        {label:'A.',text:'In the summer of 2023, three separate natural disasters struck the same coastal region in the space of six weeks. First came a heat wave: temperatures rose above 42°C for ten consecutive days. Then, when the rains finally arrived, they came with unusual force. Rivers overflowed, and floods swept through several towns. Later that same summer, a wildfire broke out in the hills above the coast, destroying more than 400 hectares of forest. Scientists later described the events as \u201Cconnected\u201D.'},
+        {label:'B.',text:'The heat wave was the first warning. Meteorologists had forecast high temperatures, but few people had expected a heat wave of this intensity. Hospitals reported a sharp rise in admissions for heat exhaustion and dehydration. Local authorities opened cooling centres in public libraries and community halls, where residents could escape the worst of the heat. The heat also dried out the soil and vegetation, creating the perfect conditions for the disasters that followed.'},
+        {label:'C.',text:'When the rain came, it was heavy and sudden. Within two days, more than 200 millimetres of rain had fallen — more than the region normally receives in an entire month. Rivers that had been almost dry overflowed their banks. The town of Marlowe was the worst affected: water reached the ground floor of buildings and cut off the main road for nearly a week. Rescue teams used boats to reach residents who had been trapped in their homes. The floods were later described as the worst the region had seen in fifty years.'},
+        {label:'D.',text:'The wildfire began in August, three weeks after the floods. By then, the vegetation that had survived the rain had dried out again under the summer sun. Strong winds helped the fire spread quickly across the hills. Firefighters worked for eleven days to bring it under control. Over 400 hectares of forest were destroyed, and several families lost their homes. Although no lives were lost, the ecological damage was severe: many species of plants and small animals were affected, and the soil in the burned areas will take years to recover.'},
+        {label:'E.',text:'Scientists who studied the events concluded that they were not separate. The heat wave had dried the vegetation, making the wildfire more likely. The heavy rain that ended the heat wave had been intensified by the unusually warm air, which holds more moisture. The floods, in turn, had washed away trees and weakened riverbanks, making some areas more vulnerable. In other words, each disaster had helped to create the conditions for the next one.'},
+        {label:'F.',text:'The events of that summer have prompted local authorities to rethink their emergency planning. New early-warning systems are being installed in coastal towns. Cooling centres will now open automatically when temperatures exceed 38°C. Firebreaks are being widened in the hills, and residents are being trained in evacuation procedures. Scientists warn that similar events will become more common in the future — not because the region is unlucky, but because a warming climate is making extreme weather more frequent and more intense.'}
+      ]
+    },
+    vocab:[
+      {en:'consecutive',emoji:'🔢',meanings:[
+        {context:'following one after another',ru:'последовательные',ex:'Temperatures rose above 42°C for ten <b>consecutive</b> days.'}
+      ]},
+      {en:'overflow',emoji:'🌊',meanings:[
+        {context:'spill over the edge',ru:'выходить из берегов',ex:'Rivers <b>overflowed</b> their banks after the heavy rain.'},
+        {context:'be too full for capacity',ru:'переполняться',ex:'The stadium <b>overflowed</b> with fans.'}
+      ]},
+      {en:'intensity',emoji:'🔥',meanings:[
+        {context:'strength or force',ru:'интенсивность',ex:'Few expected a heat wave of this <b>intensity</b>.'}
+      ]},
+      {en:'vegetation',emoji:'🌿',meanings:[
+        {context:'plants, trees, and grass in an area',ru:'растительность',ex:'The heat dried out the soil and <b>vegetation</b>.'}
+      ]},
+      {en:'rescue',emoji:'🚁',meanings:[
+        {context:'saving from danger',ru:'спасение',ex:'<b>Rescue</b> teams used boats to reach trapped residents.'},
+        {context:'to save someone',ru:'спасать',ex:'They <b>rescued</b> three families from the roof.'}
+      ]},
+      {en:'ecological',emoji:'🌍',meanings:[
+        {context:'relating to the environment',ru:'экологический',ex:'The <b>ecological</b> damage was severe.'}
+      ]},
+      {en:'species',emoji:'🦌',meanings:[
+        {context:'a group of similar living things',ru:'вид (биология)',ex:'Many <b>species</b> of plants were affected.'}
+      ]},
+      {en:'vulnerable',emoji:'⚠️',meanings:[
+        {context:'easily harmed',ru:'уязвимый',ex:'Floods made some areas more <b>vulnerable</b>.'}
+      ]},
+      {en:'evacuation',emoji:'🚨',meanings:[
+        {context:'organized removal from a place',ru:'эвакуация',ex:'Residents were trained in <b>evacuation</b> procedures.'}
+      ]},
+      {en:'prompt',emoji:'💡',meanings:[
+        {context:'to cause something to happen',ru:'побуждать, вызывать',ex:'The events have <b>prompted</b> local authorities to rethink their planning.'}
+      ]}
+    ],
+    questions:[
+      {type:'short',prompt:'How many consecutive days did temperatures rise above 42°C?',answers:['10','ten'],exp:'Temperatures rose above 42°C for ten consecutive days.'},
+      {type:'short',prompt:'How many millimetres of rain fell in two days?',answers:['200','more than 200','200 mm'],exp:'More than 200 millimetres of rain fell in two days.'},
+      {type:'short',prompt:'How many hectares of forest were destroyed by the wildfire?',answers:['400','more than 400','over 400'],exp:'Over 400 hectares were destroyed.'},
+      {type:'short',prompt:'How many days did firefighters work to control the wildfire?',answers:['11','eleven'],exp:'Firefighters worked for eleven days.'},
+      {type:'tfng',prompt:'The events took place over six weeks.',answer:'True',exp:'The article says three disasters in six weeks.'},
+      {type:'tfng',prompt:'Lives were lost in the wildfire.',answer:'False',exp:'The article says no lives were lost.'},
+      {type:'tfng',prompt:'The local council had planned for events of this intensity.',answer:'Not Given',exp:'The article doesn\u2019t say whether they had planned for this.'},
+      {type:'mcq',prompt:'What is the main idea of the article?',options:['Three disasters were connected by climate conditions','Coastal towns are always in danger','Wildfires are the worst type of disaster'],correct:'Three disasters were connected by climate conditions',exp:'The article emphasises that the three disasters were linked.'},
+      {type:'mcq',prompt:'Which of these is NOT stated as a consequence of the events?',options:['New early-warning systems','Automatic cooling centres','A ban on coastal construction'],correct:'A ban on coastal construction',exp:'A construction ban is not mentioned.'},
+      {type:'mcq',prompt:'How did the heat wave contribute to the wildfire?',options:['It dried out the vegetation','It caused strong winds','It attracted firefighters away'],correct:'It dried out the vegetation',exp:'Heat dried the vegetation, making the wildfire more likely.'},
+      {type:'long',prompt:'In your own words, explain why the scientists described the three disasters as \u201Cconnected.\u201D',
+        keywordGroups:[['heat','hot','temperature'],['dried','dry','vegetation'],['fire','wildfire'],['rain','flood','moisture'],['connected','linked','related','warm']],
+        minWords:12,minGroups:3,
+        sample:'The disasters were connected because the heat wave dried out the vegetation, which made the wildfire more likely. The warm air also held more moisture, which intensified the rain and caused the floods.',
+        exp:'Key ideas: heat dried vegetation, warm air held moisture, chain of disasters.'},
+      {type:'long',prompt:'Describe TWO measures that local authorities are taking to prepare for future disasters.',
+        keywordGroups:[['warning','system','early'],['cooling','centre','center'],['firebreak','trees','hills'],['evacuation','training','residents'],['prepare','plan','ready']],
+        minWords:10,minGroups:2,
+        sample:'Two measures are that new early-warning systems are being installed in coastal towns, and that cooling centres will open automatically when temperatures exceed 38°C.',
+        exp:'Key ideas: early warnings, cooling centres, firebreaks, evacuation training.'},
+      {type:'complete',prompt:'Scientists ___ (warn) that similar events will become more common.',answers:['have warned']},
+      {type:'complete',prompt:'The wildfire ___ (destroy) over 400 hectares of forest last August.',answers:['destroyed']},
+      {type:'complete',prompt:'Local authorities ___ (install) new warning systems since the events.',answers:['have installed']}
+    ]
+  }
+};
+
+const lesson=CONTENT[variant];
+
+
+/* ================== STATE ================== */
+let answers={};          /* keyed by question index, holds student's answer */
+let submitted=false;
+let reviewFlags={};      /* keyed by question index, true if flagged */
+
+/* ================== RENDER PASSAGE ================== */
+function renderPassage(){
+  const p=lesson.reading;
+  const body=document.getElementById('passageBody');
+  if(!body)return;
+  let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>';
+  /* Collect every vocab word so we can highlight them inside the passage */
+  const vocabWords=lesson.vocab.map(v=>v.en);
+  p.paragraphs.forEach(function(par){
+    let text=escapeHtml(par.text);
+    /* Bold any vocab word (simple word-boundary, case-insensitive) */
+    vocabWords.forEach(function(w){
+      const escW=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const re=new RegExp('\\b('+escW+')\\b','gi');
+      text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>');
+    });
+    html+='<p><span class="para-label">'+escapeHtml(par.label)+'</span>'+text+'</p>';
   });
-  updateFinishBar();
+  body.innerHTML=html;
+  body.querySelectorAll('.v-word').forEach(function(el){
+    el.onclick=function(){openVocab(el.dataset.vocab)};
+  });
 }
-function selectOption(i,card,value){
-  if(submitted)return;
-  card.querySelectorAll('.pick').forEach(p=>p.classList.remove('selected'));
-  const btn=Array.from(card.querySelectorAll('.pick')).find(p=>p.dataset.value===value);
-  if(btn)btn.classList.add('selected');
-  recordAnswer(i,value);
+
+/* ================== VOCAB MODAL ================== */
+function openVocab(word){
+  const v=lesson.vocab.find(function(x){return x.en===word});
+  if(!v)return;
+  document.getElementById('vocabEmoji').textContent=v.emoji||'📖';
+  document.getElementById('vocabWord').textContent=v.en;
+  document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){
+    return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+'</div>'+
+      '<div class="translation">'+escapeHtml(m.ru)+'</div>'+
+      '<div class="example">'+m.ex+'</div></div>';
+  }).join('');
+  document.getElementById('vocabBackdrop').classList.add('open');
 }
-function recordAnswer(i,value){
-  if(submitted)return;
-  const isComplete=Array.isArray(value)?value.length>0:(value!==undefined&&value!==null&&value!=='');
-  if(isComplete)answers[i]=value;else delete answers[i];
-  updateFinishBar();
-}
-function restoreAnswer(i,value){
-  const card=document.getElementById('q'+i);if(!card)return;
-  const q=lesson.questions[i];
-  if(q.type==='choice'||q.type==='tf'){card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===value)p.classList.add('selected')})}
-  else if(q.type==='select'){const s=card.querySelector('select');if(s)s.value=value}
-  else if(q.type==='input'){const inp=card.querySelector('input');if(inp)inp.value=value}
-  else if(q.type==='order'){
-    const line=card.querySelector('.orderline');
-    if(line&&Array.isArray(value))line.innerHTML=value.map(x=>'<span class="chip">'+esc(x)+'</span>').join(' ');
-    card.querySelectorAll('.chip').forEach(c=>{if(Array.isArray(value)&&value.indexOf(c.textContent)!==-1)c.disabled=true});
+function closeVocab(){document.getElementById('vocabBackdrop').classList.remove('open')}
+
+/* ================== PROGRESS ================== */
+function updateProgress(){
+  const total=lesson.questions.length;
+  const answered=Object.keys(answers).length;
+  const pct=total?Math.round(answered/total*100):0;
+  const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%';
+  const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%';
+  const pc=document.getElementById('progressCount');if(pc)pc.textContent=answered+' / '+total+' answered';
+  const remaining=total-answered;
+  const hint=document.getElementById('submitHint');
+  const btn=document.getElementById('submitBtn');
+  if(submitted){
+    if(btn){btn.disabled=true;btn.textContent='✓ Submitted'}
+    if(hint)hint.innerHTML='Homework already submitted.';
+    return;
+  }
+  if(remaining===0){
+    if(hint)hint.innerHTML='All questions answered. Ready to submit!';
+    if(btn)btn.disabled=false;
+  }else{
+    if(hint)hint.innerHTML='Answer every question to unlock submission. <b>'+remaining+' remaining.</b>';
+    if(btn)btn.disabled=true;
   }
 }
-function updateFinishBar(){
-  const total=lesson.questions.length;
-  const count=Object.keys(answers).length;
-  document.getElementById('finishCount').textContent=count+' of '+total+' questions answered';
-  document.getElementById('finishBtn').disabled=count<total;
-  document.getElementById('progressText').textContent=count+' / '+total+' answered';
-  document.getElementById('progressFill').style.width=Math.round(count/total*100)+'%';
-  if(!teacherMode)document.getElementById('finishBar').classList.add('show');
+
+/* ================== FLAG FOR REVIEW ================== */
+function flagForReview(idx,prompt,studentAnswer,autoResult){
+  if(teacherMode)return;
+  if(!sessionRef){alert('Cannot send to teacher — no session connected.');return}
+  const payload={stage:'homework',questionId:'hw_'+idx,prompt:prompt,studentAnswer:studentAnswer,autoResult:autoResult,ts:Date.now(),homeworkId:homeworkId};
+  sessionRef.child('reviewQueue').push(payload).then(function(){
+    reviewFlags[idx]=true;
+    const btn=document.querySelector('[data-flag-idx="'+idx+'"]');
+    if(btn){btn.classList.add('done');btn.textContent='✓ Sent to teacher'}
+  }).catch(function(e){alert('Failed to send: '+e.message)});
 }
 
+/* ================== BUILD FLAG BUTTON ================== */
+function flagButtonHTML(idx){
+  if(teacherMode)return '';
+  return '<div class="review-btn-row"><button class="btn flag" data-flag-idx="'+idx+'" onclick="flagFromButton(this)">🚩 Flag for teacher review</button><span class="hint">If you think your answer is correct but the check says no, click here.</span></div>';
+}
+function flagFromButton(btn){
+  const idx=Number(btn.dataset.flagIdx);
+  const q=lesson.questions[idx];if(!q)return;
+  let studentAnswer='';
+  if(q.type==='long'||q.type==='short'||q.type==='complete'){
+    const ta=document.querySelector('[data-answer-idx="'+idx+'"]');
+    if(ta)studentAnswer=ta.value||'';
+  }
+  flagForReview(idx,q.prompt,studentAnswer,'flagged-manually');
+}
+
+/* ================== CHECK LONG ANSWER ================== */
+function checkLongAnswer(text,keywordGroups,minWords,minGroups){
+  const t=norm(text);
+  const words=t.split(/\s+/).filter(function(w){return w.length>0});
+  if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0};
+  let matched=0;
+  keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(norm(k))!==-1}))matched++});
+  if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length};
+  return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched};
+}
+
+/* ================== RENDER QUESTIONS ================== */
+function renderQuestions(){
+  const host=document.getElementById('questionsHost');if(!host)return;
+  host.innerHTML='';
+  lesson.questions.forEach(function(q,idx){
+    const card=document.createElement('div');card.className='q-card';
+    const typeLabel={short:'Short answer',tfng:'True / False / Not Given',mcq:'Multiple choice',long:'Long answer',complete:'Complete the sentence'}[q.type]||'';
+    card.innerHTML='<div class="q-num">Question '+(idx+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(q.prompt).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
+    const body=document.createElement('div');
+    card.appendChild(body);
+    if(q.type==='short'||q.type==='complete'){
+      const row=document.createElement('div');row.className='q-input-row';
+      const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';inp.dataset.answerIdx=idx;
+      const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
+      const fb=document.createElement('div');fb.className='q-feedback';
+      let done=false;
+      function submit(){
+        if(done)return;
+        const val=norm(inp.value);
+        const accepted=q.type==='short'?q.answers:q.answers;
+        const ok=accepted.some(function(a){return norm(a)===val});
+        if(ok){
+          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;
+          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
+          answers[idx]=inp.value;updateProgress();
+        }else{
+          inp.classList.add('wrong');
+          fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again.';
+          setTimeout(function(){inp.classList.remove('wrong')},600);
+        }
+      }
+      btn.onclick=submit;
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+      /* Mark as answered as soon as the student types anything (so progress unlocks even if wrong) */
+      inp.addEventListener('input',function(){
+        if(inp.value.trim().length>0){answers[idx]=inp.value;updateProgress()}
+        else{delete answers[idx];updateProgress()}
+      });
+      row.appendChild(inp);row.appendChild(btn);
+      body.appendChild(row);body.appendChild(fb);
+      body.insertAdjacentHTML('beforeend',flagButtonHTML(idx));
+    }else if(q.type==='tfng'){
+      const opts=document.createElement('div');opts.className='tfng-opts';
+      shuffle(['True','False','Not Given']).forEach(function(o){
+        const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+        b.onclick=function(){
+          if(b.disabled)return;
+          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+          const fb=card.querySelector('.q-feedback');
+          if(o===q.answer){b.classList.add('correct');fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
+          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===q.answer)x.classList.add('correct')});fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
+          answers[idx]=o;updateProgress();
+        };
+        opts.appendChild(b);
+      });
+      body.appendChild(opts);
+      const fb=document.createElement('div');fb.className='q-feedback';body.appendChild(fb);
+    }else if(q.type==='mcq'){
+      const opts=document.createElement('div');opts.className='q-opts';
+      shuffle(q.options).forEach(function(o){
+        const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+        b.onclick=function(){
+          if(b.disabled)return;
+          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+          const fb=card.querySelector('.q-feedback');
+          if(o===q.correct){b.classList.add('correct');fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
+          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===q.correct)x.classList.add('correct')});fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
+          answers[idx]=o;updateProgress();
+        };
+        opts.appendChild(b);
+      });
+      body.appendChild(opts);
+      const fb=document.createElement('div');fb.className='q-feedback';body.appendChild(fb);
+    }else if(q.type==='long'){
+      const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';ta.dataset.answerIdx=idx;
+      const row=document.createElement('div');row.className='q-input-row';row.style.marginTop='10px';
+      const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer';
+      const fb=document.createElement('div');fb.className='q-feedback';
+      let done=false;
+      function submit(){
+        if(done)return;
+        const txt=ta.value.trim();
+        const res=checkLongAnswer(txt,q.keywordGroups,q.minWords,q.minGroups);
+        if(res.pass){
+          ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;
+          fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
+        }else{
+          ta.classList.add('wrong');
+          fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>';
+        }
+        answers[idx]=txt;updateProgress();
+      }
+      btn.onclick=submit;
+      ta.addEventListener('input',function(){
+        if(ta.value.trim().length>0){answers[idx]=ta.value;updateProgress()}
+        else{delete answers[idx];updateProgress()}
+      });
+      row.appendChild(btn);
+      body.appendChild(ta);body.appendChild(row);body.appendChild(fb);
+      body.insertAdjacentHTML('beforeend',flagButtonHTML(idx));
+    }
+    host.appendChild(card);
+  });
+  /* Restore previously saved answers on page load */
+  restoreAnswers();
+  updateProgress();
+}
+
+/* ================== RESTORE SAVED ANSWERS ================== */
+function restoreAnswers(){
+  lesson.questions.forEach(function(q,idx){
+    if(!(idx in answers))return;
+    const saved=answers[idx];
+    if(q.type==='short'||q.type==='complete'||q.type==='long'){
+      const ta=document.querySelector('[data-answer-idx="'+idx+'"]');
+      if(ta){ta.value=saved}
+    }else if(q.type==='tfng'||q.type==='mcq'){
+      const card=document.querySelectorAll('#questionsHost .q-card')[idx];
+      if(!card)return;
+      card.querySelectorAll('.q-opt').forEach(function(b){
+        if(b.textContent===saved){b.disabled=true;
+          /* apply visual state without re-running the click handler */
+          if(q.type==='tfng'){if(saved===q.answer)b.classList.add('correct');else b.classList.add('wrong')}
+          else{if(saved===q.correct)b.classList.add('correct');else b.classList.add('wrong')}
+        }
+      });
+    }
+  });
+}
+
+/* ================== SUBMIT ================== */
 function submitAll(){
   if(submitted)return;
-  if(Object.keys(answers).length<lesson.questions.length){
+  const total=lesson.questions.length;
+  if(Object.keys(answers).length<total){
     if(!confirm('Some questions are still blank. Submit anyway?'))return;
   }
-  submitted=true;
+  /* Grade everything one more time to compute score */
   let score=0;
-  lesson.questions.forEach((q,i)=>{
-    const card=document.getElementById('q'+i);
-    const fb=document.getElementById('fb'+i);
-    const userAns=answers[i];
-    let ok=false;
-    card.querySelectorAll('button,select,input').forEach(el=>el.disabled=true);
-    if(q.type==='input'){
-      const norm=s=>String(s).toLowerCase().trim().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
-      ok=q.answers.some(a=>norm(a)===norm(userAns));
-      card.querySelector('input').classList.add(ok?'correct':'wrong');
-      if(!ok){const c=document.createElement('div');c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';c.innerHTML='<b>Correct:</b> '+esc(q.answers[0]);card.appendChild(c);}
-    } else if(q.type==='order'){
-      ok=Array.isArray(userAns)&&userAns.length===q.answer.length&&userAns.every((w,k)=>w===q.answer[k]);
-      card.querySelector('.orderline').classList.add(ok?'correct':'wrong');
-      if(!ok){const c=document.createElement('div');c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';c.innerHTML='<b>Correct order:</b> '+q.answer.map(esc).join(' ');card.appendChild(c);}
-    } else if(q.type==='tf'){
-      ok=String(userAns)===q.answer;
-      card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===q.answer)p.classList.add('correct');else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong')});
-    } else {
-      ok=String(userAns)===String(q.answer);
-      if(q.type==='select'){
-        const s=card.querySelector('select');s.classList.add(ok?'correct':'wrong');
-        if(!ok){const c=document.createElement('div');c.style.cssText='margin-top:10px;padding:10px 14px;background:#e5f1e7;border-radius:8px;font-size:16px;color:#2c6653;';c.innerHTML='<b>Correct answer:</b> '+esc(q.answer);card.appendChild(c);}
-      } else {
-        card.querySelectorAll('.pick').forEach(p=>{if(p.dataset.value===q.answer)p.classList.add('correct');else if(p.dataset.value===userAns&&!ok)p.classList.add('wrong')});
-      }
+  lesson.questions.forEach(function(q,idx){
+    const a=answers[idx];
+    if(a===undefined)return;
+    if(q.type==='short'||q.type==='complete'){
+      if(q.answers.some(function(x){return norm(x)===norm(a)}))score++;
+    }else if(q.type==='tfng'){
+      if(a===q.answer)score++;
+    }else if(q.type==='mcq'){
+      if(a===q.correct)score++;
+    }else if(q.type==='long'){
+      const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups);
+      if(res.pass)score++;
     }
-    if(ok)score++;
-    fb.className='feedback show '+(ok?'ok':'no');
-    fb.innerHTML='<span class="en">'+(ok?'✓ Correct. ':'✗ Not quite. ')+esc(q.explain)+'</span><span class="ru">'+esc(q.explain_ru||'')+'</span>';
   });
-  const total=lesson.questions.length;
-  const summary=document.getElementById('summary');
-  summary.className='summary show';
-  summary.innerHTML='🎉 Homework finished! Score: <b>'+score+' / '+total+'</b>';
-  document.getElementById('progressText').textContent=score+' / '+total+' correct';
-  document.getElementById('progressFill').style.width=Math.round(score/total*100)+'%';
-  document.getElementById('scoreText').textContent=score+' / '+total+' points';
-  document.getElementById('finishBar').classList.remove('show');
-  saveProgress(score,total);
-  window.scrollTo({top:summary.offsetTop-100,behavior:'smooth'});
+  submitted=true;
+  /* Save to Firebase */
+  if(sessionRef&&!teacherMode){
+    sessionRef.child('homework/'+homeworkId).update({
+      version:homeworkVersion,
+      answers:answers,
+      score:score,
+      total:total,
+      submitted:true,
+      completed:true,
+      updatedAt:Date.now()
+    }).catch(function(e){console.error(e)});
+  }
+  /* Visual result */
+  const host=document.getElementById('questionsHost');
+  const banner=document.createElement('div');banner.className='result-banner';
+  banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+
+    '<div class="big">'+score+' / '+total+'</div>'+
+    '<p>Your answers have been sent to your teacher. You can close this page.</p>';
+  host.insertBefore(banner,host.firstChild);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(typeof confetti==='function')confetti();
+  updateProgress();
 }
 
-function saveProgress(score,total){
-  if(!ref||teacherMode)return;
-  ref.update({version:homeworkVersion,answers:answers,score:score,total:total,submitted:true,completed:true,updatedAt:Date.now()}).catch(console.error);
+/* ================== CONFETTI ================== */
+function confetti(){
+  const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.top='-20px';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=Math.random()*.5+'s';
+    c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';
+    if(Math.random()>.5)c.style.borderRadius='50%';
+    document.body.appendChild(c);setTimeout(function(){c.remove()},3600);
+  }
 }
 
-let db=null,ref=null;
-renderWords();
-renderPassage();
-
+/* ================== FIREBASE INIT + AUTH ================== */
 function initFirebase(){
   try{
-    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-    db=firebase.database();
-    imageRef=db.ref('curriculum/'+homeworkId+'/flashcardImages');
-    imageRef.on('value',s=>{customImages=s.val()||{}});
+    fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
+    fbDb=firebase.database();
+    fbAuth=firebase.auth();
+
+    /* Display title from content */
+    document.title=lesson.title;
+    document.getElementById('hwTitle').textContent=lesson.title;
+    document.getElementById('hwSub').textContent=lesson.sub;
+    document.getElementById('heroEyebrow').textContent=lesson.eyebrow;
+    document.getElementById('heroHeadline').textContent=lesson.headline;
+    document.getElementById('heroIntro').innerHTML=escapeHtml(lesson.intro)+
+      '<span class="ru">Это одностраничная домашка: прочитайте текст и ответьте на все вопросы. Отправить работу можно только после ответа на все вопросы.</span>';
+
     if(teacherPreviewRequested){
-      firebase.auth().onAuthStateChanged(function(user){
+      fbAuth.onAuthStateChanged(function(user){
         teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
         teacherMode=teacherCanEdit;
-        if(teacherCanEdit){
-          document.querySelector('.sub').textContent='Teacher preview · student progress is unchanged';
-          document.getElementById('intro').textContent='Teacher preview. Click any keyword, then the ✏️ button to set a custom picture.';
-        }
-        renderQuestions();
+        if(teacherCanEdit){renderPassage();renderQuestions()}
+        else{document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Teacher sign-in required</h2></div>'}
       });
       return;
     }
-    if(!code){
-      renderQuestions();
-      document.getElementById('intro').textContent+=' Open this page from your student portal so your progress can be saved.';
-      return;
-    }
-    ref=db.ref('sessions/'+code+'/homework/'+homeworkId);
-    ref.once('value').then(s=>{
-      const data=s.val()||{};
-      if(Number(data.version)!==homeworkVersion){
-        answers={};submitted=false;
-        ref.set({version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false}).catch(console.error);
-      }else{
+
+    fbAuth.onAuthStateChanged(function(user){
+      if(!user){
+        document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Please sign in</h2><p>Open the <a href="portal.html" style="color:#ee5a24">student portal</a> first.</p></div>';
+        return;
+      }
+      if(!code){startHomework();return}
+      fbDb.ref('students/'+code).once('value').then(function(snap){
+        const s=snap.val();
+        if(!s||s.uid!==user.uid){
+          document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>Your account is not linked to this student code.</p></div>';
+          return;
+        }
+        startHomework();
+      });
+    });
+  }catch(e){console.error(e);startHomework()}
+}
+
+function startHomework(){
+  if(fbDb&&!teacherMode){
+    sessionRef=fbDb.ref('sessions/'+code);
+    /* Load previous answers if resuming */
+    sessionRef.child('homework/'+homeworkId).once('value').then(function(snap){
+      const data=snap.val()||{};
+      if(Number(data.version)===homeworkVersion){
         answers=data.answers||{};
         submitted=!!data.submitted;
+      }else{
+        answers={};submitted=false;
+        sessionRef.child('homework/'+homeworkId).set({
+          version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false
+        }).catch(function(){});
       }
-      renderQuestions();
+      renderPassage();renderQuestions();
       if(submitted){
-        const saved=teacherMode;teacherMode=true;
-        submitAll();
-        teacherMode=saved;
+        /* Show submitted state immediately */
+        const host=document.getElementById('questionsHost');
+        const banner=document.createElement('div');banner.className='result-banner';
+        banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+
+          '<p>Your teacher has your answers.</p>';
+        host.insertBefore(banner,host.firstChild);
       }
-    }).catch(e=>{
-      document.getElementById('intro').textContent+=' Progress could not be loaded: '+e.message;
-      renderQuestions();
+    }).catch(function(e){
+      console.error(e);
+      renderPassage();renderQuestions();
     });
-  }catch(e){renderQuestions()}
+  }else{
+    renderPassage();renderQuestions();
+  }
 }
-firebase.auth().onAuthStateChanged(function(user) {
-  if (!user) { document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif;"><h2>Please sign in</h2><p>Open the <a href="portal.html">student portal</a> first.</p></div>'; return; }
-  const urlCode = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
-  if (!urlCode) { initFirebase(); return; }
-  firebase.database().ref('students/' + urlCode).once('value').then(function(snap) {
-    const s = snap.val();
-    if (!s || s.uid !== user.uid) { document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif;"><h2>Access denied</h2><p>Your account is not linked to this student code.</p></div>'; return; }
-    initFirebase();
-  });
-});
+
+/* ================== BOOT ================== */
+initFirebase();
 </script>
-</body></html>
+</body>
+</html>
