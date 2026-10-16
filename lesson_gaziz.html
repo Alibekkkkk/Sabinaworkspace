@@ -126,9 +126,8 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .quiz-hint-row{margin:6px 0 10px}
 .quiz-hint-btn{background:var(--panel);border:1px dashed var(--border);border-radius:8px;padding:7px 16px;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:all .15s}
 .quiz-hint-btn:hover{border-color:var(--accent);color:var(--accent);border-style:solid}
-.quiz-context-ru{font-size:14px;color:var(--primary);font-weight:700;margin-bottom:10px;padding:8px 12px;background:var(--bg);border-radius:8px;text-align:left}
-.quiz-context{font-size:13px;color:var(--accent);font-weight:600;margin-bottom:10px;font-style:italic;text-align:left}
-.quiz-question{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:14px;text-align:left}
+.quiz-context{font-size:16px;color:var(--primary);font-weight:800;margin-bottom:14px;font-style:normal;text-align:left;padding:12px 16px;background:var(--bg);border-radius:10px;border-left:4px solid var(--primary);line-height:1.5}
+.hint-label{display:block;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
 .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .quiz-opt{padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;text-align:left}
 .quiz-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
@@ -665,18 +664,30 @@ function openQuiz(idx){
   openQuizWord(w.en);
 }
 function openQuizWord(word){
-  quizWord=word;
-  quizOptionsCache={};
-  quizHintShown=false;
-  const w=VOCAB.find(function(x){return x.en===word});if(!w)return;
-  quizMeanings=w.meanings.slice();
-  quizCurrentIdx=0;
-  quizRoundWrongs=0;
-  quizAnswers={};
-  renderQuizModal();
-  document.getElementById('fcModal').classList.add('open');
-  sFlip();
-  broadcastAction('flashcard_open',word);
+  try{
+    quizWord=word;
+    quizOptionsCache={};
+    quizHintShown=false;
+    const w=VOCAB.find(function(x){return x.en===word});
+    if(!w){console.warn('Word not found:',word);return}
+    quizMeanings=w.meanings.slice();
+    quizCurrentIdx=0;
+    quizRoundWrongs=0;
+    quizAnswers={};
+    renderQuizModal();
+    const modal=document.getElementById('fcModal');
+    if(!modal){alert('Modal element missing from page');return}
+    modal.classList.add('open');
+    modal.style.display='flex';
+    modal.style.position='fixed';
+    modal.style.inset='0';
+    modal.style.zIndex='99999';
+    try{sFlip()}catch(e){}
+    try{broadcastAction('flashcard_open',word)}catch(e){}
+  }catch(err){
+    console.error('openQuizWord failed:',err);
+    alert('Cannot open quiz: '+err.message);
+  }
 }
 function closeFCModal(){
   document.getElementById('fcModal').classList.remove('open');
@@ -714,8 +725,7 @@ function renderQuizModal(){
   let html='<div class="quiz-progress">'+(practiceMode?'Practice · ':'')+'Meaning '+(quizCurrentIdx+1)+' of '+w.meanings.length+'</div>';
   html+='<div class="quiz-hint-row"><button class="quiz-hint-btn" onclick="toggleQuizHint()">'+(quizHintShown?'🙈 Hide hint':'💡 Show hint')+'</button></div>';
   if(quizHintShown){
-    html+='<div class="quiz-context">'+escapeHtml(meaning.context)+'</div>';
-    html+='<div class="quiz-context-ru">🇷🇺 '+escapeHtml(meaning.ru)+'</div>';
+    html+='<div class="quiz-context"><span class="hint-label">Hint · English meaning</span>'+escapeHtml(meaning.context)+'</div>';
   }
   html+='<div class="quiz-question">Choose the correct translation:</div>';
   html+='<div class="quiz-options">';
@@ -799,11 +809,21 @@ function finalizeRound(){
 
   if(practiceMode){
     practiceIdx++;
-    if(practiceIdx<practiceQueue.length){setTimeout(function(){openQuizWord(practiceQueue[practiceIdx])},500);return}
-    setTimeout(showPracticeSummary,500);
+    if(practiceIdx<practiceQueue.length){setTimeout(function(){openQuizWord(practiceQueue[practiceIdx])},400);return}
+    setTimeout(showPracticeSummary,400);
     return;
   }
-  setTimeout(function(){closeFCModal()},600);
+  /* Not in practice mode: automatically load the next card in the current filter */
+  setTimeout(advanceToNextCard,400);
+}
+function advanceToNextCard(){
+  if(!s1VisibleList||!s1VisibleList.length){closeFCModal();return}
+  if(s1CurrentIdx<s1VisibleList.length-1){
+    s1CurrentIdx++;
+    openQuizWord(s1VisibleList[s1CurrentIdx].en);
+  }else{
+    closeFCModal();
+  }
 }
 
 function showPracticeSummary(){
@@ -838,10 +858,10 @@ function startPractice(){
     practiceMode=true;
     practiceQueue=shuffle(toPractice);
     practiceIdx=0;
-    openQuizWord(practiceQueue[0]);
+    openQuizWord(practiceQueue[0].en);
   }catch(err){
-    console.error('startPractice error:',err);
-    showToast('Error: '+err.message);
+    console.error('startPractice failed:',err);
+    alert('Practice could not start: '+err.message);
   }
 }
 
