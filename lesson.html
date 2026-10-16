@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Natural Disasters — Learning Studio</title>
+<title>Sabina — Natural Disasters: Vocabulary, Reading & Tenses</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -31,38 +31,32 @@ body{display:flex;flex-direction:column}
 .sync-dot.off{background:var(--error);animation:none}
 @keyframes syncPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 .session-input{display:flex;align-items:center;gap:6px;background:var(--bg);padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700}
-.session-input input{border:none;background:transparent;font-family:'Fira Code','Courier New',monospace;font-size:13px;font-weight:800;color:var(--accent);outline:none;width:90px;text-transform:uppercase;letter-spacing:.5px}
+.session-input input{border:none;background:transparent;font-family:'Fira Code',monospace;font-size:13px;font-weight:800;color:var(--accent);outline:none;width:90px;text-transform:uppercase;letter-spacing:.5px}
 .session-input input::placeholder{color:var(--ink-soft);font-weight:600;text-transform:none;letter-spacing:0}
 .session-input .join-code{border:0;border-radius:14px;background:var(--accent);color:#fff;font-size:11px;font-family:inherit;font-weight:700;padding:5px 9px;cursor:pointer}
 .session-input .lbl{color:var(--ink-soft);font-weight:600}
 .layout{flex:1;display:flex;overflow:hidden}
-.sidebar{width:260px;background:var(--panel);border-right:1px solid var(--border);padding:18px 14px;overflow-y:auto;flex-shrink:0}
+.sidebar{width:280px;background:var(--panel);border-right:1px solid var(--border);padding:18px 14px;overflow-y:auto;flex-shrink:0}
 .sidebar-header{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;padding:0 10px 10px;display:flex;justify-content:space-between;align-items:center}
 .sidebar-header .pct{color:var(--accent);font-size:14px}
 .progress-rail{height:6px;background:var(--bg);border-radius:6px;margin:0 10px 18px;overflow:hidden}
 .progress-rail-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .5s ease;border-radius:6px}
 .stage-list{display:flex;flex-direction:column;gap:2px}
-.year-item{padding:10px 12px;border-radius:10px;cursor:pointer;font-size:15px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;transition:all .15s;background:var(--bg);margin-top:4px}
-.year-item:hover{color:var(--accent)}
+.year-item{padding:10px 12px;border-radius:10px;cursor:pointer;font-size:15px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px;background:var(--bg);margin-top:4px}
 .year-item .arrow{margin-left:auto;font-size:12px;transition:transform .2s}
 .year-item.open .arrow{transform:rotate(90deg)}
-.month-item{padding:8px 12px 8px 28px;cursor:pointer;font-size:15px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:8px;border-radius:8px;transition:all .15s}
-.month-item:hover{background:var(--bg);color:var(--ink)}
+.month-item{padding:8px 12px 8px 28px;cursor:pointer;font-size:15px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:8px;border-radius:8px}
 .month-item .arrow{margin-left:auto;font-size:12px;transition:transform .2s}
 .month-item.open .arrow{transform:rotate(90deg)}
-.lesson-item{padding:8px 12px 8px 44px;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink-soft);border-radius:8px;transition:all .15s;display:flex;align-items:center;gap:8px}
-.lesson-item:hover{background:var(--bg);color:var(--ink)}
-.lesson-item.active{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 4px 12px rgba(238,90,36,.3)}
+.lesson-item{padding:8px 12px 8px 44px;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink-soft);border-radius:8px;display:flex;align-items:center;gap:8px}
+.lesson-item.active{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff}
 .lesson-item.done{color:var(--success)}
 .lesson-item.active.done{color:#fff}
-.lesson-item .check{margin-left:auto;font-size:14px;opacity:0}
-.lesson-item.done .check{opacity:1}
 .stage-sub-list{display:flex;flex-direction:column;gap:2px;padding-left:8px;margin-bottom:8px;border-left:2px solid var(--border);margin-left:22px}
-.stage-sub-item{padding:7px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink-soft);transition:all .15s;display:flex;align-items:center;gap:8px;background:transparent;border:none;text-align:left;width:100%;font-family:inherit}
+.stage-sub-item{padding:7px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink-soft);display:flex;align-items:center;gap:8px;background:transparent;border:none;text-align:left;width:100%;font-family:inherit}
 .stage-sub-item:hover{background:var(--bg);color:var(--ink)}
 .stage-sub-item.active{background:var(--bg);color:var(--accent);font-weight:800}
 .stage-sub-item.done{color:var(--success)}
-.stage-sub-item .icon{font-size:15px}
 .homework-sub-list{margin:2px 0 8px 30px;padding:7px 8px 7px 12px;border-left:2px solid var(--accent);background:rgba(255,138,91,.07);border-radius:0 9px 9px 0}
 .homework-sub-label{font:11px 'Fira Code',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin:2px 6px 5px}
 .homework-sub-item{display:block;padding:6px;color:var(--ink-soft);font-size:14px;text-decoration:none;border-radius:7px}
@@ -70,7 +64,7 @@ body{display:flex;flex-direction:column}
 .main{flex:1;overflow-y:auto;padding:30px 40px 40px;scroll-behavior:smooth}
 .main::-webkit-scrollbar{width:10px}
 .main::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
-.stage-view{display:none;animation:fadeSlide .4s ease;max-width:900px;margin:0 auto}
+.stage-view{display:none;animation:fadeSlide .4s ease;max-width:1000px;margin:0 auto}
 .stage-view.active{display:block}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .stage-view h2{font-size:32px;color:var(--ink);margin-bottom:6px;font-weight:800}
@@ -85,6 +79,8 @@ body{display:flex;flex-direction:column}
 .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
 .btn.success{background:var(--success);box-shadow:0 3px 0 #1e7e34}
 .btn.small{padding:7px 14px;font-size:14px}
+.btn.flag{background:var(--warn);box-shadow:0 3px 0 #c96b00;color:#fff}
+.btn.flag:hover{background:#e08600}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
 .flash-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:14px 18px;background:var(--panel);border-radius:12px;border:1px solid var(--border)}
 .flash-toolbar .filt{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--ink-soft);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
@@ -95,7 +91,7 @@ body{display:flex;flex-direction:column}
 .flashcard{background:var(--panel);border:2px solid var(--border);border-radius:14px;cursor:pointer;transition:all .2s;overflow:hidden;position:relative;aspect-ratio:1/1.05;display:flex;flex-direction:column;box-shadow:var(--shadow-sm)}
 .flashcard:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 28px rgba(238,90,36,.18)}
 .flashcard.known{border-color:var(--success)}
-.flashcard.known::before{content:'✓';position:absolute;top:8px;right:8px;width:26px;height:26px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;z-index:4;box-shadow:0 3px 8px rgba(46,158,91,.4)}
+.flashcard.known::before{content:'✓';position:absolute;top:8px;right:8px;width:26px;height:26px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;z-index:4}
 .flashcard-img{flex:1;display:flex;align-items:center;justify-content:center;font-size:64px;background:linear-gradient(135deg,rgba(42,82,152,.06),rgba(238,90,36,.06));position:relative;overflow:hidden;min-height:100px}
 .flashcard-img img{width:100%;height:100%;object-fit:cover}
 .flashcard-word{padding:10px 8px;text-align:center;font-size:16px;font-weight:800;color:var(--ink);border-top:1px solid var(--border);background:var(--panel)}
@@ -108,12 +104,17 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .fc-modal-img img{width:100%;height:100%;object-fit:contain;padding:20px}
 .fc-modal-img .label{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.9);color:var(--ink);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .fc-modal-body{padding:24px 28px 28px;text-align:center}
-.fc-modal-word{font-size:36px;font-weight:800;color:var(--primary);margin-bottom:6px}
-.fc-modal-translation{font-size:20px;color:var(--accent);font-weight:700;margin-bottom:20px;min-height:26px;transition:opacity .3s}
-.fc-modal-translation.hidden{opacity:0}
-.fc-modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fc-modal-word{font-size:34px;font-weight:800;color:var(--primary);margin-bottom:6px}
+.fc-reveal-area{display:none;text-align:left;margin-top:18px}
+.fc-reveal-area.show{display:block}
+.fc-meaning{padding:14px 16px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);margin-bottom:12px}
+.fc-meaning .context{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
+.fc-meaning .translation{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.fc-meaning .example{font-size:15px;line-height:1.6;color:var(--ink-soft);font-style:italic;padding-left:10px;border-left:2px solid var(--border)}
+.fc-meaning .example b{color:var(--primary);font-style:normal}
+.fc-modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .fc-modal-actions .btn{min-width:130px;justify-content:center}
-.fc-modal-tools{display:flex;gap:8px;justify-content:center;margin-top:18px;padding-top:18px;border-top:1px dashed var(--border);flex-wrap:wrap}
+.fc-modal-tools{display:flex;gap:8px;justify-content:center;margin-top:16px;padding-top:16px;border-top:1px dashed var(--border);flex-wrap:wrap}
 .fc-modal-tools .tool{padding:8px 14px;font-size:14px;font-weight:700;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:inherit;color:var(--ink-soft)}
 .fc-modal-tools .tool:hover{border-color:var(--accent);color:var(--accent)}
 .fc-modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
@@ -136,16 +137,14 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.85;color:var(--ink);box-shadow:var(--shadow-sm);font-family:'EB Garamond','Times New Roman',serif}
-.passage h3{color:var(--accent);font-size:22px;font-family:'EB Garamond','Times New Roman',serif;font-weight:800;margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border)}
-.passage h3:first-child{margin-top:0}
-.passage p{margin-bottom:14px}
-.v-word{background:rgba(238,90,36,.12);color:var(--accent-dark);font-weight:700;cursor:pointer;padding:1px 5px;border-radius:5px;border-bottom:2px dotted var(--accent);font-family:'EB Garamond','Times New Roman',serif}
-.v-word:hover{background:var(--accent);color:#fff}
-.v-word.learned{background:var(--success-soft);color:var(--success);border-bottom-color:var(--success)}
+.passage h1{font-size:26px;color:var(--accent);margin-bottom:8px;font-weight:800;line-height:1.2}
+.passage .subtitle{font-size:15px;color:var(--ink-soft);font-style:italic;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:12px}
+.passage p{margin-bottom:16px;text-align:justify}
+.passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
+.q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
 .q-prompt{font-size:18px;line-height:1.6;color:var(--ink);font-weight:600;margin-bottom:14px}
-.q-prompt .bracket{display:inline-block;font-size:14px;color:var(--accent);background:rgba(238,90,36,.1);padding:2px 8px;border-radius:6px;font-weight:700;margin-left:4px}
 .q-opts{display:flex;gap:10px;flex-wrap:wrap}
 .q-opt{padding:11px 20px;background:var(--bg);border:2px solid var(--border);border-radius:10px;font-family:inherit;font-size:16px;font-weight:700;color:var(--ink);cursor:pointer}
 .q-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
@@ -156,17 +155,26 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .q-input:focus{border-color:var(--accent);background:var(--panel)}
 .q-input.correct{border-color:var(--success);background:var(--success-soft);color:var(--success)}
 .q-input.wrong{border-color:var(--error);background:var(--error-soft);color:var(--error);animation:shake .4s}
+.q-textarea{width:100%;min-height:110px;padding:14px 16px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond','Times New Roman',serif;font-size:17px;line-height:1.55;color:var(--ink);background:var(--bg);outline:none;resize:vertical}
+.q-textarea:focus{border-color:var(--accent);background:var(--panel)}
+.q-textarea.correct{border-color:var(--success);background:var(--success-soft)}
+.q-textarea.wrong{border-color:var(--error);background:var(--error-soft)}
 .q-feedback{margin-top:12px;padding:11px 16px;border-radius:10px;font-size:16px;font-weight:600;display:none}
 .q-feedback.correct{background:var(--success-soft);color:var(--success);display:block;border-left:4px solid var(--success)}
 .q-feedback.wrong{background:var(--error-soft);color:var(--error);display:block;border-left:4px solid var(--error)}
-.q-feedback .exp{display:block;font-weight:500;font-size:15px;color:var(--ink-soft);margin-top:6px}
+.q-feedback.info{background:rgba(255,152,0,.12);color:#a26a00;display:block;border-left:4px solid var(--warn)}
+html.dark .q-feedback.info{color:#f5c66b}
+.q-feedback .exp{display:block;font-weight:500;font-size:15px;color:var(--ink-soft);margin-top:6px;font-style:italic}
+.q-feedback .sample{display:block;font-weight:600;font-size:15px;color:var(--ink);margin-top:8px;padding:8px 12px;background:rgba(0,0,0,.04);border-radius:8px;font-style:italic}
+.tfng-opts{display:flex;gap:8px;flex-wrap:wrap}
+.tfng-opts .q-opt{padding:9px 16px;font-size:15px}
+.review-btn-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.review-btn-row .hint{font-size:13px;color:var(--ink-soft);font-style:italic}
 .g-box{background:linear-gradient(135deg,rgba(46,158,91,.08),rgba(46,158,91,.03));border:1px solid rgba(46,158,91,.35);border-radius:14px;padding:20px 24px;margin-bottom:22px}
 .g-box h3{color:var(--success);font-size:20px;margin-bottom:12px;font-weight:800}
-.g-formula{background:var(--panel);padding:14px 18px;border-radius:10px;margin:10px 0;font-family:'Fira Code','Courier New',monospace;font-size:15px;font-weight:700;color:var(--success);border-left:4px solid var(--success)}
+.g-formula{background:var(--panel);padding:14px 18px;border-radius:10px;margin:10px 0;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;color:var(--success);border-left:4px solid var(--success)}
 .g-box ul{margin-left:22px;margin-top:8px}
 .g-box li{font-size:16px;line-height:1.7;margin-bottom:4px;color:var(--ink)}
-.ru-note{display:block;margin-top:14px;padding:12px 16px;background:rgba(255,152,0,.1);border-left:4px solid var(--warn);border-radius:8px;font-size:15px;color:var(--ink);line-height:1.6;font-style:italic}
-.ru-note b{color:var(--accent);font-style:normal}
 .sb-chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:var(--bg);border-radius:10px;margin-bottom:12px;min-height:60px}
 .sb-chip{padding:9px 16px;background:var(--panel);border:2px solid var(--border);border-radius:8px;font-weight:700;font-size:16px;color:var(--ink);cursor:pointer;user-select:none}
 .sb-chip:hover:not(.used){border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
@@ -174,12 +182,8 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .sb-area.filled{border-style:solid;border-color:var(--accent)}
 .sb-area .sb-chip{background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-color:var(--accent-dark);color:#fff}
 .sb-area .placeholder{color:var(--ink-soft);font-style:italic;font-size:15px}
-.sr-hud{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:14px;margin-bottom:16px;box-shadow:var(--shadow-md)}
-.sr-hud .sr-hud-item{text-align:center}
-.sr-hud .sr-hud-item .lbl{font-size:12px;font-weight:800;letter-spacing:1.5px;opacity:.7;text-transform:uppercase;display:block;margin-bottom:2px}
-.sr-hud .sr-hud-item .val{font-size:24px;font-weight:800;display:block}
-.sr-hud .timer.warn{color:#ffcc80}
-.sr-hud .timer.danger{color:#ff8a5b}
+.section-head{font-size:15px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin:32px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.section-head.first{margin-top:0}
 .notes-panel{position:fixed;top:60px;right:0;width:340px;height:calc(100vh - 60px);background:var(--panel);border-left:1px solid var(--border);box-shadow:-10px 0 30px rgba(0,0,0,.08);padding:22px;transform:translateX(100%);transition:transform .3s;z-index:200;display:flex;flex-direction:column}
 .notes-panel.open{transform:translateX(0)}
 .notes-panel h3{font-size:18px;margin-bottom:6px;color:var(--ink)}
@@ -193,24 +197,44 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .complete-banner p{font-size:16px;color:var(--ink-soft)}
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.reading-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.stage-view:has(.reading-split){max-width:1400px}
+.reading-pane{position:sticky;top:0}
+.reading-questions{min-width:0}
+@media(max-width:980px){.reading-split{grid-template-columns:1fr}.reading-pane{position:static}}
+.test-hud{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:14px;margin-bottom:20px;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow-md)}
+.test-hud .tcell{text-align:center;min-width:90px}
+.test-hud .tcell .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;opacity:.7;text-transform:uppercase;display:block;margin-bottom:2px}
+.test-hud .tcell .val{font-size:24px;font-weight:800;display:block}
+.test-hud .tcell .val.danger{color:#ff8a5b;animation:bump .8s infinite}
+.test-progress-rail{height:6px;background:var(--bg);border-radius:6px;overflow:hidden;margin-bottom:22px}
+.test-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .4s;border-radius:6px}
+.test-card{padding:30px 34px}
+.test-q-text{font-size:22px;line-height:1.5;font-weight:600;margin-bottom:20px}
+.test-timeout,.test-result{text-align:center;padding:50px 20px}
+.test-timeout .icon,.test-result .icon{font-size:64px;margin-bottom:14px}
+.test-timeout h3{font-size:26px;color:var(--error);margin-bottom:10px}
+.test-result h3{font-size:26px;color:var(--success);margin-bottom:10px}
+.test-result .big{font-size:72px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin:20px 0}
+.test-timeout p,.test-result p{font-size:17px;color:var(--ink-soft);margin-bottom:22px;line-height:1.55}
 @media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
-@media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo{order:0}.logo .text{display:none}.session-input{display:flex;order:1;flex:1 1 145px;min-width:145px;max-width:220px;justify-content:space-between;padding:6px 10px}.session-input input{width:95px;font-size:14px;min-height:30px}.topbar>#scorePill,.topbar>#streakPill{display:none}.topbar>#syncPill{order:2;padding:5px 9px;font-size:12px}.topbar>#timerPill{order:3;padding:5px 9px;font-size:12px}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}}
+@media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo .text{display:none}.session-input{flex:1 1 145px;justify-content:space-between}.topbar>#scorePill,.topbar>#streakPill{display:none}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}.passage{padding:20px 22px;font-size:17px}}
 ::selection{background:var(--accent);color:#fff}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="logo"><div class="mark">🌪️</div><span class="text">Learning Studio</span></div>
+  <div class="logo"><div class="mark">🌪️</div><span class="text">IELTS Studio</span></div>
   <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
   <div class="session-input"><label class="lbl" for="sessionCodeInput">Code:</label>
     <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" autocapitalize="characters" autocomplete="off" onkeydown="if(event.key==='Enter')changeSessionCode()">
     <button type="button" class="join-code" onclick="changeSessionCode()">Open</button></div>
   <div class="stat-pill" id="timerPill">⏱ <span class="val" id="timerDisplay">00:00</span></div>
-  <div class="stat-pill" id="scorePill">🏆 <span class="val" id="scoreDisplay">0</span><span style="opacity:.6;"> / 80</span></div>
+  <div class="stat-pill" id="scorePill">🏆 <span class="val" id="scoreDisplay">0</span><span style="opacity:.6;"> / 130</span></div>
   <div class="stat-pill" id="streakPill"><span id="streakDisplay" class="val green">0</span> 🔥</div>
   <div class="spacer"></div>
-  <a class="icon-btn" href="portal.html" title="Student portal" aria-label="Student portal">🎓</a>
+  <a class="icon-btn" href="dashboard.html" title="Teacher dashboard">🏫</a>
   <button class="icon-btn" id="soundToggle" onclick="toggleSound()" title="Sound">🔊</button>
   <button class="icon-btn" id="darkToggle" onclick="toggleDark()" title="Dark">🌙</button>
   <button class="icon-btn" onclick="toggleNotes()" title="Notes">📝</button>
@@ -238,19 +262,18 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
     <div class="fc-modal-img" id="fcModalImg"></div>
     <div class="fc-modal-body">
       <div class="fc-modal-word" id="fcModalWord"></div>
-      <div class="fc-modal-translation hidden" id="fcModalTrans"></div>
+      <div class="fc-reveal-area" id="fcRevealArea"></div>
       <div class="fc-modal-actions">
         <button class="btn success" onclick="fcMarkKnow()">✓ I know it</button>
         <button class="btn ghost" onclick="fcMarkAgain()">↻ Practise again</button>
       </div>
       <div class="fc-modal-tools">
         <button class="tool" onclick="fcSpeak()">🔊 Listen</button>
-        <button class="tool" id="customImageTool" onclick="editCurrentFlashcardImage()" style="display:none;">🖼️ Custom image</button>
-        <button class="tool" onclick="fcRevealTrans()">👁️ Reveal</button>
+        <button class="tool" onclick="fcReveal()">👁️ Reveal</button>
       </div>
       <div class="fc-modal-nav">
         <button onclick="fcPrev()">← Previous</button>
-        <span class="counter" id="fcCounter">1 / 40</span>
+        <span class="counter" id="fcCounter">1 / 20</span>
         <button onclick="fcNext()">Next →</button>
       </div>
     </div>
@@ -258,363 +281,260 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 </div>
 
 <script>
-/* ========== FIREBASE CONFIG ========== */
-const firebaseConfig = {
-  apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
-  authDomain: "sabina-s-workspace.firebaseapp.com",
-  databaseURL: "https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "sabina-s-workspace",
-  storageBucket: "sabina-s-workspace.firebasestorage.app",
-  messagingSenderId: "64645562064",
-  appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
-};
+/* ================== FIREBASE ================== */
+const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
-const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com','alibek.alpysbayev@nu.edu.kz','aalpysbayev2@gmail.com'];
+const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
-/* ========== CURRICULUM (fallback tree) ========== */
-const CURRICULUM = [{
-  year: "2026",
-  months: [{
-    month: "October",
-    lessons: [{
-      id: "lesson_1",
-      title: "Lesson 1: Natural Disasters",
-      stages: [
-        {id:1,label:'Vocabulary',sub:'Cards',icon:'📚'},
-        {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
-        {id:3,label:'Reading',sub:'Passage',icon:'📖'},
-        {id:4,label:'Close Reading',sub:'Text evidence',icon:'🔎'},
-        {id:5,label:'Comprehension',sub:'Quiz',icon:'✅'},
-        {id:6,label:'Present Passive',sub:'Grammar',icon:'🔵'},
-        {id:7,label:'Past Passive',sub:'Grammar',icon:'🟣'},
-        {id:8,label:'Present Perfect',sub:'New!',icon:'🟢'},
-        {id:9,label:'Sentence Builder',sub:'Build',icon:'🧩'},
-        {id:10,label:'Speed Round',sub:'Challenge',icon:'⚡'}
-      ]
-    }]
-  }]
-}];
+/* ================== CURRICULUM (9 stages) ================== */
+const CURRICULUM=[{year:"2026",months:[{month:"October",lessons:[{id:"lesson_1",title:"Lesson 1: Natural Disasters — Vocabulary, Reading & Tenses",stages:[
+  {id:1,label:'Natural Disasters Vocabulary',sub:'Cards',icon:'🌪️'},
+  {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
+  {id:3,label:'Reading & Questions',sub:'Article + practice',icon:'📖'},
+  {id:4,label:'Completing Sentence — Present Perfect',sub:'Grammar',icon:'⏳'},
+  {id:5,label:'Completing Sentence — Passive Voice',sub:'Grammar',icon:'🛡️'},
+  {id:6,label:'Sentence Builder — Present Perfect',sub:'Build',icon:'🧩'},
+  {id:7,label:'Sentence Builder — Passive',sub:'Build',icon:'🧱'},
+  {id:8,label:'Completing Sentence — Choose the Tense',sub:'Mixed',icon:'🧭'},
+  {id:9,label:'Lesson 1 — Test Your Knowledge',sub:'Timed test',icon:'⚡'}
+]}]}]}];
 
-/* ========== STATE ========== */
-const state={
-  currentYear:"2026",
-  currentMonth:"October",
-  currentLessonId:"lesson_1",
-  currentStage:1,
-  scores:{},
-  done:{},
-  sessionStart:Date.now(),
-  streak:0,
-  currentQuestion:0,
-  lastAction:''
-};
-CURRICULUM.forEach(y=>y.months.forEach(m=>m.lessons.forEach(l=>l.stages.forEach(s=>{
-  const key=l.id+"_"+s.id;
-  state.scores[key]=0;
-  state.done[key]=false;
-}))));
+/* ================== STATE ================== */
+const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
+CURRICULUM.forEach(function(y){y.months.forEach(function(m){m.lessons.forEach(function(l){l.stages.forEach(function(s){const k=l.id+"_"+s.id;state.scores[k]=0;state.done[k]=false})})})});
+function getCurrentLesson(){const y=CURRICULUM.find(function(x){return x.year===state.currentYear});if(!y)return null;const m=y.months.find(function(x){return x.month===state.currentMonth});if(!m)return null;return m.lessons.find(function(l){return l.id===state.currentLessonId})||null}
+function totalScore(){const l=getCurrentLesson();if(!l)return 0;return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)}
 
-function getCurrentLesson(){
-  const year=CURRICULUM.find(y=>y.year===state.currentYear);if(!year)return null;
-  const month=year.months.find(m=>m.month===state.currentMonth);if(!month)return null;
-  return month.lessons.find(l=>l.id===state.currentLessonId)||month.lessons[0]||null;
-}
-function totalScore(){
-  const lesson=getCurrentLesson();if(!lesson)return 0;
-  return lesson.stages.reduce((sum,s)=>sum+(state.scores[lesson.id+"_"+s.id]||0),0);
-}
-function saveState(){
-  if(teacherMode)return;
-  try{localStorage.setItem('nd_state_natural_disasters',JSON.stringify({
-    currentYear:state.currentYear,currentMonth:state.currentMonth,currentLessonId:state.currentLessonId,
-    currentStage:state.currentStage,scores:state.scores,done:state.done,
-    notes:document.getElementById('notesArea').value,
-    dark:document.documentElement.classList.contains('dark'),
-    soundOn:soundOn,customImages:customImages
-  }))}catch(e){}
-  broadcast('state',{
-    stage:state.currentStage,score:totalScore(),streak:state.streak,
-    done:state.done,scores:state.scores,
-    notes:document.getElementById('notesArea').value,
-    elapsed:Math.floor((Date.now()-state.sessionStart)/1000)
-  });
-}
-function loadState(){
-  try{
-    const raw=localStorage.getItem('nd_state_natural_disasters');if(!raw)return;
-    const p=JSON.parse(raw);
-    if(p.currentYear)state.currentYear=p.currentYear;
-    if(p.currentMonth)state.currentMonth=p.currentMonth;
-    if(p.currentLessonId)state.currentLessonId=p.currentLessonId;
-    if(p.currentStage)state.currentStage=p.currentStage;
-    if(p.scores)Object.assign(state.scores,p.scores);
-    if(p.done)Object.assign(state.done,p.done);
-    if(p.notes)document.getElementById('notesArea').value=p.notes;
-    if(p.dark)document.documentElement.classList.add('dark');
-    if(p.soundOn!==undefined)soundOn=p.soundOn;
-    if(p.customImages)customImages=p.customImages;
-  }catch(e){}
-}
-let customImages={};
-
-/* ========== FIREBASE INIT ========== */
+/* ================== FIREBASE INIT ================== */
 function initFirebase(){
   try{
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
-    const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||state.currentLessonId;
-    if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(snap){
-      customImages=snap.val()||{};renderFlashcards();
-      if(document.getElementById('fcModal').classList.contains('open'))renderFCModal();
-    });
-    fbDb.ref('curriculum').on('value',function(snap){
-      curriculumCache=snap.val()||{};
-      renderSidebar();
-    });
+    const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
+    if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderFCModal()});
+    fbDb.ref('curriculum').on('value',function(s){curriculumCache=s.val()||{};renderSidebar()});
     if(teacherPreviewRequested){
       document.querySelector('.session-input').style.display='none';
       firebase.auth().onAuthStateChanged(function(user){
         teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
         teacherMode=teacherCanEdit;
-        if(teacherCanEdit){
-          updateSyncUI('teacher');
-          document.getElementById('syncPill').title='Teacher preview · student progress is not changed';
-          document.getElementById('timerPill').style.display='none';
-          document.getElementById('scorePill').style.display='none';
-          document.getElementById('streakPill').style.display='none';
-          document.getElementById('customImageTool').style.display='inline-block';
-          renderStage();
-        } else {
-          teacherMode=true;updateSyncUI('error');
-          document.getElementById('main').innerHTML='<div class="card"><h2>Teacher sign-in required</h2><p>Sign in to the teacher dashboard with one of the approved accounts, then reopen this lesson.</p></div>';
-        }
+        if(teacherCanEdit){updateSyncUI('teacher');document.getElementById('timerPill').style.display='none';document.getElementById('scorePill').style.display='none';document.getElementById('streakPill').style.display='none';renderStage()}
+        else{teacherMode=true;updateSyncUI('error');document.getElementById('main').innerHTML='<div class="card"><h2>Teacher sign-in required</h2></div>'}
       });
       return;
     }
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (!user) {
-        document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px;">' +
-      '<h2 style="margin-bottom:14px;">Please sign in</h2>' +
-      '<p style="color:var(--ink-soft);margin-bottom:22px;">Open the <a href="portal.html" style="color:var(--accent);font-weight:700;">student portal</a> to sign in with Google, then come back.</p>' +
-      '</div>';
-        return;
-      }
-      const code = getSessionCode();
-      if (!code) { document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px;"><h2>No lesson selected</h2><p style="color:var(--ink-soft);">Please open this lesson from your portal.</p></div>'; return; }
-      firebase.database().ref('students/' + code).once('value').then(function(snap) {
-        const s = snap.val();
-        if (!s || s.uid !== user.uid) {
-          document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px;"><h2>Access denied</h2><p style="color:var(--ink-soft);">Your account is not linked to this student code. Ask your teacher to link it.</p></div>';
-          return;
-      }
-      startStudentSession(code);
+    firebase.auth().onAuthStateChanged(function(user){
+      if(!user){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Please sign in</h2><p style="color:var(--ink-soft);margin-bottom:22px">Open the <a href="portal.html" style="color:var(--accent);font-weight:700">student portal</a> to sign in with Google, then come back.</p></div>';return}
+      const code=getSessionCode();
+      if(!code){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>No lesson selected</h2><p style="color:var(--ink-soft)">Please open this lesson from your portal.</p></div>';return}
+      firebase.database().ref('students/'+code).once('value').then(function(snap){
+        const s=snap.val();
+        if(!s||s.uid!==user.uid){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">Your account is not linked to this student code.</p></div>';return}
+        startStudentSession(code);
+      });
     });
-  });  
-  }catch(e){console.error('Firebase init error:',e);updateSyncUI('error')}
+  }catch(e){console.error(e);updateSyncUI('error')}
 }
 function startStudentSession(code){
-  if(!code){updateSyncUI('nocode');return;}
+  if(!code){updateSyncUI('nocode');return}
   sessionRef=fbDb.ref('sessions/'+code);
   activityRef=sessionRef.child('activity');
   commandRef=sessionRef.child('command');
-  commandRef.on('value',function(snap){
-    const cmd=snap.val();if(!cmd)return;
-    applyTeacherResetCommand(cmd);
-    if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
-  });
+  commandRef.on('value',function(snap){const cmd=snap.val();if(!cmd)return;applyTeacherResetCommand(cmd);if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage)});
   fbConnected=true;updateSyncUI('live');pushFullState();
 }
-function getSessionCode(){
-  const params=new URLSearchParams(window.location.search);
-  const urlCode=params.get('code');
-  const urlLesson=params.get('lesson');
-  if(urlCode&&!teacherPreviewRequested)localStorage.setItem('nd_session_code',urlCode.toUpperCase());
-  if(urlLesson&&!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',urlLesson);
-  return (urlCode||localStorage.getItem('nd_session_code')||'').toUpperCase();
-}
-function changeSessionCode(){
-  const input=document.getElementById('sessionCodeInput');
-  const code=(input.value||'').toUpperCase().trim();
-  if(!code){localStorage.removeItem('nd_session_code');updateSyncUI('nocode');return}
-  localStorage.setItem('nd_session_code',code);
-  if(!fbDb){initFirebase();return}
-  if(sessionRef)sessionRef.off();
-  if(commandRef)commandRef.off();
-  sessionRef=fbDb.ref('sessions/'+code);
-  activityRef=sessionRef.child('activity');
-  commandRef=sessionRef.child('command');
-  commandRef.on('value',function(snap){
-    const cmd=snap.val();if(!cmd)return;
-    applyTeacherResetCommand(cmd);
-    if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage);
-  });
-  fbConnected=true;updateSyncUI('live');pushFullState();
-}
-function updateSyncUI(status){
-  const dot=document.getElementById('syncDot');const txt=document.getElementById('syncStatus');
-  dot.classList.remove('warn','off');
-  if(status==='live'){txt.textContent='Live · Connected'}
-  else if(status==='teacher'){txt.textContent='Teacher preview'}
-  else if(status==='nocode'){dot.classList.add('warn');txt.textContent='Set code above'}
-  else if(status==='error'){dot.classList.add('off');txt.textContent='Error'}
-}
-function applyTeacherResetCommand(cmd){
-  if(!cmd||cmd.action!=='reset'||!cmd.ts)return;
-  const key='nd_teacher_reset_seen_'+getSessionCode();
-  let seen=0;try{seen=Number(localStorage.getItem(key)||0)}catch(e){}
-  if(Number(cmd.ts)<=seen)return;
-  try{localStorage.setItem(key,String(cmd.ts))}catch(e){}
-  teacherReset();
-}
-function teacherReset(){
-  Object.keys(state.scores).forEach(k=>state.scores[k]=0);
-  Object.keys(state.done).forEach(k=>state.done[k]=false);
-  state.currentStage=1;state.streak=0;
-  s1Known={};s3Looked={};customImages={};
-  document.getElementById('notesArea').value='';
-  updateHUD();renderSidebar();renderStage();saveState();
-}
+function getSessionCode(){const u=new URLSearchParams(window.location.search).get('code');if(u){if(!teacherPreviewRequested)localStorage.setItem('nd_session_code',u.toUpperCase());return u.toUpperCase()}return (localStorage.getItem('nd_session_code')||'').toUpperCase()}
+function changeSessionCode(){const i=document.getElementById('sessionCodeInput');const c=(i.value||'').toUpperCase().trim();if(!c){localStorage.removeItem('nd_session_code');updateSyncUI('nocode');return}localStorage.setItem('nd_session_code',c);if(!fbDb){initFirebase();return}if(sessionRef)sessionRef.off();if(commandRef)commandRef.off();startStudentSession(c)}
+function updateSyncUI(s){const d=document.getElementById('syncDot');const t=document.getElementById('syncStatus');d.classList.remove('warn','off');if(s==='live')t.textContent='Live · Connected';else if(s==='teacher')t.textContent='Teacher preview';else if(s==='nocode'){d.classList.add('warn');t.textContent='Set code above'}else if(s==='error'){d.classList.add('off');t.textContent='Error'}}
+function applyTeacherResetCommand(cmd){if(!cmd||cmd.action!=='reset'||!cmd.ts)return;const k='nd_teacher_reset_seen_'+getSessionCode();let s=0;try{s=Number(localStorage.getItem(k)||0)}catch(e){}if(Number(cmd.ts)<=s)return;try{localStorage.setItem(k,String(cmd.ts))}catch(e){}teacherReset()}
+function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;s1Known={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
 
-/* ========== AUDIO (British accent) ========== */
-let audioCtx=null,soundOn=true,ukVoice=null;
-function playTone(f,d,t,v){
-  if(!soundOn)return;t=t||'sine';v=v||.12;
-  try{
-    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.type=t;o.frequency.value=f;
-    g.gain.setValueAtTime(v,audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);
-    o.connect(g);g.connect(audioCtx.destination);
-    o.start();o.stop(audioCtx.currentTime+d);
-  }catch(e){}
-}
-function sCorrect(){playTone(660,.12);setTimeout(()=>playTone(880,.18),100)}
+/* ================== AUDIO + TTS ================== */
+let audioCtx=null,soundOn=true;
+function playTone(f,d,t,v){if(!soundOn)return;t=t||'sine';v=v||.12;try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
+function sCorrect(){playTone(660,.12);setTimeout(function(){playTone(880,.18)},100)}
 function sWrong(){playTone(180,.25,'sawtooth',.08)}
-function sWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.2),i*110))}
+function sWin(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){playTone(f,.2)},i*110)})}
 function sFlip(){playTone(500,.08,'sine',.06)}
 function sPop(){playTone(700,.06,'sine',.05)}
-function confetti(){
-  const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];
-  for(let i=0;i<70;i++){
-    const c=document.createElement('div');c.className='confetti';
-    c.style.left=Math.random()*100+'vw';c.style.top='-20px';
-    c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.animationDelay=Math.random()*.5+'s';
-    c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';
-    if(Math.random()>.5)c.style.borderRadius='50%';
-    document.body.appendChild(c);setTimeout(()=>c.remove(),3600);
-  }
-}
-function pickUKVoice(){
-  if(!('speechSynthesis' in window))return null;
-  const voices=window.speechSynthesis.getVoices();
-  return voices.find(v=>v.lang==='en-GB')||
-         voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('en-gb'))||
-         voices.find(v=>v.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(v.name))||
-         null;
-}
-if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()}}
-function speak(text){
+function confetti(){const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];for(let i=0;i<70;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.top='-20px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*.5+'s';c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';if(Math.random()>.5)c.style.borderRadius='50%';document.body.appendChild(c);setTimeout(function(){c.remove()},3600)}}
+
+let ukVoice=null;
+function pickUKVoice(){if(!('speechSynthesis' in window))return null;const v=window.speechSynthesis.getVoices();return v.find(function(x){return x.lang==='en-GB'})||v.find(function(x){return x.lang&&x.lang.toLowerCase().startsWith('en-gb')})||v.find(function(x){return x.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(x.name)})||null}
+if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=function(){ukVoice=pickUKVoice()}}
+function speak(text){if(!soundOn)return;if(!('speechSynthesis' in window))return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=.9;u.pitch=1;if(ukVoice)u.voice=ukVoice;window.speechSynthesis.speak(u)}catch(e){}}
+
+let ttsState='idle',ttsUtterId=0,ttsFullText='',ttsCharStart=0;
+function speakLong(text){
   if(!soundOn)return;
   if(!('speechSynthesis' in window))return;
   try{
     window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
+    ttsUtterId++;
+    const myId=ttsUtterId;
+    const raw=text!==undefined?text:document.getElementById('passageBody').innerText;
+    ttsFullText=String(raw).replace(/\s+/g,' ').trim();
+    ttsCharStart=0;
+    const u=new SpeechSynthesisUtterance(ttsFullText);
     u.lang='en-GB';u.rate=.9;u.pitch=1;
     if(ukVoice)u.voice=ukVoice;
+    u.onboundary=function(e){if(ttsUtterId===myId&&typeof e.charIndex==='number')ttsCharStart=e.charIndex};
+    u.onend=function(){if(ttsUtterId===myId){ttsState='idle';ttsCharStart=0;updateTTSButtons()}};
+    u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
     window.speechSynthesis.speak(u);
+    ttsState='playing';
+    updateTTSButtons();
   }catch(e){}
 }
+function pauseTTS(){if(!('speechSynthesis' in window))return;if(ttsState!=='playing')return;try{window.speechSynthesis.pause()}catch(e){}ttsState='paused';updateTTSButtons()}
+function resumeTTS(){
+  if(!('speechSynthesis' in window))return;
+  if(ttsState!=='paused')return;
+  ttsState='playing';
+  updateTTSButtons();
+  try{window.speechSynthesis.resume()}catch(e){}
+  setTimeout(function(){
+    if(ttsState!=='playing')return;
+    if(!window.speechSynthesis.speaking||window.speechSynthesis.paused){
+      try{
+        window.speechSynthesis.cancel();
+        ttsUtterId++;
+        const myId=ttsUtterId;
+        const baseOffset=ttsCharStart;
+        const remaining=ttsFullText.substring(Math.max(0,baseOffset)).replace(/^\s+/,'');
+        if(!remaining){ttsState='idle';updateTTSButtons();return}
+        const u=new SpeechSynthesisUtterance(remaining);
+        u.lang='en-GB';u.rate=.9;u.pitch=1;
+        if(ukVoice)u.voice=ukVoice;
+        u.onboundary=function(e){if(ttsUtterId===myId&&typeof e.charIndex==='number')ttsCharStart=baseOffset+e.charIndex};
+        u.onend=function(){if(ttsUtterId===myId){ttsState='idle';ttsCharStart=0;updateTTSButtons()}};
+        u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
+        window.speechSynthesis.speak(u);
+      }catch(e){}
+    }
+  },200);
+}
+function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;try{window.speechSynthesis.cancel()}catch(e){}ttsState='idle';ttsCharStart=0;updateTTSButtons()}
+function updateTTSButtons(){
+  const p=document.getElementById('ttsPlay');
+  const pa=document.getElementById('ttsPause');
+  const r=document.getElementById('ttsResume');
+  const s=document.getElementById('ttsStop');
+  const setVis=function(el,on){if(!el)return;el.style.display=on?'inline-flex':'none'};
+  setVis(p,ttsState==='idle');
+  setVis(pa,ttsState==='playing');
+  setVis(r,ttsState==='paused');
+  setVis(s,ttsState!=='idle');
+}
 
-/* ========== SYNC ========== */
-const CHANNEL='nd_lesson_live_v1';
-let bc=null;
-try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
+/* ================== SYNC ================== */
+const CHANNEL='nd_lesson_live_v4_sabina';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
   if(teacherMode)return;
-  if(fbConnected&&sessionRef){
-    try{
-      if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));
-      else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}
-      else if(type==='notes')sessionRef.child('state').update({notes:payload.text});
-    }catch(e){console.error('FB write failed:',e)}
-  }
+  if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){}}
   const msg={type:type,payload:payload,ts:Date.now()};
   if(bc){try{bc.postMessage(msg)}catch(e){}}
-  try{localStorage.setItem('nd_broadcast',JSON.stringify(msg));setTimeout(()=>localStorage.removeItem('nd_broadcast'),100)}catch(e){}
 }
-function pushFullState(){
-  if(teacherMode||!fbConnected||!sessionRef)return;
-  broadcast('state',{
-    stage:state.currentStage,score:totalScore(),streak:state.streak,
-    done:state.done,scores:state.scores,
-    notes:document.getElementById('notesArea').value,
-    elapsed:Math.floor((Date.now()-state.sessionStart)/1000)
-  });
-}
-function broadcastAction(type,detail){
-  state.lastAction=detail;
-  broadcast('action',{stage:state.currentStage,type:type,detail:detail,score:totalScore(),ts:Date.now()});
-}
+function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
+function broadcastAction(type,detail){state.lastAction=detail;broadcast('action',{stage:state.currentStage,type:type,detail:detail,score:totalScore(),ts:Date.now()})}
+function saveState(){if(teacherMode)return;try{localStorage.setItem('nd_state_sabina_v6',JSON.stringify({currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}))}catch(e){}broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
+function loadState(){try{const raw=localStorage.getItem('nd_state_sabina_v6');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
+let customImages={};
 
-/* ========== HELPERS ========== */
+/* ================== HELPERS ================== */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
 function escapeAttr(s){return escapeHtml(s)}
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
 
-/* ========== VOCAB ========== */
+/* ================== TEACHER REVIEW QUEUE ================== */
+function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
+  if(teacherMode)return;
+  if(!fbConnected||!sessionRef){alert('Cannot send to teacher — no session connected.');return}
+  const payload={stage:stageId,questionId:qId,prompt:prompt,studentAnswer:studentAnswer,autoResult:autoResult,ts:Date.now()};
+  if(extra)Object.assign(payload,extra);
+  sessionRef.child('reviewQueue').push(payload).then(function(){
+    broadcastAction('review_flagged',prompt.substring(0,40));
+  }).catch(function(e){alert('Failed to send: '+e.message)});
+}
+
+/* ================== VOCABULARY (Natural Disasters, rich) ================== */
 const VOCAB=[
-  {en:'blizzard',ru:'снежная буря, пурга',emoji:'❄️'},
-  {en:'drought',ru:'засуха',emoji:'🏜️'},
-  {en:'earthquake',ru:'землетрясение',emoji:'🏚️'},
-  {en:'flood',ru:'наводнение, потоп',emoji:'🌊'},
-  {en:'heat wave',ru:'волна жары',emoji:'🥵'},
-  {en:'hurricane',ru:'ураган',emoji:'🌀'},
-  {en:'thunderstorm',ru:'гроза',emoji:'⛈️'},
-  {en:'tornado',ru:'торнадо, смерч',emoji:'🌪️'},
-  {en:'tsunami',ru:'цунами',emoji:'🌊'},
-  {en:'wildfire',ru:'лесной пожар',emoji:'🔥'},
-  {en:'landslide',ru:'оползень',emoji:'🏔️'},
-  {en:'avalanche',ru:'лавина',emoji:'🏔️'},
-  {en:'volcano',ru:'вулкан',emoji:'🌋'},
-  {en:'eruption',ru:'извержение',emoji:'💥'},
-  {en:'lava',ru:'лава',emoji:'🟠'},
-  {en:'ash',ru:'пепел, зола',emoji:'🌫️'},
-  {en:'hail',ru:'град',emoji:'🧊'},
-  {en:'sleet',ru:'мокрый снег',emoji:'🌧️'},
-  {en:'humid',ru:'влажный',emoji:'💧'},
-  {en:'crust',ru:'земная кора',emoji:'🪨'},
-  {en:'tremor',ru:'толчок, дрожь',emoji:'📳'},
-  {en:'magnitude',ru:'магнитуда',emoji:'📊'},
-  {en:'to topple',ru:'опрокидывать',emoji:'🏚️'},
-  {en:'to overflow',ru:'выходить из берегов',emoji:'🌊'},
-  {en:'to surge',ru:'нахлынуть',emoji:'🌊'},
-  {en:'funnel',ru:'воронка',emoji:'🌪️'},
-  {en:'column',ru:'столб',emoji:'🏛️'},
-  {en:'to erupt',ru:'извергаться',emoji:'💥'},
-  {en:'atmosphere',ru:'атмосфера',emoji:'🌍'},
-  {en:'pressure',ru:'давление',emoji:'📊'},
-  {en:'region',ru:'регион',emoji:'🗺️'},
-  {en:'deforestation',ru:'вырубка лесов',emoji:'🪓'},
-  {en:'unpredictable',ru:'непредсказуемый',emoji:'❓'},
-  {en:'structure',ru:'сооружение',emoji:'🏢'},
-  {en:'brush fire',ru:'пожар в кустарнике',emoji:'🔥'},
-  {en:'soil',ru:'почва',emoji:'🟫'},
-  {en:'to collide',ru:'сталкиваться',emoji:'💥'},
-  {en:'to disrupt',ru:'нарушать',emoji:'⚡'},
-  {en:'vibration',ru:'вибрация',emoji:'📳'},
-  {en:'to swirl',ru:'кружиться',emoji:'🌀'}
+  {en:'blizzard',emoji:'❄️',meanings:[
+    {context:'a long snowstorm',ru:'снежная буря, пурга',ex:'A <b>blizzard</b> is a long snowstorm with very strong winds.'},
+    {context:'a sudden rush of snow',ru:'снежный вихрь',ex:'The mountain pass was closed by a sudden <b>blizzard</b>.'}
+  ]},
+  {en:'drought',emoji:'🏜️',meanings:[
+    {context:'a long period without rain',ru:'засуха',ex:'A <b>drought</b> is a long period with very little or no rain.'},
+    {context:'a serious shortage',ru:'нехватка, дефицит',ex:'The country suffered a <b>drought</b> of investment.'}
+  ]},
+  {en:'earthquake',emoji:'🏚️',meanings:[
+    {context:'a sudden shaking of the ground',ru:'землетрясение',ex:'An <b>earthquake</b> happens when the Earth\u2019s crust moves suddenly.'}
+  ]},
+  {en:'flood',emoji:'🌊',meanings:[
+    {context:'water covering dry land',ru:'наводнение, потоп',ex:'A <b>flood</b> happens when water covers land that is usually dry.'},
+    {context:'a large amount of something',ru:'поток, лавина',ex:'A <b>flood</b> of messages arrived after the announcement.'}
+  ]},
+  {en:'heat wave',emoji:'🥵',meanings:[
+    {context:'a period of very hot weather',ru:'волна жары',ex:'A <b>heat wave</b> brings temperatures much higher than usual.'}
+  ]},
+  {en:'hurricane',emoji:'🌀',meanings:[
+    {context:'a giant tropical storm',ru:'ураган',ex:'A <b>hurricane</b> is a giant swirling storm with winds up to 160 mph.'}
+  ]},
+  {en:'tornado',emoji:'🌪️',meanings:[
+    {context:'a rotating column of air',ru:'торнадо, смерч',ex:'A <b>tornado</b> is a destructive rotating column of air.'}
+  ]},
+  {en:'tsunami',emoji:'🌊',meanings:[
+    {context:'a huge ocean wave',ru:'цунами',ex:'A <b>tsunami</b> is a very large ocean wave that surges onto land.'}
+  ]},
+  {en:'wildfire',emoji:'🔥',meanings:[
+    {context:'a fire that spreads in nature',ru:'лесной пожар',ex:'A <b>wildfire</b> is a forest or grass fire that spreads quickly.'}
+  ]},
+  {en:'landslide',emoji:'⛰️',meanings:[
+    {context:'rocks sliding down a slope',ru:'оползень',ex:'A <b>landslide</b> happens when rocks and earth slide down a slope.'}
+  ]},
+  {en:'avalanche',emoji:'🏔️',meanings:[
+    {context:'snow and ice sliding down',ru:'лавина',ex:'An <b>avalanche</b> can follow heavy snowfall.'}
+  ]},
+  {en:'volcano',emoji:'🌋',meanings:[
+    {context:'a mountain that can erupt',ru:'вулкан',ex:'Active <b>volcanoes</b> send ash into the air and lava onto the ground.'}
+  ]},
+  {en:'eruption',emoji:'💥',meanings:[
+    {context:'when a volcano explodes',ru:'извержение',ex:'The <b>eruption</b> sent ash clouds into the sky.'}
+  ]},
+  {en:'magnitude',emoji:'📊',meanings:[
+    {context:'the strength of an earthquake',ru:'магнитуда',ex:'The <b>magnitude</b> of an earthquake describes its strength.'},
+    {context:'importance or scale',ru:'масштаб',ex:'Few understood the <b>magnitude</b> of the disaster.'}
+  ]},
+  {en:'tremor',emoji:'📳',meanings:[
+    {context:'a small shaking',ru:'толчок, дрожь',ex:'The earthquake was minor, with only a few small <b>tremors</b>.'}
+  ]},
+  {en:'crust',emoji:'🪨',meanings:[
+    {context:'Earth\u2019s outer layer',ru:'земная кора',ex:'An earthquake happens when the Earth\u2019s <b>crust</b> moves suddenly.'}
+  ]},
+  {en:'humid',emoji:'💧',meanings:[
+    {context:'warm and wet in the air',ru:'влажный',ex:'Warm, <b>humid</b> air rises quickly into the sky.'}
+  ]},
+  {en:'deforestation',emoji:'🪓',meanings:[
+    {context:'the removal of many trees',ru:'вырубка лесов',ex:'<b>Deforestation</b> can make droughts worse.'}
+  ]},
+  {en:'atmosphere',emoji:'🌍',meanings:[
+    {context:'the air around Earth',ru:'атмосфера',ex:'High pressure in the <b>atmosphere</b> can cause a heat wave.'}
+  ]},
+  {en:'evacuation',emoji:'🚨',meanings:[
+    {context:'organized removal from danger',ru:'эвакуация',ex:'The <b>evacuation</b> of the coastal town began at dawn.'}
+  ]}
 ];
 
-/* ========== STAGE 1: VOCABULARY ========== */
+/* ================== STAGE 1 — FLASHCARDS ================== */
 let s1Filter='all',s1Known={},s1CurrentIdx=0,s1VisibleList=[];
 function renderStage1(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 1 — Vocabulary</div><h2>📚 Meet the New Words</h2>'+
-  '<div class="lead">Click any card to <b>open it large</b>. Mark each word as <b>✓ I know it</b> or <b>↻ Practise</b>.<span class="ru">Нажмите на карточку — она откроется.</span></div>'+
+  v.innerHTML='<div class="eyebrow">Stage 1 — Natural Disasters</div><h2>🌪️ Vocabulary Flashcards</h2>'+
+  '<div class="lead">Click a card to open it. Press <b>Reveal</b> to see every meaning of the word with an example sentence for each context.<span class="ru">Нажмите на карточку → <b>Reveal</b> покажет все значения и примеры.</span></div>'+
   '<div class="flash-toolbar">'+
   '<button class="filt active" data-f="all" onclick="setFilter(\'all\')">All ('+VOCAB.length+')</button>'+
   '<button class="filt" data-f="known" onclick="setFilter(\'known\')">✓ Known</button>'+
@@ -623,128 +543,80 @@ function renderStage1(){
   '</div><div class="flash-grid" id="flashGrid"></div>';
   main.appendChild(v);main.appendChild(stageFooter(null,2));renderFlashcards();
 }
-function setFilter(f){s1Filter=f;document.querySelectorAll('.flash-toolbar .filt').forEach(b=>b.classList.toggle('active',b.dataset.f===f));renderFlashcards()}
+function setFilter(f){s1Filter=f;document.querySelectorAll('.flash-toolbar .filt').forEach(function(b){b.classList.toggle('active',b.dataset.f===f)});renderFlashcards()}
 function renderFlashcards(){
-  const grid=document.getElementById('flashGrid');if(!grid)return;
-  grid.innerHTML='';
-  const list=VOCAB.filter(v=>{
-    if(s1Filter==='known')return s1Known[v.en]===true;
-    if(s1Filter==='again')return s1Known[v.en]===false;
-    return true;
-  });
+  const grid=document.getElementById('flashGrid');if(!grid)return;grid.innerHTML='';
+  const list=VOCAB.filter(function(v){if(s1Filter==='known')return s1Known[v.en]===true;if(s1Filter==='again')return s1Known[v.en]===false;return true});
   s1VisibleList=list;
-  list.forEach((v,idx)=>{
+  list.forEach(function(v,idx){
     const card=document.createElement('div');card.className='flashcard';
     if(s1Known[v.en]===true)card.classList.add('known');
-    const customURL=customImages[v.en];
-    card.innerHTML='<div class="flashcard-img">'+(customURL?'<img src="'+escapeAttr(customURL)+'" alt="'+escapeAttr(v.en)+'" onerror="this.parentNode.textContent=\''+v.emoji+'\'">':v.emoji)+'</div><div class="flashcard-word">'+escapeHtml(v.en)+'</div>';
-    card.onclick=()=>openFCModal(idx);
+    const img=customImages[v.en];
+    card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(v.en)+'" loading="lazy" onerror="this.parentNode.textContent=\''+v.emoji+'\'">':v.emoji)+'</div><div class="flashcard-word">'+escapeHtml(v.en)+'</div>';
+    card.onclick=function(){openFCModal(idx)};
     grid.appendChild(card);
   });
   updateS1Stats();
 }
-function updateS1Stats(){
-  const known=Object.values(s1Known).filter(x=>x===true).length;
-  const again=Object.values(s1Known).filter(x=>x===false).length;
-  const kEl=document.getElementById('s1KnowCount');const aEl=document.getElementById('s1AgainCount');
-  if(kEl)kEl.textContent=known;if(aEl)aEl.textContent=again;
-}
-function checkS1Complete(){
-  const known=Object.values(s1Known).filter(x=>x===true).length;
-  const key=state.currentLessonId+"_1";
-  if(known>=30&&!state.done[key]){setScore(1,10);markDone(1)}
-  else{setScore(1,Math.min(10,Math.floor(known/3)))}
-}
+function updateS1Stats(){const k=Object.values(s1Known).filter(function(x){return x===true}).length;const a=Object.values(s1Known).filter(function(x){return x===false}).length;const ke=document.getElementById('s1KnowCount'),ae=document.getElementById('s1AgainCount');if(ke)ke.textContent=k;if(ae)ae.textContent=a}
+function checkS1Complete(){const k=Object.values(s1Known).filter(function(x){return x===true}).length;const key=state.currentLessonId+"_1";if(k>=15&&!state.done[key]){setScore(1,10);markDone(1)}else{setScore(1,Math.min(10,Math.floor(k/1.5)))}}
 function openFCModal(idx){s1CurrentIdx=idx;renderFCModal();document.getElementById('fcModal').classList.add('open');sFlip();broadcastAction('flashcard_open',s1VisibleList[idx]?s1VisibleList[idx].en:'')}
 function closeFCModal(){document.getElementById('fcModal').classList.remove('open')}
 function renderFCModal(){
   const v=s1VisibleList[s1CurrentIdx];if(!v)return;
-  const customURL=customImages[v.en];
-  const img=document.getElementById('fcModalImg');
-  img.innerHTML=customURL
-    ?'<img src="'+escapeAttr(customURL)+'" alt="'+escapeAttr(v.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+v.emoji+'</div>\'"><div class="label">'+(v.en.startsWith('to ')?'VERB':'WORD')+'</div>'
-    :'<div style="font-size:180px;line-height:1;">'+v.emoji+'</div><div class="label">'+(v.en.startsWith('to ')?'VERB':'WORD')+'</div>';
+  const img=customImages[v.en];
+  document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(v.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+v.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+v.emoji+'</div>')+'<div class="label">WORD</div>';
   document.getElementById('fcModalWord').textContent=v.en;
-  const tr=document.getElementById('fcModalTrans');tr.textContent=v.ru;tr.classList.add('hidden');
+  document.getElementById('fcRevealArea').innerHTML=v.meanings.map(function(m){return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+'</div><div class="translation">'+escapeHtml(m.ru)+'</div><div class="example">'+m.ex+'</div></div>'}).join('');
+  document.getElementById('fcRevealArea').classList.remove('show');
   document.getElementById('fcCounter').textContent=(s1CurrentIdx+1)+' / '+s1VisibleList.length;
-  document.getElementById('customImageTool').style.display=teacherCanEdit?'inline-block':'none';
+  document.querySelector('.fc-modal-actions').style.display=teacherMode?'none':'flex';
 }
-function fcRevealTrans(){document.getElementById('fcModalTrans').classList.remove('hidden')}
-function fcSpeak(){const v=s1VisibleList[s1CurrentIdx];if(v)speak(v.en.replace(/^to /,''))}
+function fcReveal(){document.getElementById('fcRevealArea').classList.add('show');sPop();broadcastAction('reveal',s1VisibleList[s1CurrentIdx]?s1VisibleList[s1CurrentIdx].en:'')}
+function fcSpeak(){const v=s1VisibleList[s1CurrentIdx];if(v)speak(v.en)}
 function fcMarkKnow(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=true;sPop();updateS1Stats();checkS1Complete();saveState();broadcastAction('know',v.en);fcNext()}
 function fcMarkAgain(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=false;sPop();updateS1Stats();saveState();broadcastAction('practise',v.en);fcNext()}
 function fcNext(){if(s1CurrentIdx<s1VisibleList.length-1){s1CurrentIdx++;renderFCModal()}else{closeFCModal();renderFlashcards()}}
 function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
-function editCurrentFlashcardImage(){
-  if(!teacherCanEdit||!fbDb)return alert('Sign in with an approved teacher account to edit flashcards.');
-  const word=s1VisibleList[s1CurrentIdx];if(!word)return;
-  const current=customImages[word.en]||'';
-  const url=prompt('Paste an image URL for "'+word.en+'" (leave blank to remove):',current);
-  if(url===null)return;
-  const trimmed=url.trim();
-  if(trimmed&&!/^https?:\/\//i.test(trimmed)){alert('Use a URL starting with http:// or https://');return}
-  const updated=Object.assign({},customImages);
-  if(trimmed)updated[word.en]=trimmed;else delete updated[word.en];
-  fbDb.ref('curriculum/'+state.currentLessonId+'/flashcardImages').set(updated).then(()=>{
-    customImages=updated;renderFlashcards();renderFCModal();alert('Picture saved!');
-  }).catch(e=>alert('Could not save: '+e.message));
-}
 
-/* ========== STAGE 2: WORD MATCH ========== */
+/* ================== STAGE 2 — WORD MATCH ================== */
 const MATCH_DATA=[
-  {word:'blizzard',meaning:'снежная буря'},{word:'drought',meaning:'засуха'},
-  {word:'earthquake',meaning:'землетрясение'},{word:'flood',meaning:'наводнение'},
-  {word:'heat wave',meaning:'волна жары'},{word:'hurricane',meaning:'ураган'},
-  {word:'thunderstorm',meaning:'гроза'},{word:'tornado',meaning:'торнадо'},
-  {word:'tsunami',meaning:'цунами'},{word:'wildfire',meaning:'лесной пожар'},
-  {word:'landslide',meaning:'оползень'},{word:'avalanche',meaning:'лавина'},
-  {word:'volcano',meaning:'вулкан'},{word:'eruption',meaning:'извержение'},
-  {word:'lava',meaning:'лава'},{word:'ash',meaning:'пепел'},
-  {word:'hail',meaning:'град'},{word:'humid',meaning:'влажный'},
-  {word:'crust',meaning:'земная кора'},{word:'tremor',meaning:'толчок'}
+  {word:'blizzard',meaning:'a long snowstorm with strong winds'},
+  {word:'drought',meaning:'a long period with very little rain'},
+  {word:'earthquake',meaning:'a sudden shaking of the ground'},
+  {word:'flood',meaning:'water covering dry land'},
+  {word:'hurricane',meaning:'a giant swirling storm'},
+  {word:'tornado',meaning:'a rotating column of air'},
+  {word:'tsunami',meaning:'a very large ocean wave'},
+  {word:'wildfire',meaning:'a fire that spreads quickly in nature'},
+  {word:'landslide',meaning:'rocks sliding down a slope'},
+  {word:'volcano',meaning:'a mountain that can erupt'}
 ];
 function renderStage2(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">Stage 2 — Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
-  '<div class="lead">Drag each English word onto its Russian translation.<span class="ru">Перетащите слово на его перевод.</span></div>'+
-  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
-  '<div style="font-size:14px;font-weight:700;color:var(--ink-soft);">Matched: <span id="s2count" style="color:var(--accent);font-size:18px;">0</span> / '+MATCH_DATA.length+'</div>'+
-  '<button class="btn ghost small" onclick="resetStage2()">↻ Reset</button></div>'+
-  '<div class="dd-area"><div><div class="dd-col-title">English Words</div><div class="dd-words" id="ddWords"></div></div>'+
-  '<div><div class="dd-col-title">Русский перевод</div><div class="dd-slots" id="ddSlots"></div></div></div>';
-  main.appendChild(v);main.appendChild(stageFooter(1,3,'<button class="btn ghost small" onclick="resetStage2()">↻ Reset</button>'));
-  renderDD();
+  '<div class="lead">Drag each English word onto its meaning.<span class="ru">Перетащите слово к его значению.</span></div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:700;color:var(--ink-soft)">Matched: <span id="s2count" style="color:var(--accent);font-size:18px">0</span> / '+MATCH_DATA.length+'</div><button class="btn ghost small" onclick="resetStage2()">↻ Reset</button></div>'+
+  '<div class="dd-area"><div><div class="dd-col-title">English Words</div><div class="dd-words" id="ddWords"></div></div><div><div class="dd-col-title">Meaning</div><div class="dd-slots" id="ddSlots"></div></div></div>';
+  main.appendChild(v);main.appendChild(stageFooter(1,3));renderDD();
 }
 function renderDD(){
-  const wordsEl=document.getElementById('ddWords'),slotsEl=document.getElementById('ddSlots');
-  if(!wordsEl||!slotsEl)return;wordsEl.innerHTML='';slotsEl.innerHTML='';
-  const words=MATCH_DATA.slice().sort(()=>Math.random()-.5);
-  const meanings=MATCH_DATA.slice().sort(()=>Math.random()-.5);
-  words.forEach(item=>{
-    const d=document.createElement('div');d.className='dd-word';d.draggable=true;
-    d.dataset.word=item.word;d.textContent=item.word;
-    d.addEventListener('dragstart',e=>{if(d.classList.contains('used')){e.preventDefault();return}e.dataTransfer.setData('text/plain',item.word)});
-    d.addEventListener('click',()=>{
-      if(d.classList.contains('used'))return;
-      document.querySelectorAll('.dd-word').forEach(x=>x.style.outline='');
-      d.style.outline='3px solid var(--accent)';d.style.outlineOffset='2px';
-      window.__selectedDDWord=item.word;
-    });
-    wordsEl.appendChild(d);
+  const wEl=document.getElementById('ddWords'),sEl=document.getElementById('ddSlots');if(!wEl||!sEl)return;wEl.innerHTML='';sEl.innerHTML='';
+  const words=shuffle(MATCH_DATA);const meanings=shuffle(MATCH_DATA);
+  words.forEach(function(item){
+    const d=document.createElement('div');d.className='dd-word';d.draggable=true;d.dataset.word=item.word;d.textContent=item.word;
+    d.addEventListener('dragstart',function(e){if(d.classList.contains('used')){e.preventDefault();return}e.dataTransfer.setData('text/plain',item.word)});
+    d.addEventListener('click',function(){if(d.classList.contains('used'))return;document.querySelectorAll('.dd-word').forEach(function(x){x.style.outline=''});d.style.outline='3px solid var(--accent)';d.style.outlineOffset='2px';window.__selDD=item.word});
+    wEl.appendChild(d);
   });
-  meanings.forEach(item=>{
-    const slot=document.createElement('div');slot.className='dd-slot';slot.dataset.answer=item.word;
-    slot.innerHTML='<span class="slot-label">'+escapeHtml(item.meaning)+'</span>';
-    slot.addEventListener('dragover',e=>{e.preventDefault();if(!slot.classList.contains('correct'))slot.classList.add('over')});
-    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
-    slot.addEventListener('drop',e=>{e.preventDefault();slot.classList.remove('over');tryPlace(e.dataTransfer.getData('text/plain'),slot)});
-    slot.addEventListener('click',()=>{
-      if(slot.classList.contains('correct'))return;
-      if(window.__selectedDDWord){tryPlace(window.__selectedDDWord,slot);window.__selectedDDWord=null;
-        document.querySelectorAll('.dd-word').forEach(x=>x.style.outline='')}
-    });
-    slotsEl.appendChild(slot);
+  meanings.forEach(function(item){
+    const s=document.createElement('div');s.className='dd-slot';s.dataset.answer=item.word;s.innerHTML='<span class="slot-label">'+escapeHtml(item.meaning)+'</span>';
+    s.addEventListener('dragover',function(e){e.preventDefault();if(!s.classList.contains('correct'))s.classList.add('over')});
+    s.addEventListener('dragleave',function(){s.classList.remove('over')});
+    s.addEventListener('drop',function(e){e.preventDefault();s.classList.remove('over');tryPlace(e.dataTransfer.getData('text/plain'),s)});
+    s.addEventListener('click',function(){if(s.classList.contains('correct'))return;if(window.__selDD){tryPlace(window.__selDD,s);window.__selDD=null;document.querySelectorAll('.dd-word').forEach(function(x){x.style.outline=''})}});
+    sEl.appendChild(s);
   });
 }
 function tryPlace(word,slot){
@@ -752,166 +624,192 @@ function tryPlace(word,slot){
   if(slot.dataset.answer===word){
     slot.classList.add('correct');
     slot.innerHTML='<span class="slot-label">'+slot.querySelector('.slot-label').textContent+'</span><span class="dropped-word ok">'+escapeHtml(word)+'</span>';
-    document.querySelectorAll('.dd-word').forEach(d=>{if(d.dataset.word===word)d.classList.add('used')});
+    document.querySelectorAll('.dd-word').forEach(function(d){if(d.dataset.word===word)d.classList.add('used')});
     sCorrect();updateDDCount();checkDDComplete();broadcastAction('match_correct',word);
-  }else{
-    slot.classList.add('wrong');sWrong();
-    setTimeout(()=>slot.classList.remove('wrong'),500);
-    broadcastAction('match_wrong',word+' → '+slot.dataset.answer);
-  }
+  }else{slot.classList.add('wrong');sWrong();setTimeout(function(){slot.classList.remove('wrong')},500);broadcastAction('match_wrong',word+' → '+slot.dataset.answer)}
 }
 function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').length;const el=document.getElementById('s2count');if(el)el.textContent=c}
 function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
-/* ========== STAGE 3: READING ========== */
-function buildPassageHTML(){
-  function vw(word){return '<span class="v-word" data-en="'+word+'">'+word+'</span>'}
-  return ['<h3>Introduction</h3>','<p>Our world is full of incredible natural events. Some are beautiful, some are dangerous. Today we will learn about ten of the most common natural disasters: '+vw('blizzards')+', '+vw('droughts')+', '+vw('earthquakes')+', '+vw('floods')+', '+vw('heat waves')+', '+vw('hurricanes')+', '+vw('thunderstorms')+', '+vw('tornadoes')+', '+vw('tsunamis')+', and '+vw('wildfires')+'.</p>',
-    '<h3>Blizzards</h3>','<p>A '+vw('blizzard')+' is a long snowstorm with very strong winds. It usually lasts for three hours or more. Blizzards are caused by cold air that '+vw('collides')+' with warm air.</p>',
-    '<h3>Droughts</h3>','<p>A '+vw('drought')+' is a long period with very little or no rain. Droughts are caused by a lack of rain over many months. Human activity, such as '+vw('deforestation')+', can also cause droughts. The '+vw('soil')+' becomes dry.</p>',
-    '<h3>Earthquakes</h3>','<p>An '+vw('earthquake')+' happens when the Earth\'s '+vw('crust')+' moves suddenly. The Earth starts shaking, and sometimes buildings and other '+vw('structures')+' fall down. The '+vw('magnitude')+' can be minor, with only a few small '+vw('tremors')+', or major, '+vw('toppling')+' entire cities.</p>',
-    '<h3>Floods</h3>','<p>'+vw('Floods')+' happen when heavy rain or melting ice and snow '+vw('overflow')+' rivers. Floods are the most common type of natural disaster in the United States.</p>',
-    '<h3>Heat Waves</h3>','<p>A '+vw('heat wave')+' is not just a normal hot summer day. It happens when there are much higher temperatures than normal in a '+vw('region')+'. This occurs when high '+vw('pressure')+' in the Earth\'s '+vw('atmosphere')+' builds up.</p>',
-    '<h3>Hurricanes</h3>','<p>'+vw('Hurricanes')+' are giant '+vw('swirling')+' storms with severe thunderstorms and winds of up to 160 miles per hour.</p>',
-    '<h3>Thunderstorms</h3>','<p>'+vw('Thunderstorms')+' include lightning, high winds, and usually heavy rain. Sometimes they bring '+vw('hail')+', '+vw('sleet')+', or snow instead. Thunderstorms happen when warm, '+vw('humid')+' air rises quickly.</p>',
-    '<h3>Tornadoes</h3>','<p>A '+vw('tornado')+' is a destructive '+vw('column')+' of air that spins very fast. Most look like a '+vw('funnel')+'.</p>',
-    '<h3>Tsunamis</h3>','<p>A '+vw('tsunami')+' is a giant ocean wave. Tsunamis '+vw('surge')+' onto the land. They are usually caused by underwater earthquakes. The '+vw('vibrations')+' '+vw('disrupt')+' the water.</p>',
-    '<h3>Wildfires</h3>','<p>'+vw('Wildfires')+' are dangerous and very '+vw('unpredictable')+'. Most wildfires are started by people, but dry weather and strong winds can cause them to spread quickly.</p>',
-    '<h3>Other Natural Disasters</h3>','<p>Other natural disasters include '+vw('landslides')+' and '+vw('avalanches')+'. Active '+vw('volcanoes')+' are also dangerous. When they '+vw('erupt')+', they send '+vw('ash')+' clouds into the air and '+vw('lava')+' onto the ground.</p>'].join('');
-}
+
+/* ================== STAGE 3 — READING & QUESTIONS (combined) ================== */
+const READING_HTML='<h1>When the Earth Wakes</h1><div class="subtitle">A case study of three connected natural disasters</div>'+
+'<p><span class="para-label">A.</span>In the summer of 2023, a coastal region in southern Europe experienced three disasters in the space of six weeks. First came a heat wave: temperatures climbed above 42°C for ten consecutive days. Then, when the rains finally arrived, they came with unusual force — rivers overflowed their banks, and floods swept through several towns. Later that same summer, a wildfire broke out in the hills above the coast, destroying more than 400 hectares of forest. Scientists later described the three events as \u201Cconnected.\u201D</p>'+
+'<p><span class="para-label">B.</span>The heat wave was the first warning. Meteorologists had forecast high temperatures, but few people expected a heat wave of this intensity. Hospitals reported a sharp rise in admissions for heat exhaustion and dehydration. Local authorities opened cooling centres in public libraries and community halls, where residents could escape the worst of the heat. The heat also dried out the soil and vegetation, creating the perfect conditions for what was to come.</p>'+
+'<p><span class="para-label">C.</span>When the rain came, it was heavy and sudden. Within two days, more than 200 millimetres of rain had fallen — more than the region normally receives in an entire month. Rivers that had been almost dry overflowed their banks. The town of Marlowe was the worst affected: floodwater reached the ground floor of buildings and cut off the main road for nearly a week. Rescue teams used boats to reach residents trapped in their homes. The floods were later described as the worst the region had seen in fifty years.</p>'+
+'<p><span class="para-label">D.</span>The wildfire began in August, three weeks after the floods. By then, the vegetation that had survived the rain had dried out again under the summer sun. Strong winds helped the fire spread quickly across the hills. Firefighters worked for eleven days to bring it under control. Over 400 hectares of forest were destroyed, and several families lost their homes. Although no lives were lost, the ecological damage was severe: many species of plants and small animals were affected, and the soil in the burned areas will take years to recover.</p>'+
+'<p><span class="para-label">E.</span>Scientists who studied the events concluded that they were not separate. The heat wave had dried the vegetation, making the wildfire more likely. The heavy rain that ended the heat wave had been intensified by the unusually warm air, which holds more moisture. The floods, in turn, had washed away trees and weakened riverbanks, making some areas more vulnerable. In other words, each disaster had helped to create the conditions for the next one.</p>'+
+'<p><span class="para-label">F.</span>The events of that summer have prompted local authorities to rethink their emergency planning. New early-warning systems are being installed in coastal towns. Cooling centres will now open automatically when temperatures exceed 38°C. Firebreaks are being widened in the hills, and residents are being trained in evacuation procedures. Scientists warn that similar events will become more common in the future — not because the region is unlucky, but because a warming climate is making extreme weather more frequent and more intense.</p>';
+
+const READING_Q=[
+  {type:'short',prompt:'How many consecutive days did temperatures rise above 42°C?',answers:['10','ten'],exp:'Temperatures rose above 42°C for ten consecutive days.'},
+  {type:'short',prompt:'How many millimetres of rain fell within two days?',answers:['200','more than 200','200 mm'],exp:'More than 200 millimetres of rain fell in two days.'},
+  {type:'short',prompt:'How many hectares of forest were destroyed by the wildfire?',answers:['400','more than 400','over 400'],exp:'Over 400 hectares were destroyed.'},
+  {type:'short',prompt:'How many days did firefighters work to control the wildfire?',answers:['11','eleven'],exp:'Firefighters worked for eleven days.'},
+  {type:'short',prompt:'Name the town that was worst affected by the floods.',answers:['marlowe'],exp:'The town of Marlowe was the worst affected.'},
+  {type:'short',prompt:'At what temperature will cooling centres now open automatically?',answers:['38','38°c','38 c','38 degrees'],exp:'They will open automatically when temperatures exceed 38°C.'},
+  {type:'tfng',prompt:'The three disasters took place within six weeks of each other.',answer:'True',exp:'The article says three disasters in the space of six weeks.'},
+  {type:'tfng',prompt:'Lives were lost in the wildfire.',answer:'False',exp:'The article says no lives were lost.'},
+  {type:'tfng',prompt:'The local council had planned for events of this intensity.',answer:'Not Given',exp:'The article never says whether they had planned for this.'},
+  {type:'tfng',prompt:'The wildfire happened before the floods.',answer:'False',exp:'The wildfire happened three weeks after the floods.'},
+  {type:'long',prompt:'In your own words, explain why scientists described the three disasters as \u201Cconnected.\u201D',
+    keywordGroups:[['heat','hot','temperature'],['dried','dry','vegetation'],['fire','wildfire'],['rain','flood','moisture'],['connected','linked','related','warm']],
+    minWords:12,minGroups:3,
+    sample:'The disasters were connected because the heat wave dried out the vegetation, which made the wildfire more likely. The warm air also held more moisture, which intensified the rain and caused the floods.',
+    exp:'Key ideas: heat dried vegetation, warm air held moisture, chain of disasters.'},
+  {type:'long',prompt:'Describe TWO measures that local authorities are now taking to prepare for future disasters.',
+    keywordGroups:[['warning','system','early'],['cooling','centre','center'],['firebreak','trees','hills'],['evacuation','training','residents'],['prepare','plan','ready']],
+    minWords:10,minGroups:2,
+    sample:'Two measures are that new early-warning systems are being installed in coastal towns, and that cooling centres will open automatically when temperatures exceed 38°C.',
+    exp:'Key ideas: early warnings, cooling centres, firebreaks, evacuation training.'},
+  {type:'long',prompt:'Why does the article say similar disasters will become more common in the future?',
+    keywordGroups:[['climate','warming','warm'],['extreme','weather','intense'],['frequent','common','often'],['future','will','become']],
+    minWords:10,minGroups:2,
+    sample:'The article says a warming climate is making extreme weather more frequent and more intense, so similar events will become more common.',
+    exp:'Key ideas: warming climate, extreme weather, more frequent.'},
+  {type:'mcq',prompt:'What is the main idea of the article?',options:['Three disasters were connected by climate conditions','Coastal towns are always in danger','Wildfires are the worst type of disaster'],correct:'Three disasters were connected by climate conditions',exp:'The article emphasises that the three disasters were linked.'},
+  {type:'mcq',prompt:'Which of these is NOT stated as a consequence of the events?',options:['New early-warning systems','Automatic cooling centres','A ban on coastal construction'],correct:'A ban on coastal construction',exp:'A construction ban is not mentioned.'},
+  {type:'mcq',prompt:'How did the heat wave contribute to the wildfire?',options:['It dried out the vegetation','It caused strong winds','It attracted firefighters away'],correct:'It dried out the vegetation',exp:'Heat dried the vegetation, making the wildfire more likely.'}
+];
+
+const CONTEXT_Q=[
+  {prompt:'In paragraph A, "consecutive" means...',options:['following one after another','unusually hot','far apart'],correct:'following one after another',exp:'Consecutive days = one after another.'},
+  {prompt:'In paragraph B, "intensity" means...',options:['strength or force','color','speed'],correct:'strength or force',exp:'Intensity here means the strength of the heat wave.'},
+  {prompt:'In paragraph C, "overflowed" means...',options:['spilled over the edge','dried up','froze'],correct:'spilled over the edge',exp:'Rivers spilled over their banks.'},
+  {prompt:'In paragraph D, "ecological" refers to...',options:['relating to the environment','relating to politics','relating to money'],correct:'relating to the environment',exp:'Ecological = environmental.'},
+  {prompt:'In paragraph D, "species" means...',options:['a group of similar living things','a type of disaster','a small number'],correct:'a group of similar living things',exp:'Species = kinds of plants or animals.'},
+  {prompt:'In paragraph E, "vulnerable" means...',options:['easily harmed','strong','hidden'],correct:'easily harmed',exp:'Vulnerable = easily harmed.'},
+  {prompt:'In paragraph F, "prompted" means...',options:['caused to happen','delayed','removed'],correct:'caused to happen',exp:'The events caused authorities to reconsider.'},
+  {prompt:'In paragraph F, "evacuation" means...',options:['organized removal from danger','celebration','construction'],correct:'organized removal from danger',exp:'Evacuation = getting people to safety.'}
+];
+
+let s4Answers={};
 function renderStage3(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 3 — Reading</div><h2>📖 Read the Passage</h2>'+
-  '<div class="lead">Click any <span class="v-word" style="cursor:default;">orange</span> word to see its translation.<span class="ru">Нажмите на оранжевое слово — увидите перевод.</span></div>'+
-  '<div class="card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">'+
-  '<button class="btn small" onclick="speakPassage()">🔊 Listen</button>'+
-  '<button class="btn ghost small" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>'+
-  '<div style="margin-left:auto;font-size:15px;font-weight:700;color:var(--ink-soft);">Checked: <span id="s3count" style="color:var(--success);">0</span> / 40</div>'+
-  '</div><div class="passage" id="passageBody">'+buildPassageHTML()+'</div>';
-  main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" onclick="completeReading()">✓ Finished reading</button>'));
-  bindVocabClicks();
+  v.innerHTML='<div class="eyebrow">Stage 3 — Reading & Questions</div><h2>📖 Read the Article & Answer</h2>'+
+  '<div class="lead">Read the article on the left. Answer every question on the right — the article stays visible so you can look back. If you think an answer is correct but the auto-check says no, use <b>🚩 Flag for teacher review</b>.<span class="ru">Читайте текст слева, отвечайте на вопросы справа. Все вопросы сразу видны.</span></div>'+
+  '<div class="reading-split">'+
+    '<section class="reading-pane">'+
+      '<div class="card" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+
+        '<button class="btn small" id="ttsPlay" onclick="speakLong(document.getElementById(\'passageBody\').innerText)">▶️ Listen</button>'+
+        '<button class="btn small" id="ttsPause" style="display:none" onclick="pauseTTS()">⏸ Pause</button>'+
+        '<button class="btn small" id="ttsResume" style="display:none" onclick="resumeTTS()">▶️ Resume</button>'+
+        '<button class="btn ghost small" id="ttsStop" style="display:none" onclick="stopTTS()">⏹ Stop</button>'+
+      '</div>'+
+      '<div class="passage" id="passageBody">'+READING_HTML+'</div>'+
+    '</section>'+
+    '<section class="reading-questions">'+
+      '<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'+
+        '<div style="font-weight:700">Answered: <span id="s3Progress" style="color:var(--accent);font-size:18px">0</span> / <span id="s3Total">'+(READING_Q.length+CONTEXT_Q.length)+'</span></div>'+
+      '</div>'+
+      '<h3 style="font-family:\'Fira Code\',monospace;font-size:13px;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin:10px 0 12px">Part A — Reading comprehension</h3>'+
+      '<div id="readingQ"></div>'+
+      '<h3 style="font-family:\'Fira Code\',monospace;font-size:13px;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin:26px 0 12px">Part B — Vocabulary in context</h3>'+
+      '<div id="contextQ"></div>'+
+    '</section>'+
+  '</div>';
+  main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" onclick="completeReading()">✓ Mark reading stage complete</button>'));
+  s4Answers={};
+  renderReadingQuestions();
+  renderContextQ();
+  updateS3Progress();
 }
-let s3Looked={};
-function bindVocabClicks(){
-  document.querySelectorAll('.v-word').forEach(el=>{
-    el.onclick=()=>{
-      const en=el.dataset.en;const translation=lookupTranslation(en);
-      el.classList.add('learned');s3Looked[en]=true;
-      showToast(en+' — '+translation);speak(en.replace(/^to /,'').replace(/s$/,''));
-      updateS3Count();broadcastAction('vocab_lookup',en);
-    };
-  });
-}
-function lookupTranslation(en){
-  const base=en.replace(/s$/,'');
-  const found=VOCAB.find(v=>{
-    const w=v.en.toLowerCase();
-    return w===en.toLowerCase()||w===base.toLowerCase()||w+'s'===en.toLowerCase()||w.replace(/^to /,'')===en.toLowerCase()||w.replace(/^to /,'')+'ing'===en.toLowerCase();
-  });
-  if(found)return found.ru;
-  const plural={'blizzards':'снежные бури','droughts':'засухи','earthquakes':'землетрясения','floods':'наводнения','heat waves':'волны жары','hurricanes':'ураганы','thunderstorms':'грозы','tornadoes':'торнадо','tsunamis':'цунами','wildfires':'лесные пожары','structures':'сооружения','tremors':'толчки','vibrations':'вибрации','landslides':'оползни','avalanches':'лавины','volcanoes':'вулканы','toppling':'опрокидывая','swirling':'кружащиеся','collides':'сталкивается','overflow':'выходят из берегов','surge':'нахлынывают','disrupt':'нарушают','erupt':'извергаются'};
-  return plural[en.toLowerCase()]||'—';
-}
-function updateS3Count(){const el=document.getElementById('s3count');if(el)el.textContent=Object.keys(s3Looked).length}
-function speakPassage(){const text=document.getElementById('passageBody').innerText;speak(text.substring(0,500))}
-function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;state.scores[key]=0;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
+function updateS3Progress(){const el=document.getElementById('s3Progress');if(el)el.textContent=Object.keys(s4Answers).length}
 
-/* ========== STAGE 4: CLOSE READING ========== */
-const CLOZE=[
-  {text:'Which detail best distinguishes a blizzard from an ordinary snow shower?',options:['Very strong winds during a long snowstorm','A long period without rain','Heavy rain overflowing rivers'],correct:0},
-  {text:'What can a reader infer from the word "drought"?',options:['Water is scarce because rain has been limited','The ground is covered by floodwater','A storm is spinning over the ocean'],correct:0},
-  {text:'According to the text, what causes an earthquake?',options:['Sudden movement of the Earth\'s crust','A long period of high temperature','Strong winds over dry land'],correct:0},
-  {text:'Which phrase gives the clearest clue to the meaning of "flood"?',options:['Rivers overflow after heavy rain','Rain stops for a long period','A column of air spins quickly'],correct:0},
-  {text:'Why is a heat wave more than "a normal hot summer day"?',options:['Temperatures rise above what is usual','It always brings heavy snow','It only happens near rivers'],correct:0},
-  {text:'Which context clue describes a hurricane?',options:['A giant swirling storm with powerful winds','A sudden movement beneath the Earth','A large ocean wave after an earthquake'],correct:0},
-  {text:'What does "destructive column of air" help explain?',options:['The damaging force and shape of a tornado','The cause of a drought','The size of a tsunami'],correct:0},
-  {text:'What cause-and-effect relationship is stated about tsunamis?',options:['An underwater earthquake can cause a giant ocean wave','A heat wave causes rivers to overflow','A blizzard causes the crust to move'],correct:0}
-];
-let s4Score=0;
-function renderStage4(){
-  const main=document.getElementById('main');
-  const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 4 — Close Reading</div><h2>🔎 Read Closely</h2>'+
-  '<div class="lead">Use context clues and details from the passage to choose the best answer.<span class="ru">Используйте контекст и детали текста.</span></div>'+
-  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
-  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s4live" style="color:var(--accent);font-size:18px;">0</span> / '+CLOZE.length+'</div>'+
-  '<button class="btn ghost small" onclick="resetStage4()">↻ Reset</button></div><div id="clozeBody"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(3,5));renderCloze();s4Score=0;
-}
-function renderCloze(){
-  const body=document.getElementById('clozeBody');body.innerHTML='';
-  CLOZE.forEach((item,i)=>{
+function renderReadingQuestions(){
+  const body=document.getElementById('readingQ');if(!body)return;body.innerHTML='';
+  READING_Q.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.text)+'</div>';
-    const opts=document.createElement('div');opts.className='q-opts';
-    item.options.forEach((opt,j)=>{
-      const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
-      b.onclick=()=>{
-        if(b.disabled)return;
-        opts.querySelectorAll('button').forEach(x=>x.disabled=true);
-        if(j===item.correct){b.classList.add('correct');s4Score++;sCorrect();broadcastAction('close_reading_correct',item.options[item.correct])}
-        else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');sWrong();broadcastAction('close_reading_wrong',opt+' ≠ '+item.options[item.correct])}
-        document.getElementById('s4live').textContent=s4Score;
-        if(s4Score===CLOZE.length){setScore(4,10);markDone(4)}else{setScore(4,Math.floor(s4Score*10/CLOZE.length))}
-      };
-      opts.appendChild(b);
-    });
-    card.appendChild(opts);body.appendChild(card);
+    const typeLabel={short:'Short answer',tfng:'True / False / Not Given',long:'Long answer',mcq:'Multiple choice'}[item.type];
+    card.innerHTML='<div class="q-num">Question '+(i+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>';
+    if(item.type==='short'){
+      const row=document.createElement('div');row.className='q-input-row';
+      const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';
+      const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
+      const fb=document.createElement('div');fb.className='q-feedback';
+      let done=false;
+      function submit(){
+        if(done)return;
+        const v=norm(inp.value);
+        const ok=item.answers.some(function(a){return norm(a)===v});
+        if(ok){inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';sCorrect();s4Answers['r'+i]=true;checkS4();broadcastAction('answer_correct',item.prompt.substring(0,40))}
+        else{inp.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again — check the passage.';setTimeout(function(){inp.classList.remove('wrong')},600)}
+      }
+      btn.onclick=submit;
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+      inp.addEventListener('input',function(){broadcastAction('typing',item.prompt.substring(0,30)+' | "'+inp.value+'"')});
+      row.appendChild(inp);row.appendChild(btn);card.appendChild(row);card.appendChild(fb);
+    }else if(item.type==='tfng'){
+      const opts=document.createElement('div');opts.className='tfng-opts';
+      shuffle(['True','False','Not Given']).forEach(function(o){
+        const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+        b.onclick=function(){
+          if(b.disabled)return;
+          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+          const fb=card.querySelector('.q-feedback');
+          if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
+          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.answer)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+          checkS4();
+        };
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
+    }else if(item.type==='long'){
+      const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
+      const row=document.createElement('div');row.className='q-input-row';row.style.marginTop='10px';
+      const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer';
+      const fb=document.createElement('div');fb.className='q-feedback';
+      let done=false;
+      function submit(){
+        if(done)return;
+        const txt=ta.value.trim();
+        const res=checkLongAnswer(txt,item.keywordGroups,item.minWords,item.minGroups);
+        if(res.pass){ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>';sCorrect();s4Answers['r'+i]=true;checkS4()}
+        else{ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'}
+        ta.insertAdjacentHTML('afterend',buildFlagRow('r'+i,item.prompt,txt,res.pass?'correct':'wrong'));
+      }
+      btn.onclick=submit;
+      ta.addEventListener('input',function(){broadcastAction('typing','long: "'+ta.value.substring(0,60)+'"')});
+      row.appendChild(btn);card.appendChild(ta);card.appendChild(row);card.appendChild(fb);
+    }else if(item.type==='mcq'){
+      const opts=document.createElement('div');opts.className='q-opts';
+      shuffle(item.options).forEach(function(o){
+        const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+        b.onclick=function(){
+          if(b.disabled)return;
+          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+          const fb=card.querySelector('.q-feedback');
+          if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
+          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+          checkS4();
+        };
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);
+      const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
+    }
+    body.appendChild(card);
   });
 }
-function resetStage4(){setScore(4,0);state.done[state.currentLessonId+"_4"]=false;renderSidebar();renderStage4();updateHUD()}
 
-/* ========== STAGE 5: COMPREHENSION ========== */
-const COMP=[
-  {q:'A blizzard is a long snowstorm with strong winds.',type:'tf',correct:true,exp:'True.'},
-  {q:'Droughts are caused by too much rain.',type:'tf',correct:false,exp:'False. Droughts are caused by a LACK of rain.'},
-  {q:'Earthquakes happen when the Earth\'s crust moves suddenly.',type:'tf',correct:true,exp:'True.'},
-  {q:'Floods are the most common natural disaster in the U.S.',type:'tf',correct:true,exp:'True.'},
-  {q:'A heat wave is just a normal hot summer day.',type:'tf',correct:false,exp:'False. Temperatures are HIGHER than normal.'},
-  {q:'Hurricanes are called typhoons in some parts of the world.',type:'tf',correct:true,exp:'True.'},
-  {q:'Which of these is NOT mentioned as a natural disaster?',type:'mc',options:['tsunami','tornado','sandstorm','wildfire'],correct:2,exp:'Sandstorms are not in the list.'},
-  {q:'What is a tsunami usually caused by?',type:'mc',options:['strong winds','underwater earthquakes','heavy rain','volcanoes'],correct:1,exp:'Underwater earthquakes.'},
-  {q:'What makes wildfires spread?',type:'mc',options:['rain and cold','dry weather and strong winds','snow and hail','cloudy weather'],correct:1,exp:'Dry weather and strong winds.'},
-  {q:'What do active volcanoes send into the air?',type:'mc',options:['ash clouds','snow','rain','hail'],correct:0,exp:'Ash clouds and lava.'}
-];
-let s5Score=0;
-function renderStage5(){
-  const main=document.getElementById('main');
-  const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 5 — Comprehension</div><h2>✅ Did You Understand?</h2>'+
-  '<div class="lead">True/False and multiple choice.<span class="ru">Проверьте понимание.</span></div>'+
-  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
-  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s5live" style="color:var(--accent);font-size:18px;">0</span> / '+COMP.length+'</div>'+
-  '<button class="btn ghost small" onclick="resetStage5()">↻ Reset</button></div><div id="compBody"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(4,6));renderComp();s5Score=0;
-}
-function renderComp(){
-  const body=document.getElementById('compBody');body.innerHTML='';
-  COMP.forEach((item,i)=>{
+function renderContextQ(){
+  const body=document.getElementById('contextQ');if(!body)return;body.innerHTML='';
+  CONTEXT_Q.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+' — '+(item.type==='tf'?'True or False':'Multiple Choice')+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div>';
+    card.innerHTML='<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>';
     const opts=document.createElement('div');opts.className='q-opts';
-    const list=item.type==='tf'?['True','False']:item.options;
-    const correctIdx=item.type==='tf'?(item.correct?0:1):item.correct;
-    list.forEach((opt,j)=>{
-      const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
-      b.onclick=()=>{
+    shuffle(item.options).forEach(function(o){
+      const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+      b.onclick=function(){
         if(b.disabled)return;
-        opts.querySelectorAll('button').forEach(x=>x.disabled=true);
+        opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
         const fb=card.querySelector('.q-feedback');
-        if(j===correctIdx){
-          b.classList.add('correct');s5Score++;sCorrect();
-          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
-          broadcastAction('comp_correct',item.q.substring(0,40));
-        }else{
-          b.classList.add('wrong');opts.querySelectorAll('button')[correctIdx].classList.add('correct');sWrong();
-          fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>';
-          broadcastAction('comp_wrong',item.q.substring(0,40));
-        }
-        document.getElementById('s5live').textContent=s5Score;
-        if(s5Score===COMP.length){setScore(5,10);markDone(5)}else{setScore(5,Math.floor(s5Score*10/COMP.length))}
+        if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['c'+i]=true}
+        else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+        checkS4();
       };
       opts.appendChild(b);
     });
@@ -920,298 +818,652 @@ function renderComp(){
     body.appendChild(card);
   });
 }
-function resetStage5(){setScore(5,0);state.done[state.currentLessonId+"_5"]=false;renderSidebar();renderStage5();updateHUD()}
 
-/* ========== STAGES 6-8 (GRAMMAR) ========== */
-const PRESENT_PASSIVE=[
-  {prompt:'After every disaster, drinking water ___ by volunteers.',bracket:'need',answer:'is needed',exp:'Singular → is + V3.'},
-  {prompt:'Destroyed crops ___ by farmers every year.',bracket:'report',answer:'are reported',exp:'Plural → are + V3.'},
-  {prompt:'Many buildings ___ by hurricanes in this region.',bracket:'destroy',answer:'are destroyed',exp:'Plural → are + V3.'},
-  {prompt:'The town ___ with water when the river overflows.',bracket:'cover',answer:'is covered',exp:'Singular → is + V3.'},
-  {prompt:'Tsunamis ___ by underwater earthquakes.',bracket:'cause',answer:'are caused',exp:'Plural → are + V3.'},
-  {prompt:'Broken structures ___ in the news after an earthquake.',bracket:'see',answer:'are seen',exp:'Plural → are + V3.'}
-];
-const PAST_PASSIVE=[
-  {prompt:'The wildfire ___ by the drought last summer.',bracket:'cause',answer:'was caused',exp:'Singular + past → was + V3.'},
-  {prompt:'The streets ___ after heavy rain yesterday.',bracket:'flood',answer:'were flooded',exp:'Plural + past → were + V3.'},
-  {prompt:'Many homes ___ by floods last year.',bracket:'destroy',answer:'were destroyed',exp:'Plural + past → were + V3.'},
-  {prompt:'The ancient city ___ by an earthquake in 1906.',bracket:'topple',answer:'was toppled',exp:'Singular + past → was + V3.'},
-  {prompt:'The whole town ___ with water after the storm.',bracket:'cover',answer:'was covered',exp:'Singular + past → was + V3.'},
-  {prompt:'The tornadoes ___ by scientists two days ago.',bracket:'study',answer:'were studied',exp:'Plural + past → were + V3.'}
-];
-const PP=[
-  {prompt:'Many flights ___ (cancel) because of blizzards this winter.',answer:'have been cancelled',accept:['have been canceled'],exp:'Plural + present perfect passive.'},
-  {prompt:'Japan ___ (experience) many strong earthquakes over the years.',answer:'has experienced',exp:'Singular → has + V3.'},
-  {prompt:'Many homes ___ (destroy) by floods in recent years.',answer:'have been destroyed',exp:'Plural + present perfect passive.'},
-  {prompt:'California ___ (have) many terrible wildfires in the last decade.',answer:'has had',exp:'Singular → has + had.'},
-  {prompt:'Scientists ___ (study) volcanoes for many years.',answer:'have studied',exp:'Plural → have + V3.'},
-  {prompt:'The smoke from wildfires ___ (cause) serious health problems.',answer:'has caused',exp:'Uncountable → has + V3.'}
-];
-function renderInputExercise(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead,inputPlaceholder){
+function buildFlagRow(qId,prompt,answer,autoResult){
+  return '<div class="review-btn-row"><button class="btn flag small" onclick="flagForReview(\'s3_'+qId+'\',\''+escapeAttr(prompt).substring(0,120)+'\',\''+escapeAttr(answer).substring(0,300)+'\',\''+autoResult+'\',3)">🚩 Flag for teacher review</button><span class="hint">If you believe your answer is correct, click here.</span></div>';
+}
+function checkLongAnswer(text,keywordGroups,minWords,minGroups){
+  const t=norm(text);
+  const words=t.split(/\s+/).filter(function(w){return w.length>0});
+  if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0};
+  let matched=0;
+  keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(norm(k))!==-1}))matched++});
+  if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length};
+  return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched};
+}
+function checkS4(){
+  const total=READING_Q.length+CONTEXT_Q.length;
+  const c=Object.keys(s4Answers).length;
+  updateS3Progress();
+  if(c===total){setScore(3,25);markDone(3)}else{setScore(3,Math.floor(c*25/total))}
+}
+function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
+
+/* ================== STAGES 4/5 — COMPLETING SENTENCE ================== */
+const G6={pos:[
+  {p:'The region ___ (experience) three disasters in six weeks.',a:'has experienced',ex:'Present perfect: result matters now.'},
+  {p:'Scientists ___ (study) the events carefully.',a:'have studied',ex:'Plural subject → have + V3.'},
+  {p:'The heat ___ (dry) the vegetation since June.',a:'has dried',ex:'Singular subject → has + V3.'},
+  {p:'Rivers ___ (overflow) their banks twice this year.',a:'have overflowed',ex:'Plural → have + V3.'},
+  {p:'The town ___ (become) more vulnerable to floods.',a:'has become',ex:'"Become" has the same V1 and V3 form.'}
+],neg:[
+  {p:'The council ___ (not / install) new warning systems yet.',a:'has not installed',ex:'"Yet" → present perfect negative.'},
+  {p:'We ___ (not / see) such heavy rain for years.',a:'have not seen',ex:'"For years" → present perfect.'},
+  {p:'The mayor ___ (not / announce) the evacuation plan.',a:'has not announced',ex:'Singular subject → has not + V3.'},
+  {p:'Firefighters ___ (not / finish) clearing the roads.',a:'have not finished',ex:'Plural subject → have not + V3.'},
+  {p:'The soil ___ (not / recover) from the fire.',a:'has not recovered',ex:'Singular uncountable → has not + V3.'}
+],q:[
+  {p:'___ the region ___ (recover) from the wildfire?',a:'Has the region recovered',ex:'Question: Has + subject + V3.'},
+  {p:'___ you ever ___ (see) a wildfire?',a:'Have you ever seen',ex:'"Ever" for experience.'},
+  {p:'___ scientists ___ (link) the disasters?',a:'Have scientists linked',ex:'Plural question.'},
+  {p:'___ the river ___ (flood) again since June?',a:'Has the river flooded',ex:'Singular question with "since".'},
+  {p:'___ residents ___ (train) in evacuation procedures yet?',a:'Have residents trained',ex:'Plural question with "yet".'}
+],shuffled:[
+  {p:'The wildfire ___ (destroy) over 400 hectares.',a:'has destroyed'},
+  {p:'Temperatures ___ (rise) sharply this summer.',a:'have risen'},
+  {p:'The council ___ (open) new cooling centres.',a:'has opened'},
+  {p:'We ___ (learn) a lot about connected disasters.',a:'have learned'},
+  {p:'The harbour ___ (not / flood) recently.',a:'has not flooded'},
+  {p:'___ they ___ (widen) the firebreaks yet?',a:'Have they widened'},
+  {p:'The heat ___ (affect) many residents.',a:'has affected'},
+  {p:'I ___ (never / experience) such heat.',a:'have never experienced'},
+  {p:'Rescue teams ___ (save) dozens of families.',a:'have saved'},
+  {p:'The warning system ___ (just / start) working.',a:'has just started'},
+  {p:'Authorities ___ (already / close) the coastal road.',a:'have already closed'},
+  {p:'The storm ___ (not / arrive) yet.',a:'has not arrived'},
+  {p:'Local hospitals ___ (treat) many heat-related cases.',a:'have treated'},
+  {p:'Water levels ___ (rise) since last night.',a:'have risen'},
+  {p:'___ you ___ (read) the report about the floods?',a:'Have you read'},
+  {p:'The vegetation ___ (dry) out completely.',a:'has dried'},
+  {p:'Many species ___ (lose) their habitats.',a:'have lost'},
+  {p:'The mayor ___ (promise) better planning.',a:'has promised'},
+  {p:'She ___ (not / hear) about the wildfire yet.',a:'has not heard'},
+  {p:'The region ___ (change) dramatically.',a:'has changed'},
+  {p:'Scientists ___ (warn) about this for years.',a:'have warned'},
+  {p:'The reservoir ___ (not / recover) after the drought.',a:'has not recovered'},
+  {p:'___ the town ___ (build) new defences?',a:'Has the town built'},
+  {p:'The events ___ (prompt) a rethink of planning.',a:'have prompted'},
+  {p:'We ___ (see) three floods this decade.',a:'have seen'},
+  {p:'The fire ___ (burn) for eleven days.',a:'has burned'},
+  {p:'___ you ever ___ (hear) of a tsunami here?',a:'Have you ever heard'},
+  {p:'The community ___ (rebuild) many homes.',a:'has rebuilt'},
+  {p:'Air quality ___ (improve) since the fire stopped.',a:'has improved'},
+  {p:'The council ___ (not / decide) on new rules yet.',a:'has not decided'}
+]};
+
+const G7={pos:[
+  {p:'The town ___ (destroy) by the flood in 2023.',a:'was destroyed',ex:'Past passive: was + V3.'},
+  {p:'The wildfire ___ (cause) by the extreme heat.',a:'was caused',ex:'Past passive with singular subject.'},
+  {p:'Hundreds of homes ___ (damage) by the storm.',a:'were damaged',ex:'Plural subject → were + V3.'},
+  {p:'The coastal road ___ (close) after the landslide.',a:'was closed',ex:'Past passive with singular subject.'},
+  {p:'New warning systems ___ (install) last year.',a:'were installed',ex:'Plural subject → were + V3.'}
+],neg:[
+  {p:'The wildfire ___ (not / contain) quickly.',a:'was not contained',ex:'Negative past passive.'},
+  {p:'The evacuation ___ (not / organise) well.',a:'was not organised',ex:'Singular subject in negative.'},
+  {p:'Some residents ___ (not / warn) in time.',a:'were not warned',ex:'Plural negative passive.'},
+  {p:'The river ___ (not / monitor) before the flood.',a:'was not monitored',ex:'Past passive negative.'},
+  {p:'The cooling centres ___ (not / open) early enough.',a:'were not opened',ex:'Plural negative passive.'}
+],q:[
+  {p:'___ the town ___ (evacuate) before the flood?',a:'Was the town evacuated',ex:'Past passive question.'},
+  {p:'___ the warning systems ___ (test) recently?',a:'Were the warning systems tested',ex:'Plural question in past passive.'},
+  {p:'___ the wildfire ___ (spot) by satellites?',a:'Was the wildfire spotted',ex:'Past passive question.'},
+  {p:'___ new firebreaks ___ (create) last summer?',a:'Were new firebreaks created',ex:'Plural past passive question.'},
+  {p:'___ the report ___ (publish) yet?',a:'Was the report published',ex:'Past passive question with "yet".'}
+],shuffled:[
+  {p:'The flood ___ (cause) by two days of rain.',a:'was caused'},
+  {p:'The wildfire ___ (spot) by a local farmer.',a:'was spotted'},
+  {p:'Many homes ___ (destroy) in the storm.',a:'were destroyed'},
+  {p:'The evacuation ___ (complete) in six hours.',a:'was completed'},
+  {p:'The riverbanks ___ (weaken) by the flood.',a:'were weakened'},
+  {p:'Cooling centres ___ (open) across the region.',a:'were opened'},
+  {p:'The burned soil ___ (leave) to recover naturally.',a:'was left'},
+  {p:'Several bridges ___ (damage) by the landslide.',a:'were damaged'},
+  {p:'The report ___ (write) by a team of scientists.',a:'was written'},
+  {p:'New rules ___ (introduce) after the events.',a:'were introduced'},
+  {p:'The mayor ___ (criticise) for the slow response.',a:'was criticised'},
+  {p:'Coastal towns ___ (warn) by text message.',a:'were warned'},
+  {p:'The old harbour ___ (flood) twice last year.',a:'was flooded'},
+  {p:'Firebreaks ___ (widen) in the hills.',a:'were widened'},
+  {p:'The species in the forest ___ (affect) severely.',a:'were affected'},
+  {p:'___ the road ___ (repair) after the storm?',a:'Was the road repaired'},
+  {p:'The wildfire ___ (not / control) for eleven days.',a:'was not controlled'},
+  {p:'Emergency shelters ___ (set) up in schools.',a:'were set'},
+  {p:'The drought ___ (follow) by heavy rain.',a:'was followed'},
+  {p:'Residents ___ (train) in evacuation drills.',a:'were trained'},
+  {p:'The crisis ___ (handle) by local authorities.',a:'was handled'},
+  {p:'___ the evacuation ___ (announce) in advance?',a:'Was the evacuation announced'},
+  {p:'The vegetation ___ (destroy) by the fire.',a:'was destroyed'},
+  {p:'Two towns ___ (cut) off by the floodwater.',a:'were cut'},
+  {p:'The council ___ (blame) for poor planning.',a:'was blamed'},
+  {p:'New trees ___ (plant) in the burned areas.',a:'were planted'},
+  {p:'The warning ___ (send) too late.',a:'was sent'},
+  {p:'The region ___ (affect) by three disasters.',a:'was affected'},
+  {p:'Some homes ___ (not / rebuild) after the fire.',a:'were not rebuilt'},
+  {p:'The lessons ___ (learn) the hard way.',a:'were learned'}
+]};
+
+function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
   '<div class="lead">'+lead+'</div>'+
-  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
-  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="p'+stageId+'live" style="color:var(--accent);font-size:18px;">0</span> / '+data.length+'</div>'+
-  '<button class="btn ghost small" onclick="resetPassive('+stageId+')">↻ Reset</button></div><div id="p'+stageId+'body"></div>';
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft)">Score: <span id="p'+stageId+'live" style="color:var(--accent);font-size:18px">0</span> / '+(data.pos.length+data.neg.length+data.q.length+data.shuffled.length)+'</div><button class="btn ghost small" onclick="resetGrammarStage('+stageId+')">↻ Reset</button></div>'+
+  '<div id="p'+stageId+'body"></div>';
   main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
   let score=0;const body=document.getElementById('p'+stageId+'body');
-  data.forEach((item,i)=>{
-    const card=document.createElement('div');card.className='q-card';
-    let promptHtml=escapeHtml(item.prompt).replace('___','<b style="color:var(--accent);">___</b>');
-    if(item.bracket)promptHtml+='<span class="bracket">'+escapeHtml(item.bracket)+'</span>';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+promptHtml+'</div>';
-    const row=document.createElement('div');row.className='q-input-row';
-    const inp=document.createElement('input');inp.type='text';inp.className='q-input';
-    inp.placeholder=inputPlaceholder;inp.autocomplete='off';inp.spellcheck=false;
-    const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
-    const fb=document.createElement('div');fb.className='q-feedback';
-    let answered=false;
-    function submit(){
-      if(answered)return;
-      const val=inp.value.trim().toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
-      const ans=item.answer.toLowerCase();
-      const ok=val===ans||(item.accept&&item.accept.indexOf(val)!==-1);
-      if(ok){
-        inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true;
-        fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
-        sCorrect();score++;
-        document.getElementById('p'+stageId+'live').textContent=score;
-        setScore(stageId,Math.floor(score*10/data.length));
-        if(score===data.length){setScore(stageId,10);markDone(stageId)}
-        broadcastAction('answer_correct',item.prompt.substring(0,40)+' → '+item.answer);
-      }else{
-        inp.classList.add('wrong');sWrong();
-        fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!';
-        setTimeout(()=>inp.classList.remove('wrong'),600);
-        broadcastAction('answer_wrong',item.prompt.substring(0,40)+' → "'+inp.value+'"');
+  function addSection(heading,items,startNum){
+    if(heading){const h=document.createElement('div');h.className='section-head';h.textContent=heading;body.appendChild(h)}
+    items.forEach(function(item,i){
+      const card=document.createElement('div');card.className='q-card';
+      card.innerHTML='<div class="q-num">Question '+(startNum+i)+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
+      const row=document.createElement('div');row.className='q-input-row';
+      const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type the missing word(s)...';inp.autocomplete='off';inp.spellcheck=false;
+      const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
+      const fb=document.createElement('div');fb.className='q-feedback';
+      let answered=false;
+      function submit(){
+        if(answered)return;
+        const val=norm(inp.value);
+        const ans=norm(item.a);
+        if(val===ans){
+          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true;
+          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+item.ex+'</span>':'');
+          sCorrect();score++;document.getElementById('p'+stageId+'live').textContent=score;
+          const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length;
+          setScore(stageId,Math.floor(score*10/total));
+          if(score===total){setScore(stageId,10);markDone(stageId)}
+          broadcastAction('answer_correct',item.p.substring(0,40)+' → '+item.a);
+        }else{
+          inp.classList.add('wrong');sWrong();
+          fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!';
+          setTimeout(function(){inp.classList.remove('wrong')},600);
+        }
       }
-    }
-    btn.onclick=submit;
-    inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
-    inp.addEventListener('input',()=>broadcastAction('typing',item.prompt.substring(0,30)+' | "'+inp.value+'"'));
-    row.appendChild(inp);row.appendChild(btn);
-    card.appendChild(row);card.appendChild(fb);body.appendChild(card);
-  });
+      btn.onclick=submit;
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+      inp.addEventListener('input',function(){broadcastAction('typing',item.p.substring(0,30)+' | "'+inp.value+'"')});
+      row.appendChild(inp);row.appendChild(btn);
+      card.appendChild(row);card.appendChild(fb);body.appendChild(card);
+    });
+  }
+  addSection('Part 1 — Positive sentences',data.pos,1);
+  addSection('Part 2 — Negative sentences',data.neg,data.pos.length+1);
+  addSection('Part 3 — Questions',data.q,data.pos.length+data.neg.length+1);
+  addSection('Part 4 — Mixed practice (shuffled)',shuffle(data.shuffled),data.pos.length+data.neg.length+data.q.length+1);
 }
-function renderStage6(){renderInputExercise(PRESENT_PASSIVE,6,5,7,'🔵 Passive Voice — Present Simple','Stage 6 — Grammar','Object + am / is / are + V3 (+ by ...)','<li><b>is</b> + V3 → singular</li><li><b>are</b> + V3 → plural</li><li>Use for facts and general truths.</li>','Complete with the correct <b>Present Passive</b> form.<span class="ru">Впишите форму: <b>am / is / are + V3</b>.</span>','Type the passive form...')}
-function renderStage7(){renderInputExercise(PAST_PASSIVE,7,6,8,'🟣 Passive Voice — Past Simple','Stage 7 — Grammar','Object + was / were + V3 (+ by ...)','<li><b>was</b> + V3 → singular</li><li><b>were</b> + V3 → plural</li><li>Use for finished actions.</li>','Complete with the correct <b>Past Passive</b> form.<span class="ru">Впишите форму: <b>was / were + V3</b>.</span>','Type the passive form...')}
-function renderStage8(){
-  const main=document.getElementById('main');
-  const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 8 — New Grammar!</div><h2>🟢 Present Perfect</h2>'+
-  '<div class="g-box"><h3>What is Present Perfect?</h3>'+
-  '<p style="font-size:16.5px;line-height:1.65;margin-bottom:10px;">Actions that happened in the past but are <b>still important now</b>.</p>'+
-  '<div class="g-formula">Subject + have / has + V3</div>'+
-  '<h3 style="margin-top:16px;">When do we use it?</h3><ul>'+
-  '<li><b>Experience:</b> I <b>have visited</b> Japan.</li>'+
-  '<li><b>Recent news:</b> Many flights <b>have been cancelled</b>.</li>'+
-  '<li><b>Unfinished time:</b> Scientists <b>have studied</b> volcanoes for many years.</li>'+
-  '<li><b>Time words:</b> already, just, yet, ever, never, since, for.</li></ul>'+
-  '<h3 style="margin-top:16px;">Present Perfect Passive</h3>'+
-  '<div class="g-formula">Object + have / has + been + V3</div>'+
-  '<span class="ru-note"><b>Настоящее совершённое время</b>: <b>have / has + V3</b>. Пассив: <b>have / has + been + V3</b>.</span></div>'+
-  '<div class="lead">Complete with the correct Present Perfect form.<span class="ru">Впишите форму Present Perfect.</span></div>'+
-  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
-  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="p8live" style="color:var(--accent);font-size:18px;">0</span> / '+PP.length+'</div>'+
-  '<button class="btn ghost small" onclick="resetPassive(8)">↻ Reset</button></div><div id="p8body"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(7,9));
-  let score=0;const body=document.getElementById('p8body');
-  PP.forEach((item,i)=>{
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt).replace('___','<b style="color:var(--success);">___</b>')+'</div>';
-    const row=document.createElement('div');row.className='q-input-row';
-    const inp=document.createElement('input');inp.type='text';inp.className='q-input';
-    inp.placeholder='Type the present perfect form...';inp.autocomplete='off';inp.spellcheck=false;
-    const btn=document.createElement('button');btn.className='btn success';btn.textContent='✓ Check';
-    const fb=document.createElement('div');fb.className='q-feedback';
-    let answered=false;
-    function submit(){
-      if(answered)return;
-      const v0=inp.value.trim().toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ');
-      const ok=v0===item.answer||(item.accept&&item.accept.indexOf(v0)!==-1);
-      if(ok){
-        inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true;
-        fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
-        sCorrect();score++;
-        document.getElementById('p8live').textContent=score;
-        setScore(8,Math.floor(score*10/PP.length));
-        if(score===PP.length){setScore(8,10);markDone(8)}
-        broadcastAction('answer_correct','PP: '+item.answer);
-      }else{
-        inp.classList.add('wrong');sWrong();
-        fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!';
-        setTimeout(()=>inp.classList.remove('wrong'),600);
-        broadcastAction('answer_wrong','PP attempt: "'+inp.value+'"');
-      }
-    }
-    btn.onclick=submit;
-    inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
-    inp.addEventListener('input',()=>broadcastAction('typing','PP | "'+inp.value+'"'));
-    row.appendChild(inp);row.appendChild(btn);
-    card.appendChild(row);card.appendChild(fb);body.appendChild(card);
-  });
-}
-function resetPassive(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
+function resetGrammarStage(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
 
-/* ========== STAGE 9: SENTENCE BUILDER ========== */
-const SB=[
-  {prompt:'Build a Present Passive sentence about the town.',words:['The','town','is','covered','with','water'],correct:['The','town','is','covered','with','water']},
-  {prompt:'Build a Present Passive sentence about tsunamis.',words:['Tsunamis','are','caused','by','underwater','earthquakes'],correct:['Tsunamis','are','caused','by','underwater','earthquakes']},
-  {prompt:'Build a Past Passive sentence about the wildfire.',words:['The','wildfire','was','caused','by','the','drought'],correct:['The','wildfire','was','caused','by','the','drought']},
-  {prompt:'Build a Past Passive sentence about the streets.',words:['The','streets','were','flooded','after','heavy','rain'],correct:['The','streets','were','flooded','after','heavy','rain']},
-  {prompt:'Build a Present Perfect sentence about flights.',words:['Many','flights','have','been','cancelled'],correct:['Many','flights','have','been','cancelled']},
-  {prompt:'Build a Present Perfect sentence about volcanoes.',words:['Scientists','have','studied','volcanoes','for','many','years'],correct:['Scientists','have','studied','volcanoes','for','many','years']}
-];
-let s9Score=0;
-function renderStage9(){
+function renderStage4(){renderCompletingSentence(G6,4,3,5,'⏳ Completing Sentence — Present Perfect','Stage 4 — Grammar','Subject + have/has + past participle (V3)','<li>Use <b>have</b> with I, you, we, they (and plural nouns).</li><li>Use <b>has</b> with he, she, it (and singular nouns like "council", "region").</li><li>Negative: <b>have/has not + V3</b>. Question: <b>Have/Has + subject + V3?</b></li>','Complete each sentence. Part 1 has positives, Part 2 has negatives, Part 3 has questions, then a large mixed set.<span class="ru">Дополните предложения. Секции: утверждения → отрицания → вопросы → микс.</span>')}
+function renderStage5(){renderCompletingSentence(G7,5,4,6,'🛡️ Completing Sentence — Passive Voice','Stage 5 — Grammar','Subject + was/were + past participle (V3)','<li>Past passive: <b>was</b> + V3 (singular), <b>were</b> + V3 (plural).</li><li>Use passive when the action matters more than the doer: The town <b>was destroyed</b>.</li><li>Negative: <b>was/were not + V3</b>. Question: <b>Was/Were + subject + V3?</b></li>','Complete each sentence using the passive voice. Same structure as Stage 4.<span class="ru">Дополните предложения в пассивном залоге.</span>')}
+
+/* ================== STAGES 6/7 — SENTENCE BUILDER ================== */
+const SB_PP={pos:[
+  {prompt:'Build a present perfect sentence about the heat wave.',correct:['The','heat','has','dried','the','vegetation.']},
+  {prompt:'Build a present perfect sentence about scientists.',correct:['Scientists','have','linked','the','disasters.']},
+  {prompt:'Build a present perfect sentence about the council.',correct:['The','council','has','opened','new','cooling','centres.']},
+  {prompt:'Build a present perfect sentence about floods.',correct:['Floods','have','destroyed','many','homes.']},
+  {prompt:'Build a present perfect sentence about the region.',correct:['The','region','has','changed','dramatically.']}
+],neg:[
+  {prompt:'Build a negative present perfect sentence about the warning systems.',correct:['The','council','has','not','installed','new','warning','systems','yet.']},
+  {prompt:'Build a negative present perfect sentence about rain.',correct:['We','have','not','seen','such','rain','for','years.']},
+  {prompt:'Build a negative present perfect sentence about the mayor.',correct:['The','mayor','has','not','announced','the','plan.']},
+  {prompt:'Build a negative present perfect sentence about firefighters.',correct:['Firefighters','have','not','finished','clearing','the','roads.']},
+  {prompt:'Build a negative present perfect sentence about the soil.',correct:['The','soil','has','not','recovered','from','the','fire.']}
+],q:[
+  {prompt:'Build a present perfect question about the region.',correct:['Has','the','region','recovered','from','the','wildfire?']},
+  {prompt:'Build a present perfect question with "ever".',correct:['Have','you','ever','seen','a','wildfire?']},
+  {prompt:'Build a present perfect question about scientists.',correct:['Have','scientists','linked','the','disasters?']},
+  {prompt:'Build a present perfect question about the river.',correct:['Has','the','river','flooded','again','since','June?']},
+  {prompt:'Build a present perfect question about residents.',correct:['Have','residents','trained','in','evacuation','procedures','yet?']}
+],shuffled:[
+  {prompt:'Build: The wildfire has destroyed over 400 hectares.',correct:['The','wildfire','has','destroyed','over','400','hectares.']},
+  {prompt:'Build: Temperatures have risen sharply.',correct:['Temperatures','have','risen','sharply.']},
+  {prompt:'Build: The council has opened new cooling centres.',correct:['The','council','has','opened','new','cooling','centres.']},
+  {prompt:'Build: We have learned a lot.',correct:['We','have','learned','a','lot.']},
+  {prompt:'Build: I have never experienced such heat.',correct:['I','have','never','experienced','such','heat.']},
+  {prompt:'Build: Rescue teams have saved dozens of families.',correct:['Rescue','teams','have','saved','dozens','of','families.']},
+  {prompt:'Build: The warning system has just started.',correct:['The','warning','system','has','just','started.']},
+  {prompt:'Build: Authorities have already closed the road.',correct:['Authorities','have','already','closed','the','road.']},
+  {prompt:'Build: The storm has not arrived yet.',correct:['The','storm','has','not','arrived','yet.']},
+  {prompt:'Build: Hospitals have treated many cases.',correct:['Hospitals','have','treated','many','cases.']},
+  {prompt:'Build: Water levels have risen.',correct:['Water','levels','have','risen.']},
+  {prompt:'Build: Have you read the report?',correct:['Have','you','read','the','report?']},
+  {prompt:'Build: The vegetation has dried out.',correct:['The','vegetation','has','dried','out.']},
+  {prompt:'Build: Many species have lost their habitats.',correct:['Many','species','have','lost','their','habitats.']},
+  {prompt:'Build: The mayor has promised better planning.',correct:['The','mayor','has','promised','better','planning.']},
+  {prompt:'Build: She has not heard the news yet.',correct:['She','has','not','heard','the','news','yet.']},
+  {prompt:'Build: The region has changed dramatically.',correct:['The','region','has','changed','dramatically.']},
+  {prompt:'Build: Scientists have warned about this.',correct:['Scientists','have','warned','about','this.']},
+  {prompt:'Build: The reservoir has not recovered.',correct:['The','reservoir','has','not','recovered.']},
+  {prompt:'Build: Has the town built new defences?',correct:['Has','the','town','built','new','defences?']},
+  {prompt:'Build: The events have prompted a rethink.',correct:['The','events','have','prompted','a','rethink.']},
+  {prompt:'Build: We have seen three floods.',correct:['We','have','seen','three','floods.']},
+  {prompt:'Build: The fire has burned for eleven days.',correct:['The','fire','has','burned','for','eleven','days.']},
+  {prompt:'Build: Have you heard of a tsunami?',correct:['Have','you','heard','of','a','tsunami?']},
+  {prompt:'Build: The community has rebuilt many homes.',correct:['The','community','has','rebuilt','many','homes.']},
+  {prompt:'Build: Air quality has improved.',correct:['Air','quality','has','improved.']},
+  {prompt:'Build: The council has not decided yet.',correct:['The','council','has','not','decided','yet.']},
+  {prompt:'Build: I have seen such rain before.',correct:['I','have','seen','such','rain','before.']},
+  {prompt:'Build: They have trained residents in drills.',correct:['They','have','trained','residents','in','drills.']},
+  {prompt:'Build: The heat has affected many residents.',correct:['The','heat','has','affected','many','residents.']}
+]};
+
+const SB_PS={pos:[
+  {prompt:'Build a past passive sentence about the flood.',correct:['The','town','was','destroyed','by','the','flood.']},
+  {prompt:'Build a past passive sentence about the wildfire.',correct:['The','wildfire','was','caused','by','extreme','heat.']},
+  {prompt:'Build a past passive sentence about homes.',correct:['Hundreds','of','homes','were','damaged','by','the','storm.']},
+  {prompt:'Build a past passive sentence about the coastal road.',correct:['The','coastal','road','was','closed','after','the','landslide.']},
+  {prompt:'Build a past passive sentence about warning systems.',correct:['New','warning','systems','were','installed','last','year.']}
+],neg:[
+  {prompt:'Build a negative past passive sentence about the wildfire.',correct:['The','wildfire','was','not','contained','quickly.']},
+  {prompt:'Build a negative past passive sentence about the evacuation.',correct:['The','evacuation','was','not','organised','well.']},
+  {prompt:'Build a negative past passive sentence about residents.',correct:['Some','residents','were','not','warned','in','time.']},
+  {prompt:'Build a negative past passive sentence about the river.',correct:['The','river','was','not','monitored','before','the','flood.']},
+  {prompt:'Build a negative past passive sentence about cooling centres.',correct:['The','cooling','centres','were','not','opened','early','enough.']}
+],q:[
+  {prompt:'Build a past passive question about the town.',correct:['Was','the','town','evacuated','before','the','flood?']},
+  {prompt:'Build a past passive question about warning systems.',correct:['Were','the','warning','systems','tested','recently?']},
+  {prompt:'Build a past passive question about the wildfire.',correct:['Was','the','wildfire','spotted','by','satellites?']},
+  {prompt:'Build a past passive question about firebreaks.',correct:['Were','new','firebreaks','created','last','summer?']},
+  {prompt:'Build a past passive question about the report.',correct:['Was','the','report','published','yet?']}
+],shuffled:[
+  {prompt:'Build: The flood was caused by heavy rain.',correct:['The','flood','was','caused','by','heavy','rain.']},
+  {prompt:'Build: The wildfire was spotted by a farmer.',correct:['The','wildfire','was','spotted','by','a','farmer.']},
+  {prompt:'Build: Many homes were destroyed.',correct:['Many','homes','were','destroyed.']},
+  {prompt:'Build: The evacuation was completed quickly.',correct:['The','evacuation','was','completed','quickly.']},
+  {prompt:'Build: The riverbanks were weakened by the flood.',correct:['The','riverbanks','were','weakened','by','the','flood.']},
+  {prompt:'Build: Cooling centres were opened.',correct:['Cooling','centres','were','opened.']},
+  {prompt:'Build: The soil was left to recover.',correct:['The','soil','was','left','to','recover.']},
+  {prompt:'Build: Several bridges were damaged.',correct:['Several','bridges','were','damaged.']},
+  {prompt:'Build: The report was written by scientists.',correct:['The','report','was','written','by','scientists.']},
+  {prompt:'Build: New rules were introduced.',correct:['New','rules','were','introduced.']},
+  {prompt:'Build: The mayor was criticised.',correct:['The','mayor','was','criticised.']},
+  {prompt:'Build: Coastal towns were warned by text.',correct:['Coastal','towns','were','warned','by','text.']},
+  {prompt:'Build: The harbour was flooded twice.',correct:['The','harbour','was','flooded','twice.']},
+  {prompt:'Build: Firebreaks were widened.',correct:['Firebreaks','were','widened.']},
+  {prompt:'Build: Species were affected severely.',correct:['Species','were','affected','severely.']},
+  {prompt:'Build: Was the road repaired?',correct:['Was','the','road','repaired?']},
+  {prompt:'Build: The wildfire was not controlled.',correct:['The','wildfire','was','not','controlled.']},
+  {prompt:'Build: Emergency shelters were set up.',correct:['Emergency','shelters','were','set','up.']},
+  {prompt:'Build: The drought was followed by rain.',correct:['The','drought','was','followed','by','rain.']},
+  {prompt:'Build: Residents were trained in drills.',correct:['Residents','were','trained','in','drills.']},
+  {prompt:'Build: The crisis was handled well.',correct:['The','crisis','was','handled','well.']},
+  {prompt:'Build: Was the evacuation announced?',correct:['Was','the','evacuation','announced?']},
+  {prompt:'Build: The vegetation was destroyed.',correct:['The','vegetation','was','destroyed.']},
+  {prompt:'Build: Two towns were cut off.',correct:['Two','towns','were','cut','off.']},
+  {prompt:'Build: The council was blamed.',correct:['The','council','was','blamed.']},
+  {prompt:'Build: New trees were planted.',correct:['New','trees','were','planted.']},
+  {prompt:'Build: The warning was sent too late.',correct:['The','warning','was','sent','too','late.']},
+  {prompt:'Build: The region was affected.',correct:['The','region','was','affected.']},
+  {prompt:'Build: Some homes were not rebuilt.',correct:['Some','homes','were','not','rebuilt.']},
+  {prompt:'Build: The lessons were learned.',correct:['The','lessons','were','learned.']}
+]};
+
+const SB_STATE={};
+const SB_DATA={};
+function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 9 — Sentence Builder</div><h2>🧩 Build the Sentence</h2>'+
-  '<div class="lead">Click words in the correct order.<span class="ru">Соберите предложение.</span></div>'+
-  '<div class="card" style="display:flex;justify-content:space-between;align-items:center;">'+
-  '<div style="font-weight:700;color:var(--ink-soft);">Score: <span id="s9live" style="color:var(--accent);font-size:18px;">0</span> / '+SB.length+'</div>'+
-  '<button class="btn ghost small" onclick="resetStage9()">↻ Reset</button></div><div id="sbBody"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(8,10));s9Score=0;
-  const body=document.getElementById('sbBody');
-  SB.forEach((item,i)=>{
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Sentence '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>'+
-    '<div class="sb-chips" id="sbChips'+i+'"></div>'+
-    '<div class="sb-area" id="sbArea'+i+'"><span class="placeholder">Click the words below...</span></div>'+
-    '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn small" onclick="checkSB('+i+')">✓ Check</button>'+
-    '<button class="btn ghost small" onclick="resetSBItem('+i+')">↻ Reset</button></div>'+
-    '<div class="q-feedback" id="sbFb'+i+'"></div>';
-    body.appendChild(card);
-    const chipsEl=document.getElementById('sbChips'+i);
-    const shuffled=item.words.slice().sort(()=>Math.random()-.5);
-    shuffled.forEach(w=>{const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=w;chip.onclick=()=>moveChip(i,chip,w);chipsEl.appendChild(chip)});
-  });
+  v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
+  '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
+  '<div class="lead">'+lead+'</div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft)">Score: <span id="sb'+stageId+'live" style="color:var(--accent);font-size:18px">0</span> / '+(data.pos.length+data.neg.length+data.q.length+data.shuffled.length)+'</div><button class="btn ghost small" onclick="resetGrammarStage('+stageId+')">↻ Reset</button></div>'+
+  '<div id="sb'+stageId+'body"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
+  const body=document.getElementById('sb'+stageId+'body');
+  const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length;
+  SB_DATA[stageId]={pos:data.pos,neg:data.neg,q:data.q,shuffled:data.shuffled};
+  function addSection(heading,items,startNum){
+    if(heading){const h=document.createElement('div');h.className='section-head';h.textContent=heading;body.appendChild(h)}
+    items.forEach(function(item,i){
+      const card=document.createElement('div');card.className='q-card';
+      const idx=startNum+i;
+      card.innerHTML='<div class="q-num">Question '+idx+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>'+
+      '<div class="sb-chips" id="sbChips'+stageId+'_'+idx+'"></div>'+
+      '<div class="sb-area" id="sbArea'+stageId+'_'+idx+'"><span class="placeholder">Click the words below...</span></div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" onclick="checkSBItem('+stageId+','+idx+')">✓ Check</button><button class="btn ghost small" onclick="resetSBItem('+stageId+','+idx+')">↻ Reset</button></div>'+
+      '<div class="q-feedback" id="sbFb'+stageId+'_'+idx+'"></div>';
+      body.appendChild(card);
+      const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
+      const scrambled=shuffle(item.correct.map(function(w,ii){return{w:w,i:ii}}));
+      scrambled.forEach(function(entry){
+        const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=entry.w;chip.dataset.origIndex=entry.i;
+        chip.onclick=function(){moveChip(stageId,idx,chip,entry.w,entry.i)};
+        chipsEl.appendChild(chip);
+      });
+      SB_STATE[stageId+'_'+idx]=[];
+    });
+  }
+  addSection('Part 1 — Positive sentences',data.pos,1);
+  addSection('Part 2 — Negative sentences',data.neg,data.pos.length+1);
+  addSection('Part 3 — Questions',data.q,data.pos.length+data.neg.length+1);
+  addSection('Part 4 — Mixed practice (shuffled)',shuffle(data.shuffled),data.pos.length+data.neg.length+data.q.length+1);
 }
-function moveChip(qIndex,chip,word){
-  const area=document.getElementById('sbArea'+qIndex);const ph=area.querySelector('.placeholder');
-  if(ph)ph.remove();
-  const newChip=document.createElement('div');newChip.className='sb-chip';newChip.textContent=word;
-  newChip.onclick=()=>{
+function moveChip(stageId,idx,chip,word,origIdx){
+  const area=document.getElementById('sbArea'+stageId+'_'+idx);if(!area)return;
+  const ph=area.querySelector('.placeholder');if(ph)ph.remove();
+  const newChip=document.createElement('div');newChip.className='sb-chip';newChip.textContent=word;newChip.dataset.origIndex=origIdx;
+  newChip.onclick=function(){
     newChip.remove();
-    const chipsEl=document.getElementById('sbChips'+qIndex);
-    const back=document.createElement('div');back.className='sb-chip';back.textContent=word;
-    back.onclick=()=>moveChip(qIndex,back,word);
+    const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
+    const back=document.createElement('div');back.className='sb-chip';back.textContent=word;back.dataset.origIndex=origIdx;
+    back.onclick=function(){moveChip(stageId,idx,back,word,origIdx)};
     chipsEl.appendChild(back);
+    SB_STATE[stageId+'_'+idx]=(SB_STATE[stageId+'_'+idx]||[]).filter(function(x){return x!==origIdx});
     if(!area.querySelector('.sb-chip')){area.innerHTML='<span class="placeholder">Click the words below...</span>';area.classList.remove('filled')}
   };
   area.appendChild(newChip);area.classList.add('filled');chip.remove();sPop();
+  if(!SB_STATE[stageId+'_'+idx])SB_STATE[stageId+'_'+idx]=[];
+  SB_STATE[stageId+'_'+idx].push(origIdx);
 }
-function resetSBItem(i){
-  const area=document.getElementById('sbArea'+i);const chipsEl=document.getElementById('sbChips'+i);
-  area.querySelectorAll('.sb-chip').forEach(ch=>{
-    const back=document.createElement('div');back.className='sb-chip';back.textContent=ch.textContent;
-    back.onclick=()=>moveChip(i,back,ch.textContent);chipsEl.appendChild(back);
+function resetSBItem(stageId,idx){
+  const area=document.getElementById('sbArea'+stageId+'_'+idx);const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
+  if(!area||!chipsEl)return;
+  area.querySelectorAll('.sb-chip').forEach(function(ch){
+    const back=document.createElement('div');back.className='sb-chip';back.textContent=ch.textContent;back.dataset.origIndex=ch.dataset.origIndex;
+    back.onclick=function(){moveChip(stageId,idx,back,ch.textContent,Number(ch.dataset.origIndex))};
+    chipsEl.appendChild(back);
   });
   area.innerHTML='<span class="placeholder">Click the words below...</span>';
-  area.classList.remove('filled');document.getElementById('sbFb'+i).className='q-feedback';
+  area.classList.remove('filled');
+  SB_STATE[stageId+'_'+idx]=[];
+  const fb=document.getElementById('sbFb'+stageId+'_'+idx);if(fb)fb.className='q-feedback';
 }
-function checkSB(i){
-  const area=document.getElementById('sbArea'+i);
-  const userWords=Array.prototype.slice.call(area.querySelectorAll('.sb-chip')).map(c=>c.textContent);
-  const correct=SB[i].correct;const fb=document.getElementById('sbFb'+i);
-  if(userWords.length!==correct.length){fb.className='q-feedback wrong';fb.innerHTML='Use all the words.';sWrong();return}
-  const ok=userWords.every((w,j)=>w===correct[j]);
+function checkSBItem(stageId,idx){
+  const area=document.getElementById('sbArea'+stageId+'_'+idx);if(!area)return;
+  const userOrder=Array.from(area.querySelectorAll('.sb-chip')).map(function(c){return Number(c.dataset.origIndex)});
+  const fb=document.getElementById('sbFb'+stageId+'_'+idx);
+  const expected=Array.from({length:userOrder.length},function(_,i){return i});
+  if(userOrder.length!==expected.length){fb.className='q-feedback wrong';fb.innerHTML='Use all the words.';sWrong();return}
+  const ok=userOrder.every(function(v,i){return v===i});
   if(ok){
     fb.className='q-feedback correct';fb.innerHTML='✓ Correct!';sCorrect();
-    if(!SB[i].__done){SB[i].__done=true;s9Score++;
-      document.getElementById('s9live').textContent=s9Score;
-      setScore(9,Math.floor(s9Score*10/SB.length));
-      if(s9Score===SB.length){setScore(9,10);markDone(9)}
+    if(!window['sbDone_'+stageId+'_'+idx]){
+      window['sbDone_'+stageId+'_'+idx]=true;
+      const el=document.getElementById('sb'+stageId+'live');
+      let cur=Number(el.textContent)||0;cur++;el.textContent=cur;
+      const tot=(SB_DATA[stageId].pos.length+SB_DATA[stageId].neg.length+SB_DATA[stageId].q.length+SB_DATA[stageId].shuffled.length);
+      setScore(stageId,Math.floor(cur*10/tot));
+      if(cur===tot){setScore(stageId,10);markDone(stageId)}
     }
-    broadcastAction('sb_correct',correct.join(' '));
-  }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.';sWrong();broadcastAction('sb_wrong',userWords.join(' '))}
+  }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Check the word order.';sWrong()}
 }
-function resetStage9(){setScore(9,0);state.done[state.currentLessonId+"_9"]=false;SB.forEach(x=>{delete x.__done});renderSidebar();renderStage9();updateHUD()}
 
-/* ========== STAGE 10: SPEED ROUND ========== */
-const SPEED_QUESTIONS=[
-  {q:'Many buildings ___ by hurricanes every year.',options:['are destroyed','were destroyed','is destroyed'],correct:0,exp:'Present Passive.'},
-  {q:'The wildfire ___ by the drought last summer.',options:['is caused','was caused','has been caused'],correct:1,exp:'Past Passive.'},
-  {q:'Tsunamis ___ by underwater earthquakes.',options:['are caused','were caused','is caused'],correct:0,exp:'Present Passive.'},
-  {q:'The streets ___ after heavy rain yesterday.',options:['are flooded','were flooded','was flooded'],correct:1,exp:'Past Passive + plural.'},
-  {q:'Many flights ___ because of blizzards this winter.',options:['are cancelled','were cancelled','have been cancelled'],correct:2,exp:'Present Perfect Passive.'},
-  {q:'Scientists ___ volcanoes for many years.',options:['study','studied','have studied'],correct:2,exp:'Present Perfect.'},
-  {q:'The town ___ with water after the storm.',options:['is covered','was covered','has been covered'],correct:1,exp:'Past Passive.'},
-  {q:'Drinking water ___ after every disaster.',options:['is needed','was needed','has been needed'],correct:0,exp:'Present Passive.'},
-  {q:'California ___ many wildfires in the last decade.',options:['has','had','has had'],correct:2,exp:'Present Perfect.'},
-  {q:'The ancient city ___ by an earthquake in 1906.',options:['is toppled','was toppled','has been toppled'],correct:1,exp:'Past Passive.'},
-  {q:'Broken structures ___ in the news after an earthquake.',options:['are seen','were seen','have been seen'],correct:0,exp:'Present Passive.'},
-  {q:'The smoke from wildfires ___ serious health problems.',options:['cause','has caused','have caused'],correct:1,exp:'Present Perfect.'}
+function renderStage6(){renderSentenceBuilder(SB_PP,6,5,7,'🧩 Sentence Builder — Present Perfect','Stage 6 — Grammar','have/has + past participle (V3)','<li>Build sentences word by word.</li><li>Part 1: positives, Part 2: negatives, Part 3: questions, then a big mixed set.</li>','Build each sentence. Same order as the completing-sentence stages.<span class="ru">Соберите предложения по частям.</span>')}
+function renderStage7(){renderSentenceBuilder(SB_PS,7,6,8,'🧱 Sentence Builder — Passive Voice','Stage 7 — Grammar','was/were + past participle (V3)','<li>Build past passive sentences word by word.</li><li>Same 5+5+5 structure.</li>','Build each sentence.<span class="ru">Соберите предложения.</span>')}
+
+/* ================== STAGE 8 — CHOOSE THE TENSE ================== */
+const G10={pos:[
+  {p:'The wildfire ___ (destroy) 400 hectares last August.',a:'destroyed',ex:'Finished time → past simple.'},
+  {p:'Air pollution ___ (improve) since the fire stopped.',a:'has improved',ex:'"Since" → present perfect.'},
+  {p:'The council ___ (open) cooling centres in 2023.',a:'opened',ex:'Finished year → past simple.'},
+  {p:'The region ___ (recover) slowly over the past year.',a:'has recovered',ex:'"Over the past year" → present perfect.'},
+  {p:'Temperatures ___ (rise) above 42°C last week.',a:'rose',ex:'"Last week" → past simple.'}
+],neg:[
+  {p:'The council ___ (not / install) warning systems yet.',a:'has not installed',ex:'"Yet" → present perfect.'},
+  {p:'They ___ (not / finish) the evacuation in time yesterday.',a:'did not finish',ex:'"Yesterday" → past simple.'},
+  {p:'We ___ (not / see) the mayor at the meeting.',a:'did not see',ex:'Finished event → past simple.'},
+  {p:'She ___ (not / hear) about the wildfire yet.',a:'has not heard',ex:'"Yet" → present perfect.'},
+  {p:'I ___ (not / receive) any updates since Monday.',a:'have not received',ex:'"Since Monday" → present perfect.'}
+],q:[
+  {p:'___ the town ___ (evacuate) before the flood?',a:'Was the town evacuated',ex:'Passive past question.'},
+  {p:'___ the council ___ (provide) clear warnings so far?',a:'Has the council provided',ex:'"So far" → present perfect.'},
+  {p:'___ they ___ (install) the new lights in 2020?',a:'Did they install',ex:'Finished year → past simple.'},
+  {p:'___ you ever ___ (experience) a heat wave?',a:'Have you ever experienced',ex:'"Ever" → present perfect.'},
+  {p:'___ the mayor ___ (speak) at yesterday\u2019s meeting?',a:'Did the mayor speak',ex:'"Yesterday" → past simple.'}
+],shuffled:[
+  {p:'The council ___ (add) the cycle lane in 2020.',a:'added'},
+  {p:'Cycling ___ (become) very popular here.',a:'has become'},
+  {p:'She ___ (write) an essay about floods yesterday.',a:'wrote'},
+  {p:'We ___ (visit) the harbour museum twice.',a:'have visited'},
+  {p:'They ___ (open) the new bridge last spring.',a:'opened'},
+  {p:'I ___ (not / see) such clean air before.',a:'have not seen'},
+  {p:'The mayor ___ (announce) the plan in 2015.',a:'announced'},
+  {p:'The school ___ (start) a recycling programme recently.',a:'has started'},
+  {p:'___ you ___ (finish) the exercise yet?',a:'Have you finished'},
+  {p:'The council ___ (approve) the budget last month.',a:'approved'},
+  {p:'She ___ (live) in this neighbourhood for ten years.',a:'has lived'},
+  {p:'We ___ (walk) ten kilometres last Saturday.',a:'walked'},
+  {p:'The workers ___ (build) the bridge in two months.',a:'built'},
+  {p:'My parents ___ (not / own) a car since 2018.',a:'have not owned'},
+  {p:'___ they ___ (plant) the trees yesterday?',a:'Did they plant'},
+  {p:'I ___ (already / read) three books about disasters.',a:'have already read'},
+  {p:'The city ___ (spend) millions on defence in 2020.',a:'spent'},
+  {p:'People ___ (complain) about the noise since the works started.',a:'have complained'},
+  {p:'___ she ___ (cycle) to school when she was young?',a:'Did she cycle'},
+  {p:'The mayor ___ (just / announce) a new green initiative.',a:'has just announced'},
+  {p:'They ___ (not / complete) the project on time.',a:'did not complete'},
+  {p:'I ___ (read) three articles last night.',a:'read'},
+  {p:'The government ___ (invest) heavily in wind power recently.',a:'has invested'},
+  {p:'___ you ever ___ (be) to Copenhagen?',a:'Have you ever been'},
+  {p:'The bridge ___ (collapse) in the storm last year.',a:'collapsed'},
+  {p:'Our family ___ (live) here since 2015.',a:'has lived'},
+  {p:'He ___ (not / come) to the meeting on Monday.',a:'did not come'},
+  {p:'___ the council ___ (decide) on the parking rules yet?',a:'Has the council decided'},
+  {p:'She ___ (buy) an electric bike last summer.',a:'bought'},
+  {p:'We ___ (know) each other since primary school.',a:'have known'}
+]};
+function renderStage8(){renderCompletingSentence(G10,8,7,9,'🧭 Completing Sentence — Choose the Tense','Stage 8 — Grammar','Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)','<li>Use past simple with finished times: yesterday, in 2020, last week, ago.</li><li>Use present perfect with: since, for, yet, ever, never, just, already, so far, recently.</li>','Choose the correct tense for each sentence. Same structure: 5+5+5 then 30 mixed.<span class="ru">Выберите правильное время.</span>')}
+
+/* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
+const TEST_MCQ=[
+  {q:'Which word means "a sudden shaking of the ground"?',options:['earthquake','drought','blizzard'],correct:'earthquake',exp:'An earthquake shakes the ground.'},
+  {q:'Which word means "a long period with very little rain"?',options:['drought','flood','tornado'],correct:'drought',exp:'A drought = too little rain.'},
+  {q:'Which word means "a very large ocean wave"?',options:['tsunami','hurricane','avalanche'],correct:'tsunami',exp:'A tsunami is a huge ocean wave.'},
+  {q:'Which word means "the strength of an earthquake"?',options:['magnitude','tremor','atmosphere'],correct:'magnitude',exp:'Magnitude = strength.'},
+  {q:'Which word means "organized removal from danger"?',options:['evacuation','eruption','deforestation'],correct:'evacuation',exp:'Evacuation = getting to safety.'},
+  {q:'Which word means "the removal of many trees"?',options:['deforestation','eruption','structure'],correct:'deforestation',exp:'Deforestation = cutting down forests.'},
+  {q:'Which word means "a small shaking"?',options:['tremor','crust','magnitude'],correct:'tremor',exp:'A tremor is a small shake.'},
+  {q:'Which word means "warm and wet in the air"?',options:['humid','vulnerable','ecological'],correct:'humid',exp:'Humid air feels warm and wet.'}
 ];
-let s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};
-function renderStage10(){
+const TEST_SHORT=[
+  {q:'How many consecutive days did temperatures rise above 42°C?',answers:['10','ten'],exp:'Ten consecutive days.'},
+  {q:'How many millimetres of rain fell in two days?',answers:['200','more than 200','200 mm'],exp:'More than 200 mm.'},
+  {q:'How many hectares of forest were destroyed?',answers:['400','more than 400','over 400'],exp:'Over 400 hectares.'},
+  {q:'How many days did firefighters work?',answers:['11','eleven'],exp:'Eleven days.'},
+  {q:'Name the town worst affected by the floods.',answers:['marlowe'],exp:'Marlowe.'},
+  {q:'At what temperature will cooling centres open automatically?',answers:['38','38°c','38 c','38 degrees'],exp:'Above 38°C.'}
+];
+const TEST_TFNG=[
+  {q:'The three disasters took place within six weeks.',answer:'True',exp:'Within six weeks.'},
+  {q:'Lives were lost in the wildfire.',answer:'False',exp:'No lives were lost.'},
+  {q:'The council had planned for this intensity.',answer:'Not Given',exp:'Never stated.'},
+  {q:'The wildfire happened before the floods.',answer:'False',exp:'It happened after the floods.'},
+  {q:'Paris is mentioned in the article.',answer:'Not Given',exp:'Paris isn\u2019t mentioned.'}
+];
+const TEST_COMPLETE=[
+  {p:'The region ___ (experience) three disasters since June.',a:'has experienced'},
+  {p:'The wildfire ___ (destroy) 400 hectares last August.',a:'destroyed'},
+  {p:'The town ___ (not / rebuild) yet.',a:'has not rebuilt'},
+  {p:'Many homes ___ (destroy) in the flood.',a:'were destroyed'},
+  {p:'___ you ever ___ (see) a wildfire?',a:'Have you ever seen'},
+  {p:'The council ___ (open) cooling centres in 2023.',a:'opened'},
+  {p:'The report ___ (write) by scientists last month.',a:'was written'},
+  {p:'___ the river ___ (flood) again since June?',a:'Has the river flooded'},
+  {p:'Temperatures ___ (rise) sharply last week.',a:'rose'},
+  {p:'Air quality ___ (improve) since the fire stopped.',a:'has improved'}
+];
+
+const TEST_TIME_LIMIT=15*60;
+let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
+
+function buildTestQuestions(){
+  const qs=[];
+  TEST_MCQ.forEach(function(q){qs.push({type:'mcq',prompt:q.q,options:q.options,correct:q.correct,exp:q.exp})});
+  TEST_SHORT.forEach(function(q){qs.push({type:'short',prompt:q.q,answers:q.answers,exp:q.exp})});
+  TEST_TFNG.forEach(function(q){qs.push({type:'tfng',prompt:q.q,answer:q.answer,exp:q.exp})});
+  TEST_COMPLETE.forEach(function(q){qs.push({type:'complete',prompt:q.p,answer:q.a})});
+  return shuffle(qs);
+}
+
+function renderStage9(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 10 — Speed Round</div><h2>⚡ Challenge Yourself!</h2>'+
-  '<div class="lead">60 seconds. Streak of 3+ gives bonus!<span class="ru">60 секунд. Бонус за серию!</span></div><div id="speedRoot"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(9,null,'<button class="btn ghost small" onclick="resetSpeed()">↻ Restart</button>'));
-  renderSpeedIntro();
+  v.innerHTML='<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
+  '<div class="lead">This is a strict, timed test. Answer each question to unlock the next one. You have <b>15 minutes</b> in total. When time runs out, the test closes automatically.<span class="ru">Строгий тест на время: 15 минут, вопросы по одному, нельзя перейти дальше, не ответив.</span></div>'+
+  '<div id="testRoot"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(8,null));
+  renderTestIntro();
 }
-function renderSpeedIntro(){
-  document.getElementById('speedRoot').innerHTML='<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready?</h3><p>60 seconds.</p><div style="margin-top:20px;"><button class="btn success" style="font-size:18px;padding:14px 32px;" onclick="startSpeed()">▶ Start</button></div></div>';
+function renderTestIntro(){
+  const r=document.getElementById('testRoot');if(!r)return;
+  if(testState.timer){clearInterval(testState.timer);testState.timer=null}
+  testState.active=false;
+  const preview=buildTestQuestions().length;
+  r.innerHTML='<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+
+  '<p>'+preview+' questions · 15 minutes · one question at a time</p>'+
+  '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+
+  '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" onclick="startTest()">▶ Start the test</button></div></div>';
 }
-function startSpeed(){
-  s10={active:true,idx:0,score:0,timeLeft:60,timer:null,streak:0};
-  document.getElementById('speedRoot').innerHTML='<div class="sr-hud"><div class="sr-hud-item"><span class="lbl">Time</span><span class="val timer" id="srTimer">60</span></div><div class="sr-hud-item"><span class="lbl">Score</span><span class="val" id="srScore">0</span></div><div class="sr-hud-item"><span class="lbl">Streak</span><span class="val" id="srStreak">0 🔥</span></div></div><div id="srQuestion"></div>';
-  s10.timer=setInterval(()=>{
-    s10.timeLeft--;
-    const t=document.getElementById('srTimer');
-    if(t){t.textContent=s10.timeLeft;t.classList.remove('warn','danger');
-      if(s10.timeLeft<=10)t.classList.add('danger');else if(s10.timeLeft<=20)t.classList.add('warn')}
-    if(s10.timeLeft<=0)endSpeed();
+function startTest(){
+  testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:TEST_TIME_LIMIT,timer:null};
+  testState.total=testState.questions.length;
+  const r=document.getElementById('testRoot');if(!r)return;
+  r.innerHTML='<div class="test-hud">'+
+  '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">15:00</span></div>'+
+  '<div class="tcell"><span class="lbl">Question</span><span class="val" id="testQNum">1 / '+testState.total+'</span></div>'+
+  '<div class="tcell"><span class="lbl">Correct</span><span class="val" id="testCorrect">0</span></div>'+
+  '</div>'+
+  '<div class="test-progress-rail"><div class="test-progress-fill" id="testProgress"></div></div>'+
+  '<div id="testQuestion"></div>';
+  updateTestTimer();
+  testState.timer=setInterval(function(){
+    testState.timeLeft--;
+    updateTestTimer();
+    if(testState.timeLeft<=0)endTest(true);
   },1000);
-  renderSpeedQuestion();broadcastAction('speed_start','Speed round started');
+  broadcastAction('test_start','Timed test started');
+  renderTestQuestion();
 }
-function renderSpeedQuestion(){
-  if(s10.idx>=SPEED_QUESTIONS.length){SPEED_QUESTIONS.sort(()=>Math.random()-.5);s10.idx=0}
-  const item=SPEED_QUESTIONS[s10.idx];
-  document.getElementById('srQuestion').innerHTML='<div class="q-card"><div class="q-num">Question '+(s10.idx+1)+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div><div class="q-opts" id="srOpts"></div></div>';
-  const opts=document.getElementById('srOpts');
-  item.options.forEach((opt,j)=>{
-    const b=document.createElement('button');b.className='q-opt';b.textContent=opt;
-    b.onclick=()=>{
-      if(b.disabled)return;
-      opts.querySelectorAll('button').forEach(x=>x.disabled=true);
-      if(j===item.correct){b.classList.add('correct');s10.streak++;const bonus=s10.streak>=3?2:1;s10.score+=bonus;sCorrect();broadcastAction('speed_correct',item.options[item.correct])}
-      else{b.classList.add('wrong');opts.querySelectorAll('button')[item.correct].classList.add('correct');s10.streak=0;sWrong();broadcastAction('speed_wrong',opt+' ≠ '+item.options[item.correct])}
-      document.getElementById('srScore').textContent=s10.score;
-      document.getElementById('srStreak').textContent=s10.streak+' 🔥';
-      s10.idx++;
-      setTimeout(()=>{if(s10.active&&s10.timeLeft>0)renderSpeedQuestion()},700);
-    };
-    opts.appendChild(b);
+function updateTestTimer(){
+  const t=document.getElementById('testTimer');if(!t)return;
+  const m=String(Math.floor(Math.max(0,testState.timeLeft)/60)).padStart(2,'0');
+  const s=String(Math.max(0,testState.timeLeft)%60).padStart(2,'0');
+  t.textContent=m+':'+s;
+  if(testState.timeLeft<=60)t.classList.add('danger');else t.classList.remove('danger');
+}
+function renderTestQuestion(){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const root=document.getElementById('testQuestion');if(!root)return;
+  const qn=document.getElementById('testQNum');if(qn)qn.textContent=(testState.idx+1)+' / '+testState.total;
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  const tp=document.getElementById('testProgress');if(tp)tp.style.width=(testState.idx/testState.total*100)+'%';
+  let html='<div class="q-card test-card"><div class="q-num">Question '+(testState.idx+1)+' of '+testState.total+'</div><div class="test-q-text">'+escapeHtml(q.prompt)+'</div>';
+  if(q.type==='mcq'){
+    html+='<div class="q-opts">'+shuffle(q.options).map(function(o){return '<button class="q-opt" data-opt="'+escapeAttr(o)+'" onclick="answerTestMCQ(this)">'+escapeHtml(o)+'</button>'}).join('')+'</div>';
+  }else if(q.type==='tfng'){
+    html+='<div class="tfng-opts">'+shuffle(['True','False','Not Given']).map(function(o){return '<button class="q-opt" data-opt="'+o+'" onclick="answerTestTFNG(this)">'+o+'</button>'}).join('')+'</div>';
+  }else if(q.type==='short'){
+    html+='<div class="q-input-row"><input type="text" class="q-input" id="testInput" placeholder="Type your answer..." autocomplete="off" onkeydown="if(event.key===\'Enter\')answerTestShort()"><button class="btn" onclick="answerTestShort()">Submit</button></div>';
+  }else if(q.type==='complete'){
+    html+='<div class="q-input-row"><input type="text" class="q-input" id="testInput" placeholder="Type the missing word(s)..." autocomplete="off" onkeydown="if(event.key===\'Enter\')answerTestComplete()"><button class="btn" onclick="answerTestComplete()">Submit</button></div>';
+  }
+  html+='<div class="q-feedback" id="testFeedback"></div><div id="testNextArea"></div></div>';
+  root.innerHTML=html;
+  const inp=document.getElementById('testInput');
+  if(inp)setTimeout(function(){inp.focus()},80);
+}
+function lockTestOptions(){document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){b.disabled=true})}
+function showTestFeedback(ok,exp){
+  const fb=document.getElementById('testFeedback');if(!fb)return;
+  fb.className='q-feedback '+(ok?'correct':'wrong');
+  fb.innerHTML=(ok?'✓ Correct!':'✗ Incorrect.')+(exp?'<span class="exp">'+escapeHtml(exp)+'</span>':'');
+}
+function showTestNext(){
+  const area=document.getElementById('testNextArea');if(!area)return;
+  const isLast=testState.idx>=testState.total-1;
+  area.innerHTML='<div style="margin-top:18px;text-align:right"><button class="btn" onclick="nextTestQuestion()">'+(isLast?'Finish test →':'Next question →')+'</button></div>';
+}
+function answerTestMCQ(btn){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const opt=btn.dataset.opt;const ok=opt===q.correct;
+  if(ok)testState.correct++;
+  lockTestOptions();
+  document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){
+    if(b.dataset.opt===q.correct)b.classList.add('correct');
+    else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong');
   });
+  showTestFeedback(ok,q.exp);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
 }
-function endSpeed(){
-  s10.active=false;clearInterval(s10.timer);
-  const final=s10.score;
-  document.getElementById('speedRoot').innerHTML='<div class="complete-banner"><div class="trophy">🏁</div><h3>Time\'s Up!</h3><p>You scored <b>'+final+'</b> points!</p><div style="margin-top:20px;"><button class="btn success" onclick="startSpeed()">↻ Play Again</button></div></div>';
-  sWin();confetti();
-  const scaled=Math.min(15,Math.floor(final/2));
-  setScore(10,scaled);if(scaled>=10)markDone(10);
-  broadcastAction('speed_end','Final score: '+final);
+function answerTestTFNG(btn){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const opt=btn.dataset.opt;const ok=opt===q.answer;
+  if(ok)testState.correct++;
+  lockTestOptions();
+  document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){
+    if(b.dataset.opt===q.answer)b.classList.add('correct');
+    else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong');
+  });
+  showTestFeedback(ok,q.exp);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
 }
-function resetSpeed(){if(s10.timer)clearInterval(s10.timer);s10={active:false,idx:0,score:0,timeLeft:60,timer:null,streak:0};setScore(10,0);state.done[state.currentLessonId+"_10"]=false;renderSidebar();renderStage10();updateHUD()}
+function answerTestShort(){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const inp=document.getElementById('testInput');if(!inp)return;
+  const val=norm(inp.value);
+  const ok=q.answers.some(function(a){return norm(a)===val});
+  if(ok)testState.correct++;
+  inp.disabled=true;
+  if(ok)inp.classList.add('correct');else inp.classList.add('wrong');
+  showTestFeedback(ok,q.exp);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
+}
+function answerTestComplete(){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const inp=document.getElementById('testInput');if(!inp)return;
+  const ok=norm(inp.value)===norm(q.answer);
+  if(ok)testState.correct++;
+  inp.disabled=true;
+  if(ok)inp.classList.add('correct');else inp.classList.add('wrong');
+  showTestFeedback(ok,'Expected: '+q.answer);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
+}
+function nextTestQuestion(){
+  testState.idx++;
+  if(testState.idx>=testState.total){endTest(false);return}
+  renderTestQuestion();
+}
+function endTest(timedOut){
+  if(!testState.active&&!timedOut)return;
+  testState.active=false;
+  if(testState.timer){clearInterval(testState.timer);testState.timer=null}
+  const total=testState.total||1;
+  const score=Math.round((testState.correct/total)*10);
+  setScore(9,score);
+  if(score>=6)markDone(9);
+  const elapsed=TEST_TIME_LIMIT-testState.timeLeft;
+  const mins=Math.floor(elapsed/60),secs=elapsed%60;
+  const root=document.getElementById('testRoot');if(!root)return;
+  root.innerHTML='<div class="'+(timedOut?'test-timeout':'test-result')+'">'+
+  '<div class="icon">'+(timedOut?'⏰':'🏁')+'</div>'+
+  '<h3>'+(timedOut?'Time is up!':'Test complete!')+'</h3>'+
+  '<div class="big">'+testState.correct+' / '+total+'</div>'+
+  '<p>'+(timedOut?'You ran out of time. ':'')+'You answered <b>'+testState.correct+'</b> of <b>'+total+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+
+  '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn" onclick="renderTestIntro()">↻ Try again</button><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
+  if(!timedOut){sWin();confetti();}
+  broadcastAction('test_end','Score: '+testState.correct+'/'+total);
+}
 
-/* ========== HUD ========== */
+/* ================== HUD ================== */
 function updateHUD(){
   const el=document.getElementById('scoreDisplay');
-  el.textContent=totalScore();
-  el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');
-  document.getElementById('streakDisplay').textContent=state.streak;
+  if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}
+  const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak;
   const lesson=getCurrentLesson();if(!lesson)return;
-  const doneCount=lesson.stages.filter(s=>state.done[lesson.id+"_"+s.id]).length;
+  const doneCount=lesson.stages.filter(function(s){return state.done[lesson.id+"_"+s.id]}).length;
   const pct=Math.round((doneCount/lesson.stages.length)*100);
-  document.getElementById('progressPct').textContent=pct+'%';
-  document.getElementById('progressFill').style.width=pct+'%';
+  const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%';
+  const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%';
 }
 function markDone(stageId){
   const key=state.currentLessonId+"_"+stageId;
@@ -1226,171 +1478,120 @@ function setScore(stageId,amount){
   updateHUD();saveState();
 }
 
-/* ========== SIDEBAR ========== */
-let expandedYears=["2026"];
-let expandedMonths=["October"];
-
+/* ================== SIDEBAR ================== */
+let expandedYears=["2026"],expandedMonths=["October"];
 function renderSidebar(){
-  const list=document.getElementById('stageList');list.innerHTML='';
-  CURRICULUM.forEach(yearObj=>{
-    const isYearOpen=expandedYears.includes(yearObj.year);
-    const yearEl=document.createElement('div');
-    yearEl.className='year-item'+(isYearOpen?' open':'');
+  const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
+  CURRICULUM.forEach(function(yearObj){
+    const isY=expandedYears.includes(yearObj.year);
+    const yearEl=document.createElement('div');yearEl.className='year-item'+(isY?' open':'');
     yearEl.innerHTML='<span>📅 '+yearObj.year+'</span><span class="arrow">▶</span>';
-    yearEl.onclick=()=>{
-      if(isYearOpen)expandedYears=expandedYears.filter(y=>y!==yearObj.year);
-      else expandedYears.push(yearObj.year);
-      renderSidebar();
-    };
+    yearEl.onclick=function(){if(isY)expandedYears=expandedYears.filter(function(y){return y!==yearObj.year});else expandedYears.push(yearObj.year);renderSidebar()};
     list.appendChild(yearEl);
-
-    if(isYearOpen){
-      yearObj.months.forEach(monthObj=>{
-        const isMonthOpen=expandedMonths.includes(monthObj.month);
-        const monthEl=document.createElement('div');
-        monthEl.className='month-item'+(isMonthOpen?' open':'');
-        monthEl.innerHTML='<span>📁 '+monthObj.month+'</span><span class="arrow">▶</span>';
-        monthEl.onclick=()=>{
-          if(isMonthOpen)expandedMonths=expandedMonths.filter(m=>m!==monthObj.month);
-          else expandedMonths.push(monthObj.month);
-          renderSidebar();
-        };
-        list.appendChild(monthEl);
-
-        if(isMonthOpen){
-          monthObj.lessons.forEach(lesson=>{
-            const isActive=lesson.id===state.currentLessonId;
-            const lessonEl=document.createElement('div');
-            lessonEl.className='lesson-item'+(isActive?' active':'');
-            lessonEl.innerHTML='<span>📘 '+lesson.title+'</span><span class="check">✓</span>';
-            lessonEl.onclick=()=>{
-              state.currentLessonId=lesson.id;
-              state.currentStage=1;
-              renderSidebar();renderStage();
-            };
-            list.appendChild(lessonEl);
-
-            if(isActive){
-              const studentCode=getSessionCode();
-              const assignedHomework=Object.keys(curriculumCache||{}).map(function(id){return curriculumCache[id]}).filter(function(item){
-                return item&&item.homework&&item.published!==false&&(!Array.isArray(item.assignedTo)||!item.assignedTo.length||item.assignedTo.indexOf(studentCode)!==-1);
-              });
-              if(assignedHomework.length){
-                const homeworkList=document.createElement('div');
-                homeworkList.className='homework-sub-list';
-                homeworkList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHomework.map(function(item){
-                  const id=item.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===item});
-                  const url=new URL(item.customUrl||'homework.html',window.location.href);
-                  url.searchParams.set('lesson',id);
-                  if(studentCode)url.searchParams.set('code',studentCode);
-                  return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(item.title||'Homework')+' ↗</a>';
-                }).join('');
-                homeworkList.addEventListener('click',function(e){e.stopPropagation()});
-                list.appendChild(homeworkList);
-              }
-              const stageSubList=document.createElement('div');
-              stageSubList.className='stage-sub-list';
-              lesson.stages.forEach(stage=>{
-                const key=lesson.id+"_"+stage.id;
-                const isStageActive=stage.id===state.currentStage;
-                const isStageDone=state.done[key];
-                const stageEl=document.createElement('button');
-                stageEl.className='stage-sub-item'+(isStageActive?' active':'')+(isStageDone?' done':'');
-                stageEl.innerHTML='<span class="icon">'+stage.icon+'</span> <span>'+stage.label+'</span>';
-                stageEl.onclick=()=>goToStage(stage.id);
-                stageSubList.appendChild(stageEl);
-              });
-              list.appendChild(stageSubList);
-            }
+    if(isY)yearObj.months.forEach(function(m){
+      const isM=expandedMonths.includes(m.month);
+      const mEl=document.createElement('div');mEl.className='month-item'+(isM?' open':'');
+      mEl.innerHTML='<span>📁 '+m.month+'</span><span class="arrow">▶</span>';
+      mEl.onclick=function(){if(isM)expandedMonths=expandedMonths.filter(function(x){return x!==m.month});else expandedMonths.push(m.month);renderSidebar()};
+      list.appendChild(mEl);
+      if(isM)m.lessons.forEach(function(lesson){
+        const isActive=lesson.id===state.currentLessonId;
+        const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':'');
+        lEl.innerHTML='<span>📘 '+lesson.title+'</span>';
+        lEl.onclick=function(){state.currentLessonId=lesson.id;state.currentStage=1;renderSidebar();renderStage()};
+        list.appendChild(lEl);
+        if(isActive){
+          const studentCode=getSessionCode();
+          const assignedHW=Object.keys(curriculumCache||{}).map(function(id){return curriculumCache[id]}).filter(function(it){return it&&it.homework&&it.published!==false&&(!Array.isArray(it.assignedTo)||!it.assignedTo.length||it.assignedTo.indexOf(studentCode)!==-1)});
+          if(assignedHW.length){
+            const hwList=document.createElement('div');hwList.className='homework-sub-list';
+            hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){
+              const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it});
+              const url=new URL(it.customUrl||'homework.html',window.location.href);
+              url.searchParams.set('lesson',id);if(studentCode)url.searchParams.set('code',studentCode);
+              return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>';
+            }).join('');
+            hwList.addEventListener('click',function(e){e.stopPropagation()});
+            list.appendChild(hwList);
+          }
+          const sub=document.createElement('div');sub.className='stage-sub-list';
+          lesson.stages.forEach(function(st){
+            const key=lesson.id+"_"+st.id;
+            const isA=st.id===state.currentStage;const isD=state.done[key];
+            const stEl=document.createElement('button');
+            stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':'');
+            stEl.innerHTML='<span class="icon">'+st.icon+'</span> <span>'+st.label+'</span>';
+            stEl.onclick=function(){goToStage(st.id)};
+            sub.appendChild(stEl);
           });
+          list.appendChild(sub);
         }
       });
-    }
+    });
   });
 }
-
-function goToStage(n){
-  state.currentStage=n;renderSidebar();renderStage();
-  document.getElementById('main').scrollTo({top:0,behavior:'smooth'});
-  broadcastAction('stage_open','Stage '+n);
-}
+function goToStage(n){state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n)}
 function renderStage(){
-  const main=document.getElementById('main');main.innerHTML='';
-  const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9,10:renderStage10};
+  const main=document.getElementById('main');if(!main)return;main.innerHTML='';
+  const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9};
   try{fns[state.currentStage]()}catch(e){console.error(e);main.innerHTML='<p>Error loading stage.</p>'}
 }
 function stageFooter(prevId,nextId,extraHTML){
   const f=document.createElement('div');f.className='stage-footer';let html='';
   if(prevId)html+='<button class="btn ghost" onclick="goToStage('+prevId+')">← Previous</button>';else html+='<span></span>';
-  html+='<div style="display:flex;gap:10px;flex-wrap:wrap;">'+(extraHTML||'')+'</div>';
+  html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>';
   if(nextId)html+='<button class="btn" onclick="goToStage('+nextId+')">Next →</button>';else html+='<span></span>';
   f.innerHTML=html;return f;
 }
 function startTimer(){
-  setInterval(()=>{
+  setInterval(function(){
     const elapsed=Math.floor((Date.now()-state.sessionStart)/1000);
     const m=String(Math.floor(elapsed/60)).padStart(2,'0');
     const s=String(elapsed%60).padStart(2,'0');
     const el=document.getElementById('timerDisplay');if(el)el.textContent=m+':'+s;
   },1000);
 }
-function toggleSound(){soundOn=!soundOn;document.getElementById('soundToggle').classList.toggle('active',soundOn);document.getElementById('soundToggle').textContent=soundOn?'🔊':'🔇';saveState()}
-function toggleDark(){document.documentElement.classList.toggle('dark');document.getElementById('darkToggle').classList.toggle('active',document.documentElement.classList.contains('dark'));saveState()}
-function toggleNotes(){document.getElementById('notesPanel').classList.toggle('open')}
+function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
+function toggleDark(){document.documentElement.classList.toggle('dark');const dt=document.getElementById('darkToggle');if(dt)dt.classList.toggle('active',document.documentElement.classList.contains('dark'));saveState()}
+function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.classList.toggle('open')}
 document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
 function showToast(text){
-  let toast=document.getElementById('toast');
-  if(!toast){
-    toast=document.createElement('div');toast.id='toast';
-    toast.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:white;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:9999;transition:opacity .3s,transform .3s;max-width:90vw;text-align:center;';
-    document.body.appendChild(toast);
-  }
-  toast.textContent=text;
-  toast.style.opacity='1';toast.style.transform='translateX(-50%) translateY(0)';
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:white;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:9999;transition:opacity .3s,transform .3s;max-width:90vw;text-align:center';document.body.appendChild(t)}
+  t.textContent=text;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
   clearTimeout(window.__toastTimer);
-  window.__toastTimer=setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translateX(-50%) translateY(10px)'},2200);
+  window.__toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2200);
 }
 
-/* ========== INIT ========== */
+/* ================== INIT ================== */
 if(!teacherPreviewRequested)loadState();
 const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
-if(lessonFromUrl){
-  state.currentLessonId=lessonFromUrl;
-  CURRICULUM[0].months[0].lessons[0].id=lessonFromUrl;
-  CURRICULUM[0].months[0].lessons[0].stages.forEach(s=>{
-    const key=lessonFromUrl+"_"+s.id;
-    if(state.scores[key]===undefined)state.scores[key]=0;
-    if(state.done[key]===undefined)state.done[key]=false;
-  });
-  if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl);
-}
+if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
 const savedCode=teacherPreviewRequested?'':getSessionCode();
-if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
+if(savedCode){const sci=document.getElementById('sessionCodeInput');if(sci)sci.value=savedCode}
 renderSidebar();renderStage();startTimer();updateHUD();
-if(soundOn)document.getElementById('soundToggle').classList.add('active');
-if(document.documentElement.classList.contains('dark'))document.getElementById('darkToggle').classList.add('active');
+if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.add('active')}
+if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}
 initFirebase();
 (function(){
   const code=getSessionCode();
   if(!code||!fbDb)return;
   fbDb.ref('students/'+code+'/name').once('value',function(snap){
-    const name=snap.val();
-    if(!name)return;
-    const logo=document.querySelector('.logo .text');
-    if(logo)logo.textContent=name;
-    document.title=name+' — Learning Studio';
+    const name=snap.val();if(!name)return;
+    const logo=document.querySelector('.logo .text');if(logo)logo.textContent=name;
+    document.title=name+' — IELTS Studio';
   });
 })();
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeFCModal();
   const modal=document.getElementById('fcModal');
-  if(modal.classList.contains('open')){
+  if(modal&&modal.classList.contains('open')){
     if(e.key==='ArrowRight')fcNext();
     if(e.key==='ArrowLeft')fcPrev();
-    if(e.key===' '){e.preventDefault();fcRevealTrans()}
+    if(e.key===' '){e.preventDefault();fcReveal()}
   }
 });
-setInterval(()=>{if(fbConnected)pushFullState()},5000);
+setInterval(function(){if(fbConnected)pushFullState()},5000);
 setTimeout(pushFullState,800);
 </script>
 </body>
