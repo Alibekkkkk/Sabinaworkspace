@@ -23,7 +23,7 @@ body{display:flex;flex-direction:column}
 .stat-pill .val.bump{animation:bump .5s}
 @keyframes bump{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
 .spacer{flex:1}
-.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--panel);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--ink-soft);transition:all .15s;position:relative}
+.icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--panel);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--ink-soft);transition:all .15s;position:relative;text-decoration:none}
 .icon-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
 .icon-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);margin-right:4px;animation:syncPulse 2s ease-in-out infinite}
@@ -136,8 +136,8 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .dd-slot .dropped-word.ok{background:var(--success)}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:32px 38px;font-size:19px;line-height:1.9;color:var(--ink);box-shadow:var(--shadow-sm);font-family:'EB Garamond',serif}
-.passage h1{font-size:28px;color:var(--accent);margin-bottom:8px;font-weight:800;line-height:1.2}
+.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.85;color:var(--ink);box-shadow:var(--shadow-sm);font-family:'EB Garamond','Times New Roman',serif}
+.passage h1{font-size:26px;color:var(--accent);margin-bottom:8px;font-weight:800;line-height:1.2}
 .passage .subtitle{font-size:15px;color:var(--ink-soft);font-style:italic;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:12px}
 .passage p{margin-bottom:16px;text-align:justify}
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
@@ -151,11 +151,11 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .q-opt.correct{background:var(--success-soft);border-color:var(--success);color:var(--success)}
 .q-opt.wrong{background:var(--error-soft);border-color:var(--error);color:var(--error);animation:shake .4s}
 .q-input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.q-input{flex:1;min-width:200px;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond',serif;font-size:17px;font-weight:700;color:var(--ink);background:var(--bg);outline:none}
+.q-input{flex:1;min-width:200px;padding:12px 16px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond','Times New Roman',serif;font-size:17px;font-weight:700;color:var(--ink);background:var(--bg);outline:none}
 .q-input:focus{border-color:var(--accent);background:var(--panel)}
 .q-input.correct{border-color:var(--success);background:var(--success-soft);color:var(--success)}
 .q-input.wrong{border-color:var(--error);background:var(--error-soft);color:var(--error);animation:shake .4s}
-.q-textarea{width:100%;min-height:110px;padding:14px 16px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond',serif;font-size:17px;line-height:1.55;color:var(--ink);background:var(--bg);outline:none;resize:vertical}
+.q-textarea{width:100%;min-height:110px;padding:14px 16px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond','Times New Roman',serif;font-size:17px;line-height:1.55;color:var(--ink);background:var(--bg);outline:none;resize:vertical}
 .q-textarea:focus{border-color:var(--accent);background:var(--panel)}
 .q-textarea.correct{border-color:var(--success);background:var(--success-soft)}
 .q-textarea.wrong{border-color:var(--error);background:var(--error-soft)}
@@ -184,15 +184,11 @@ html.dark .q-feedback.info{color:#f5c66b}
 .sb-area .placeholder{color:var(--ink-soft);font-style:italic;font-size:15px}
 .section-head{font-size:15px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin:32px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--border)}
 .section-head.first{margin-top:0}
-.sr-hud{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:14px;margin-bottom:16px;box-shadow:var(--shadow-md)}
-.sr-hud .sr-hud-item{text-align:center}
-.sr-hud .sr-hud-item .lbl{font-size:12px;font-weight:800;letter-spacing:1.5px;opacity:.7;text-transform:uppercase;display:block;margin-bottom:2px}
-.sr-hud .sr-hud-item .val{font-size:24px;font-weight:800;display:block}
 .notes-panel{position:fixed;top:60px;right:0;width:340px;height:calc(100vh - 60px);background:var(--panel);border-left:1px solid var(--border);box-shadow:-10px 0 30px rgba(0,0,0,.08);padding:22px;transform:translateX(100%);transition:transform .3s;z-index:200;display:flex;flex-direction:column}
 .notes-panel.open{transform:translateX(0)}
 .notes-panel h3{font-size:18px;margin-bottom:6px;color:var(--ink)}
 .notes-panel .sub{font-size:14px;color:var(--ink-soft);margin-bottom:14px}
-.notes-panel textarea{flex:1;width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.55;background:var(--bg);color:var(--ink);resize:none;outline:none}
+.notes-panel textarea{flex:1;width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-family:'Fira Code','Courier New',monospace;font-size:15px;line-height:1.55;background:var(--bg);color:var(--ink);resize:none;outline:none}
 .notes-panel .close-note{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--panel);cursor:pointer;color:var(--ink-soft)}
 .stage-footer{display:flex;justify-content:space-between;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
 .complete-banner{text-align:center;padding:40px 20px;background:linear-gradient(135deg,rgba(46,158,91,.1),rgba(46,158,91,.03));border:2px dashed var(--success);border-radius:16px;margin-bottom:20px}
@@ -201,6 +197,28 @@ html.dark .q-feedback.info{color:#f5c66b}
 .complete-banner p{font-size:16px;color:var(--ink-soft)}
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+/* ============ NEW: Reading split layout ============ */
+.reading-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.stage-view:has(.reading-split){max-width:1400px}
+.reading-pane{position:sticky;top:0}
+.reading-questions{min-width:0}
+@media(max-width:980px){.reading-split{grid-template-columns:1fr}.reading-pane{position:static}}
+/* ============ NEW: Timed test ============ */
+.test-hud{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:14px;margin-bottom:20px;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow-md)}
+.test-hud .tcell{text-align:center;min-width:90px}
+.test-hud .tcell .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;opacity:.7;text-transform:uppercase;display:block;margin-bottom:2px}
+.test-hud .tcell .val{font-size:24px;font-weight:800;display:block}
+.test-hud .tcell .val.danger{color:#ff8a5b;animation:bump .8s infinite}
+.test-progress-rail{height:6px;background:var(--bg);border-radius:6px;overflow:hidden;margin-bottom:22px}
+.test-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));width:0%;transition:width .4s;border-radius:6px}
+.test-card{padding:30px 34px}
+.test-q-text{font-size:22px;line-height:1.5;font-weight:600;margin-bottom:20px}
+.test-timeout,.test-result{text-align:center;padding:50px 20px}
+.test-timeout .icon,.test-result .icon{font-size:64px;margin-bottom:14px}
+.test-timeout h3{font-size:26px;color:var(--error);margin-bottom:10px}
+.test-result h3{font-size:26px;color:var(--success);margin-bottom:10px}
+.test-result .big{font-size:72px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin:20px 0}
+.test-timeout p,.test-result p{font-size:17px;color:var(--ink-soft);margin-bottom:22px;line-height:1.55}
 @media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
 @media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo .text{display:none}.session-input{flex:1 1 145px;justify-content:space-between}.topbar>#scorePill,.topbar>#streakPill{display:none}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}.passage{padding:20px 22px;font-size:17px}}
 ::selection{background:var(--accent);color:#fff}
@@ -272,19 +290,17 @@ const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
-/* ================== CURRICULUM (11 stages) ================== */
+/* ================== CURRICULUM (9 stages) ================== */
 const CURRICULUM=[{year:"2026",months:[{month:"October",lessons:[{id:"lesson_1",title:"Lesson 1: Sustainable Cities — Vocabulary, Reading & Tenses",stages:[
   {id:1,label:'Sustainable Cities Vocabulary',sub:'Cards',icon:'🏙️'},
   {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
-  {id:3,label:'Academic Reading',sub:'Article',icon:'📖'},
-  {id:4,label:'Reading Comprehension',sub:'Written answers',icon:'✍️'},
-  {id:5,label:'Vocabulary in Context',sub:'From text',icon:'🔎'},
-  {id:6,label:'Completing Sentence — Present Perfect',sub:'Grammar',icon:'⏳'},
-  {id:7,label:'Completing Sentence — Past Simple',sub:'Grammar',icon:'🕰️'},
-  {id:8,label:'Sentence Builder — Present Perfect',sub:'Build',icon:'🧩'},
-  {id:9,label:'Sentence Builder — Past Simple',sub:'Build',icon:'🧱'},
-  {id:10,label:'Completing Sentence — Choose the Tense',sub:'Mixed',icon:'🧭'},
-  {id:11,label:'Lesson 1 — Test Your Knowledge',sub:'Review',icon:'⚡'}
+  {id:3,label:'Reading & Questions',sub:'Article + practice',icon:'📖'},
+  {id:4,label:'Completing Sentence — Present Perfect',sub:'Grammar',icon:'⏳'},
+  {id:5,label:'Completing Sentence — Past Simple',sub:'Grammar',icon:'🕰️'},
+  {id:6,label:'Sentence Builder — Present Perfect',sub:'Build',icon:'🧩'},
+  {id:7,label:'Sentence Builder — Past Simple',sub:'Build',icon:'🧱'},
+  {id:8,label:'Completing Sentence — Choose the Tense',sub:'Mixed',icon:'🧭'},
+  {id:9,label:'Lesson 1 — Test Your Knowledge',sub:'Timed test',icon:'⚡'}
 ]}]}]}];
 
 /* ================== STATE ================== */
@@ -337,7 +353,7 @@ function updateSyncUI(s){const d=document.getElementById('syncDot');const t=docu
 function applyTeacherResetCommand(cmd){if(!cmd||cmd.action!=='reset'||!cmd.ts)return;const k='nd_teacher_reset_seen_'+getSessionCode();let s=0;try{s=Number(localStorage.getItem(k)||0)}catch(e){}if(Number(cmd.ts)<=s)return;try{localStorage.setItem(k,String(cmd.ts))}catch(e){}teacherReset()}
 function teacherReset(){Object.keys(state.scores).forEach(k=>state.scores[k]=0);Object.keys(state.done).forEach(k=>state.done[k]=false);state.currentStage=1;state.streak=0;s1Known={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
 
-/* ================== AUDIO ================== */
+/* ================== AUDIO + TTS ================== */
 let audioCtx=null,soundOn=true;
 function playTone(f,d,t,v){if(!soundOn)return;t=t||'sine';v=v||.12;try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
 function sCorrect(){playTone(660,.12);setTimeout(()=>playTone(880,.18),100)}
@@ -350,9 +366,37 @@ let ukVoice=null;
 function pickUKVoice(){if(!('speechSynthesis' in window))return null;const v=window.speechSynthesis.getVoices();return v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang&&x.lang.toLowerCase().startsWith('en-gb'))||v.find(x=>x.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(x.name))||null}
 if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()}}
 function speak(text){if(!soundOn)return;if(!('speechSynthesis' in window))return;try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=.9;u.pitch=1;if(ukVoice)u.voice=ukVoice;window.speechSynthesis.speak(u)}catch(e){}}
+let ttsState='idle',ttsUtterId=0;
+function speakLong(text){
+  if(!soundOn)return;
+  if(!('speechSynthesis' in window))return;
+  try{
+    window.speechSynthesis.cancel();
+    ttsUtterId++;
+    const myId=ttsUtterId;
+    const clean=String(text).replace(/\s+/g,' ').trim();
+    const u=new SpeechSynthesisUtterance(clean);
+    u.lang='en-GB';u.rate=.9;u.pitch=1;
+    if(ukVoice)u.voice=ukVoice;
+    u.onend=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
+    u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
+    window.speechSynthesis.speak(u);
+    ttsState='playing';
+    updateTTSButtons();
+  }catch(e){}
+}
+function pauseTTS(){if(!('speechSynthesis' in window))return;if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){window.speechSynthesis.pause();ttsState='paused';updateTTSButtons()}}
+function resumeTTS(){if(!('speechSynthesis' in window))return;if(window.speechSynthesis.paused){window.speechSynthesis.resume();ttsState='playing';updateTTSButtons()}}
+function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;window.speechSynthesis.cancel();ttsState='idle';updateTTSButtons()}
+function updateTTSButtons(){
+  const p=document.getElementById('ttsPlay');if(p)p.style.display=ttsState==='playing'?'none':'';
+  const pa=document.getElementById('ttsPause');if(pa)pa.style.display=ttsState==='playing'?'':'none';
+  const r=document.getElementById('ttsResume');if(r)r.style.display=ttsState==='paused'?'':'none';
+  const s=document.getElementById('ttsStop');if(s)s.style.display=ttsState!=='idle'?'':'none';
+}
 
 /* ================== SYNC ================== */
-const CHANNEL='nd_lesson_live_v3';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
+const CHANNEL='nd_lesson_live_v4';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
   if(teacherMode)return;
   if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){}}
@@ -361,8 +405,8 @@ function broadcast(type,payload){
 }
 function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
 function broadcastAction(type,detail){state.lastAction=detail;broadcast('action',{stage:state.currentStage,type:type,detail:detail,score:totalScore(),ts:Date.now()})}
-function saveState(){if(teacherMode)return;try{localStorage.setItem('nd_state_gaziz_v4',JSON.stringify({currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}))}catch(e){}broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
-function loadState(){try{const raw=localStorage.getItem('nd_state_gaziz_v4');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
+function saveState(){if(teacherMode)return;try{localStorage.setItem('nd_state_gaziz_v5',JSON.stringify({currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}))}catch(e){}broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
+function loadState(){try{const raw=localStorage.getItem('nd_state_gaziz_v5');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
 let customImages={};
 
 /* ================== HELPERS ================== */
@@ -574,7 +618,7 @@ function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').l
 function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
-/* ================== STAGE 3 — READING ================== */
+/* ================== STAGE 3 — READING & QUESTIONS (combined) ================== */
 const READING_HTML='<h1>The City That Said Goodbye to Cars</h1><div class="subtitle">A case study in urban transformation</div>'+
 '<p><span class="para-label">A.</span>In 2015, the mayor of Copenhagen stood in front of a crowded town hall and made a promise that many thought was impossible: within a decade, the city would become the first capital in the world to be carbon-neutral. At the time, Copenhagen was struggling with the same problems that face most growing cities — congested roads, rising pollution, and residents who complained that their neighbourhoods had become unlivable. Few believed the plan would work. Ten years later, the city has proved many of those sceptics wrong.</p>'+
 '<p><span class="para-label">B.</span>The idea was not new. As early as 2009, city planners had begun to discuss a bold strategy: to reduce the number of cars in the city centre and to make cycling, walking, and public transport the primary ways of getting around. What made Copenhagen\u2019s plan different was not the goal, but the scale. Rather than gently discouraging drivers, the council made a series of decisions that changed the physical shape of the city. Parking spaces were removed. Whole streets were turned into pedestrian-only zones. A network of elevated cycle paths — the so-called \u201ccycle super-highways\u201d — was built to connect the suburbs with the city centre.</p>'+
@@ -582,40 +626,18 @@ const READING_HTML='<h1>The City That Said Goodbye to Cars</h1><div class="subti
 '<p><span class="para-label">D.</span>The transformation was not limited to transport. The city\u2019s harbour, once an industrial area that residents avoided, has been cleaned and reopened as a public space. Old warehouses have been converted into apartments, restaurants, and cultural centres. A series of new bridges allow pedestrians and cyclists to cross the water easily. In summer, locals swim in the harbour — something that would have been unthinkable in the 1990s, when the water was considered unsafe. The city has also invested heavily in renewable energy, particularly wind power and district heating systems that use waste heat from factories.</p>'+
 '<p><span class="para-label">E.</span>Not everyone welcomed the changes. Small business owners in the city centre complained that removing parking spaces had reduced their customers. Some residents in the suburbs argued that the new cycle highways served wealthier neighbourhoods better than poorer ones. Critics noted that the transition had been expensive, and that the council had spent millions on projects that would take decades to pay back. Others pointed out that Copenhagen\u2019s success was possible partly because the city was relatively small and wealthy — conditions that many other cities do not share.</p>'+
 '<p><span class="para-label">F.</span>Despite the criticisms, the results have been difficult to ignore. Air pollution in the city centre has dropped by more than 40 per cent since 2015. Traffic accidents involving cyclists have fallen, partly because of safer road design. Most importantly, surveys suggest that residents are happier with their city than they were a decade ago. Copenhagen has become a model that other cities now study carefully — from Paris to Bogotá to Seoul. The question is no longer whether a city can reduce its dependence on cars, but how quickly others will follow.</p>';
-function renderStage3(){
-  const main=document.getElementById('main');
-  const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 3 — Academic Reading</div><h2>📖 Read the Article</h2>'+
-  '<div class="lead">Read the article carefully. It\u2019s an IELTS-style text; the questions in the next stages will ask you to write answers in your own words, so pay attention to details and paragraph labels <b>A–F</b>.<span class="ru">Читайте внимательно. В следующих этапах нужно будет писать ответы своими словами.</span></div>'+
-  '<div class="card" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn small" onclick="speakReading()">🔊 Listen (first 2500 chars)</button><button class="btn ghost small" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button></div>'+
-  '<div class="passage" id="passageBody">'+READING_HTML+'</div>';
-  main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" onclick="completeReading()">✓ Finished reading</button>'));
-}
-function speakReading(){const text=document.getElementById('passageBody').innerText;speak(text.substring(0,2500))}
-function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;state.scores[state.currentLessonId+"_3"]=0;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
-
-/* ==== PART 2 CONTINUES ==== */
-
-/* ================== STAGE 4 — READING COMPREHENSION ================== */
-/* Types: 'short' (single word/phrase), 'tfng' (True/False/Not Given),
-   'long' (full sentence, keyword-matched, flaggable), 'mcq' (shuffled) */
 
 const READING_Q=[
-  /* --- SHORT ANSWER (6) --- */
   {type:'short',prompt:'In what year did the mayor make the carbon-neutral promise?',answers:['2015'],exp:'The article says the promise was made in 2015.'},
   {type:'short',prompt:'What percentage of Copenhagen residents currently commute by bicycle?',answers:['60','60%','60 per cent','more than 60','over 60'],exp:'More than 60 per cent of residents cycle to work or school.'},
   {type:'short',prompt:'By how much has air pollution dropped in the city centre since 2015?',answers:['40','40%','40 per cent','more than 40','over 40'],exp:'Air pollution has dropped by more than 40 per cent.'},
   {type:'short',prompt:'In which decade was the harbour considered unsafe for swimming?',answers:['1990s','the 1990s','1990'],exp:'The water was considered unsafe in the 1990s.'},
   {type:'short',prompt:'What is cleared from cycle paths first in winter?',answers:['snow','the snow'],exp:'Snow is cleared from cycle paths before roads.'},
   {type:'short',prompt:'Name ONE city mentioned in the article as studying Copenhagen\u2019s model.',answers:['paris','bogota','bogotá','seoul'],exp:'Paris, Bogotá and Seoul are all mentioned.'},
-
-  /* --- TRUE / FALSE / NOT GIVEN (4) --- */
   {type:'tfng',prompt:'Copenhagen promised to become carbon-neutral within ten years.',answer:'True',exp:'The mayor promised carbon neutrality "within a decade."'},
   {type:'tfng',prompt:'The cycle super-highways were built underground.',answer:'False',exp:'They were elevated, not underground.'},
   {type:'tfng',prompt:'Snow is cleared from roads before cycle paths.',answer:'False',exp:'Snow is cleared from cycle paths first.'},
   {type:'tfng',prompt:'The mayor of Copenhagen was re-elected after the transformation.',answer:'Not Given',exp:'The article never mentions re-election.'},
-
-  /* --- LONG ANSWER (3) — keyword-matched, flaggable --- */
   {type:'long',prompt:'In your own words, explain why Copenhagen\u2019s plan was considered different from other cities\u2019 plans.',
     keywordGroups:[['scale','size','extent'],['physical','shape','structure'],['removed','removal','parking'],['pedestrian','walking','walk'],['bold','ambitious','radical','large']],
     minWords:12,minGroups:3,
@@ -631,30 +653,60 @@ const READING_Q=[
     minWords:10,minGroups:2,
     sample:'Some residents criticised the changes because removing parking reduced customers for local businesses, and because the new cycle highways served wealthier neighbourhoods better than poorer ones.',
     exp:'Key ideas: business customers, expensive, wealthier vs poorer areas.'},
-
-  /* --- SUMMARY GAP FILL (3) --- */
   {type:'short',prompt:'Complete the summary: "The city made a decision that no other capital had made: to measure success by how many people chose to ______."',answers:['cycle','bike','ride'],exp:'The city measures success by how many people cycle.'},
   {type:'short',prompt:'Complete: "The council removed parking spaces and turned whole streets into ______ -only zones."',answers:['pedestrian','pedestrians'],exp:'Streets became pedestrian-only zones.'},
   {type:'short',prompt:'Complete: "The city invested heavily in renewable energy, particularly wind power and ______ heating."',answers:['district'],exp:'District heating uses waste heat from factories.'},
-
-  /* --- MCQ with SHUFFLED options (3) --- */
   {type:'mcq',prompt:'What is the main idea of the article?',options:['A city can reduce its dependence on cars with bold planning','Bicycles are dangerous in winter','Only wealthy cities can be sustainable'],correct:'A city can reduce its dependence on cars with bold planning',exp:'The article tells the story of Copenhagen\u2019s successful urban transformation.'},
   {type:'mcq',prompt:'Which of these is NOT stated as a benefit of the transformation?',options:['Lower air pollution','Fewer cycling accidents','Cheaper housing for residents'],correct:'Cheaper housing for residents',exp:'The article never says housing became cheaper.'},
   {type:'mcq',prompt:'What is the author\u2019s overall tone towards Copenhagen\u2019s plan?',options:['Broadly positive with balanced criticisms','Entirely critical','Neutral and uninterested'],correct:'Broadly positive with balanced criticisms',exp:'The article praises results but includes paragraph E\u2019s criticisms.'}
 ];
 
+const CONTEXT_Q=[
+  {prompt:'In paragraph A, "sceptics" are people who...',options:['doubt something is true','support a plan','write about cities'],correct:'doubt something is true',exp:'A sceptic doubts claims.'},
+  {prompt:'In paragraph B, "scale" refers to...',options:['the size or extent of the plan','a weighing machine','a map'],correct:'the size or extent of the plan',exp:'Here scale means the size of the change.'},
+  {prompt:'In paragraph C, "commute" means...',options:['travel regularly between home and work','shop online','move to another country'],correct:'travel regularly between home and work',exp:'To commute is to make a regular journey.'},
+  {prompt:'In paragraph D, "converted" means...',options:['changed from one use to another','destroyed','painted'],correct:'changed from one use to another',exp:'Old warehouses were changed into apartments.'},
+  {prompt:'In paragraph E, "transition" means...',options:['a change from one state to another','a delay','a holiday'],correct:'a change from one state to another',exp:'The transition was the move to sustainable transport.'},
+  {prompt:'In paragraph F, "dependence" means...',options:['relying on something','being independent','traveling slowly'],correct:'relying on something',exp:'Dependence on cars means relying on them.'},
+  {prompt:'In paragraph B, "elevated" cycle paths are...',options:['raised above the ground','underground','on the water'],correct:'raised above the ground',exp:'Elevated means raised.'},
+  {prompt:'In paragraph C, "priority" means...',options:['the right to go first','a type of vehicle','a small road'],correct:'the right to go first',exp:'Cyclists get the right of way.'}
+];
+
 let s4Answers={};
-function renderStage4(){
+function renderStage3(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 4 — Reading Comprehension</div><h2>✍️ Answer in Your Own Words</h2>'+
-  '<div class="lead">Most questions require you to <b>type</b> the answer. Write full sentences where asked — a short sentence with the right ideas counts. If you think your answer is correct but the auto-check says no, use <b>🚩 Flag for teacher review</b>.<span class="ru">Большинство вопросов требуют письменного ответа. Если ваш ответ верен по смыслу, но автоматическая проверка не сработала — нажмите 🚩.</span></div>'+
-  '<div id="readingQ"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(3,5));
+  v.innerHTML='<div class="eyebrow">Stage 3 — Reading & Questions</div><h2>📖 Read the Article & Answer</h2>'+
+  '<div class="lead">Read the article on the left. Answer every question on the right — the article stays visible so you can look back. If you think an answer is correct but the auto-check says no, use <b>🚩 Flag for teacher review</b>.<span class="ru">Читайте текст слева, отвечайте на вопросы справа. Все вопросы сразу видны.</span></div>'+
+  '<div class="reading-split">'+
+    '<section class="reading-pane">'+
+      '<div class="card" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+
+        '<button class="btn small" id="ttsPlay" onclick="speakLong(document.getElementById(\'passageBody\').innerText)">▶️ Listen</button>'+
+        '<button class="btn small" id="ttsPause" style="display:none" onclick="pauseTTS()">⏸ Pause</button>'+
+        '<button class="btn small" id="ttsResume" style="display:none" onclick="resumeTTS()">▶️ Resume</button>'+
+        '<button class="btn ghost small" id="ttsStop" style="display:none" onclick="stopTTS()">⏹ Stop</button>'+
+      '</div>'+
+      '<div class="passage" id="passageBody">'+READING_HTML+'</div>'+
+    '</section>'+
+    '<section class="reading-questions">'+
+      '<div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'+
+        '<div style="font-weight:700">Answered: <span id="s3Progress" style="color:var(--accent);font-size:18px">0</span> / <span id="s3Total">'+(READING_Q.length+CONTEXT_Q.length)+'</span></div>'+
+      '</div>'+
+      '<h3 style="font-family:\'Fira Code\',monospace;font-size:13px;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin:10px 0 12px">Part A — Reading comprehension</h3>'+
+      '<div id="readingQ"></div>'+
+      '<h3 style="font-family:\'Fira Code\',monospace;font-size:13px;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin:26px 0 12px">Part B — Vocabulary in context</h3>'+
+      '<div id="contextQ"></div>'+
+    '</section>'+
+  '</div>';
+  main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" onclick="completeReading()">✓ Mark reading stage complete</button>'));
+  s4Answers={};
   renderReadingQuestions();
+  renderContextQ();
+  updateS3Progress();
 }
+function updateS3Progress(){const el=document.getElementById('s3Progress');if(el)el.textContent=Object.keys(s4Answers).length}
 function renderReadingQuestions(){
-  const body=document.getElementById('readingQ');body.innerHTML='';s4Answers={};
+  const body=document.getElementById('readingQ');if(!body)return;body.innerHTML='';
   READING_Q.forEach((item,i)=>{
     const card=document.createElement('div');card.className='q-card';
     const typeLabel={short:'Short answer',tfng:'True / False / Not Given',long:'Long answer',mcq:'Multiple choice'}[item.type];
@@ -669,7 +721,7 @@ function renderReadingQuestions(){
         if(done)return;
         const v=norm(inp.value);
         const ok=item.answers.some(a=>norm(a)===v);
-        if(ok){inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';sCorrect();s4Answers[i]=true;checkS4();broadcastAction('answer_correct',item.prompt.substring(0,40))}
+        if(ok){inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';sCorrect();s4Answers['r'+i]=true;checkS4();broadcastAction('answer_correct',item.prompt.substring(0,40))}
         else{inp.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again — check the passage.';setTimeout(()=>inp.classList.remove('wrong'),600);broadcastAction('answer_wrong','short: '+inp.value)}
       }
       btn.onclick=submit;inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
@@ -683,7 +735,7 @@ function renderReadingQuestions(){
           if(b.disabled)return;
           opts.querySelectorAll('button').forEach(x=>x.disabled=true);
           const fb=card.querySelector('.q-feedback');
-          if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';s4Answers[i]=true}
+          if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';s4Answers['r'+i]=true}
           else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(x=>{if(x.textContent===item.answer)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+item.exp+'</span>'}
           checkS4();
         };
@@ -701,18 +753,9 @@ function renderReadingQuestions(){
         if(done)return;
         const txt=ta.value.trim();
         const res=checkLongAnswer(txt,item.keywordGroups,item.minWords,item.minGroups);
-        if(res.pass){
-          ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;
-          fb.className='q-feedback correct';
-          fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+item.exp+'</span>';
-          sCorrect();s4Answers[i]=true;checkS4();
-          broadcastAction('answer_correct','long: '+item.prompt.substring(0,40));
-        }else{
-          ta.classList.add('wrong');sWrong();
-          fb.className='q-feedback wrong';
-          fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span><span class="exp">'+item.exp+'</span>';
-        }
-        ta.insertAdjacentHTML('afterend',buildFlagRow(i,item.prompt,txt,res.pass?'correct':'wrong'));
+        if(res.pass){ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+item.exp+'</span>';sCorrect();s4Answers['r'+i]=true;checkS4()}
+        else{ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'}
+        ta.insertAdjacentHTML('afterend',buildFlagRow('r'+i,item.prompt,txt,res.pass?'correct':'wrong'));
       }
       btn.onclick=submit;
       ta.addEventListener('input',()=>broadcastAction('typing','long: "'+ta.value.substring(0,60)+'"'));
@@ -725,7 +768,7 @@ function renderReadingQuestions(){
           if(b.disabled)return;
           opts.querySelectorAll('button').forEach(x=>x.disabled=true);
           const fb=card.querySelector('.q-feedback');
-          if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';s4Answers[i]=true}
+          if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';s4Answers['r'+i]=true}
           else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(x=>{if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+item.exp+'</span>'}
           checkS4();
         };
@@ -737,8 +780,31 @@ function renderReadingQuestions(){
     body.appendChild(card);
   });
 }
-function buildFlagRow(qIndex,prompt,answer,autoResult){
-  return '<div class="review-btn-row"><button class="btn flag small" onclick="flagForReview(\'s4_'+qIndex+'\',\''+escapeAttr(prompt).substring(0,120)+'\',\''+escapeAttr(answer).substring(0,300)+'\',\''+autoResult+'\',4)">🚩 Flag for teacher review</button><span class="hint">If you believe your answer is correct, click here.</span></div>';
+function renderContextQ(){
+  const body=document.getElementById('contextQ');if(!body)return;body.innerHTML='';
+  CONTEXT_Q.forEach((item,i)=>{
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML='<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>';
+    const opts=document.createElement('div');opts.className='q-opts';
+    shuffle(item.options).forEach(o=>{
+      const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+      b.onclick=()=>{
+        if(b.disabled)return;
+        opts.querySelectorAll('button').forEach(x=>x.disabled=true);
+        const fb=card.querySelector('.q-feedback');
+        if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';s4Answers['c'+i]=true}
+        else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(x=>{if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+item.exp+'</span>'}
+        checkS4();
+      };
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);
+    const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
+    body.appendChild(card);
+  });
+}
+function buildFlagRow(qId,prompt,answer,autoResult){
+  return '<div class="review-btn-row"><button class="btn flag small" onclick="flagForReview(\'s3_'+qId+'\',\''+escapeAttr(prompt).substring(0,120)+'\',\''+escapeAttr(answer).substring(0,300)+'\',\''+autoResult+'\',3)">🚩 Flag for teacher review</button><span class="hint">If you believe your answer is correct, click here.</span></div>';
 }
 function checkLongAnswer(text,keywordGroups,minWords,minGroups){
   const t=norm(text);
@@ -749,57 +815,16 @@ function checkLongAnswer(text,keywordGroups,minWords,minGroups){
   if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length};
   return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched};
 }
-function checkS4(){const c=Object.keys(s4Answers).length;if(c===READING_Q.length){setScore(4,15);markDone(4)}else{setScore(4,Math.floor(c*15/READING_Q.length))}}
-
-/* ================== STAGE 5 — VOCABULARY IN CONTEXT ================== */
-const CONTEXT_Q=[
-  {prompt:'In paragraph A, "sceptics" are people who...',options:['doubt something is true','support a plan','write about cities'],correct:'doubt something is true',exp:'A sceptic doubts claims.'},
-  {prompt:'In paragraph B, "scale" refers to...',options:['the size or extent of the plan','a weighing machine','a map'],correct:'the size or extent of the plan',exp:'Here scale means the size of the change.'},
-  {prompt:'In paragraph C, "commute" means...',options:['travel regularly between home and work','shop online','move to another country'],correct:'travel regularly between home and work',exp:'To commute is to make a regular journey.'},
-  {prompt:'In paragraph D, "converted" means...',options:['changed from one use to another','destroyed','painted'],correct:'changed from one use to another',exp:'Old warehouses were changed into apartments.'},
-  {prompt:'In paragraph E, "transition" means...',options:['a change from one state to another','a delay','a holiday'],correct:'a change from one state to another',exp:'The transition was the move to sustainable transport.'},
-  {prompt:'In paragraph F, "dependence" means...',options:['relying on something','being independent','traveling slowly'],correct:'relying on something',exp:'Dependence on cars means relying on them.'},
-  {prompt:'In paragraph B, "elevated" cycle paths are...',options:['raised above the ground','underground','on the water'],correct:'raised above the ground',exp:'Elevated means raised.'},
-  {prompt:'In paragraph C, "priority" means...',options:['the right to go first','a type of vehicle','a small road'],correct:'the right to go first',exp:'Cyclists get the right of way.'}
-];
-let s5Score=0;
-function renderStage5(){
-  const main=document.getElementById('main');
-  const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 5 — Vocabulary in Context</div><h2>🔎 Words in the Text</h2>'+
-  '<div class="lead">Can you work out meaning from the surrounding text?<span class="ru">Угадайте значение по контексту.</span></div>'+
-  '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft)">Score: <span id="s5live" style="color:var(--accent);font-size:18px">0</span> / '+CONTEXT_Q.length+'</div><button class="btn ghost small" onclick="resetStage5()">↻ Reset</button></div><div id="contextBody"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(4,6));
-  s5Score=0;renderContextQ();
+function checkS4(){
+  const total=READING_Q.length+CONTEXT_Q.length;
+  const c=Object.keys(s4Answers).length;
+  updateS3Progress();
+  if(c===total){setScore(3,25);markDone(3)}else{setScore(3,Math.floor(c*25/total))}
 }
-function renderContextQ(){
-  const body=document.getElementById('contextBody');body.innerHTML='';
-  CONTEXT_Q.forEach((item,i)=>{
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>';
-    const opts=document.createElement('div');opts.className='q-opts';
-    shuffle(item.options).forEach(o=>{
-      const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-      b.onclick=()=>{
-        if(b.disabled)return;
-        opts.querySelectorAll('button').forEach(x=>x.disabled=true);
-        const fb=card.querySelector('.q-feedback');
-        if(o===item.correct){b.classList.add('correct');sCorrect();s5Score++;fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>'}
-        else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(x=>{if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+item.exp+'</span>'}
-        document.getElementById('s5live').textContent=s5Score;
-        if(s5Score===CONTEXT_Q.length){setScore(5,10);markDone(5)}else{setScore(5,Math.floor(s5Score*10/CONTEXT_Q.length))}
-      };
-      opts.appendChild(b);
-    });
-    card.appendChild(opts);
-    const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
-    body.appendChild(card);
-  });
-}
-function resetStage5(){setScore(5,0);state.done[state.currentLessonId+"_5"]=false;renderSidebar();renderStage5();updateHUD()}
+function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
-/* ================== STAGES 6/7 — COMPLETING SENTENCE ================== */
-/* Each block: 5 pos + 5 neg + 5 question (ordered) + 30 shuffled = 45 total */
+
+/* ================== STAGES 4/5 — COMPLETING SENTENCE ================== */
 const G6={pos:[
   {p:'The city ___ (install) solar panels on all public buildings since 2020.',a:'has installed',ex:'Present perfect: has + installed. Result matters now.'},
   {p:'Residents ___ (adopt) electric bikes in large numbers this year.',a:'have adopted',ex:'Plural subject → have + adopted.'},
@@ -867,7 +892,7 @@ const G7={pos:[
   {p:'___ you ___ (visit) the new park yesterday?',a:'Did you visit',ex:'Question: Did + subject + V1.'},
   {p:'___ the council ___ (approve) the plan last month?',a:'Did the council approve',ex:'Question past simple.'},
   {p:'___ they ___ (plant) trees along the road?',a:'Did they plant',ex:'Question: Did + they + V1.'},
-  {p:'___ the mayor ___ (speak) at the meeting?',a:'Did the mayor speak',ex:'Irregular: speak → spoke, but after "did" use base.'},
+  {p:'___ the mayor ___ (speak) at the meeting?',a:'Did the mayor speak',ex:'After "did" use the base form.'},
   {p:'___ the school ___ (organise) a trip last term?',a:'Did the school organise',ex:'Question past simple.'}
 ],shuffled:[
   {p:'I ___ (see) an amazing documentary last night.',a:'saw'},
@@ -955,11 +980,10 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
 }
 function resetGrammarStage(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
 
-function renderStage6(){renderCompletingSentence(G6,6,5,7,'⏳ Completing Sentence — Present Perfect','Stage 6 — Grammar','Subject + have/has + past participle (V3)','<li>Use <b>have</b> with I, you, we, they (and plural nouns).</li><li>Use <b>has</b> with he, she, it (and singular nouns like "council", "city").</li><li>Negative: <b>have/has not + V3</b>. Question: <b>Have/Has + subject + V3?</b></li>','Complete each sentence. Part 1 has positives, Part 2 has negatives, Part 3 has questions, then a large mixed set.<span class="ru">Дополните предложения. Секции: утверждения → отрицания → вопросы → микс.</span>')}
-function renderStage7(){renderCompletingSentence(G7,7,6,8,'🕰️ Completing Sentence — Past Simple','Stage 7 — Grammar','Subject + past form of the verb (V2)','<li>Use past simple for a finished time: last year, in 2020, yesterday, ago.</li><li>Regular verbs add -ed; irregular verbs change form (see → saw, go → went).</li><li>Negative: <b>did not + V1</b>. Question: <b>Did + subject + V1?</b></li>','Complete each sentence. Same structure as Stage 6.<span class="ru">Та же структура, что и в Stage 6.</span>')}
+function renderStage4(){renderCompletingSentence(G6,4,3,5,'⏳ Completing Sentence — Present Perfect','Stage 4 — Grammar','Subject + have/has + past participle (V3)','<li>Use <b>have</b> with I, you, we, they (and plural nouns).</li><li>Use <b>has</b> with he, she, it (and singular nouns like "council", "city").</li><li>Negative: <b>have/has not + V3</b>. Question: <b>Have/Has + subject + V3?</b></li>','Complete each sentence. Part 1 has positives, Part 2 has negatives, Part 3 has questions, then a large mixed set.<span class="ru">Дополните предложения. Секции: утверждения → отрицания → вопросы → микс.</span>')}
+function renderStage5(){renderCompletingSentence(G7,5,4,6,'🕰️ Completing Sentence — Past Simple','Stage 5 — Grammar','Subject + past form of the verb (V2)','<li>Use past simple for a finished time: last year, in 2020, yesterday, ago.</li><li>Regular verbs add -ed; irregular verbs change form (see → saw, go → went).</li><li>Negative: <b>did not + V1</b>. Question: <b>Did + subject + V1?</b></li>','Complete each sentence. Same structure as Stage 4.<span class="ru">Та же структура, что и в Stage 4.</span>')}
 
-/* ================== STAGES 8/9 — SENTENCE BUILDER ================== */
-/* 5 pos + 5 neg + 5 question (ordered) + 30 shuffled */
+/* ================== STAGES 6/7 — SENTENCE BUILDER ================== */
 const SB_PP={pos:[
   {prompt:'Build a present perfect sentence about the city park.',correct:['The','city','has','opened','three','new','parks','recently.']},
   {prompt:'Build a present perfect sentence about residents and electric bikes.',correct:['Residents','have','bought','electric','bikes','this','year.']},
@@ -1062,6 +1086,8 @@ const SB_PS={pos:[
   {prompt:'Build: The council introduced the change in 2020.',correct:['The','council','introduced','the','change','in','2020.']}
 ]};
 
+const SB_STATE={};
+const SB_DATA={};
 function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
@@ -1071,8 +1097,9 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft)">Score: <span id="sb'+stageId+'live" style="color:var(--accent);font-size:18px">0</span> / '+(data.pos.length+data.neg.length+data.q.length+data.shuffled.length)+'</div><button class="btn ghost small" onclick="resetGrammarStage('+stageId+')">↻ Reset</button></div>'+
   '<div id="sb'+stageId+'body"></div>';
   main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
-  let score=0;const body=document.getElementById('sb'+stageId+'body');
+  const body=document.getElementById('sb'+stageId+'body');
   const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length;
+  SB_DATA[stageId]={pos:data.pos,neg:data.neg,q:data.q,shuffled:data.shuffled};
   function addSection(heading,items,startNum){
     if(heading){const h=document.createElement('div');h.className='section-head';h.textContent=heading;body.appendChild(h)}
     items.forEach((item,i)=>{
@@ -1085,8 +1112,12 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
       '<div class="q-feedback" id="sbFb'+stageId+'_'+idx+'"></div>';
       body.appendChild(card);
       const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
-      const scrambled=shuffle(item.correct.map((w,i)=>({w:w,i:i})));
-      scrambled.forEach(({w,i})=>{const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=w;chip.dataset.origIndex=i;chip.onclick=function(){moveChip(stageId,idx,chip,w,i)};chipsEl.appendChild(chip)});
+      const scrambled=shuffle(item.correct.map((w,ii)=>({w:w,i:ii})));
+      scrambled.forEach(({w,i:oi})=>{
+        const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=w;chip.dataset.origIndex=oi;
+        chip.onclick=function(){moveChip(stageId,idx,chip,w,oi)};
+        chipsEl.appendChild(chip);
+      });
       SB_STATE[stageId+'_'+idx]=[];
     });
   }
@@ -1094,13 +1125,10 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
   addSection('Part 2 — Negative sentences',data.neg,data.pos.length+1);
   addSection('Part 3 — Questions',data.q,data.pos.length+data.neg.length+1);
   addSection('Part 4 — Mixed practice (shuffled)',shuffle(data.shuffled),data.pos.length+data.neg.length+data.q.length+1);
-  // store for checker
-  SB_DATA[stageId]={pos:data.pos,neg:data.neg,q:data.q,shuffled:data.shuffled};
 }
-const SB_STATE={};
-const SB_DATA={};
 function moveChip(stageId,idx,chip,word,origIdx){
-  const area=document.getElementById('sbArea'+stageId+'_'+idx);const ph=area.querySelector('.placeholder');if(ph)ph.remove();
+  const area=document.getElementById('sbArea'+stageId+'_'+idx);if(!area)return;
+  const ph=area.querySelector('.placeholder');if(ph)ph.remove();
   const newChip=document.createElement('div');newChip.className='sb-chip';newChip.textContent=word;newChip.dataset.origIndex=origIdx;
   newChip.onclick=function(){
     newChip.remove();
@@ -1117,6 +1145,7 @@ function moveChip(stageId,idx,chip,word,origIdx){
 }
 function resetSBItem(stageId,idx){
   const area=document.getElementById('sbArea'+stageId+'_'+idx);const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
+  if(!area||!chipsEl)return;
   area.querySelectorAll('.sb-chip').forEach(ch=>{
     const back=document.createElement('div');back.className='sb-chip';back.textContent=ch.textContent;back.dataset.origIndex=ch.dataset.origIndex;
     back.onclick=function(){moveChip(stageId,idx,back,ch.textContent,Number(ch.dataset.origIndex))};
@@ -1125,19 +1154,12 @@ function resetSBItem(stageId,idx){
   area.innerHTML='<span class="placeholder">Click the words below...</span>';
   area.classList.remove('filled');
   SB_STATE[stageId+'_'+idx]=[];
-  document.getElementById('sbFb'+stageId+'_'+idx).className='q-feedback';
+  const fb=document.getElementById('sbFb'+stageId+'_'+idx);if(fb)fb.className='q-feedback';
 }
 function checkSBItem(stageId,idx){
-  const area=document.getElementById('sbArea'+stageId+'_'+idx);
+  const area=document.getElementById('sbArea'+stageId+'_'+idx);if(!area)return;
   const userOrder=Array.from(area.querySelectorAll('.sb-chip')).map(c=>Number(c.dataset.origIndex));
   const fb=document.getElementById('sbFb'+stageId+'_'+idx);
-  // find the question
-  let item=null;
-  const all=(SB_DATA[stageId].pos||[]).concat(SB_DATA[stageId].neg||[]).concat(SB_DATA[stageId].q||[]).concat(SB_DATA[stageId].shuffled||[]);
-  // We don't know which item this is reliably; use total length check
-  const correctLen=userOrder.length; // we'll compare with the correct order at the moment of check via stored indices
-  // Simpler approach: reconstruct from SB_STATE — no, use area chips
-  // Actually, we stored indices as original positions; a fully-correct answer is 0,1,2,3...
   const expected=Array.from({length:userOrder.length},(_,i)=>i);
   if(userOrder.length!==expected.length){fb.className='q-feedback wrong';fb.innerHTML='Use all the words.';sWrong();return}
   const ok=userOrder.every((v,i)=>v===i);
@@ -1154,10 +1176,10 @@ function checkSBItem(stageId,idx){
   }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Check the word order.';sWrong()}
 }
 
-function renderStage8(){renderSentenceBuilder(SB_PP,8,7,9,'🧩 Sentence Builder — Present Perfect','Stage 8 — Grammar','have/has + past participle (V3)','<li>Build sentences word by word.</li><li>Part 1: positives, Part 2: negatives, Part 3: questions, then a big mixed set.</li>','Build each sentence. Same order as the completing-sentence stages.<span class="ru">Соберите предложения по частям.</span>')}
-function renderStage9(){renderSentenceBuilder(SB_PS,9,8,10,'🧱 Sentence Builder — Past Simple','Stage 9 — Grammar','past form of the verb (V2) · did + V1 for negatives/questions','<li>Use V2 for statements, did + V1 for negatives and questions.</li><li>Same 5+5+5 structure.</li>','Build each sentence.<span class="ru">Соберите предложения.</span>')}
+function renderStage6(){renderSentenceBuilder(SB_PP,6,5,7,'🧩 Sentence Builder — Present Perfect','Stage 6 — Grammar','have/has + past participle (V3)','<li>Build sentences word by word.</li><li>Part 1: positives, Part 2: negatives, Part 3: questions, then a big mixed set.</li>','Build each sentence. Same order as the completing-sentence stages.<span class="ru">Соберите предложения по частям.</span>')}
+function renderStage7(){renderSentenceBuilder(SB_PS,7,6,8,'🧱 Sentence Builder — Past Simple','Stage 7 — Grammar','past form of the verb (V2) · did + V1 for negatives/questions','<li>Use V2 for statements, did + V1 for negatives and questions.</li><li>Same 5+5+5 structure.</li>','Build each sentence.<span class="ru">Соберите предложения.</span>')}
 
-/* ================== STAGE 10 — CHOOSE THE TENSE ================== */
+/* ================== STAGE 8 — CHOOSE THE TENSE ================== */
 const G10={pos:[
   {p:'The city ___ (add) three new bus routes in 2022.',a:'added',ex:'Finished year → past simple.'},
   {p:'Rivergate ___ (reduce) its energy use over the past year.',a:'has reduced',ex:'"Over the past year" → present perfect.'},
@@ -1208,183 +1230,226 @@ const G10={pos:[
   {p:'She ___ (buy) an electric bike last summer.',a:'bought'},
   {p:'We ___ (know) each other since primary school.',a:'have known'}
 ]};
-function renderStage10(){renderCompletingSentence(G10,10,9,11,'🧭 Completing Sentence — Choose the Tense','Stage 10 — Grammar','Present perfect (have/has + V3)  ·  Past simple (V2)','<li>Use past simple with finished times: yesterday, in 2020, last week, ago.</li><li>Use present perfect with: since, for, yet, ever, never, just, already, so far, recently.</li>','Choose the correct tense for each sentence. Same structure: 5+5+5 then 30 mixed.<span class="ru">Выберите правильное время.</span>')}
+function renderStage8(){renderCompletingSentence(G10,8,7,9,'🧭 Completing Sentence — Choose the Tense','Stage 8 — Grammar','Present perfect (have/has + V3)  ·  Past simple (V2)','<li>Use past simple with finished times: yesterday, in 2020, last week, ago.</li><li>Use present perfect with: since, for, yet, ever, never, just, already, so far, recently.</li>','Choose the correct tense for each sentence. Same structure: 5+5+5 then 30 mixed.<span class="ru">Выберите правильное время.</span>')}
 
-/* ================== STAGE 11 — TEST YOUR KNOWLEDGE ================== */
+/* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
 const TEST_MCQ=[
   {q:'Which word means "harmful material in air, water, or land"?',options:['pollution','community','transport'],correct:'pollution',exp:'Pollution harms the environment.'},
   {q:'Which word means "a good or helpful result"?',options:['benefit','cost','issue'],correct:'benefit',exp:'A benefit is a good or helpful result.'},
   {q:'Which word means "give or make something available"?',options:['provide','affect','result'],correct:'provide',exp:'To provide is to give what is needed.'},
   {q:'Which word means "an answer to a problem"?',options:['solution','issue','cost'],correct:'solution',exp:'A solution solves a problem.'},
-  {q:'Which word means "the natural world around us"?',options:['environment','community','energy'],correct:'environment',exp:'The environment is the natural world.'}
+  {q:'Which word means "the natural world around us"?',options:['environment','community','energy'],correct:'environment',exp:'The environment is the natural world.'},
+  {q:'Which word means "become or make greater"?',options:['increase','reduce','affect'],correct:'increase',exp:'Increase means become larger.'},
+  {q:'Which word means "ways of moving people or goods"?',options:['transport','community','benefit'],correct:'transport',exp:'Transport is how people/goods move.'},
+  {q:'Which word means "to change or influence something"?',options:['affect','provide','result'],correct:'affect',exp:'Affect = change/influence.'}
 ];
 const TEST_SHORT=[
   {q:'In what year did the mayor of Copenhagen promise carbon neutrality?',answers:['2015'],exp:'2015.'},
   {q:'What percentage of residents commute by bike?',answers:['60','60%','60 per cent','more than 60','over 60'],exp:'More than 60 per cent.'},
   {q:'By how much has air pollution dropped?',answers:['40','40%','40 per cent','more than 40','over 40'],exp:'By more than 40 per cent.'},
   {q:'In which decade was the harbour unsafe for swimming?',answers:['1990s','the 1990s','1990'],exp:'The 1990s.'},
-  {q:'What is cleared from cycle paths first in winter?',answers:['snow','the snow'],exp:'Snow.'}
+  {q:'What is cleared from cycle paths first in winter?',answers:['snow','the snow'],exp:'Snow.'},
+  {q:'Name ONE city mentioned as studying Copenhagen\u2019s model.',answers:['paris','bogota','bogotá','seoul'],exp:'Paris, Bogotá, Seoul.'}
 ];
 const TEST_TFNG=[
   {q:'Copenhagen promised carbon neutrality within ten years.',answer:'True',exp:'Within a decade.'},
   {q:'The cycle paths were built underground.',answer:'False',exp:'They were elevated.'},
   {q:'Snow is cleared from roads before cycle paths.',answer:'False',exp:'Cycle paths first.'},
-  {q:'The mayor was re-elected.',answer:'Not Given',exp:'Not mentioned.'}
-];
-const TEST_LONG=[
-  {q:'In your own words, explain why Copenhagen\u2019s plan was different from other cities\u2019 plans.',
-    keywordGroups:[['scale','size','extent'],['physical','shape','structure'],['removed','removal','parking'],['pedestrian','walking','walk']],
-    minWords:10,minGroups:2,
-    sample:'Copenhagen\u2019s plan was different because of its scale and because it changed the physical shape of the city — for example, by removing parking spaces.',
-    exp:'Key ideas: scale, physical change, removal of parking.'},
-  {q:'Describe one benefit of the transformation mentioned in the article.',
-    keywordGroups:[['pollution','cleaner','air'],['accident','safe','safety'],['happy','happier','satisfied'],['cycle','bike','commute']],
-    minWords:8,minGroups:1,
-    sample:'One benefit is that air pollution has dropped by more than 40 per cent.',
-    exp:'Reduced pollution or fewer accidents or happier residents.'}
+  {q:'The mayor was re-elected.',answer:'Not Given',exp:'Not mentioned.'},
+  {q:'The article mentions Paris, Bogotá and Seoul.',answer:'True',exp:'Yes, all three.'}
 ];
 const TEST_COMPLETE=[
   {p:'The city ___ (open) five new parks since 2020.',a:'has opened'},
   {p:'The council ___ (approve) the plan in 2021.',a:'approved'},
   {p:'She ___ (not / finish) her homework yet.',a:'has not finished'},
   {p:'We ___ (visit) the harbour museum last Sunday.',a:'visited'},
-  {p:'___ you ever ___ (see) a cargo bike?',a:'Have you ever seen'}
+  {p:'___ you ever ___ (see) a cargo bike?',a:'Have you ever seen'},
+  {p:'The mayor ___ (announce) the plan in 2015.',a:'announced'},
+  {p:'We ___ (know) each other since primary school.',a:'have known'},
+  {p:'They ___ (not / complete) the project on time.',a:'did not complete'},
+  {p:'Cycling ___ (become) very popular in this city.',a:'has become'},
+  {p:'___ they ___ (install) the new bins last week?',a:'Did they install'}
 ];
-let t11Answers={};
-function renderStage11(){
+
+const TEST_TIME_LIMIT=15*60;
+let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
+
+function buildTestQuestions(){
+  const qs=[];
+  TEST_MCQ.forEach(q=>qs.push({type:'mcq',prompt:q.q,options:q.options,correct:q.correct,exp:q.exp}));
+  TEST_SHORT.forEach(q=>qs.push({type:'short',prompt:q.q,answers:q.answers,exp:q.exp}));
+  TEST_TFNG.forEach(q=>qs.push({type:'tfng',prompt:q.q,answer:q.answer,exp:q.exp}));
+  TEST_COMPLETE.forEach(q=>qs.push({type:'complete',prompt:q.p,answer:q.a}));
+  return shuffle(qs);
+}
+
+function renderStage9(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 11 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Test Your Knowledge</h2>'+
-  '<div class="lead">A mixed review of everything in this lesson: vocabulary, reading, both grammar tenses, and sentence building. Some questions are typed, some are multiple choice, and there are 2 long-answer questions where you write in your own words.<span class="ru">Смешанный тест: лексика, чтение, грамматика.</span></div>'+
-  '<div id="testBody"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(10,null));
-  t11Answers={};renderTestBody();
+  v.innerHTML='<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
+  '<div class="lead">This is a strict, timed test. Answer each question to unlock the next one. You have <b>15 minutes</b> in total. When time runs out, the test closes automatically.<span class="ru">Строгий тест на время: 15 минут, вопросы по одному, нельзя перейти дальше, не ответив.</span></div>'+
+  '<div id="testRoot"></div>';
+  main.appendChild(v);main.appendChild(stageFooter(8,null));
+  renderTestIntro();
 }
-function renderTestBody(){
-  const body=document.getElementById('testBody');body.innerHTML='';
-  let qnum=0;
-  // MCQ section
-  body.insertAdjacentHTML('beforeend','<div class="section-head first">Part 1 — Vocabulary (multiple choice)</div>');
-  TEST_MCQ.forEach((item,i)=>{
-    qnum++;
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+qnum+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div>';
-    const opts=document.createElement('div');opts.className='q-opts';
-    shuffle(item.options).forEach(o=>{
-      const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-      b.onclick=()=>{
-        if(b.disabled)return;opts.querySelectorAll('button').forEach(x=>x.disabled=true);
-        const fb=card.querySelector('.q-feedback');
-        if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';t11Answers['m'+i]=true}
-        else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(x=>{if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+item.exp}
-        checkT11();
-      };
-      opts.appendChild(b);
-    });
-    card.appendChild(opts);
-    const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
-    body.appendChild(card);
-  });
-  // Short answer section
-  body.insertAdjacentHTML('beforeend','<div class="section-head">Part 2 — Reading: short answers</div>');
-  TEST_SHORT.forEach((item,i)=>{
-    qnum++;
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+qnum+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div>';
-    const row=document.createElement('div');row.className='q-input-row';
-    const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';
-    const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
-    const fb=document.createElement('div');fb.className='q-feedback';
-    let done=false;
-    function submit(){
-      if(done)return;const v=norm(inp.value);
-      const ok=item.answers.some(a=>norm(a)===v);
-      if(ok){inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Correct!';sCorrect();t11Answers['s'+i]=true;checkT11()}
-      else{inp.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Try again.';setTimeout(()=>inp.classList.remove('wrong'),600)}
-    }
-    btn.onclick=submit;inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
-    row.appendChild(inp);row.appendChild(btn);card.appendChild(row);card.appendChild(fb);body.appendChild(card);
-  });
-  // TFNG section
-  body.insertAdjacentHTML('beforeend','<div class="section-head">Part 3 — True / False / Not Given</div>');
-  TEST_TFNG.forEach((item,i)=>{
-    qnum++;
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+qnum+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div>';
-    const opts=document.createElement('div');opts.className='tfng-opts';
-    shuffle(['True','False','Not Given']).forEach(o=>{
-      const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-      b.onclick=()=>{
-        if(b.disabled)return;opts.querySelectorAll('button').forEach(x=>x.disabled=true);
-        const fb=card.querySelector('.q-feedback');
-        if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+item.exp+'</span>';t11Answers['t'+i]=true}
-        else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(x=>{if(x.textContent===item.answer)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+item.exp}
-        checkT11();
-      };
-      opts.appendChild(b);
-    });
-    card.appendChild(opts);
-    const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
-    body.appendChild(card);
-  });
-  // Long answer section
-  body.insertAdjacentHTML('beforeend','<div class="section-head">Part 4 — Long answers</div>');
-  TEST_LONG.forEach((item,i)=>{
-    qnum++;
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+qnum+'</div><div class="q-prompt">'+escapeHtml(item.q)+'</div>';
-    const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
-    const row=document.createElement('div');row.className='q-input-row';row.style.marginTop='10px';
-    const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer';
-    const fb=document.createElement('div');fb.className='q-feedback';
-    let done=false;
-    function submit(){
-      if(done)return;const txt=ta.value.trim();
-      const res=checkLongAnswer(txt,item.keywordGroups,item.minWords,item.minGroups);
-      if(res.pass){ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.';sCorrect();t11Answers['l'+i]=true;checkT11()}
-      else{ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'}
-      ta.insertAdjacentHTML('afterend',buildFlagRow('t11_'+i,item.q,txt,res.pass?'correct':'wrong'));
-    }
-    btn.onclick=submit;
-    row.appendChild(btn);card.appendChild(ta);card.appendChild(row);card.appendChild(fb);body.appendChild(card);
-  });
-  // Completing sentences
-  body.insertAdjacentHTML('beforeend','<div class="section-head">Part 5 — Complete the sentences</div>');
-  TEST_COMPLETE.forEach((item,i)=>{
-    qnum++;
-    const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Question '+qnum+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
-    const row=document.createElement('div');row.className='q-input-row';
-    const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type the missing word(s)...';
-    const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
-    const fb=document.createElement('div');fb.className='q-feedback';
-    let done=false;
-    function submit(){
-      if(done)return;const v=norm(inp.value);
-      if(v===norm(item.a)){inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Correct!';sCorrect();t11Answers['c'+i]=true;checkT11()}
-      else{inp.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Try again.';setTimeout(()=>inp.classList.remove('wrong'),600)}
-    }
-    btn.onclick=submit;inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
-    row.appendChild(inp);row.appendChild(btn);card.appendChild(row);card.appendChild(fb);body.appendChild(card);
-  });
+function renderTestIntro(){
+  const r=document.getElementById('testRoot');if(!r)return;
+  if(testState.timer){clearInterval(testState.timer);testState.timer=null}
+  testState.active=false;
+  const preview=buildTestQuestions().length;
+  r.innerHTML='<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+
+  '<p>'+preview+' questions · 15 minutes · one question at a time</p>'+
+  '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+
+  '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" onclick="startTest()">▶ Start the test</button></div></div>';
 }
-function checkT11(){
-  const total=TEST_MCQ.length+TEST_SHORT.length+TEST_TFNG.length+TEST_LONG.length+TEST_COMPLETE.length;
-  const c=Object.keys(t11Answers).length;
-  if(c===total){setScore(11,20);markDone(11)}else{setScore(11,Math.floor(c*20/total))}
+function startTest(){
+  testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:TEST_TIME_LIMIT,timer:null};
+  testState.total=testState.questions.length;
+  const r=document.getElementById('testRoot');if(!r)return;
+  r.innerHTML='<div class="test-hud">'+
+  '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">15:00</span></div>'+
+  '<div class="tcell"><span class="lbl">Question</span><span class="val" id="testQNum">1 / '+testState.total+'</span></div>'+
+  '<div class="tcell"><span class="lbl">Correct</span><span class="val" id="testCorrect">0</span></div>'+
+  '</div>'+
+  '<div class="test-progress-rail"><div class="test-progress-fill" id="testProgress"></div></div>'+
+  '<div id="testQuestion"></div>';
+  updateTestTimer();
+  testState.timer=setInterval(function(){
+    testState.timeLeft--;
+    updateTestTimer();
+    if(testState.timeLeft<=0)endTest(true);
+  },1000);
+  broadcastAction('test_start','Timed test started');
+  renderTestQuestion();
+}
+function updateTestTimer(){
+  const t=document.getElementById('testTimer');if(!t)return;
+  const m=String(Math.floor(Math.max(0,testState.timeLeft)/60)).padStart(2,'0');
+  const s=String(Math.max(0,testState.timeLeft)%60).padStart(2,'0');
+  t.textContent=m+':'+s;
+  if(testState.timeLeft<=60)t.classList.add('danger');else t.classList.remove('danger');
+}
+function renderTestQuestion(){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const root=document.getElementById('testQuestion');if(!root)return;
+  const qn=document.getElementById('testQNum');if(qn)qn.textContent=(testState.idx+1)+' / '+testState.total;
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  const tp=document.getElementById('testProgress');if(tp)tp.style.width=(testState.idx/testState.total*100)+'%';
+  let html='<div class="q-card test-card"><div class="q-num">Question '+(testState.idx+1)+' of '+testState.total+'</div><div class="test-q-text">'+escapeHtml(q.prompt)+'</div>';
+  if(q.type==='mcq'){
+    html+='<div class="q-opts">'+shuffle(q.options).map(function(o){return '<button class="q-opt" data-opt="'+escapeAttr(o)+'" onclick="answerTestMCQ(this)">'+escapeHtml(o)+'</button>'}).join('')+'</div>';
+  }else if(q.type==='tfng'){
+    html+='<div class="tfng-opts">'+shuffle(['True','False','Not Given']).map(function(o){return '<button class="q-opt" data-opt="'+o+'" onclick="answerTestTFNG(this)">'+o+'</button>'}).join('')+'</div>';
+  }else if(q.type==='short'){
+    html+='<div class="q-input-row"><input type="text" class="q-input" id="testInput" placeholder="Type your answer..." autocomplete="off" onkeydown="if(event.key===\'Enter\')answerTestShort()"><button class="btn" onclick="answerTestShort()">Submit</button></div>';
+  }else if(q.type==='complete'){
+    html+='<div class="q-input-row"><input type="text" class="q-input" id="testInput" placeholder="Type the missing word(s)..." autocomplete="off" onkeydown="if(event.key===\'Enter\')answerTestComplete()"><button class="btn" onclick="answerTestComplete()">Submit</button></div>';
+  }
+  html+='<div class="q-feedback" id="testFeedback"></div><div id="testNextArea"></div></div>';
+  root.innerHTML=html;
+  const inp=document.getElementById('testInput');
+  if(inp)setTimeout(function(){inp.focus()},80);
+}
+function lockTestOptions(){document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){b.disabled=true})}
+function showTestFeedback(ok,exp){
+  const fb=document.getElementById('testFeedback');if(!fb)return;
+  fb.className='q-feedback '+(ok?'correct':'wrong');
+  fb.innerHTML=(ok?'✓ Correct!':'✗ Incorrect.')+(exp?'<span class="exp">'+escapeHtml(exp)+'</span>':'');
+}
+function showTestNext(){
+  const area=document.getElementById('testNextArea');if(!area)return;
+  const isLast=testState.idx>=testState.total-1;
+  area.innerHTML='<div style="margin-top:18px;text-align:right"><button class="btn" onclick="nextTestQuestion()">'+(isLast?'Finish test →':'Next question →')+'</button></div>';
+}
+function answerTestMCQ(btn){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const opt=btn.dataset.opt;const ok=opt===q.correct;
+  if(ok)testState.correct++;
+  lockTestOptions();
+  document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){
+    if(b.dataset.opt===q.correct)b.classList.add('correct');
+    else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong');
+  });
+  showTestFeedback(ok,q.exp);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
+}
+function answerTestTFNG(btn){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const opt=btn.dataset.opt;const ok=opt===q.answer;
+  if(ok)testState.correct++;
+  lockTestOptions();
+  document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){
+    if(b.dataset.opt===q.answer)b.classList.add('correct');
+    else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong');
+  });
+  showTestFeedback(ok,q.exp);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
+}
+function answerTestShort(){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const inp=document.getElementById('testInput');if(!inp)return;
+  const val=norm(inp.value);
+  const ok=q.answers.some(function(a){return norm(a)===val});
+  if(ok)testState.correct++;
+  inp.disabled=true;
+  if(ok)inp.classList.add('correct');else inp.classList.add('wrong');
+  showTestFeedback(ok,q.exp);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
+}
+function answerTestComplete(){
+  const q=testState.questions[testState.idx];if(!q)return;
+  const inp=document.getElementById('testInput');if(!inp)return;
+  const ok=norm(inp.value)===norm(q.answer);
+  if(ok)testState.correct++;
+  inp.disabled=true;
+  if(ok)inp.classList.add('correct');else inp.classList.add('wrong');
+  showTestFeedback(ok,'Expected: '+q.answer);
+  const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct;
+  showTestNext();
+  broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40));
+}
+function nextTestQuestion(){
+  testState.idx++;
+  if(testState.idx>=testState.total){endTest(false);return}
+  renderTestQuestion();
+}
+function endTest(timedOut){
+  if(!testState.active&&!timedOut)return;
+  testState.active=false;
+  if(testState.timer){clearInterval(testState.timer);testState.timer=null}
+  const total=testState.total||1;
+  const score=Math.round((testState.correct/total)*10);
+  setScore(9,score);
+  if(score>=6)markDone(9);
+  const elapsed=TEST_TIME_LIMIT-testState.timeLeft;
+  const mins=Math.floor(elapsed/60),secs=elapsed%60;
+  const root=document.getElementById('testRoot');if(!root)return;
+  root.innerHTML='<div class="'+(timedOut?'test-timeout':'test-result')+'">'+
+  '<div class="icon">'+(timedOut?'⏰':'🏁')+'</div>'+
+  '<h3>'+(timedOut?'Time is up!':'Test complete!')+'</h3>'+
+  '<div class="big">'+testState.correct+' / '+total+'</div>'+
+  '<p>'+(timedOut?'You ran out of time. ':'')+'You answered <b>'+testState.correct+'</b> of <b>'+total+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+
+  '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn" onclick="renderTestIntro()">↻ Try again</button><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
+  if(!timedOut){sWin();confetti();}
+  broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
 /* ================== HUD ================== */
 function updateHUD(){
   const el=document.getElementById('scoreDisplay');
-  el.textContent=totalScore();
-  el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');
-  document.getElementById('streakDisplay').textContent=state.streak;
+  if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}
+  const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak;
   const lesson=getCurrentLesson();if(!lesson)return;
   const doneCount=lesson.stages.filter(s=>state.done[lesson.id+"_"+s.id]).length;
   const pct=Math.round((doneCount/lesson.stages.length)*100);
-  document.getElementById('progressPct').textContent=pct+'%';
-  document.getElementById('progressFill').style.width=pct+'%';
+  const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%';
+  const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%';
 }
 function markDone(stageId){
   const key=state.currentLessonId+"_"+stageId;
@@ -1402,7 +1467,7 @@ function setScore(stageId,amount){
 /* ================== SIDEBAR ================== */
 let expandedYears=["2026"],expandedMonths=["October"];
 function renderSidebar(){
-  const list=document.getElementById('stageList');list.innerHTML='';
+  const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
   CURRICULUM.forEach(yearObj=>{
     const isY=expandedYears.includes(yearObj.year);
     const yearEl=document.createElement('div');yearEl.className='year-item'+(isY?' open':'');
@@ -1451,10 +1516,10 @@ function renderSidebar(){
     });
   });
 }
-function goToStage(n){state.currentStage=n;renderSidebar();renderStage();document.getElementById('main').scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n)}
+function goToStage(n){state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n)}
 function renderStage(){
-  const main=document.getElementById('main');main.innerHTML='';
-  const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9,10:renderStage10,11:renderStage11};
+  const main=document.getElementById('main');if(!main)return;main.innerHTML='';
+  const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9};
   try{fns[state.currentStage]()}catch(e){console.error(e);main.innerHTML='<p>Error loading stage.</p>'}
 }
 function stageFooter(prevId,nextId,extraHTML){
@@ -1472,9 +1537,9 @@ function startTimer(){
     const el=document.getElementById('timerDisplay');if(el)el.textContent=m+':'+s;
   },1000);
 }
-function toggleSound(){soundOn=!soundOn;document.getElementById('soundToggle').classList.toggle('active',soundOn);document.getElementById('soundToggle').textContent=soundOn?'🔊':'🔇';saveState()}
-function toggleDark(){document.documentElement.classList.toggle('dark');document.getElementById('darkToggle').classList.toggle('active',document.documentElement.classList.contains('dark'));saveState()}
-function toggleNotes(){document.getElementById('notesPanel').classList.toggle('open')}
+function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
+function toggleDark(){document.documentElement.classList.toggle('dark');const dt=document.getElementById('darkToggle');if(dt)dt.classList.toggle('active',document.documentElement.classList.contains('dark'));saveState()}
+function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.classList.toggle('open')}
 document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
 function showToast(text){
   let t=document.getElementById('toast');
@@ -1489,10 +1554,10 @@ if(!teacherPreviewRequested)loadState();
 const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
 if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
 const savedCode=teacherPreviewRequested?'':getSessionCode();
-if(savedCode)document.getElementById('sessionCodeInput').value=savedCode;
+if(savedCode){const sci=document.getElementById('sessionCodeInput');if(sci)sci.value=savedCode}
 renderSidebar();renderStage();startTimer();updateHUD();
-if(soundOn)document.getElementById('soundToggle').classList.add('active');
-if(document.documentElement.classList.contains('dark'))document.getElementById('darkToggle').classList.add('active');
+if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.add('active')}
+if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}
 initFirebase();
 (function(){
   const code=getSessionCode();
@@ -1506,7 +1571,7 @@ initFirebase();
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeFCModal();
   const modal=document.getElementById('fcModal');
-  if(modal.classList.contains('open')){
+  if(modal&&modal.classList.contains('open')){
     if(e.key==='ArrowRight')fcNext();
     if(e.key==='ArrowLeft')fcPrev();
     if(e.key===' '){e.preventDefault();fcReveal()}
