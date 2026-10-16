@@ -92,6 +92,8 @@ body{display:flex;flex-direction:column}
 .flashcard:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 28px rgba(238,90,36,.18)}
 .flashcard.known{border-color:var(--success)}
 .flashcard.known::before{content:'✓';position:absolute;top:8px;right:8px;width:26px;height:26px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;z-index:4}
+.flashcard.needs-practice{border-color:var(--warn)}
+.flashcard.needs-practice::before{content:'!';position:absolute;top:8px;right:8px;width:26px;height:26px;background:var(--warn);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;z-index:4}
 .flashcard-img{flex:1;display:flex;align-items:center;justify-content:center;font-size:64px;background:linear-gradient(135deg,rgba(42,82,152,.06),rgba(238,90,36,.06));position:relative;overflow:hidden;min-height:100px}
 .flashcard-img img{width:100%;height:100%;object-fit:cover}
 .flashcard-word{padding:10px 8px;text-align:center;font-size:16px;font-weight:800;color:var(--ink);border-top:1px solid var(--border);background:var(--panel)}
@@ -120,6 +122,17 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .fc-modal-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
 .fc-modal-nav button{background:transparent;border:none;cursor:pointer;font-size:15px;font-weight:700;color:var(--ink-soft);padding:8px 14px;border-radius:8px;font-family:inherit}
 .fc-modal-nav .counter{font-size:14px;color:var(--ink-soft);font-weight:700}
+.quiz-progress{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:6px}
+.quiz-context{font-size:13px;color:var(--accent);font-weight:600;margin-bottom:10px;font-style:italic;text-align:left}
+.quiz-question{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:14px;text-align:left}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.quiz-opt{padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;text-align:left}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.quiz-opt.correct{background:var(--success-soft);border-color:var(--success);color:var(--success)}
+.quiz-opt.wrong{background:var(--error-soft);border-color:var(--error);color:var(--error)}
+.quiz-opt:disabled{cursor:default;opacity:.85}
+.flash-toolbar .practice-btn{margin-left:auto;background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 3px 0 var(--primary-dark);display:none}
+.flash-toolbar .practice-btn.show{display:inline-flex}
 .dd-area{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .dd-col-title{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:2px dashed var(--border)}
 .dd-words,.dd-slots{display:flex;flex-direction:column;gap:10px}
@@ -221,7 +234,7 @@ html.dark .q-feedback.info{color:#f5c66b}
 .test-result .big{font-size:72px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin:20px 0}
 .test-timeout p,.test-result p{font-size:17px;color:var(--ink-soft);margin-bottom:22px;line-height:1.55}
 @media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
-@media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo .text{display:none}.session-input{flex:1 1 145px;justify-content:space-between}.topbar>#scorePill,.topbar>#streakPill{display:none}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}.passage{padding:20px 22px;font-size:17px}}
+@media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo .text{display:none}.session-input{flex:1 1 145px;justify-content:space-between}.topbar>#scorePill,.topbar>#streakPill{display:none}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}.passage{padding:20px 22px;font-size:17px}.quiz-options{grid-template-columns:1fr}}
 ::selection{background:var(--accent);color:#fff}
 </style>
 </head>
@@ -271,8 +284,8 @@ html.dark .q-feedback.info{color:#f5c66b}
         <button class="btn ghost" onclick="fcMarkAgain()">↻ Practise again</button>
       </div>
       <div class="fc-modal-tools">
-        <button class="tool" onclick="fcSpeak()">🔊 Listen</button>
-        <button class="tool" onclick="fcReveal()">👁️ Reveal</button>
+        <button class="tool" onclick="quizSpeak()">🔊 Listen</button>
+        <button class="tool" onclick="editFlashcardImage()">🖼️ Set image</button>
       </div>
       <div class="fc-modal-nav">
         <button onclick="fcPrev()">← Previous</button>
@@ -316,7 +329,7 @@ function initFirebase(){
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
     const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
-    if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderFCModal()});
+    if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
     fbDb.ref('curriculum').on('value',function(s){curriculumCache=s.val()||{};renderSidebar()});
     if(teacherPreviewRequested){
       document.querySelector('.session-input').style.display='none';
@@ -352,7 +365,7 @@ function getSessionCode(){const u=new URLSearchParams(window.location.search).ge
 function changeSessionCode(){const i=document.getElementById('sessionCodeInput');const c=(i.value||'').toUpperCase().trim();if(!c){localStorage.removeItem('nd_session_code');updateSyncUI('nocode');return}localStorage.setItem('nd_session_code',c);if(!fbDb){initFirebase();return}if(sessionRef)sessionRef.off();if(commandRef)commandRef.off();startStudentSession(c)}
 function updateSyncUI(s){const d=document.getElementById('syncDot');const t=document.getElementById('syncStatus');d.classList.remove('warn','off');if(s==='live')t.textContent='Live · Connected';else if(s==='teacher')t.textContent='Teacher preview';else if(s==='nocode'){d.classList.add('warn');t.textContent='Set code above'}else if(s==='error'){d.classList.add('off');t.textContent='Error'}}
 function applyTeacherResetCommand(cmd){if(!cmd||cmd.action!=='reset'||!cmd.ts)return;const k='nd_teacher_reset_seen_'+getSessionCode();let s=0;try{s=Number(localStorage.getItem(k)||0)}catch(e){}if(Number(cmd.ts)<=s)return;try{localStorage.setItem(k,String(cmd.ts))}catch(e){}teacherReset()}
-function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;s1Known={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
+function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
 
 /* ================== AUDIO + TTS ================== */
 let audioCtx=null,soundOn=true;
@@ -531,56 +544,290 @@ const VOCAB=[
   ]}
 ];
 
-/* ================== STAGE 1 — FLASHCARDS ================== */
-let s1Filter='all',s1Known={},s1CurrentIdx=0,s1VisibleList=[];
+/* ================== STAGE 1 — ADAPTIVE VOCABULARY QUIZ ================== */
+let s1Filter='learning';
+let vocabState={};
+let vocabCloudLoaded=false;
+let s1VisibleList=[];
+let quizWord=null;
+let quizMeanings=[];
+let quizCurrentIdx=0;
+let quizRoundWrongs=0;
+let quizAnswers={};
+let quizOptionsCache={};
+let practiceMode=false;
+let practiceQueue=[];
+let practiceIdx=0;
+
+function vocabKey(){return 'nd_vocab_'+state.currentLessonId}
+function loadVocabStateLocal(){try{const r=localStorage.getItem(vocabKey());vocabState=r?JSON.parse(r)||{}:{}}catch(e){vocabState={}}}
+function loadVocabStateCloud(){
+  if(!fbConnected||!sessionRef)return Promise.resolve();
+  return sessionRef.child('state/vocabProgress/'+state.currentLessonId).once('value').then(function(snap){
+    const cloud=snap.val()||{};
+    Object.keys(cloud).forEach(function(w){vocabState[w]=cloud[w]});
+    saveVocabStateLocal();
+  }).catch(function(){});
+}
+function saveVocabStateLocal(){try{localStorage.setItem(vocabKey(),JSON.stringify(vocabState))}catch(e){}}
+function saveVocabStateCloud(){if(!fbConnected||!sessionRef||teacherMode)return;try{sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(vocabState).catch(function(){})}catch(e){}}
+function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
+
+function getWordStatus(word){
+  const s=vocabState[word];
+  if(!s)return 'learning';
+  if((s.perfectStreak||0)>=2)return 'learned';
+  if((s.wrongCount||0)>=2)return 'practice';
+  return 'learning';
+}
+function getVocabCounts(){
+  const c={learning:0,learned:0,practice:0};
+  VOCAB.forEach(function(w){c[getWordStatus(w.en)]++});
+  return c;
+}
+function shouldShowPractice(){
+  if(!Object.keys(vocabState).length)return false;
+  return Object.keys(vocabState).some(function(w){return getWordStatus(w)!=='learned'});
+}
+
 function renderStage1(){
+  loadVocabStateLocal();
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 1 — Natural Disasters</div><h2>🌪️ Vocabulary Flashcards</h2>'+
-  '<div class="lead">Click a card to open it. Press <b>Reveal</b> to see every meaning of the word with an example sentence for each context.<span class="ru">Нажмите на карточку → <b>Reveal</b> покажет все значения и примеры.</span></div>'+
+  const counts=getVocabCounts();
+  const showPractice=shouldShowPractice();
+  v.innerHTML='<div class="eyebrow">Stage 1 — Vocabulary Quiz</div><h2>🌪️ Adaptive Vocabulary</h2>'+
+  '<div class="lead">Every card is a small quiz. Choose the correct translation for each meaning of the word. Your answers automatically sort cards into three sections — <b>Learning</b>, <b>Learned</b>, and <b>Need Practice</b>.<span class="ru">Каждая карточка — небольшой тест. Ваши ответы автоматически сортируют карточки по трём разделам.</span></div>'+
   '<div class="flash-toolbar">'+
-  '<button class="filt active" data-f="all" onclick="setFilter(\'all\')">All ('+VOCAB.length+')</button>'+
-  '<button class="filt" data-f="known" onclick="setFilter(\'known\')">✓ Known</button>'+
-  '<button class="filt" data-f="again" onclick="setFilter(\'again\')">↻ Practise</button>'+
-  '<div class="flash-stats"><b id="s1KnowCount">0</b> known · <span id="s1AgainCount">0</span> to practise</div>'+
+  '<button class="filt '+(s1Filter==='learning'?'active':'')+'" onclick="setFilter(\'learning\')">📖 Learning ('+counts.learning+')</button>'+
+  '<button class="filt '+(s1Filter==='learned'?'active':'')+'" onclick="setFilter(\'learned\')">✓ Learned ('+counts.learned+')</button>'+
+  '<button class="filt '+(s1Filter==='practice'?'active':'')+'" onclick="setFilter(\'practice\')">🔁 Need Practice ('+counts.practice+')</button>'+
+  '<button class="btn practice-btn'+(showPractice?' show':'')+'" onclick="startPractice()">🎯 Practise</button>'+
   '</div><div class="flash-grid" id="flashGrid"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(null,2));renderFlashcards();
+  main.appendChild(v);main.appendChild(stageFooter(null,2));
+  renderFlashcards();
+  if(fbConnected&&!vocabCloudLoaded){vocabCloudLoaded=true;loadVocabStateCloud().then(function(){renderStage1()})}
 }
-function setFilter(f){s1Filter=f;document.querySelectorAll('.flash-toolbar .filt').forEach(function(b){b.classList.toggle('active',b.dataset.f===f)});renderFlashcards()}
+function setFilter(f){s1Filter=f;renderStage1()}
+
 function renderFlashcards(){
   const grid=document.getElementById('flashGrid');if(!grid)return;grid.innerHTML='';
-  const list=VOCAB.filter(function(v){if(s1Filter==='known')return s1Known[v.en]===true;if(s1Filter==='again')return s1Known[v.en]===false;return true});
+  const list=VOCAB.filter(function(w){return getWordStatus(w.en)===s1Filter});
   s1VisibleList=list;
-  list.forEach(function(v,idx){
+  if(!list.length){
+    const emptyMsg=s1Filter==='learned'?'No learned words yet — keep practising.':(s1Filter==='practice'?'No words need practice. Great job!':'No words here.');
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft);font-size:17px">'+emptyMsg+'</div>';
+    return;
+  }
+  list.forEach(function(w,idx){
     const card=document.createElement('div');card.className='flashcard';
-    if(s1Known[v.en]===true)card.classList.add('known');
-    const img=customImages[v.en];
-    card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(v.en)+'" loading="lazy" onerror="this.parentNode.textContent=\''+v.emoji+'\'">':v.emoji)+'</div><div class="flashcard-word">'+escapeHtml(v.en)+'</div>';
-    card.onclick=function(){openFCModal(idx)};
+    const status=getWordStatus(w.en);
+    if(status==='learned')card.classList.add('known');
+    if(status==='practice')card.classList.add('needs-practice');
+    const img=customImages[w.en];
+    card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" loading="lazy" onerror="this.parentNode.textContent=\''+w.emoji+'\'">':w.emoji)+'</div><div class="flashcard-word">'+escapeHtml(w.en)+'</div>';
+    card.onclick=function(){openQuiz(idx)};
     grid.appendChild(card);
   });
-  updateS1Stats();
 }
-function updateS1Stats(){const k=Object.values(s1Known).filter(function(x){return x===true}).length;const a=Object.values(s1Known).filter(function(x){return x===false}).length;const ke=document.getElementById('s1KnowCount'),ae=document.getElementById('s1AgainCount');if(ke)ke.textContent=k;if(ae)ae.textContent=a}
-function checkS1Complete(){const k=Object.values(s1Known).filter(function(x){return x===true}).length;const key=state.currentLessonId+"_1";if(k>=15&&!state.done[key]){setScore(1,10);markDone(1)}else{setScore(1,Math.min(10,Math.floor(k/1.5)))}}
-function openFCModal(idx){s1CurrentIdx=idx;renderFCModal();document.getElementById('fcModal').classList.add('open');sFlip();broadcastAction('flashcard_open',s1VisibleList[idx]?s1VisibleList[idx].en:'')}
-function closeFCModal(){document.getElementById('fcModal').classList.remove('open')}
-function renderFCModal(){
-  const v=s1VisibleList[s1CurrentIdx];if(!v)return;
-  const img=customImages[v.en];
-  document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(v.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+v.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+v.emoji+'</div>')+'<div class="label">WORD</div>';
-  document.getElementById('fcModalWord').textContent=v.en;
-  document.getElementById('fcRevealArea').innerHTML=v.meanings.map(function(m){return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+'</div><div class="translation">'+escapeHtml(m.ru)+'</div><div class="example">'+m.ex+'</div></div>'}).join('');
-  document.getElementById('fcRevealArea').classList.remove('show');
-  document.getElementById('fcCounter').textContent=(s1CurrentIdx+1)+' / '+s1VisibleList.length;
-  document.querySelector('.fc-modal-actions').style.display=teacherMode?'none':'flex';
+
+function openQuiz(idx){
+  s1CurrentIdx=idx;
+  const w=s1VisibleList[idx];if(!w)return;
+  practiceMode=false;
+  openQuizWord(w.en);
 }
-function fcReveal(){document.getElementById('fcRevealArea').classList.add('show');sPop();broadcastAction('reveal',s1VisibleList[s1CurrentIdx]?s1VisibleList[s1CurrentIdx].en:'')}
-function fcSpeak(){const v=s1VisibleList[s1CurrentIdx];if(v)speak(v.en)}
-function fcMarkKnow(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=true;sPop();updateS1Stats();checkS1Complete();saveState();broadcastAction('know',v.en);fcNext()}
-function fcMarkAgain(){const v=s1VisibleList[s1CurrentIdx];if(!v)return;s1Known[v.en]=false;sPop();updateS1Stats();saveState();broadcastAction('practise',v.en);fcNext()}
-function fcNext(){if(s1CurrentIdx<s1VisibleList.length-1){s1CurrentIdx++;renderFCModal()}else{closeFCModal();renderFlashcards()}}
-function fcPrev(){if(s1CurrentIdx>0){s1CurrentIdx--;renderFCModal()}}
+function openQuizWord(word){
+  quizWord=word;
+  quizOptionsCache={};
+  const w=VOCAB.find(function(x){return x.en===word});if(!w)return;
+  quizMeanings=w.meanings.slice();
+  quizCurrentIdx=0;
+  quizRoundWrongs=0;
+  quizAnswers={};
+  renderQuizModal();
+  document.getElementById('fcModal').classList.add('open');
+  sFlip();
+  broadcastAction('flashcard_open',word);
+}
+function closeFCModal(){
+  document.getElementById('fcModal').classList.remove('open');
+  practiceMode=false;
+  practiceQueue=[];
+  renderStage1();
+}
+
+function buildQuizOptions(word,meaningIdx){
+  const key=word+'::'+meaningIdx;
+  if(quizOptionsCache[key])return quizOptionsCache[key];
+  const v=VOCAB.find(function(x){return x.en===word});if(!v)return{options:[],correct:''};
+  const correctRu=v.meanings[meaningIdx].ru;
+  const pool=[];
+  VOCAB.forEach(function(w){
+    if(w.en===word)return;
+    w.meanings.forEach(function(m){if(m.ru!==correctRu)pool.push(m.ru)});
+  });
+  const unique=Array.from(new Set(pool));
+  const distractors=shuffle(unique).slice(0,3);
+  const options=shuffle(distractors.concat([correctRu]));
+  const result={options:options,correct:correctRu};
+  quizOptionsCache[key]=result;
+  return result;
+}
+
+function renderQuizModal(){
+  const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
+  const img=customImages[w.en];
+  document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+w.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+w.emoji+'</div>')+'<div class="label">WORD</div>';
+  document.getElementById('fcModalWord').textContent=w.en;
+  const meaning=w.meanings[quizCurrentIdx];
+  const q=buildQuizOptions(quizWord,quizCurrentIdx);
+  const answered=quizAnswers[quizCurrentIdx];
+  let html='<div class="quiz-progress">'+(practiceMode?'Practice · ':'')+'Meaning '+(quizCurrentIdx+1)+' of '+w.meanings.length+'</div>';
+  html+='<div class="quiz-context">'+escapeHtml(meaning.context)+'</div>';
+  html+='<div class="quiz-question">Choose the correct translation:</div>';
+  html+='<div class="quiz-options">';
+  q.options.forEach(function(opt){
+    let cls='quiz-opt';
+    if(answered){
+      if(opt===q.correct)cls+=' correct';
+      else if(opt===answered.selected&&!answered.correct)cls+=' wrong';
+    }
+    html+='<button class="'+cls+'" '+(answered?'disabled':'')+' data-opt="'+escapeAttr(opt)+'" onclick="answerQuiz(this)">'+escapeHtml(opt)+'</button>';
+  });
+  html+='</div>';
+  if(answered){
+    const exClean=meaning.ex.replace(/<[^>]*>/g,'');
+    if(answered.correct){html+='<div class="q-feedback correct" style="display:block">✓ Correct!<span class="exp">'+escapeHtml(exClean)+'</span></div>'}
+    else{html+='<div class="q-feedback wrong" style="display:block">✗ Not quite. Correct answer: <b>'+escapeHtml(q.correct)+'</b><span class="exp">'+escapeHtml(exClean)+'</span></div>'}
+  }
+  document.getElementById('fcRevealArea').innerHTML=html;
+  document.getElementById('fcRevealArea').classList.add('show');
+  document.getElementById('fcCounter').textContent=(quizCurrentIdx+1)+' / '+w.meanings.length;
+  document.querySelector('.fc-modal-actions').style.display='none';
+  const tools=document.querySelector('.fc-modal-tools');
+  if(tools){
+    tools.innerHTML='<button class="tool" onclick="quizSpeak()">🔊 Listen</button>'+
+      (teacherCanEdit?'<button class="tool" onclick="editFlashcardImage()">🖼️ Set image</button>':'');
+  }
+  const nav=document.querySelector('.fc-modal-nav');if(nav)nav.style.display='';
+  const navBtns=document.querySelectorAll('.fc-modal-nav button');
+  if(navBtns.length>=2){
+    navBtns[0].onclick=function(){quizPrev()};
+    navBtns[navBtns.length-1].onclick=function(){quizNext()};
+    navBtns[navBtns.length-1].textContent=(quizCurrentIdx>=w.meanings.length-1)?'Finish →':'Next →';
+  }
+}
+
+function answerQuiz(btn){
+  if(quizAnswers[quizCurrentIdx])return;
+  const opt=btn.dataset.opt;
+  const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
+  const q=buildQuizOptions(quizWord,quizCurrentIdx);
+  const correct=opt===q.correct;
+  quizAnswers[quizCurrentIdx]={selected:opt,correct:correct};
+  if(!vocabState[quizWord])vocabState[quizWord]={perfectStreak:0,wrongCount:0,meaningsCorrect:{}};
+  if(correct){
+    vocabState[quizWord].meaningsCorrect[quizCurrentIdx]='correct';
+    sCorrect();
+  }else{
+    quizRoundWrongs++;
+    sWrong();
+  }
+  saveVocabState();
+  renderQuizModal();
+  broadcastAction('vocab_answer',quizWord+' → '+(correct?'correct':'wrong'));
+}
+
+function quizNext(){
+  if(!quizAnswers[quizCurrentIdx])return;
+  const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
+  if(quizCurrentIdx<w.meanings.length-1){quizCurrentIdx++;renderQuizModal()}
+  else{finalizeRound()}
+}
+function quizPrev(){if(quizCurrentIdx>0){quizCurrentIdx--;renderQuizModal()}}
+
+function finalizeRound(){
+  if(!quizWord)return;
+  const s=vocabState[quizWord];if(!s)return;
+  if(quizRoundWrongs===0){
+    s.perfectStreak=(s.perfectStreak||0)+1;
+  }else{
+    s.perfectStreak=0;
+    s.wrongCount=(s.wrongCount||0)+quizRoundWrongs;
+  }
+  if((s.perfectStreak||0)>=2){s.wrongCount=0}
+  saveVocabState();
+  const learned=VOCAB.filter(function(x){return getWordStatus(x.en)==='learned'}).length;
+  const key=state.currentLessonId+"_1";
+  if(learned>=15&&!state.done[key]){setScore(1,10);markDone(1)}
+  else{setScore(1,Math.min(10,Math.floor(learned/1.5)))}
+  broadcastAction('vocab_round_done',quizWord+' ('+getWordStatus(quizWord)+')');
+
+  if(practiceMode){
+    practiceIdx++;
+    if(practiceIdx<practiceQueue.length){setTimeout(function(){openQuizWord(practiceQueue[practiceIdx])},500);return}
+    setTimeout(showPracticeSummary,500);
+    return;
+  }
+  setTimeout(function(){closeFCModal()},600);
+}
+
+function showPracticeSummary(){
+  const counts=getVocabCounts();
+  document.getElementById('fcModalImg').innerHTML='<div style="font-size:120px;line-height:1">🎉</div>';
+  document.getElementById('fcModalWord').textContent='Practice complete!';
+  document.getElementById('fcRevealArea').innerHTML='<div style="text-align:left"><p style="font-size:17px;color:var(--ink);margin-bottom:12px">Great work! Here is where you stand now:</p>'+
+    '<div style="padding:14px;background:var(--bg);border-radius:12px">'+
+    '<div style="padding:6px 0">📖 Learning: <b style="color:var(--accent)">'+counts.learning+'</b></div>'+
+    '<div style="padding:6px 0">✓ Learned: <b style="color:var(--success)">'+counts.learned+'</b></div>'+
+    '<div style="padding:6px 0">🔁 Need Practice: <b style="color:var(--warn)">'+counts.practice+'</b></div>'+
+    '</div></div>';
+  document.getElementById('fcCounter').textContent='—';
+  const nav=document.querySelector('.fc-modal-nav');if(nav)nav.style.display='none';
+  const tools=document.querySelector('.fc-modal-tools');
+  if(tools)tools.innerHTML='<button class="tool" onclick="restartPractice()">↻ Practise again</button><button class="tool" onclick="closeFCModal()">← Back to Vocabulary</button>';
+}
+function restartPractice(){practiceMode=false;practiceQueue=[];document.getElementById('fcModal').classList.remove('open');setTimeout(function(){startPractice()},200)}
+
+function startPractice(){
+  const toPractice=VOCAB.filter(function(w){
+    const st=getWordStatus(w.en);
+    if(st==='practice')return true;
+    if(st==='learning'&&vocabState[w.en])return true;
+    return false;
+  });
+  if(!toPractice.length){alert('Nothing to practise yet. Open some flashcards first!');return}
+  practiceMode=true;
+  practiceQueue=shuffle(toPractice);
+  practiceIdx=0;
+  openQuizWord(practiceQueue[0]);
+}
+
+function quizSpeak(){if(quizWord)speak(quizWord)}
+
+function editFlashcardImage(){
+  if(!teacherCanEdit||!fbDb){alert('Sign in with the teacher account to edit.');return}
+  if(!quizWord)return;
+  const current=customImages[quizWord]||'';
+  const url=prompt('Paste an image URL for "'+quizWord+'". Leave blank to remove the custom image.',current);
+  if(url===null)return;
+  const trimmed=url.trim();
+  if(trimmed&&!/^https?:\/\//i.test(trimmed)){alert('URL must start with http:// or https://');return}
+  const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||'lesson_1';
+  fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+quizWord).set(trimmed||null).then(function(){
+    if(trimmed)customImages[quizWord]=trimmed;else delete customImages[quizWord];
+    renderQuizModal();renderFlashcards();
+    showToast('Image saved');
+  }).catch(function(e){alert('Failed: '+e.message)});
+}
+
+/* Aliases for keyboard shortcuts */
+function fcPrev(){quizPrev()}
+function fcNext(){quizNext()}
+function fcReveal(){}
+function fcMarkKnow(){}
+function fcMarkAgain(){}
 
 /* ================== STAGE 2 — WORD MATCH ================== */
 const MATCH_DATA=[
@@ -634,7 +881,6 @@ function tryPlace(word,slot){
 function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').length;const el=document.getElementById('s2count');if(el)el.textContent=c}
 function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
-
 
 /* ================== STAGE 3 — READING & QUESTIONS (combined) ================== */
 const READING_HTML='<h1>When the Earth Wakes</h1><div class="subtitle">A case study of three connected natural disasters</div>'+
