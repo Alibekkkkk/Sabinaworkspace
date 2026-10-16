@@ -1064,6 +1064,15 @@ function renderClassworkTree() {
 function toggleYear(year) { expandedYears[year] = expandedYears[year] === false; renderClassworkTree(); }
 function toggleMonth(year, month) { expandedMonths[year + '_' + month] = expandedMonths[year + '_' + month] === false; renderClassworkTree(); }
 
+function pickLessonFile(lesson){
+  if(lesson && lesson.customUrl) return lesson.customUrl;
+  if(activeCode && studentsMap[activeCode]){
+    const n=String(studentsMap[activeCode].name||'').toLowerCase();
+    if(n.indexOf('gaziz')!==-1) return 'lesson_gaziz.html';
+    if(n.indexOf('sabina')!==-1) return 'lesson.html';
+  }
+  return 'lesson.html';
+}
 function openClassworkLesson(id) {
   currentClassworkId = id;
   const l = curriculum[id] || {};
@@ -1072,7 +1081,7 @@ function openClassworkLesson(id) {
   document.getElementById('classworkPlaceholder').style.display = 'none';
   const frame = document.getElementById('classworkFrame');
   frame.style.display = 'block';
-  const base = l.customUrl || 'lesson.html';
+  const base = pickLessonFile(l);
   const url = new URL(base, window.location.href);
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
@@ -1083,7 +1092,7 @@ function openClassworkLesson(id) {
 function openCurrentClassworkInTab() {
   if (!currentClassworkId) return;
   const l = curriculum[currentClassworkId] || {};
-  const base = l.customUrl || 'lesson.html';
+  const base = pickLessonFile(l);
   const url = new URL(base, window.location.href);
   url.searchParams.set('lesson', currentClassworkId);
   url.searchParams.set('teacher', '1');

@@ -198,11 +198,14 @@ html.dark .q-feedback.info{color:#f5c66b}
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 /* ============ NEW: Reading split layout ============ */
-.reading-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.reading-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:stretch;height:calc(100vh - 260px);min-height:520px}
 .stage-view:has(.reading-split){max-width:1400px}
-.reading-pane{position:sticky;top:0}
-.reading-questions{min-width:0}
-@media(max-width:980px){.reading-split{grid-template-columns:1fr}.reading-pane{position:static}}
+.reading-pane,.reading-questions{overflow-y:auto;max-height:100%;padding-right:10px;min-width:0}
+.reading-pane::-webkit-scrollbar,.reading-questions::-webkit-scrollbar{width:8px}
+.reading-pane::-webkit-scrollbar-thumb,.reading-questions::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
+.reading-pane::-webkit-scrollbar-track,.reading-questions::-webkit-scrollbar-track{background:transparent}
+.reading-pane{position:static}
+@media(max-width:980px){.reading-split{grid-template-columns:1fr;height:auto;min-height:0}.reading-pane,.reading-questions{max-height:none;overflow:visible}}
 /* ============ NEW: Timed test ============ */
 .test-hud{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:14px;margin-bottom:20px;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow-md)}
 .test-hud .tcell{text-align:center;min-width:90px}
@@ -1614,6 +1617,7 @@ if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.a
 if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}
 initFirebase();
 (function(){
+  if(teacherPreviewRequested){const logo=document.querySelector('.logo .text');if(logo)logo.textContent='IELTS Studio';return}
   const code=getSessionCode();
   if(!code||!fbDb)return;
   fbDb.ref('students/'+code+'/name').once('value',function(snap){
