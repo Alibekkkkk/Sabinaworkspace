@@ -1889,6 +1889,27 @@ function setScore(stageId,amount){
 
 /* ================== SIDEBAR ================== */
 let expandedYears=["2026"],expandedMonths=["October"];
+function resetStageTeacher(stageId) {
+  if(!teacherCanEdit) return;
+  if(!confirm('Are you sure you want to reset progress for Stage ' + stageId + '?')) return;
+
+  const key = state.currentLessonId + "_" + stageId;
+  state.scores[key] = 0;
+  state.done[key] = false;
+
+  if (stageId === 1) {
+    vocabState = {};
+    saveVocabStateLocal();
+  }
+
+  saveState();
+  renderSidebar();
+  renderStage();
+  updateHUD();
+
+  broadcastAction('teacher_reset_stage', 'Teacher manually reset Stage ' + stageId);
+  if (typeof showToast === 'function') showToast('Stage ' + stageId + ' reset');
+}
 function renderSidebar(){
   const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
   CURRICULUM.forEach(function(yearObj){
@@ -1929,12 +1950,35 @@ function renderSidebar(){
           lesson.stages.forEach(function(st){
             const key=lesson.id+"_"+st.id;
             const isA=st.id===state.currentStage;const isD=state.done[key];
+            let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
+            
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.alignItems = 'stretch';
+            row.style.gap = '4px';
+
             const stEl=document.createElement('button');
             stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':'');
-            let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
-			stEl.innerHTML='<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+st.label+'</span>';
+            stEl.style.flex = '1';
+            stEl.innerHTML='<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+st.label+'</span>';
             stEl.onclick=function(){goToStage(st.id)};
-            sub.appendChild(stEl);
+            row.appendChild(stEl);
+
+            if (teacherCanEdit) {
+              const resetBtn = document.createElement('button');
+              resetBtn.innerHTML = '🔄';
+              resetBtn.title = 'Reset this stage (Teacher only)';
+              resetBtn.style.cssText = 'background:var(--panel-2); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:14px; padding:0 8px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; transition:all 0.15s;';
+              resetBtn.onmouseover = () => { resetBtn.style.color = 'var(--error)'; resetBtn.style.borderColor = 'var(--error)'; };
+              resetBtn.onmouseout = () => { resetBtn.style.color = 'var(--ink-soft)'; resetBtn.style.borderColor = 'var(--border)'; };
+              resetBtn.onclick = function(e) {
+                e.stopPropagation();
+                resetStageTeacher(st.id);
+              };
+              row.appendChild(resetBtn);
+            }
+
+            sub.appendChild(row);
           });
           list.appendChild(sub);
         }
