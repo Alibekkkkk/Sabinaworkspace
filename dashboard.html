@@ -800,6 +800,42 @@ function deselectStudent() {
 /* ============================================================
    SELECTED STUDENT VIEW
 ============================================================ */
+function renderStudentsList() {
+  const list = document.getElementById('studentsList');
+  const query = (document.getElementById('studentSearch').value || '').toLowerCase().trim();
+  const codes = Object.keys(studentsMap).filter(function(code) {
+    const s = studentsMap[code];
+    return !query || (s.name || '').toLowerCase().indexOf(query) !== -1 || code.toLowerCase().indexOf(query) !== -1;
+  });
+  document.getElementById('studentsCount').textContent = Object.keys(studentsMap).length;
+  if (!codes.length) { list.innerHTML = '<div class="no-data" style="padding:20px;">No students yet.</div>'; return; }
+  
+  list.innerHTML = codes.map(function(code) {
+    const s = studentsMap[code];
+    const meta = studentMeta[code] || {};
+    const lastSeen = meta.lastSeen || 0;
+    const age = Date.now() - lastSeen;
+    let dotClass = 'off';
+    if (lastSeen && age < 60000) dotClass = 'live';
+    else if (lastSeen && age < 600000) dotClass = 'stale';
+    const linked = s.uid ? '🔗' : '⚠️';
+    
+    // VISUAL PROGRESS BAR
+    const doneCount = Object.keys(meta.done || {}).filter(k => meta.done[k]).length;
+    const totalStages = 10; 
+    const pct = Math.round((doneCount / totalStages) * 100);
+    const barColor = pct === 100 ? 'var(--success)' : (pct > 50 ? 'var(--warn)' : 'var(--accent)');
+    const progressBar = `<div style="width:100%; height:6px; background:var(--border); border-radius:6px; margin-top:8px;"><div style="width:${pct}%; height:100%; background:${barColor}; border-radius:6px; transition:width 0.3s;"></div></div>`;
+
+    return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(\'' + code + '\')">' +
+      '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
+      '<div class="code">' + linked + ' ' + code + '</div>' +
+      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span></div>' +
+      progressBar +
+      '</div>';
+  }).join('');
+}
+
 function renderSelectedView() {
   if (!activeCode || !studentsMap[activeCode]) return;
   const s = studentsMap[activeCode];
@@ -817,16 +853,23 @@ function renderSelectedView() {
   document.getElementById('lastActivity').textContent = meta.lastSeen ? new Date(meta.lastSeen).toLocaleTimeString() : '—';
   document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
 
+  // 1. NEW STAGE MAP WITH ICONS
   document.getElementById('stageVis').innerHTML = STAGE_LIST.map(function(st) {
     const isDone = meta.done && meta.done[st.id];
     const isCurrent = (meta.stage || 1) === st.id;
-    return '<div class="stage-chip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '') + '">' + st.id + '. ' + st.label + '</div>';
+    let icon = isDone ? '✅' : (isCurrent ? '📍' : '🔒');
+    return '<div class="stage-chip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '') + '" style="display:flex; align-items:center; gap:6px;">' + icon + ' ' + st.id + '. ' + st.label + '</div>';
   }).join('');
 
-  document.getElementById('controlGrid').innerHTML = STAGE_LIST.map(function(st) {
-    const isCurrent = (meta.stage || 1) === st.id;
-    return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" onclick="sendGoto(' + st.id + ')"><span class="num">' + st.id + '</span>' + st.label + '</button>';
-  }).join('');
+  // 2. NEW CONTROL GRID WITH RESUME BUTTON
+  document.getElementById('controlGrid').innerHTML = 
+    '<button class="btn" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;" onclick="sendGoto(' + (meta.stage || 1) + ')">' +
+      '🎯 Tell Student to Resume at Stage ' + (meta.stage || 1) +
+    '</button>' +
+    STAGE_LIST.map(function(st) {
+      const isCurrent = (meta.stage || 1) === st.id;
+      return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" onclick="sendGoto(' + st.id + ')"><span class="num">' + st.id + '</span>' + st.label + '</button>';
+    }).join('');
 
   renderStudentHomework();
 }

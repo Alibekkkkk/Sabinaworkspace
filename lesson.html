@@ -240,6 +240,18 @@ html.dark .q-feedback.info{color:#f5c66b}
 @media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
 @media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo .text{display:none}.session-input{flex:1 1 145px;justify-content:space-between}.topbar>#scorePill,.topbar>#streakPill{display:none}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}.passage{padding:20px 22px;font-size:17px}.quiz-options{grid-template-columns:1fr}}
 ::selection{background:var(--accent);color:#fff}
+.stage-sub-item.active {
+  background: rgba(238,90,36,0.15) !important;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-weight: 800;
+  transform: translateX(4px);
+  box-shadow: -3px 0 0 var(--accent);
+}
+.stage-sub-item.done {
+  color: var(--success);
+  opacity: 0.8;
+}
 </style>
 </head>
 <body>
@@ -1889,7 +1901,8 @@ function renderSidebar(){
             const isA=st.id===state.currentStage;const isD=state.done[key];
             const stEl=document.createElement('button');
             stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':'');
-            stEl.innerHTML='<span class="icon">'+st.icon+'</span> <span>'+st.label+'</span>';
+            let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
+			stEl.innerHTML='<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+st.label+'</span>';
             stEl.onclick=function(){goToStage(st.id)};
             sub.appendChild(stEl);
           });
@@ -1940,6 +1953,15 @@ function showToast(text){
 
 /* ================== INIT ================== */
 if(!teacherPreviewRequested)loadState();
+// SMART RESUME: Find the first incomplete stage and jump there
+if(!teacherPreviewRequested && state.currentStage === 1){
+  for(let i = 1; i <= 9; i++){
+    if(!state.done[state.currentLessonId + "_" + i]){
+      state.currentStage = i;
+      break;
+    }
+  }
+}
 const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
 if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
 const savedCode=teacherPreviewRequested?'':getSessionCode();
