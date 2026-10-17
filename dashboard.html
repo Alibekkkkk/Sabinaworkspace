@@ -99,8 +99,8 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .stage-chip.current{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-color:var(--accent);transform:scale(1.05)}
 .stage-chip.done{background:rgba(76,175,125,.2);color:var(--success);border-color:var(--success)}
 [data-theme="dark"] .stage-chip.done{background:rgba(110,194,143,.18)}
-.activity-feed{max-height:480px;overflow-y:auto;margin:-4px;padding:4px}
-.feed-item{padding:10px 14px;border-radius:10px;background:var(--panel-2);margin-bottom:8px;font-size:15px;display:flex;align-items:flex-start;gap:10px;border-left:3px solid var(--border)}
+.activity-feed{max-height:300px;overflow-y:auto;margin:-4px;padding:4px}
+.feed-item{padding:10px 14px;border-radius:10px;background:var(--panel-2);margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:10px;border-left:3px solid var(--border)}
 .feed-item.correct{border-left-color:var(--success)}
 .feed-item.wrong{border-left-color:var(--error)}
 .feed-item.info{border-left-color:var(--primary)}
@@ -108,7 +108,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .feed-item .time{font-size:11px;color:var(--ink-soft);font-weight:700;white-space:nowrap;padding-top:2px}
 .feed-item .msg{flex:1;line-height:1.4}
 .feed-item .msg strong{color:var(--accent)}
-.no-data{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:16px}
+.no-data{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px}
 .notes-view{background:var(--panel-2);border-radius:10px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:14px;line-height:1.6;color:var(--ink);min-height:120px;white-space:pre-wrap;word-break:break-word}
 .typing-live{background:rgba(76,175,125,.1);border:1px dashed var(--success);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink);margin-top:10px;min-height:44px;display:none}
 [data-theme="dark"] .typing-live{background:rgba(110,194,143,.1)}
@@ -211,7 +211,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
       <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Switch theme">🌙</button>
       <a class="btn" href="portal.html" style="text-decoration:none;" target="_blank">🎓 Student Portal</a>
-      <button class="btn" onclick="openHistoryModal()" title="View session history">📜 History</button>
       <button class="btn" onclick="teacherSignOut()">Sign out</button>
       <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
     </div>
@@ -300,17 +299,26 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 
           <div class="grid">
             <div class="card">
-              <h2>Live Activity Feed</h2>
-              <div class="activity-feed" id="feed"></div>
-              <div class="typing-live" id="typingLive">
-                <span class="lbl">⌨️ Student typing now</span>
-                <span class="txt" id="typingText"></span>
-              </div>
+              <h2>Student History</h2>
+              <div class="activity-feed" id="studentHistoryList"></div>
             </div>
             <div class="card">
-              <h2>Student's Notes</h2>
-              <div class="notes-view" id="notesView">— No notes yet —</div>
+              <h2>Teacher History</h2>
+              <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
+                <select id="historyTimeframe" class="students-search" style="width:auto; flex:1; padding:6px 10px; font-size:13px;" onchange="attachHistoryListener()">
+                  <option value="all">All time</option>
+                  <option value="3600000">Last hour</option>
+                  <option value="86400000">Last day</option>
+                </select>
+                <button class="btn small danger" onclick="clearHistoryLogs()">Clear Logs</button>
+              </div>
+              <div class="activity-feed" id="teacherHistoryList"></div>
             </div>
+          </div>
+
+          <div class="card">
+            <h2>Student's Notes</h2>
+            <div class="notes-view" id="notesView">— No notes yet —</div>
           </div>
         </div>
         <div id="overviewView"><div id="overviewContent"></div></div>
@@ -446,18 +454,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <div class="modal-actions">
       <button class="btn" onclick="closeLessonModal()">Cancel</button>
       <button class="btn primary" onclick="submitLesson()">Save</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="historyModal">
-  <div class="modal">
-    <h3>📜 Action History</h3>
-    <p class="sub">Select an action to selectively undo it. Note: You cannot undo an action if newer actions have modified the same data.</p>
-    <div id="historyList" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeHistoryModal()">Close</button>
     </div>
   </div>
 </div>
@@ -786,7 +782,7 @@ function selectStudent(code) {
   document.getElementById('selectedView').style.display = 'block';
   document.getElementById('overviewView').style.display = 'none';
   renderSelectedView();
-  attachFeedListener();
+  attachHistoryListener();
   renderClassworkTree();
 }
 
@@ -835,41 +831,90 @@ function renderSelectedView() {
   renderStudentHomework();
 }
 
-function attachFeedListener() {
+function attachHistoryListener() {
   if (activeFeedRef) activeFeedRef.off();
-  const feedEl = document.getElementById('feed');
-  feedEl.innerHTML = '<div class="no-data">Loading activity…</div>';
-  activeFeedRef = fbDb.ref('sessions/' + activeCode + '/activity').limitToLast(40);
-  activeFeedRef.on('child_added', function(snap) {
-    const item = snap.val() || {};
-    const el = document.createElement('div');
-    const type = item.type || 'info';
-    let cls = 'feed-item ';
-    if (type.indexOf('correct') !== -1 || type === 'know' || type === 'match_correct') cls += 'correct';
-    else if (type.indexOf('wrong') !== -1 || type === 'practise' || type === 'match_wrong') cls += 'wrong';
-    else if (type === 'stage_complete' || type === 'stage_done') cls += 'action';
-    else cls += 'info';
-    el.className = cls;
-    const t = item.ts ? new Date(item.ts).toLocaleTimeString() : '—';
-    el.innerHTML = '<span class="time">' + t + '</span><span class="msg">' +
-      (item.detail ? escapeHtml(item.detail) : escapeHtml(type)) + '</span>';
-    if (feedEl.querySelector('.no-data')) feedEl.innerHTML = '';
-    feedEl.insertBefore(el, feedEl.firstChild);
-    while (feedEl.children.length > 40) feedEl.removeChild(feedEl.lastChild);
-    if (type === 'typing') {
-      const tl = document.getElementById('typingLive');
-      tl.classList.add('show');
-      document.getElementById('typingText').textContent = item.detail || '';
-      clearTimeout(window.__typingTimer);
-      window.__typingTimer = setTimeout(function() { tl.classList.remove('show'); }, 4000);
-    }
+  const sList = document.getElementById('studentHistoryList');
+  const tList = document.getElementById('teacherHistoryList');
+  sList.innerHTML = '<div class="no-data">Loading…</div>';
+  tList.innerHTML = '<div class="no-data">Loading…</div>';
+  
+  const tf = document.getElementById('historyTimeframe').value;
+  const cutoff = tf === 'all' ? 0 : Date.now() - Number(tf);
+
+  activeFeedRef = fbDb.ref('sessions/' + activeCode + '/history').limitToLast(100);
+  activeFeedRef.on('value', function(snap) {
+    const data = snap.val() || {};
+    let items = Object.keys(data).map(k => Object.assign({id:k}, data[k]));
+    items = items.filter(i => i.ts >= cutoff).sort((a,b) => b.ts - a.ts);
+    
+    const sItems = items.filter(i => i.actor === 'student');
+    const tItems = items.filter(i => i.actor === 'teacher');
+    
+    sList.innerHTML = sItems.map(item => `
+      <div class="feed-item info" style="align-items:center;">
+         <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
+         <span class="msg">${escapeHtml(item.detail)}</span>
+         <button class="btn small" onclick="resetStage(${item.stage})" style="padding:2px 6px; font-size:11px;">Reset Stage ${item.stage}</button>
+      </div>
+    `).join('') || '<div class="no-data">No student actions.</div>';
+    
+    tList.innerHTML = tItems.map(item => `
+      <div class="feed-item action" style="align-items:center;">
+         <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
+         <span class="msg">${escapeHtml(item.detail)}</span>
+         ${item.undo ? `<button class="btn small danger" onclick="undoTeacherAction('${item.id}', '${item.undo.type}')" style="padding:2px 6px; font-size:11px;">Undo</button>` : ''}
+      </div>
+    `).join('') || '<div class="no-data">No teacher actions.</div>';
   });
+}
+
+function resetStage(stageId) {
+  if(!confirm('Reset student progress for Stage ' + stageId + '?')) return;
+  const ts = Date.now();
+  const key = state.currentLessonId + '_' + stageId; // We need to clear this in the student's local state
+  // Send command to student to reset this stage
+  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'resetStage', stage: stageId, ts: ts })
+    .then(() => {
+      showToast('Sent: reset stage ' + stageId);
+      fbDb.ref('sessions/' + activeCode + '/history').push({
+        actor: 'teacher', type: 'resetStage', detail: `Reset Stage ${stageId}`, ts: ts
+      });
+    });
+}
+
+function undoTeacherAction(id, type) {
+  if(type === 'goto') {
+    fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'goto', stage: 1, ts: Date.now() });
+  }
+  fbDb.ref('sessions/' + activeCode + '/history/' + id).remove();
+  showToast('Action reverted');
+}
+
+function clearHistoryLogs() {
+  const tf = document.getElementById('historyTimeframe').value;
+  const cutoff = tf === 'all' ? 0 : Date.now() - Number(tf);
+  if(!confirm('Delete history logs from this timeframe?')) return;
+  
+  fbDb.ref('sessions/' + activeCode + '/history').once('value').then(snap => {
+    const data = snap.val() || {};
+    const updates = {};
+    Object.keys(data).forEach(k => {
+      if(data[k].ts >= cutoff) updates[k] = null;
+    });
+    if(Object.keys(updates).length) return fbDb.ref('sessions/' + activeCode + '/history').update(updates);
+  }).then(() => showToast('Logs cleared'));
 }
 
 function sendGoto(stage) {
   if (!activeCode) return;
-  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'goto', stage: stage, ts: Date.now() })
-    .then(function() { showToast('Sent: go to stage ' + stage); })
+  const ts = Date.now();
+  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'goto', stage: stage, ts: ts })
+    .then(function() {
+      showToast('Sent: go to stage ' + stage);
+      fbDb.ref('sessions/' + activeCode + '/history').push({
+        actor: 'teacher', type: 'goto', detail: `Sent goto Stage ${stage}`, ts: ts, undo: { type: 'goto' }
+      });
+    })
     .catch(function(err) { alert('Command failed: ' + err.message); });
 }
 
@@ -877,8 +922,14 @@ function sendReset(type) {
   if (!activeCode) return;
   const label = type === 'vocab' ? 'vocabulary progress' : 'all progress';
   if (!confirm('Reset ' + label + ' for this student? You can undo this.')) return;
-  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'reset', type: type || 'all', ts: Date.now() })
-    .then(function() { showToast('Reset command sent'); })
+  const ts = Date.now();
+  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'reset', type: type || 'all', ts: ts })
+    .then(function() {
+      showToast('Reset command sent');
+      fbDb.ref('sessions/' + activeCode + '/history').push({
+        actor: 'teacher', type: 'reset', detail: `Reset ${label}`, ts: ts
+      });
+    })
     .catch(function(err) { alert('Reset failed: ' + err.message); });
 }
 
@@ -886,7 +937,11 @@ function renderStudentHomework() {
   const list = document.getElementById('studentHomeworkList');
   if (!list || !activeCode) return;
   const assigned = Object.keys(curriculum || {}).map(function(id) { return { id: id, lesson: curriculum[id] || {} }; })
-    .filter(function(row) { return Array.isArray(row.lesson.assignedTo) && row.lesson.assignedTo.indexOf(activeCode) !== -1 && row.lesson.homework; });
+    .filter(function(row) {
+      return row.lesson.homework &&
+             Array.isArray(row.lesson.assignedTo) &&
+             row.lesson.assignedTo.indexOf(activeCode) !== -1;
+    });
   if (!assigned.length) { list.innerHTML = 'No homework assigned to this student.'; return; }
   const progress = (studentMeta[activeCode] || {}).homework || {};
   list.innerHTML = assigned.map(function(row) {
@@ -992,16 +1047,23 @@ function deleteStudent() {
 }
 
 /* ============================================================
-   UNDO & HISTORY
+   UNDO
 ============================================================ */
 function loadUndoStack() {
   try { undoStack = JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY) || '[]'); } catch (e) { undoStack = []; }
+  updateUndoButton();
+}
+function updateUndoButton() {
+  const b = document.getElementById('undoButton');
+  if (!b) return;
+  b.disabled = !undoStack.length;
+  b.title = undoStack.length ? 'Undo: ' + undoStack[undoStack.length - 1].label : 'No changes to undo';
 }
 function rememberUndo(action) {
   undoStack.push(action);
   if (undoStack.length > 30) undoStack.shift();
   try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
-  if(document.getElementById('historyModal').classList.contains('open')) renderHistoryList();
+  updateUndoButton();
 }
 function sameValue(a, b) { return JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b); }
 function writeChangesWithUndo(changes, label) {
@@ -1016,49 +1078,23 @@ function writeChangesWithUndo(changes, label) {
     })).then(function() { rememberUndo(action); return action; });
   });
 }
-
-function openHistoryModal() {
-  renderHistoryList();
-  document.getElementById('historyModal').classList.add('open');
-}
-function closeHistoryModal() {
-  document.getElementById('historyModal').classList.remove('open');
-}
-function renderHistoryList() {
-  const list = document.getElementById('historyList');
-  if (!undoStack.length) {
-    list.innerHTML = '<div style="text-align:center;color:var(--ink-soft);padding:20px;">No actions in this session.</div>';
-    return;
-  }
-  list.innerHTML = undoStack.slice().reverse().map((action, i) => {
-    const actualIndex = undoStack.length - 1 - i;
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;">
-      <span style="font-size:14px;font-weight:600;color:var(--ink);">${escapeHtml(action.label)}</span>
-      <button class="btn small primary" onclick="revertAction(${actualIndex})">↶ Undo</button>
-    </div>`;
-  }).join('');
-}
-function revertAction(index) {
-  const action = undoStack[index];
-  if (!action) return;
-  const refs = action.changes.map(c => fbDb.ref(c.path));
-  Promise.all(refs.map(r => r.once('value'))).then(snaps => {
-    const matches = action.changes.every((c, i) => sameValue(snaps[i].val(), c.after));
-    if (!matches) {
-      alert('Cannot undo this action because newer changes have modified the same data. Please use the main Undo button sequentially.');
-      return;
-    }
-    if (!confirm('Undo this action?\n\n' + action.label)) return;
-    return Promise.all(action.changes.map(c => {
+function undoLastChange() {
+  if (!undoStack.length) return;
+  const action = undoStack[undoStack.length - 1];
+  const refs = action.changes.map(function(c) { return fbDb.ref(c.path); });
+  Promise.all(refs.map(function(r) { return r.once('value'); })).then(function(snaps) {
+    const matches = action.changes.every(function(c, i) { return sameValue(snaps[i].val(), c.after); });
+    if (!matches) { alert('Data changed since this action; undo skipped.'); return; }
+    return Promise.all(action.changes.map(function(c) {
       const r = fbDb.ref(c.path);
       return c.before === null ? r.remove() : r.set(c.before);
-    })).then(() => {
-      undoStack.splice(index, 1);
-      try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch(e) {}
-      renderHistoryList();
+    })).then(function() {
+      undoStack.pop();
+      try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
+      updateUndoButton();
       showToast('Undid: ' + action.label);
     });
-  }).catch(err => alert('Undo failed: ' + err.message));
+  }).catch(function(err) { alert('Undo failed: ' + err.message); });
 }
 
 /* ============================================================
@@ -1125,6 +1161,7 @@ function openClassworkLesson(id) {
   const url = new URL(base, window.location.href);
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
+  if (activeCode) url.searchParams.set('code', activeCode); // <--- IMPORTANT FIX
   frame.src = url.href;
   renderClassworkTree();
 }
@@ -1136,6 +1173,7 @@ function openCurrentClassworkInTab() {
   const url = new URL(base, window.location.href);
   url.searchParams.set('lesson', currentClassworkId);
   url.searchParams.set('teacher', '1');
+  if (activeCode) url.searchParams.set('code', activeCode);
   window.open(url.href, '_blank');
 }
 
@@ -1148,7 +1186,10 @@ function renderHomeworkTree() {
   const hwIds = Object.keys(curriculum).filter(function(id) {
     const l = curriculum[id] || {};
     if (!l.homework) return false;
-    if (activeCode && Array.isArray(l.assignedTo) && l.assignedTo.indexOf(activeCode) === -1) return false;
+    if (activeCode) {
+      // Strict filter: Must be explicitly assigned to the active student
+      return Array.isArray(l.assignedTo) && l.assignedTo.indexOf(activeCode) !== -1;
+    }
     return true;
   });
   if (!hwIds.length) {
@@ -1190,6 +1231,7 @@ function openHomework(id) {
   const url = new URL(base, window.location.href);
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
+  if (activeCode) url.searchParams.set('code', activeCode);
   if (l.homeworkVariant) url.searchParams.set('variant', l.homeworkVariant);
   frame.src = url.href;
   renderHomeworkTree();
@@ -1202,6 +1244,7 @@ function openCurrentHomeworkInTab() {
   const url = new URL(base, window.location.href);
   url.searchParams.set('lesson', currentHomeworkId);
   url.searchParams.set('teacher', '1');
+  if (activeCode) url.searchParams.set('code', activeCode);
   if (l.homeworkVariant) url.searchParams.set('variant', l.homeworkVariant);
   window.open(url.href, '_blank');
 }

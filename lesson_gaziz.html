@@ -458,7 +458,14 @@ function broadcast(type,payload){
   if(bc){try{bc.postMessage(msg)}catch(e){}}
 }
 function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
-function broadcastAction(type,detail){state.lastAction=detail;broadcast('action',{stage:state.currentStage,type:type,detail:detail,score:totalScore(),ts:Date.now()})}
+function broadcastAction(type,detail){
+  state.lastAction=detail;
+  const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor:'student' };
+  broadcast('action', payload);
+  if(fbConnected && sessionRef){
+    try { sessionRef.child('history').push(payload); } catch(e) {}
+  }
+}
 function saveState(){if(teacherMode)return;try{localStorage.setItem('nd_state_gaziz_v6',JSON.stringify({currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}))}catch(e){}broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
 function loadState(){try{const raw=localStorage.getItem('nd_state_gaziz_v6');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
 let customImages={};
@@ -1597,12 +1604,12 @@ function renderStage8(){renderCompletingSentence(G10,8,7,9,'🧭 Completing Sent
 const TEST_MCQ=[
   {q:'Which word means "harmful material in air, water, or land"?',options:['pollution','community','transport'],correct:'pollution',exp:'Pollution harms the environment.'},
   {q:'Which word means "a good or helpful result"?',options:['benefit','cost','issue'],correct:'benefit',exp:'A benefit is a good or helpful result.'},
-  {q:'Which word means "give or make something available"?',options:['provide','affect','result'],correct:'provide',exp:'To provide is to give what is needed.'},
+  {q:'Which word means "give or make something available"?',options:['to provide','to affect','to result'],correct:'to provide',exp:'To provide is to give what is needed.'},
   {q:'Which word means "an answer to a problem"?',options:['solution','issue','cost'],correct:'solution',exp:'A solution solves a problem.'},
   {q:'Which word means "the natural world around us"?',options:['environment','community','energy'],correct:'environment',exp:'The environment is the natural world.'},
-  {q:'Which word means "become or make greater"?',options:['increase','reduce','affect'],correct:'increase',exp:'Increase means become larger.'},
+  {q:'Which word means "become or make greater"?',options:['to increase','to reduce','to affect'],correct:'to increase',exp:'To increase means become larger.'},
   {q:'Which word means "ways of moving people or goods"?',options:['transport','community','benefit'],correct:'transport',exp:'Transport is how people/goods move.'},
-  {q:'Which word means "to change or influence something"?',options:['affect','provide','result'],correct:'affect',exp:'Affect = change/influence.'}
+  {q:'Which word means "to change or influence something"?',options:['to affect','to provide','to result'],correct:'to affect',exp:'To affect = change/influence.'}
 ];
 const TEST_SHORT=[
   {q:'In what year did the mayor of Copenhagen promise carbon neutrality?',answers:['2015'],exp:'2015.'},
@@ -1853,7 +1860,8 @@ function renderSidebar(){
         list.appendChild(lEl);
         if(isActive){
           const studentCode=getSessionCode();
-          const assignedHW=Object.keys(curriculumCache||{}).map(function(id){return curriculumCache[id]}).filter(function(it){return it&&it.homework&&it.published!==false&&(!Array.isArray(it.assignedTo)||!it.assignedTo.length||it.assignedTo.indexOf(studentCode)!==-1)});
+          const assignedHW=Object.keys(curriculumCache||{}).map(id=>curriculumCache[id]).filter(it=>{
+			return it && it.homework && it.published!==false && Array.isArray(it.assignedTo) && it.assignedTo.includes(studentCode);});
           if(assignedHW.length){
             const hwList=document.createElement('div');hwList.className='homework-sub-list';
             hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){
