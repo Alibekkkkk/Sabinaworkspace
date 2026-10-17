@@ -128,6 +128,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .quiz-hint-btn:hover{border-color:var(--accent);color:var(--accent);border-style:solid}
 .quiz-context{font-size:16px;color:var(--primary);font-weight:800;margin-bottom:14px;font-style:normal;text-align:left;padding:12px 16px;background:var(--bg);border-radius:10px;border-left:4px solid var(--primary);line-height:1.5}
 .hint-label{display:block;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+.quiz-question{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:14px;text-align:left}
 .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .quiz-opt{padding:12px 14px;border:2px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;text-align:left}
 .quiz-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
@@ -670,8 +671,7 @@ function openQuizWord(word){
     quizOptionsCache={};
     quizHintShown=false;
     quizRoundFinalized=false;
-    const w=VOCAB.find(function(x){return x.en===word});
-    if(!w){console.warn('Word not found:',word);return}
+    const w=VOCAB.find(function(x){return x.en===word});if(!w){console.warn('Word not found:',word);return}
     quizMeanings=w.meanings.slice();
     quizCurrentIdx=0;
     quizRoundWrongs=0;
@@ -691,7 +691,6 @@ function closeFCModal(){
   const modal=document.getElementById('fcModal');
   if(modal){
     modal.classList.remove('open');
-    /* clear any leftover inline styles from older versions */
     modal.style.display='';
     modal.style.position='';
     modal.style.inset='';
@@ -823,11 +822,9 @@ function finalizeRound(){
       setTimeout(function(){openQuizWord(practiceQueue[practiceIdx].en)},400);
       return;
     }
-    /* Queue finished — check if anything still needs practice and cycle again */
     setTimeout(continuePracticeQueue,400);
     return;
   }
-  /* Not in practice mode: auto-advance to the next card in the current filter */
   setTimeout(advanceToNextCard,400);
 }
 
@@ -852,26 +849,16 @@ function continuePracticeQueue(){
     showPracticeSummary();
     return;
   }
-  /* Cycle: reshuffle the remaining cards and keep going */
   practiceQueue=shuffle(stillNeeds);
   practiceIdx=0;
   openQuizWord(practiceQueue[0].en);
-}
-function advanceToNextCard(){
-  if(!s1VisibleList||!s1VisibleList.length){closeFCModal();return}
-  if(s1CurrentIdx<s1VisibleList.length-1){
-    s1CurrentIdx++;
-    openQuizWord(s1VisibleList[s1CurrentIdx].en);
-  }else{
-    closeFCModal();
-  }
 }
 
 function showPracticeSummary(){
   const counts=getVocabCounts();
   document.getElementById('fcModalImg').innerHTML='<div style="font-size:120px;line-height:1">🎉</div>';
   document.getElementById('fcModalWord').textContent='Practice complete!';
-  document.getElementById('fcRevealArea').innerHTML='<div style="text-align:left"><p style="font-size:17px;color:var(--ink);margin-bottom:12px">Great work! Here is where you stand now:</p>'+
+  document.getElementById('fcRevealArea').innerHTML='<div style="text-align:left"><p style="font-size:17px;color:var(--ink);margin-bottom:12px">🎉 All your words are now <b>Learned</b>!</p>'+
     '<div style="padding:14px;background:var(--bg);border-radius:12px">'+
     '<div style="padding:6px 0">📖 Learning: <b style="color:var(--accent)">'+counts.learning+'</b></div>'+
     '<div style="padding:6px 0">✓ Learned: <b style="color:var(--success)">'+counts.learned+'</b></div>'+
@@ -1645,7 +1632,6 @@ const TEST_COMPLETE=[
   {p:'___ they ___ (install) the new bins last week?',a:'Did they install'}
 ];
 
-const TEST_TIME_LIMIT=15*60;
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 let TEST_TIME_LIMIT = 0; 
 
@@ -1678,10 +1664,8 @@ function renderTestIntro(){
   '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" onclick="startTest()">▶ Start the test</button></div></div>';
 }
 function startTest(){
-  function startTest(){
   testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:0,timer:null};
   testState.total=testState.questions.length;
-  // 30 seconds per question, min 5 mins.
   TEST_TIME_LIMIT = Math.max(300, testState.total * 30); 
   testState.timeLeft = TEST_TIME_LIMIT;
   const r=document.getElementById('testRoot');if(!r)return;
@@ -1946,27 +1930,6 @@ renderSidebar();renderStage();startTimer();updateHUD();
 if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.add('active')}
 if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}
 initFirebase();
-(function(){
-  if(teacherPreviewRequested){const logo=document.querySelector('.logo .text');if(logo)logo.textContent='IELTS Studio';return}
-  const code=getSessionCode();
-  if(!code||!fbDb)return;
-  fbDb.ref('students/'+code+'/name').once('value',function(snap){
-    const name=snap.val();if(!name)return;
-    const logo=document.querySelector('.logo .text');if(logo)logo.textContent=name;
-    document.title=name+' — IELTS Studio';
-  });
-})();
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape')closeFCModal();
-  const modal=document.getElementById('fcModal');
-  if(modal&&modal.classList.contains('open')){
-    if(e.key==='ArrowRight')fcNext();
-    if(e.key==='ArrowLeft')fcPrev();
-    if(e.key===' '){e.preventDefault();fcReveal()}
-  }
-});
-setInterval(function(){if(fbConnected)pushFullState()},5000);
-setTimeout(pushFullState,800);
 
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'hidden' && testState.active) {
