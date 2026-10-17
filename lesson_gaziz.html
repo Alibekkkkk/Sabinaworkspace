@@ -112,7 +112,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .fc-meaning{padding:14px 16px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);margin-bottom:12px}
 .fc-meaning .context{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
 .fc-meaning .translation{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:8px}
-.fc-meaning .example{font-size:15px;line-height:1.6;color:var(--ink-soft);font-style:italic;padding-left:10px;border-left:2px solid var(--border)}
+.fc-meaning .example{font-size:15px;line-height:1.6;color:var(--ink-soft);font-style:normal;font-weight:500;padding-left:10px;border-left:2px solid var(--border)}
 .fc-meaning .example b{color:var(--primary);font-style:normal}
 .fc-modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .fc-modal-actions .btn{min-width:130px;justify-content:center}
@@ -180,7 +180,7 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .q-feedback.wrong{background:var(--error-soft);color:var(--error);display:block;border-left:4px solid var(--error)}
 .q-feedback.info{background:rgba(255,152,0,.12);color:#a26a00;display:block;border-left:4px solid var(--warn)}
 html.dark .q-feedback.info{color:#f5c66b}
-.q-feedback .exp{display:block;font-weight:500;font-size:15px;color:var(--ink-soft);margin-top:6px;font-style:italic}
+.q-feedback .exp{display:block;font-weight:600;font-size:15px;color:var(--ink-soft);margin-top:6px;font-style:normal}
 .q-feedback .sample{display:block;font-weight:600;font-size:15px;color:var(--ink);margin-top:8px;padding:8px 12px;background:rgba(0,0,0,.04);border-radius:8px;font-style:italic}
 .tfng-opts{display:flex;gap:8px;flex-wrap:wrap}
 .tfng-opts .q-opt{padding:9px 16px;font-size:15px}
@@ -491,49 +491,49 @@ const VOCAB=[
   ]},
   {en:'transport',emoji:'🚌',meanings:[
     {context:'ways of moving people',ru:'транспорт',ex:'Public <b>transport</b> in Copenhagen is fast and reliable.'},
-    {context:'to move something',ru:'перевозить',ex:'The company <b>transports</b> goods by electric truck.'}
+    {context:'to move something',displayEn:'to transport',ru:'перевозить',ex:'The company <b>transports</b> goods by electric truck.'}
   ]},
   {en:'community',emoji:'👥',meanings:[
     {context:'people in one area',ru:'сообщество, местные жители',ex:'The whole <b>community</b> helped clean the riverbank.'},
     {context:'a group with shared interests',ru:'община, круг',ex:'She joined an online <b>community</b> of urban gardeners.'}
   ]},
   {en:'to improve',emoji:'✨',meanings:[
-    {context:'to make better',ru:'улучшать',ex:'The council wants to <b>improve</b> air quality in the city centre.'},
-    {context:'to become better',ru:'улучшаться',ex:'Her English has <b>improved</b> a lot this year.'}
+    {context:'make better',ru:'улучшать',ex:'The council wants to <b>improve</b> air quality in the city centre.'},
+    {context:'become better',ru:'улучшаться',ex:'Her English has <b>improved</b> a lot this year.'}
   ]},
   {en:'to increase',emoji:'📈',meanings:[
-    {context:'to become larger',ru:'увеличиваться',ex:'Cycling rates have <b>increased</b> every year since 2015.'},
-    {context:'to make larger',ru:'увеличивать',ex:'The city plans to <b>increase</b> the number of electric buses.'},
-    {context:'a rise (noun)',ru:'рост',ex:'There has been a sharp <b>increase</b> in recycling.'}
+    {context:'become larger',ru:'увеличиваться, расти',ex:'Cycling rates have <b>increased</b> every year since 2015.'},
+    {context:'make larger',ru:'увеличивать',ex:'The city plans to <b>increase</b> the number of electric buses.'},
+    {context:'a rise (noun)',displayEn:'increase',ru:'рост, увеличение',ex:'There has been a sharp <b>increase</b> in recycling.'}
   ]},
   {en:'to reduce',emoji:'📉',meanings:[
-    {context:'to make smaller',ru:'уменьшать, сокращать',ex:'The new plan will <b>reduce</b> traffic in the old town.'},
-    {context:'to become smaller',ru:'уменьшаться',ex:'Pollution has <b>reduced</b> significantly since 2015.'}
+    {context:'make smaller',ru:'уменьшать, сокращать',ex:'The new plan will <b>reduce</b> traffic in the old town.'},
+    {context:'become smaller',ru:'уменьшаться',ex:'Pollution has <b>reduced</b> significantly since 2015.'}
   ]},
   {en:'to provide',emoji:'🎁',meanings:[
-    {context:'to give what is needed',ru:'предоставлять, обеспечивать',ex:'The council <b>provides</b> free bike repairs for residents.'},
-    {context:'to supply for a purpose',ru:'снабжать',ex:'Local farms <b>provide</b> vegetables for the school canteen.'}
+    {context:'give what is needed',ru:'предоставлять, обеспечивать',ex:'The council <b>provides</b> free bike repairs for residents.'},
+    {context:'supply for a purpose',ru:'снабжать',ex:'Local farms <b>provide</b> vegetables for the school canteen.'}
   ]},
   {en:'to affect',emoji:'🔄',meanings:[
-    {context:'to influence or change',ru:'влиять на',ex:'Air pollution <b>affects</b> everyone, especially children and the elderly.'},
-    {context:'to cause emotional change',ru:'воздействовать эмоционально',ex:'The story of the flood deeply <b>affected</b> the readers.'}
+    {context:'influence or change',ru:'влиять на',ex:'Air pollution <b>affects</b> everyone, especially children and the elderly.'},
+    {context:'cause emotional change',ru:'воздействовать эмоционально',ex:'The story of the flood deeply <b>affected</b> the readers.'}
   ]},
   {en:'result',emoji:'🎯',meanings:[
     {context:'outcome',ru:'результат',ex:'The <b>result</b> of the project was cleaner air and happier residents.'},
-    {context:'to happen because of',ru:'приводить к',ex:'New cycling lanes <b>resulted</b> in fewer accidents.'}
+    {context:'to happen because of',displayEn:'to result',ru:'приводить к',ex:'New cycling lanes <b>resulted</b> in fewer accidents.'}
   ]},
   {en:'benefit',emoji:'👍',meanings:[
-    {context:'a good effect',ru:'польза, преимущество',ex:'One <b>benefit</b> of cycling is better health.'},
-    {context:'to gain from',ru:'получать пользу',ex:'Everyone <b>benefits</b> from cleaner air.'}
+    {context:'a good effect',ru:'польза, выгода',ex:'One <b>benefit</b> of cycling is better health.'},
+    {context:'to gain from',displayEn:'to benefit',ru:'извлекать пользу, получать выгоду',ex:'Everyone <b>benefits</b> from cleaner air.'}
   ]},
   {en:'cost',emoji:'💰',meanings:[
-    {context:'price',ru:'стоимость',ex:'The <b>cost</b> of the new metro line was very high.'},
-    {context:'to have a price',ru:'стоить',ex:'Solar panels <b>cost</b> less than they did ten years ago.'},
-    {context:'to cause loss',ru:'стоить (потери)',ex:'The delay <b>cost</b> the company millions of dollars.'}
+    {context:'price',ru:'стоимость, цена',ex:'The <b>cost</b> of the new metro line was very high.'},
+    {context:'to have a price',displayEn:'to cost',ru:'стоить',ex:'Solar panels <b>cost</b> less than they did ten years ago.'},
+    {context:'to cause loss',displayEn:'to cost',ru:'стоить (потерь)',ex:'The delay <b>cost</b> the company millions of dollars.'}
   ]},
   {en:'issue',emoji:'❔',meanings:[
     {context:'a problem to discuss',ru:'проблема, вопрос',ex:'Traffic congestion is a major <b>issue</b> in many cities.'},
-    {context:'to officially release',ru:'выпускать',ex:'The government <b>issued</b> a new report on air quality.'}
+    {context:'to officially release',displayEn:'to issue',ru:'выпускать',ex:'The government <b>issued</b> a new report on air quality.'}
   ]},
   {en:'solution',emoji:'💡',meanings:[
     {context:'an answer to a problem',ru:'решение',ex:'Cycling is one <b>solution</b> to urban pollution.'},
@@ -556,14 +556,14 @@ const VOCAB=[
     {context:'something useful for a task',ru:'средство, возможность',ex:'The internet is a great <b>resource</b> for language learners.'}
   ]},
   {en:'to develop',emoji:'🌱',meanings:[
-    {context:'to build or to expand a place',ru:'развивать, застраивать',ex:'The city <b>developed</b> the empty lot into a public park.'},
-    {context:'to grow or gain skills',ru:'развивать(ся)',ex:'She <b>developed</b> strong English skills through daily practice.'},
-    {context:'to create a product or idea',ru:'разрабатывать',ex:'Engineers <b>developed</b> an app that maps safe cycling routes.'}
+    {context:'build or expand a place',ru:'развивать, застраивать',ex:'The city <b>developed</b> the empty lot into a public park.'},
+    {context:'grow or gain skills',ru:'развивать(ся)',ex:'She <b>developed</b> strong English skills through daily practice.'},
+    {context:'create a product or idea',ru:'разрабатывать',ex:'Engineers <b>developed</b> an app that maps safe cycling routes.'}
   ]},
   {en:'to support',emoji:'🤝',meanings:[
-    {context:'to help or to encourage',ru:'поддерживать',ex:'Local shops <b>support</b> the cycling campaign.'},
-    {context:'to agree with a plan',ru:'одобрять',ex:'Most residents <b>support</b> the pedestrianisation plan.'},
-    {context:'help or encouragement (noun)',ru:'поддержка',ex:'She needs more <b>support</b> with her grammar.'}
+    {context:'help or encourage',ru:'поддерживать',ex:'Local shops <b>support</b> the cycling campaign.'},
+    {context:'agree with a plan',ru:'одобрять, поддерживать',ex:'Most residents <b>support</b> the pedestrianisation plan.'},
+    {context:'help or encouragement (noun)',displayEn:'support',ru:'поддержка',ex:'She needs more <b>support</b> with her grammar.'}
   ]}
 ];
 
@@ -723,10 +723,11 @@ function buildQuizOptions(word,meaningIdx){
 
 function renderQuizModal(){
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
+  const meaning=w.meanings[quizCurrentIdx];
+  const displayWord=meaning.displayEn||w.en;
   const img=customImages[w.en];
   document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+w.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+w.emoji+'</div>')+'<div class="label">WORD</div>';
-  document.getElementById('fcModalWord').textContent=w.en;
-  const meaning=w.meanings[quizCurrentIdx];
+  document.getElementById('fcModalWord').textContent=displayWord;
   const q=buildQuizOptions(quizWord,quizCurrentIdx);
   const answered=quizAnswers[quizCurrentIdx];
   let html='<div class="quiz-progress">'+(practiceMode?'Practice · ':'')+'Meaning '+(quizCurrentIdx+1)+' of '+w.meanings.length+'</div>';
@@ -905,7 +906,13 @@ function startPractice(){
   }
 }
 
-function quizSpeak(){if(quizWord)speak(quizWord)}
+function quizSpeak(){
+  const w=VOCAB.find(function(x){return x.en===quizWord});
+  if(w){
+    const d=w.meanings[quizCurrentIdx].displayEn||w.en;
+    speak(d);
+  }
+}
 
 function editFlashcardImage(){
   if(!teacherCanEdit||!fbDb){alert('Sign in with the teacher account to edit.');return}
@@ -1640,6 +1647,7 @@ const TEST_COMPLETE=[
 
 const TEST_TIME_LIMIT=15*60;
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
+let TEST_TIME_LIMIT = 0; 
 
 function buildTestQuestions(){
   const qs=[];
@@ -1670,8 +1678,12 @@ function renderTestIntro(){
   '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" onclick="startTest()">▶ Start the test</button></div></div>';
 }
 function startTest(){
-  testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:TEST_TIME_LIMIT,timer:null};
+  function startTest(){
+  testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:0,timer:null};
   testState.total=testState.questions.length;
+  // 30 seconds per question, min 5 mins.
+  TEST_TIME_LIMIT = Math.max(300, testState.total * 30); 
+  testState.timeLeft = TEST_TIME_LIMIT;
   const r=document.getElementById('testRoot');if(!r)return;
   r.innerHTML='<div class="test-hud">'+
   '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">15:00</span></div>'+
@@ -1786,7 +1798,7 @@ function nextTestQuestion(){
   if(testState.idx>=testState.total){endTest(false);return}
   renderTestQuestion();
 }
-function endTest(timedOut){
+function endTest(timedOut,customReason){
   if(!testState.active&&!timedOut)return;
   testState.active=false;
   if(testState.timer){clearInterval(testState.timer);testState.timer=null}
@@ -1797,13 +1809,15 @@ function endTest(timedOut){
   const elapsed=TEST_TIME_LIMIT-testState.timeLeft;
   const mins=Math.floor(elapsed/60),secs=elapsed%60;
   const root=document.getElementById('testRoot');if(!root)return;
-  root.innerHTML='<div class="'+(timedOut?'test-timeout':'test-result')+'">'+
-  '<div class="icon">'+(timedOut?'⏰':'🏁')+'</div>'+
-  '<h3>'+(timedOut?'Time is up!':'Test complete!')+'</h3>'+
+  const msg=customReason?customReason:(timedOut?'You ran out of time.':'Test complete!');
+  
+  root.innerHTML='<div class="'+(timedOut||customReason?'test-timeout':'test-result')+'">'+
+  '<div class="icon">'+(timedOut||customReason?'⏰':'🏁')+'</div>'+
+  '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+
   '<div class="big">'+testState.correct+' / '+total+'</div>'+
-  '<p>'+(timedOut?'You ran out of time. ':'')+'You answered <b>'+testState.correct+'</b> of <b>'+total+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+
+  '<p>'+msg+' You answered <b>'+testState.correct+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+
   '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn" onclick="renderTestIntro()">↻ Try again</button><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
-  if(!timedOut){sWin();confetti();}
+  if(!timedOut&&!customReason){sWin();confetti();}
   broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
@@ -1883,7 +1897,13 @@ function renderSidebar(){
     });
   });
 }
-function goToStage(n){state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n)}
+function goToStage(n){
+  if(testState.active){
+    if(!confirm('⚠️ You are in the middle of a timed test. Leaving this page will abandon your test and discard your progress. Are you sure you want to leave?')) return;
+    endTest(true, 'Test aborted: you navigated away.');
+  }
+  state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n);
+}
 function renderStage(){
   const main=document.getElementById('main');if(!main)return;main.innerHTML='';
   const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9};
@@ -1947,6 +1967,18 @@ document.addEventListener('keydown',function(e){
 });
 setInterval(function(){if(fbConnected)pushFullState()},5000);
 setTimeout(pushFullState,800);
+
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden' && testState.active) {
+    endTest(true, 'Test aborted: you switched tabs or left the window.');
+  }
+});
+window.addEventListener('beforeunload', function(e) {
+  if (testState.active) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 </script>
 </body>
 </html>

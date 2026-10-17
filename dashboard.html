@@ -217,6 +217,10 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     </div>
   </div>
 
+  <div id="studentContextBanner" style="display:none; margin-bottom: 16px; padding: 14px 20px; background: var(--panel-2); border: 1px solid var(--accent); border-radius: 14px; font-weight: 700; color: var(--accent); font-size: 16px;">
+	👤 Currently viewing: <span id="studentContextName"></span>
+  </div>
+  
   <div class="tabs">
     <button class="tab active" id="tabStudents" onclick="switchMainTab('students')">👥 Students</button>
     <button class="tab" id="tabClasswork" onclick="switchMainTab('classwork')">📚 Classwork Lessons</button>
@@ -762,6 +766,8 @@ function renderStudentsList() {
 }
 
 function selectStudent(code) {
+  document.getElementById('studentContextBanner').style.display = 'block';
+  document.getElementById('studentContextName').textContent = code ? (studentsMap[code].name || code) : '';
   activeCode = code;
   renderStudentsList();
   document.getElementById('selectedView').style.display = 'block';
@@ -776,6 +782,7 @@ function deselectStudent() {
   if (activeFeedRef) { activeFeedRef.off(); activeFeedRef = null; }
   document.getElementById('selectedView').style.display = 'none';
   document.getElementById('overviewView').style.display = 'block';
+  document.getElementById('studentContextBanner').style.display = 'none';
   renderStudentsList();
   renderOverview();
   renderClassworkTree();
@@ -1065,12 +1072,12 @@ function toggleYear(year) { expandedYears[year] = expandedYears[year] === false;
 function toggleMonth(year, month) { expandedMonths[year + '_' + month] = expandedMonths[year + '_' + month] === false; renderClassworkTree(); }
 
 function pickLessonFile(lesson){
-  if(lesson && lesson.customUrl) return lesson.customUrl;
   if(activeCode && studentsMap[activeCode]){
     const n=String(studentsMap[activeCode].name||'').toLowerCase();
     if(n.indexOf('gaziz')!==-1) return 'lesson_gaziz.html';
     if(n.indexOf('sabina')!==-1) return 'lesson.html';
   }
+  if(lesson && lesson.customUrl) return lesson.customUrl;
   return 'lesson.html';
 }
 function openClassworkLesson(id) {
