@@ -784,7 +784,8 @@ function initFirebase(){
       if(!code){startHomework();return}
       fbDb.ref('students/'+code).once('value').then(function(snap){
         const s=snap.val();
-        if(!s||s.uid!==user.uid){
+        const isTeacher = user.email === 'alibek.alpysbayev@gmail.com';
+        if(!s || (!isTeacher && s.uid !== user.uid)){
           document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>Your account is not linked to this student code.</p></div>';
           return;
         }

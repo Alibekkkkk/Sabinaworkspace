@@ -211,7 +211,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
       <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Switch theme">🌙</button>
       <a class="btn" href="portal.html" style="text-decoration:none;" target="_blank">🎓 Student Portal</a>
-      <button class="btn" id="undoButton" onclick="undoLastChange()" disabled title="Undo last change">↶ Undo</button>
+      <button class="btn" onclick="openHistoryModal()" title="View session history">📜 History</button>
       <button class="btn" onclick="teacherSignOut()">Sign out</button>
       <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
     </div>
@@ -293,7 +293,8 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
             <p style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">If the student's lesson page is open, these commands fire immediately.</p>
             <div class="control-grid" id="controlGrid"></div>
             <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-              <button class="btn" onclick="sendReset()">🔄 Reset student progress</button>
+              <button class="btn" onclick="sendReset('all')">🔄 Reset ALL progress</button>
+              <button class="btn" onclick="sendReset('vocab')" style="margin-left:8px;">🔄 Reset Vocab Only</button>
             </div>
           </div>
 
@@ -445,6 +446,18 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <div class="modal-actions">
       <button class="btn" onclick="closeLessonModal()">Cancel</button>
       <button class="btn primary" onclick="submitLesson()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="historyModal">
+  <div class="modal">
+    <h3>📜 Action History</h3>
+    <p class="sub">Select an action to selectively undo it. Note: You cannot undo an action if newer actions have modified the same data.</p>
+    <div id="historyList" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeHistoryModal()">Close</button>
     </div>
   </div>
 </div>
@@ -860,10 +873,11 @@ function sendGoto(stage) {
     .catch(function(err) { alert('Command failed: ' + err.message); });
 }
 
-function sendReset() {
+function sendReset(type) {
   if (!activeCode) return;
-  if (!confirm('Reset all progress for this student? You can undo this.')) return;
-  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'reset', ts: Date.now() })
+  const label = type === 'vocab' ? 'vocabulary progress' : 'all progress';
+  if (!confirm('Reset ' + label + ' for this student? You can undo this.')) return;
+  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'reset', type: type || 'all', ts: Date.now() })
     .then(function() { showToast('Reset command sent'); })
     .catch(function(err) { alert('Reset failed: ' + err.message); });
 }
@@ -978,23 +992,16 @@ function deleteStudent() {
 }
 
 /* ============================================================
-   UNDO
+   UNDO & HISTORY
 ============================================================ */
 function loadUndoStack() {
   try { undoStack = JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY) || '[]'); } catch (e) { undoStack = []; }
-  updateUndoButton();
-}
-function updateUndoButton() {
-  const b = document.getElementById('undoButton');
-  if (!b) return;
-  b.disabled = !undoStack.length;
-  b.title = undoStack.length ? 'Undo: ' + undoStack[undoStack.length - 1].label : 'No changes to undo';
 }
 function rememberUndo(action) {
   undoStack.push(action);
   if (undoStack.length > 30) undoStack.shift();
   try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
-  updateUndoButton();
+  if(document.getElementById('historyModal').classList.contains('open')) renderHistoryList();
 }
 function sameValue(a, b) { return JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b); }
 function writeChangesWithUndo(changes, label) {
@@ -1009,23 +1016,49 @@ function writeChangesWithUndo(changes, label) {
     })).then(function() { rememberUndo(action); return action; });
   });
 }
-function undoLastChange() {
-  if (!undoStack.length) return;
-  const action = undoStack[undoStack.length - 1];
-  const refs = action.changes.map(function(c) { return fbDb.ref(c.path); });
-  Promise.all(refs.map(function(r) { return r.once('value'); })).then(function(snaps) {
-    const matches = action.changes.every(function(c, i) { return sameValue(snaps[i].val(), c.after); });
-    if (!matches) { alert('Data changed since this action; undo skipped.'); return; }
-    return Promise.all(action.changes.map(function(c) {
+
+function openHistoryModal() {
+  renderHistoryList();
+  document.getElementById('historyModal').classList.add('open');
+}
+function closeHistoryModal() {
+  document.getElementById('historyModal').classList.remove('open');
+}
+function renderHistoryList() {
+  const list = document.getElementById('historyList');
+  if (!undoStack.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--ink-soft);padding:20px;">No actions in this session.</div>';
+    return;
+  }
+  list.innerHTML = undoStack.slice().reverse().map((action, i) => {
+    const actualIndex = undoStack.length - 1 - i;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;">
+      <span style="font-size:14px;font-weight:600;color:var(--ink);">${escapeHtml(action.label)}</span>
+      <button class="btn small primary" onclick="revertAction(${actualIndex})">↶ Undo</button>
+    </div>`;
+  }).join('');
+}
+function revertAction(index) {
+  const action = undoStack[index];
+  if (!action) return;
+  const refs = action.changes.map(c => fbDb.ref(c.path));
+  Promise.all(refs.map(r => r.once('value'))).then(snaps => {
+    const matches = action.changes.every((c, i) => sameValue(snaps[i].val(), c.after));
+    if (!matches) {
+      alert('Cannot undo this action because newer changes have modified the same data. Please use the main Undo button sequentially.');
+      return;
+    }
+    if (!confirm('Undo this action?\n\n' + action.label)) return;
+    return Promise.all(action.changes.map(c => {
       const r = fbDb.ref(c.path);
       return c.before === null ? r.remove() : r.set(c.before);
-    })).then(function() {
-      undoStack.pop();
-      try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
-      updateUndoButton();
+    })).then(() => {
+      undoStack.splice(index, 1);
+      try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch(e) {}
+      renderHistoryList();
       showToast('Undid: ' + action.label);
     });
-  }).catch(function(err) { alert('Undo failed: ' + err.message); });
+  }).catch(err => alert('Undo failed: ' + err.message));
 }
 
 /* ============================================================
