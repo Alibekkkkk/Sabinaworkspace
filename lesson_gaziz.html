@@ -352,7 +352,35 @@ function initFirebase(){
       firebase.auth().onAuthStateChanged(function(user){
         teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
         teacherMode=teacherCanEdit;
-        if(teacherCanEdit){updateSyncUI('teacher');document.getElementById('timerPill').style.display='none';document.getElementById('scorePill').style.display='none';document.getElementById('streakPill').style.display='none';renderStage()}
+        if(teacherCanEdit){
+          // NEW: Connect to the student's session so teacher changes are saved
+          const code = getSessionCode();
+          if (code) {
+            sessionRef = fbDb.ref('sessions/' + code);
+            activityRef = sessionRef.child('history');
+            commandRef = sessionRef.child('command');
+            fbConnected = true;
+
+            // Load existing student progress so the teacher sees where they left off
+            sessionRef.child('state').once('value').then(function(snap){
+              const st = snap.val() || {};
+              if (st.scores) Object.assign(state.scores, st.scores);
+              if (st.done) Object.assign(state.done, st.done);
+              if (st.notes) document.getElementById('notesArea').value = st.notes;
+
+              loadVocabStateCloud().then(function(){
+                renderSidebar();
+                renderStage();
+                updateHUD();
+              });
+            });
+          }
+          updateSyncUI('teacher');
+          document.getElementById('timerPill').style.display='none';
+          document.getElementById('scorePill').style.display='none';
+          document.getElementById('streakPill').style.display='none';
+          renderStage();
+        }
         else{teacherMode=true;updateSyncUI('error');document.getElementById('main').innerHTML='<div class="card"><h2>Teacher sign-in required</h2></div>'}
       });
       return;
@@ -464,7 +492,7 @@ function updateTTSButtons(){
 /* ================== SYNC ================== */
 const CHANNEL='nd_lesson_live_v4_gaziz';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
-  if(teacherMode)return;
+  if(teacherMode && !sessionRef)return; 
   if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){}}
   const msg={type:type,payload:payload,ts:Date.now()};
   if(bc){try{bc.postMessage(msg)}catch(e){}}
@@ -472,13 +500,15 @@ function broadcast(type,payload){
 function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
 function broadcastAction(type,detail){
   state.lastAction=detail;
-  const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor:'student' };
+  const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor: teacherMode ? 'teacher' : 'student' };
   broadcast('action', payload);
-  if(fbConnected && sessionRef){
-    try { sessionRef.child('history').push(payload); } catch(e) {}
-  }
 }
-function saveState(){if(teacherMode)return;try{localStorage.setItem('nd_state_gaziz_v6',JSON.stringify({currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}))}catch(e){}broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
+function saveState(){
+  if(!teacherMode) {
+    try{localStorage.setItem('nd_state_gaziz_v6',JSON.stringify({currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}))}catch(e){}
+  }
+  broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)});
+}
 function loadState(){try{const raw=localStorage.getItem('nd_state_gaziz_v6');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
 let customImages={};
 
@@ -615,7 +645,7 @@ function loadVocabStateCloud(){
   }).catch(function(){});
 }
 function saveVocabStateLocal(){try{localStorage.setItem(vocabKey(),JSON.stringify(vocabState))}catch(e){}}
-function saveVocabStateCloud(){if(!fbConnected||!sessionRef||teacherMode)return;try{sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(vocabState).catch(function(){})}catch(e){}}
+function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(vocabState).catch(function(){})}catch(e){}}
 function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
 
 function getWordStatus(word){
