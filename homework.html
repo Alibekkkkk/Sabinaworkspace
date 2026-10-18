@@ -202,12 +202,10 @@ function renderPassage(){
   p.paragraphs.forEach(function(par){
     let text=escapeHtml(par.text);
     vocabWords.forEach(function(w){
-      // If the word is "to match", we strip "to " so the regex matches "match" or "matches" in the text
       let matchStr = w;
       if (w.startsWith('to ')) matchStr = w.substring(3);
       
       const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      // [a-z]* matches base word and basic inflections (e.g., train, trains, trained)
       const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi');
       text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>');
     });
@@ -225,8 +223,9 @@ function openVocab(word){
   document.getElementById('vocabEmoji').textContent=v.emoji||'📖';
   document.getElementById('vocabWord').textContent=v.en;
   document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){
+    const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : '';
     return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+'</div>'+
-      '<div class="translation">'+escapeHtml(m.ru)+'</div>'+
+      '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+
       '<div class="example">'+m.ex+'</div></div>';
   }).join('');
   document.getElementById('vocabBackdrop').classList.add('open');

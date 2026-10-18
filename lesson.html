@@ -9,11 +9,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
-  // Apply theme immediately to avoid flash
   try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
-/* ... (CSS remains exactly the same, trimmed here for brevity but fully included in your file) ... */
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -306,14 +304,12 @@ html.dark .q-feedback.info{color:#f5c66b}
 </div>
 
 <script>
-/* ================== FIREBASE ================== */
 const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
 const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
-/* ================== CURRICULUM (Loaded from Firebase) ================== */
 let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
 const DEFAULT_STAGES = [
   {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
@@ -327,7 +323,6 @@ const DEFAULT_STAGES = [
   {id:9,label:'Test Your Knowledge',sub:'Timed test',icon:'⚡'}
 ];
 
-/* ================== STATE ================== */
 const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
 
 function getCurrentLesson(){
@@ -343,7 +338,6 @@ function totalScore(){
   return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)
 }
 
-/* ================== CONTENT PLACEHOLDERS (Loaded via JSON) ================== */
 let activeContentName = 'sabina';
 let VOCAB = [];
 let MATCH_DATA = [];
@@ -360,7 +354,6 @@ let TEST_SHORT = [];
 let TEST_TFNG = [];
 let TEST_COMPLETE = [];
 
-/* ================== FIREBASE INIT ================== */
 function initFirebase(){
   try{
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
@@ -383,7 +376,7 @@ function initFirebase(){
         return {
           id: id,
           title: l.title || 'Untitled Lesson',
-          stages: DEFAULT_STAGES, // <--- FORCED 9-STAGE ARRAY
+          stages: DEFAULT_STAGES,
           year: l.year || '2026',
           month: l.month || 'October',
           order: l.order || 0
@@ -493,7 +486,6 @@ function applyTeacherResetCommand(cmd){
 }
 function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
 
-/* ================== AUDIO + TTS ================== */
 let audioCtx=null,soundOn=true;
 function playTone(f,d,t,v){if(!soundOn)return;t=t||'sine';v=v||.12;try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
 function sCorrect(){playTone(660,.12);setTimeout(function(){playTone(880,.18)},100)}
@@ -571,7 +563,6 @@ function updateTTSButtons(){
   setVis(s,ttsState!=='idle');
 }
 
-/* ================== SYNC ================== */
 const CHANNEL='nd_lesson_live_v4_sabina';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
   if(teacherMode && !sessionRef)return; 
@@ -594,13 +585,11 @@ function saveState(){
 function loadState(){try{const raw=localStorage.getItem('nd_state_sabina_v6');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
 let customImages={};
 
-/* ================== HELPERS ================== */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
 function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
 
-/* ================== TEACHER REVIEW QUEUE ================== */
 function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   if(teacherMode)return;
   if(!fbConnected||!sessionRef){alert('Cannot send to teacher — no session connected.');return}
@@ -611,7 +600,6 @@ function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   }).catch(function(e){alert('Failed to send: '+e.message)});
 }
 
-/* ================== STAGE 1 — ADAPTIVE VOCABULARY QUIZ ================== */
 let s1Filter='learning';
 let vocabState={};
 let vocabCloudLoaded=false;
@@ -643,9 +631,7 @@ function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{sessionRe
 function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
 
 function getWordStatus(word){
-  // AUTO-TICK FOR SABINA
   if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return 'learned';
-  
   const s=vocabState[word];
   if(!s)return 'learning';
   if((s.perfectStreak||0)>=2)return 'learned';
@@ -698,7 +684,12 @@ function renderFlashcards(){
     const status=getWordStatus(w.en);
     if(status==='learned')card.classList.add('known');
     if(status==='practice')card.classList.add('needs-practice');
-    const img=customImages[w.en];
+    
+    // Use displayEn of first meaning as img key, fallback to w.en
+    const firstMeaning = w.meanings[0];
+    const imgKey = (firstMeaning && firstMeaning.displayEn) ? firstMeaning.displayEn : w.en;
+    const img=customImages[imgKey] || customImages[w.en];
+
     card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" loading="lazy" onerror="this.parentNode.textContent=\''+w.emoji+'\'">':w.emoji)+'</div><div class="flashcard-word">'+escapeHtml(w.en)+'</div>';
     card.onclick=function(){openQuiz(idx)};
     grid.appendChild(card);
@@ -770,8 +761,12 @@ function renderQuizModal(){
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
   const meaning=w.meanings[quizCurrentIdx];
   const displayWord=meaning.displayEn||w.en;
-  const img=customImages[w.en];
-  document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+w.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+w.emoji+'</div>')+'<div class="label">WORD</div>';
+  
+  // Use displayWord as image key to allow separate images for different meanings
+  const imgKey = displayWord; 
+  const img = customImages[imgKey] || customImages[w.en];
+
+  document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(displayWord)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+w.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+w.emoji+'</div>')+'<div class="label">WORD</div>';
   document.getElementById('fcModalWord').textContent=displayWord;
   const q=buildQuizOptions(quizWord,quizCurrentIdx);
   const answered=quizAnswers[quizCurrentIdx];
@@ -956,27 +951,32 @@ function quizSpeak(){
 function editFlashcardImage(){
   if(!teacherCanEdit||!fbDb){alert('Sign in with the teacher account to edit.');return}
   if(!quizWord)return;
-  const current=customImages[quizWord]||'';
-  const url=prompt('Paste an image URL for "'+quizWord+'". Leave blank to remove the custom image.',current);
+  const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
+  
+  // Use displayEn as the key for separate images per meaning
+  const meaning=w.meanings[quizCurrentIdx];
+  const displayWord = meaning.displayEn || w.en;
+  
+  const current = customImages[displayWord] || customImages[w.en] || '';
+  const url=prompt('Paste an image URL for "'+displayWord+'". Leave blank to remove the custom image.',current);
   if(url===null)return;
   const trimmed=url.trim();
   if(trimmed&&!/^https?:\/\//i.test(trimmed)){alert('URL must start with http:// or https://');return}
   const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||'lesson_1';
-  fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+quizWord).set(trimmed||null).then(function(){
-    if(trimmed)customImages[quizWord]=trimmed;else delete customImages[quizWord];
+  fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+displayWord).set(trimmed||null).then(function(){
+    if(trimmed) customImages[displayWord]=trimmed;
+    else delete customImages[displayWord];
     renderQuizModal();renderFlashcards();
-    showToast('Image saved');
+    showToast('Image saved for ' + displayWord);
   }).catch(function(e){alert('Failed: '+e.message)});
 }
 
-/* Aliases for keyboard shortcuts */
 function fcPrev(){quizPrev()}
 function fcNext(){quizNext()}
 function fcReveal(){}
 function fcMarkKnow(){}
 function fcMarkAgain(){}
 
-/* ================== STAGE 2 — WORD MATCH ================== */
 function renderStage2(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
@@ -1017,7 +1017,6 @@ function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').l
 function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
-/* ================== STAGE 3 — READING & QUESTIONS ================== */
 let s4Answers={};
 function renderStage3(){
   const main=document.getElementById('main');
@@ -1173,7 +1172,6 @@ function checkS4(){
 }
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
-/* ================== STAGES 4/5 — COMPLETING SENTENCE ================== */
 function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
@@ -1256,7 +1254,6 @@ function renderStage5(){
     renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
 }
 
-/* ================== STAGES 6/7 — SENTENCE BUILDER ================== */
 const SB_STATE={};
 const SB_DATA={};
 function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
@@ -1377,7 +1374,6 @@ function renderStage7(){
     renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
 }
 
-/* ================== STAGE 8 — CHOOSE THE TENSE ================== */
 function renderStage8(){
     let title = '🧭 Completing Sentence — Choose the Tense';
     let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
@@ -1393,7 +1389,6 @@ function renderStage8(){
     renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
 }
 
-/* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 let TEST_TIME_LIMIT = 0; 
 
@@ -1567,7 +1562,6 @@ function endTest(timedOut,customReason){
   broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
-/* ================== HUD ================== */
 function updateHUD(){
   const el=document.getElementById('scoreDisplay');
   if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}
@@ -1591,7 +1585,6 @@ function setScore(stageId,amount){
   updateHUD();saveState();
 }
 
-/* ================== SIDEBAR ================== */
 let expandedYears=["2026"],expandedMonths=["October"];
 function resetStageTeacher(stageId) {
   if(!teacherCanEdit) return;
@@ -1654,12 +1647,10 @@ function renderSidebar(){
           }
           const sub=document.createElement('div');sub.className='stage-sub-list';
           
-          // FORCED DEFAULT STAGES FOR SIDEBAR
           DEFAULT_STAGES.forEach(function(st){
             const key=lesson.id+"_"+st.id;
             const isA=st.id===state.currentStage;
             
-            // --- START CHECKMARK LOGIC ---
             let isD = false;
             if (document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) {
                 if (st.id === 1 || st.id === 2) isD = true; 
@@ -1669,10 +1660,8 @@ function renderSidebar(){
                 if(counts.learned === VOCAB.length) isD = true;
                 else isD = false; 
             } else {
-                // For other stages, rely on state.done
                 isD = state.done[key];
             }
-            // --- END CHECKMARK LOGIC ---
 
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
             
@@ -1716,11 +1705,10 @@ function renderStage(){
   main.innerHTML='';
   
   const lesson = getCurrentLesson();
-  const stages = DEFAULT_STAGES; // <--- FORCED 9 STAGES
+  const stages = DEFAULT_STAGES;
                  
   const stageIndex = stages.findIndex(s => s.id === state.currentStage);
 
-  // Map exact index to rendering function
   let fn = null;
   if (stageIndex === stages.length - 1) {
       fn = renderStage9;
@@ -1790,7 +1778,6 @@ function showToast(text){
   window.__toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2200);
 }
 
-/* ================== CONTENT LOADER ================== */
 async function loadContent() {
   activeContentName = new URLSearchParams(location.search).get('content') || 'sabina';
   const res = await fetch('content/' + activeContentName + '.json', { cache: 'no-store' });
@@ -1812,7 +1799,6 @@ async function loadContent() {
   TEST_COMPLETE = c.testComplete;
 }
 
-/* ================== INIT ================== */
 (async function boot() {
   try {
     await loadContent();
