@@ -1,0 +1,344 @@
+{
+  "vocab": [
+    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [
+      { "context": "a person who is good at sports", "ru": "спортсмен", "ex": "He is a professional <b>athlete</b>." }
+    ]},
+    { "en": "coach", "emoji": "📋", "meanings": [
+      { "context": "a person who trains a team", "ru": "тренер", "ex": "The <b>coach</b> is shouting at the players." }
+    ]},
+    { "en": "match", "emoji": "⚽", "meanings": [
+      { "context": "a sports game", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." }
+    ]},
+    { "en": "stadium", "emoji": "🏟️", "meanings": [
+      { "context": "a large building for sports", "ru": "стадион", "ex": "There is a big <b>stadium</b> in our city." }
+    ]},
+    { "en": "to train", "emoji": "🏋️", "meanings": [
+      { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." }
+    ]},
+    { "en": "score", "emoji": "🥅", "meanings": [
+      { "context": "to get a point or goal", "ru": "забивать гол / набирать очки", "ex": "Look! He is going to <b>score</b>!" }
+    ]},
+    { "en": "tournament", "emoji": "🏆", "meanings": [
+      { "context": "a competition with many games", "ru": "турнир", "ex": "We are playing in a <b>tournament</b> this week." }
+    ]},
+    { "en": "equipment", "emoji": "🎒", "meanings": [
+      { "context": "tools needed for a sport", "ru": "снаряжение, экипировка", "ex": "My sports <b>equipment</b> is in the bag." }
+    ]},
+    { "en": "healthy", "emoji": "🍎", "meanings": [
+      { "context": "good for your body", "ru": "здоровый", "ex": "Eating vegetables is very <b>healthy</b>." }
+    ]},
+    { "en": "to rest", "emoji": "🛌", "meanings": [
+      { "context": "to relax and sleep", "ru": "отдыхать", "ex": "Athletes need to <b>rest</b> after a match." }
+    ]}
+  ],
+
+  "matchData": [
+    { "word": "athlete", "meaning": "a person who plays sports" },
+    { "word": "coach", "meaning": "a person who trains a team" },
+    { "word": "stadium", "meaning": "a place where people watch matches" },
+    { "word": "train", "meaning": "to practice for a game" },
+    { "word": "score", "meaning": "to get a goal or point" },
+    { "word": "tournament", "meaning": "a big competition" },
+    { "word": "equipment", "meaning": "things you need for a sport" },
+    { "word": "healthy", "meaning": "good for your body" },
+    { "word": "rest", "meaning": "to relax after hard work" },
+    { "word": "match", "meaning": "a sports game" }
+  ],
+
+  "readingHtml": "<h1>Alex's Busy Day</h1><div class=\"subtitle\">Present Simple vs. Present Continuous</div><p><span class=\"para-label\">A.</span>Alex is a 15-year-old student and a football player. He <b>usually</b> wakes up at 7 o'clock. He eats a <b>healthy</b> breakfast and goes to school. After school, he <b>trains</b> with his team. They <b>play</b> a <b>match</b> every Saturday.</p><p><span class=\"para-label\">B.</span>Today is different. Right now, Alex is at the <b>stadium</b>. It is the final of a big <b>tournament</b>. Look! The <b>coach</b> is talking to the players. Alex is running with the ball. He is going to <b>score</b> a goal!</p><p><span class=\"para-label\">C.</span>After the match, Alex will <b>rest</b>. He needs to sleep because he is very tired. Tomorrow, he will put his <b>equipment</b> in the bag and go back to school.</p>",
+
+  "readingQ": [
+    { "type": "short", "prompt": "What time does Alex usually wake up?", "answers": ["7", "7 o'clock", "seven", "seven o'clock"], "exp": "He usually wakes up at 7 o'clock." },
+    { "type": "short", "prompt": "What sport does Alex play?", "answers": ["football", "soccer"], "exp": "He is a football player." },
+    { "type": "tfng", "prompt": "Alex trains with his team every Sunday.", "answer": "False", "exp": "He plays a match every Saturday." },
+    { "type": "tfng", "prompt": "Right now, Alex is at the stadium.", "answer": "True", "exp": "He is at the stadium for the tournament final." },
+    { "type": "mcq", "prompt": "What is the coach doing right now?", "options": ["Sleeping", "Talking to the players", "Eating breakfast"], "correct": "Talking to the players", "exp": "The text says the coach is talking to the players." },
+    { "type": "long", "prompt": "Why does Alex need to rest after the match?",
+      "keywordGroups": [["tired","sleep","hard"],["match","game"],["rest","relax"]],
+      "minWords": 4, "minGroups": 2,
+      "sample": "He needs to rest because he is very tired after the match.",
+      "exp": "Key ideas: tired/sleep, after the match." },
+    { "type": "mcq", "prompt": "What is Alex going to do in the match?", "options": ["Score a goal", "Go to school", "Eat breakfast"], "correct": "Score a goal", "exp": "The text says he is going to score a goal." },
+    { "type": "short", "prompt": "Where will Alex put his equipment tomorrow?", "answers": ["bag", "in the bag", "his bag"], "exp": "He will put his equipment in the bag." },
+    { "type": "mcq", "prompt": "What does Alex eat for breakfast?", "options": ["Fast food", "Healthy food", "Only coffee"], "correct": "Healthy food", "exp": "The text says he eats a healthy breakfast." },
+    { "type": "short", "prompt": "Complete: Alex is running with the ______.", "answers": ["ball"], "exp": "Alex is running with the ball." }
+  ],
+
+  "contextQ": [
+    { "prompt": "In paragraph A, \"usually\" means...", "options": ["sometimes", "most of the time", "never"], "correct": "most of the time", "exp": "Usually means it is a habit or routine." },
+    { "prompt": "In paragraph B, \"stadium\" is...", "options": ["a place for sports", "a type of food", "a school"], "correct": "a place for sports", "exp": "A stadium is where matches happen." },
+    { "prompt": "In paragraph C, \"rest\" means...", "options": ["to run fast", "to relax and sleep", "to play again"], "correct": "to relax and sleep", "exp": "To rest is to take a break and recover." },
+    { "prompt": "In paragraph B, \"tournament\" is...", "options": ["a small game", "a big competition", "a type of shoe"], "correct": "a big competition", "exp": "A tournament has many matches to find a winner." }
+  ],
+
+  "g6": {
+    "pos": [
+      { "p": "He ___ (train) every day after school.", "a": "trains", "ex": "Present Simple: routine/habit." },
+      { "p": "Look! The coach ___ (shout) at the players.", "a": "is shouting", "ex": "Present Continuous: happening right now." },
+      { "p": "We ___ (play) a match every Saturday.", "a": "play", "ex": "Present Simple: plural subject." },
+      { "p": "Right now, I ___ (run) with the ball.", "a": "am running", "ex": "Present Continuous: 'Right now'." },
+      { "p": "She usually ___ (eat) healthy food.", "a": "eats", "ex": "Present Simple: 'usually'." }
+    ],
+    "neg": [
+      { "p": "He ___ (not / play) football today.", "a": "is not playing", "ex": "Present Continuous negative." },
+      { "p": "They ___ (not / train) on Sundays.", "a": "do not train", "ex": "Present Simple negative (plural)." },
+      { "p": "I ___ (not / understand) this rule.", "a": "do not understand", "ex": "Present Simple negative (I)." },
+      { "p": "Look! The baby ___ (not / sleep).", "a": "is not sleeping", "ex": "Present Continuous negative." },
+      { "p": "My brother ___ (not / like) running.", "a": "does not like", "ex": "Present Simple negative (he)." }
+    ],
+    "q": [
+      { "p": "___ he ___ (play) tennis every week?", "a": "Does he play", "ex": "Present Simple question." },
+      { "p": "___ you ___ (listen) to me right now?", "a": "Are you listening", "ex": "Present Continuous question." },
+      { "p": "___ they ___ (train) at the stadium today?", "a": "Are they training", "ex": "Present Continuous question." },
+      { "p": "___ the coach ___ (talk) to the team?", "a": "Is the coach talking", "ex": "Present Continuous question." },
+      { "p": "___ she ___ (want) to score a goal?", "a": "Does she want", "ex": "Present Simple question." }
+    ],
+    "shuffled": [
+      { "p": "I ___ (go) to the gym every Monday.", "a": "go" },
+      { "p": "Listen! Someone ___ (knock) on the door.", "a": "is knocking" },
+      { "p": "He ___ (not / wear) his sports shoes today.", "a": "is not wearing" },
+      { "p": "The Earth ___ (go) around the Sun.", "a": "goes" },
+      { "p": "We ___ (have) a test right now.", "a": "are having" },
+      { "p": "Tom usually ___ (walk) to school.", "a": "walks" },
+      { "p": "She ___ (study) English every day.", "a": "studies" },
+      { "p": "Look! The teacher ___ (write) on the board.", "a": "is writing" },
+      { "p": "They ___ (not / come) to the match today.", "a": "are not coming" },
+      { "p": "I ___ (not / like) cold weather.", "a": "do not like" },
+      { "p": "What ___ you ___ (do) at the moment?", "a": "are you doing" },
+      { "p": "How often ___ they ___ (attend) team meetings?", "a": "do they attend" },
+      { "p": "It ___ (rain) heavily right now.", "a": "is raining" },
+      { "p": "My supervisor usually ___ (arrive) at 8 AM.", "a": "arrives" },
+      { "p": "The baby ___ (sleep) in the bedroom right now.", "a": "is sleeping" },
+      { "p": "He rarely ___ (complain) about his job.", "a": "complains" },
+      { "p": "I ___ (not / understand) this math problem.", "a": "do not understand" },
+      { "p": "They ___ (play) football in the park now.", "a": "are playing" },
+      { "p": "She ___ (always / wear) a light jacket.", "a": "always wears" },
+      { "p": "Why ___ you ___ (wear) a heavy coat today?", "a": "are you wearing" }
+    ]
+  },
+
+  "g7": {
+    "pos": [
+      { "p": "There ___ a big stadium in our town.", "a": "is", "ex": "Singular noun -> There is." },
+      { "p": "There ___ many players in the team.", "a": "are", "ex": "Plural noun -> There are." },
+      { "p": "Please ___ the ball to me!", "a": "pass", "ex": "Imperative: giving a command." },
+      { "p": "There ___ some equipment in the bag.", "a": "is", "ex": "Uncountable noun -> There is." },
+      { "p": "___ careful! Don't fall!", "a": "Be", "ex": "Imperative with 'to be'." }
+    ],
+    "neg": [
+      { "p": "There ___ a swimming pool in the school.", "a": "is not", "ex": "Negative singular." },
+      { "p": "There ___ any restaurants near the stadium.", "a": "are not", "ex": "Negative plural." },
+      { "p": "___ run in the hallways.", "a": "Do not", "ex": "Negative imperative (Don't)." },
+      { "p": "___ late for the match!", "a": "Do not be", "ex": "Negative imperative with 'be'." },
+      { "p": "There ___ any tickets left for the game.", "a": "are not", "ex": "Negative plural." }
+    ],
+    "q": [
+      { "p": "___ there a coach at the stadium?", "a": "Is", "ex": "Question form for singular." },
+      { "p": "___ there many fans in the stadium?", "a": "Are", "ex": "Question form for plural." },
+      { "p": "___ the players ready for the match?", "a": "Are", "ex": "Question with 'to be'." },
+      { "p": "___ there any water in your bottle?", "a": "Is", "ex": "Question form for uncountable." },
+      { "p": "___ let's go outside and play!", "a": "Come on,", "ex": "Phrase for suggestion." }
+    ],
+    "shuffled": [
+      { "p": "There ___ seven days in a week.", "a": "are" },
+      { "p": "There ___ a castle in the town.", "a": "is" },
+      { "p": "___ touch the hot stove!", "a": "Do not" },
+      { "p": "There ___ a lot of people in the park today.", "a": "are" },
+      { "p": "___ let's watch a movie tonight.", "a": "Come on," },
+      { "p": "There ___ not any milk in the fridge.", "a": "is" },
+      { "p": "Please ___ quiet in the library.", "a": "be" },
+      { "p": "___ go to the beach tomorrow!", "a": "Let's" },
+      { "p": "There ___ twenty-six letters in the English alphabet.", "a": "are" },
+      { "p": "There ___ a cinema and three cafes in this street.", "a": "is" },
+      { "p": "___ forget your sports equipment!", "a": "Do not" },
+      { "p": "There ___ not any big hotels here.", "a": "are" },
+      { "p": "___ stay at home. It's raining.", "a": "Let's" },
+      { "p": "There ___ fifty states in the USA.", "a": "are" },
+      { "p": "___ open the window, please.", "a": "Do" },
+      { "p": "There ___ not a university in this small town.", "a": "is" },
+      { "p": "___ not let's go out tonight.", "a": "Do" },
+      { "p": "There ___ a rugby team in our school.", "a": "is" },
+      { "p": "___ pass me the ball!", "a": "Please" },
+      { "p": "There ___ some sugar in the tea.", "a": "is" }
+    ]
+  },
+
+  "sbPp": {
+    "pos": [
+      { "prompt": "Build a Present Simple sentence about a daily routine.", "correct": ["He","trains","every","day."] },
+      { "prompt": "Build a Present Continuous sentence about a match.", "correct": ["The","coach","is","shouting","now."] },
+      { "prompt": "Build a Present Simple sentence about the Earth.", "correct": ["The","Earth","goes","around","the","Sun."] },
+      { "prompt": "Build a Present Continuous sentence about a test.", "correct": ["We","are","having","a","test","right","now."] },
+      { "prompt": "Build a Present Simple sentence about a brother.", "correct": ["My","brother","likes","science."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative Present Simple sentence.", "correct": ["I","do","not","understand","this","question."] },
+      { "prompt": "Build a negative Present Continuous sentence.", "correct": ["The","baby","is","not","sleeping."] },
+      { "prompt": "Build a negative Present Simple sentence about sports.", "correct": ["He","does","not","play","tennis."] },
+      { "prompt": "Build a negative Present Continuous sentence about rain.", "correct": ["It","is","not","raining","today."] },
+      { "prompt": "Build a negative Present Simple sentence about a train.", "correct": ["The","train","does","not","arrive","at","8","AM."] }
+    ],
+    "q": [
+      { "prompt": "Build a Present Continuous question.", "correct": ["Are","you","listening","to","me?"] },
+      { "prompt": "Build a Present Simple question.", "correct": ["Does","she","play","football","every","week?"] },
+      { "prompt": "Build a Present Continuous question about the teacher.", "correct": ["Is","the","teacher","writing","on","the","board?"] },
+      { "prompt": "Build a Present Simple question about frequency.", "correct": ["How","often","do","they","attend","meetings?"] },
+      { "prompt": "Build a Present Continuous question about the weather.", "correct": ["Why","are","you","wearing","a","heavy","coat?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: She studies English every day.", "correct": ["She","studies","English","every","day."] },
+      { "prompt": "Build: Look! The teacher is writing.", "correct": ["Look!","The","teacher","is","writing."] },
+      { "prompt": "Build: I am not liking this game.", "correct": ["I","do","not","like","this","game."] },
+      { "prompt": "Build: We are having a test now.", "correct": ["We","are","having","a","test","now."] },
+      { "prompt": "Build: Tom usually walks to school.", "correct": ["Tom","usually","walks","to","school."] },
+      { "prompt": "Build: Listen! Someone is knocking.", "correct": ["Listen!","Someone","is","knocking."] },
+      { "prompt": "Build: The Earth goes around the Sun.", "correct": ["The","Earth","goes","around","the","Sun."] },
+      { "prompt": "Build: He rarely complains about his job.", "correct": ["He","rarely","complains","about","his","job."] },
+      { "prompt": "Build: The baby is sleeping right now.", "correct": ["The","baby","is","sleeping","right","now."] },
+      { "prompt": "Build: It is raining heavily outside.", "correct": ["It","is","raining","heavily","outside."] },
+      { "prompt": "Build: My supervisor usually arrives at 8 AM.", "correct": ["My","supervisor","usually","arrives","at","8","AM."] },
+      { "prompt": "Build: I do not understand this math problem.", "correct": ["I","do","not","understand","this","math","problem."] },
+      { "prompt": "Build: She always wears a light jacket.", "correct": ["She","always","wears","a","light","jacket."] },
+      { "prompt": "Build: Why are you wearing a heavy coat?", "correct": ["Why","are","you","wearing","a","heavy","coat?"] },
+      { "prompt": "Build: The company is developing a new app.", "correct": ["The","company","is","developing","a","new","app."] },
+      { "prompt": "Build: We go to the gym every Monday.", "correct": ["We","go","to","the","gym","every","Monday."] },
+      { "prompt": "Build: He is not wearing his sports shoes.", "correct": ["He","is","not","wearing","his","sports","shoes."] },
+      { "prompt": "Build: Do you clean your room usually?", "correct": ["Do","you","clean","your","room","usually?"] },
+      { "prompt": "Build: They are playing football in the park.", "correct": ["They","are","playing","football","in","the","park."] },
+      { "prompt": "Build: How often do your parents visit?", "correct": ["How","often","do","your","parents","visit?"] }
+    ]
+  },
+
+  "sbPs": {
+    "pos": [
+      { "prompt": "Build a sentence with There is.", "correct": ["There","is","a","big","stadium."] },
+      { "prompt": "Build a sentence with There are.", "correct": ["There","are","twenty-six","letters."] },
+      { "prompt": "Build an imperative sentence.", "correct": ["Please","pass","the","ball."] },
+      { "prompt": "Build a sentence with There are.", "correct": ["There","are","many","players."] },
+      { "prompt": "Build an imperative sentence with 'Be'.", "correct": ["Be","careful!"] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative sentence with There is.", "correct": ["There","is","not","a","swimming","pool."] },
+      { "prompt": "Build a negative sentence with There are.", "correct": ["There","are","not","any","restaurants."] },
+      { "prompt": "Build a negative imperative sentence.", "correct": ["Do","not","run","in","the","hallways."] },
+      { "prompt": "Build a negative imperative sentence.", "correct": ["Do","not","be","late!"] },
+      { "prompt": "Build a negative sentence with There are.", "correct": ["There","are","not","any","tickets."] }
+    ],
+    "q": [
+      { "prompt": "Build a question with There is.", "correct": ["Is","there","a","coach?"] },
+      { "prompt": "Build a question with There are.", "correct": ["Are","there","many","fans?"] },
+      { "prompt": "Build a question with 'to be'.", "correct": ["Are","the","players","ready?"] },
+      { "prompt": "Build a question with There is.", "correct": ["Is","there","any","water?"] },
+      { "prompt": "Build a suggestion with Let's.", "correct": ["Let's","go","outside!"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: There are seven days in a week.", "correct": ["There","are","seven","days","in","a","week."] },
+      { "prompt": "Build: There is a castle in the town.", "correct": ["There","is","a","castle","in","the","town."] },
+      { "prompt": "Build: Do not touch the hot stove!", "correct": ["Do","not","touch","the","hot","stove!"] },
+      { "prompt": "Build: There are a lot of people here.", "correct": ["There","are","a","lot","of","people","here."] },
+      { "prompt": "Build: Come on, let's watch a movie.", "correct": ["Come","on,","let's","watch","a","movie."] },
+      { "prompt": "Build: There is not any milk.", "correct": ["There","is","not","any","milk."] },
+      { "prompt": "Build: Please be quiet in the library.", "correct": ["Please","be","quiet","in","the","library."] },
+      { "prompt": "Build: Let's go to the beach.", "correct": ["Let's","go","to","the","beach."] },
+      { "prompt": "Build: There is a cinema and three cafes.", "correct": ["There","is","a","cinema","and","three","cafes."] },
+      { "prompt": "Build: Do not forget your equipment!", "correct": ["Do","not","forget","your","equipment!"] },
+      { "prompt": "Build: There are not any big hotels.", "correct": ["There","are","not","any","big","hotels."] },
+      { "prompt": "Build: Let's stay at home.", "correct": ["Let's","stay","at","home."] },
+      { "prompt": "Build: There are fifty states in the USA.", "correct": ["There","are","fifty","states","in","the","USA."] },
+      { "prompt": "Build: Do open the window, please.", "correct": ["Do","open","the","window,","please."] },
+      { "prompt": "Build: There is not a university here.", "correct": ["There","is","not","a","university","here."] },
+      { "prompt": "Build: Do not let's go out tonight.", "correct": ["Do","not","let's","go","out","tonight."] },
+      { "prompt": "Build: There is a rugby team.", "correct": ["There","is","a","rugby","team."] },
+      { "prompt": "Build: Please pass me the ball!", "correct": ["Please","pass","me","the","ball!"] },
+      { "prompt": "Build: There is some sugar in the tea.", "correct": ["There","is","some","sugar","in","the","tea."] },
+      { "prompt": "Build: There are twenty-six letters in the alphabet.", "correct": ["There","are","twenty-six","letters","in","the","alphabet."] }
+    ]
+  },
+
+  "g10": {
+    "pos": [
+      { "p": "I ___ (travel) to London next summer.", "a": "am going to travel", "ex": "Future intention with 'going to'." },
+      { "p": "Look at those clouds! It ___ (rain).", "a": "is going to rain", "ex": "Prediction with 'going to'." },
+      { "p": "He ___ (train) every day.", "a": "trains", "ex": "Present Simple routine." },
+      { "p": "We ___ (watch) a film tonight.", "a": "are going to watch", "ex": "Future intention." },
+      { "p": "She ___ (always / wear) a light jacket.", "a": "always wears", "ex": "Present Simple habit." }
+    ],
+    "neg": [
+      { "p": "I ___ (not / have) breakfast this morning.", "a": "am not going to have", "ex": "Negative future intention." },
+      { "p": "They ___ (not / play) football today.", "a": "are not playing", "ex": "Negative Present Continuous." },
+      { "p": "He ___ (not / like) running.", "a": "does not like", "ex": "Negative Present Simple." },
+      { "p": "We ___ (not / go) to the beach tomorrow.", "a": "are not going to go", "ex": "Negative future intention." },
+      { "p": "She ___ (not / understand) this.", "a": "does not understand", "ex": "Negative Present Simple." }
+    ],
+    "q": [
+      { "p": "What ___ you ___ (wear) to the wedding?", "a": "are you going to wear", "ex": "Question with 'going to'." },
+      { "p": "___ he ___ (play) tennis every week?", "a": "Does he play", "ex": "Present Simple question." },
+      { "p": "___ you ___ (listen) to me now?", "a": "Are you listening", "ex": "Present Continuous question." },
+      { "p": "___ she ___ (buy) a new car?", "a": "Is she going to buy", "ex": "Question with 'going to'." },
+      { "p": "How often ___ they ___ (attend) meetings?", "a": "do they attend", "ex": "Present Simple question." }
+    ],
+    "shuffled": [
+      { "p": "He ___ (buy) a new bike tomorrow.", "a": "is going to buy" },
+      { "p": "They ___ (play) football right now.", "a": "are playing" },
+      { "p": "I ___ (not / understand) this math problem.", "a": "do not understand" },
+      { "p": "She ___ (study) English every day.", "a": "studies" },
+      { "p": "Look! The teacher ___ (write) on the board.", "a": "is writing" },
+      { "p": "We ___ (have) a test right now.", "a": "are having" },
+      { "p": "I ___ (travel) to London next summer.", "a": "am going to travel" },
+      { "p": "Tom usually ___ (walk) to school.", "a": "walks" },
+      { "p": "Listen! Someone ___ (knock).", "a": "is knocking" },
+      { "p": "The baby ___ (sleep) in the bedroom now.", "a": "is sleeping" },
+      { "p": "My brother ___ (not / like) Maths.", "a": "does not like" },
+      { "p": "The Earth ___ (go) around the Sun.", "a": "goes" },
+      { "p": "It ___ (rain) heavily today.", "a": "is raining" },
+      { "p": "I ___ (not / have) breakfast this morning.", "a": "am not going to have" },
+      { "p": "He rarely ___ (complain) about his job.", "a": "complains" },
+      { "p": "What ___ you ___ (do) at the moment?", "a": "are you doing" },
+      { "p": "She ___ (learn) Spanish next year.", "a": "is going to learn" },
+      { "p": "Why ___ you ___ (wear) a heavy coat?", "a": "are you wearing" },
+      { "p": "My supervisor usually ___ (arrive) at 8 AM.", "a": "arrives" },
+      { "p": "___ you ___ (invite) Martin to your party?", "a": "Are you going to invite" }
+    ]
+  },
+
+  "testMcq": [
+    { "q": "Which word means 'a person who trains a team'?", "options": ["athlete", "coach", "fan"], "correct": "coach", "exp": "A coach trains the players." },
+    { "q": "Which word means 'a big competition'?", "options": ["match", "tournament", "stadium"], "correct": "tournament", "exp": "A tournament has many matches." },
+    { "q": "Which word means 'to relax after hard work'?", "options": ["train", "score", "rest"], "correct": "rest", "exp": "To rest is to relax and sleep." },
+    { "q": "Which word means 'good for your body'?", "options": ["healthy", "heavy", "light"], "correct": "healthy", "exp": "Healthy food is good for you." },
+    { "q": "Which word means 'things you need for a sport'?", "options": ["equipment", "stadium", "match"], "correct": "equipment", "exp": "Equipment means sports tools." },
+    { "q": "Which word means 'to get a goal or point'?", "options": ["score", "train", "coach"], "correct": "score", "exp": "To score means to get a point." },
+    { "q": "Which word means 'a place where people watch matches'?", "options": ["stadium", "gym", "school"], "correct": "stadium", "exp": "A stadium is for watching sports." },
+    { "q": "Which word means 'a person who plays sports'?", "options": ["coach", "athlete", "teacher"], "correct": "athlete", "exp": "An athlete is a sports person." }
+  ],
+
+  "testShort": [
+    { "q": "Complete with Present Simple: He ______ (train) every day.", "answers": ["trains"], "exp": "He trains." },
+    { "q": "Complete with Present Continuous: Look! He ______ (run).", "answers": ["is running"], "exp": "He is running." },
+    { "q": "Complete with 'going to': I ______ (travel) to London next summer.", "answers": ["am going to travel"], "exp": "I am going to travel." },
+    { "q": "Complete with 'There is/are': ______ a big stadium in the town.", "answers": ["There is"], "exp": "There is a big stadium." },
+    { "q": "Complete with 'There is/are': ______ many players in the team.", "answers": ["There are"], "exp": "There are many players." },
+    { "q": "Complete with Imperative: ______ (not / run) in the hallways.", "answers": ["Do not run", "Don't run"], "exp": "Do not run." }
+  ],
+
+  "testTfng": [
+    { "q": "We use Present Continuous for routines and habits.", "answer": "False", "exp": "We use Present Simple for routines." },
+    { "q": "We use 'There is' with plural nouns.", "answer": "False", "exp": "We use 'There are' with plural nouns." },
+    { "q": "We use 'going to' for future intentions.", "answer": "True", "exp": "Yes, 'going to' shows future plans." },
+    { "q": "We use Present Simple with the words 'Look!' and 'Listen!'.", "answer": "False", "exp": "We use Present Continuous with 'Look!' and 'Listen!'." },
+    { "q": "Imperatives are used to give commands.", "answer": "True", "exp": "Yes, like 'Stop!' or 'Pass the ball'." }
+  ],
+
+  "testComplete": [
+    { "p": "She usually ___ (eat) healthy food.", "a": "eats" },
+    { "p": "Look! The coach ___ (shout) at the players.", "a": "is shouting" },
+    { "p": "I ___ (not / understand) this rule.", "a": "do not understand" },
+    { "p": "They ___ (play) football in the park now.", "a": "are playing" },
+    { "p": "There ___ a big stadium in our city.", "a": "is" },
+    { "p": "There ___ many fans at the match.", "a": "are" },
+    { "p": "Please ___ (pass) me the ball!", "a": "pass" },
+    { "p": "I ___ (travel) to Spain next month.", "a": "am going to travel" },
+    { "p": "The baby ___ (sleep) in the bedroom right now.", "a": "is sleeping" },
+    { "p": "He rarely ___ (complain) about his job.", "a": "complains" }
+  ]
+}
