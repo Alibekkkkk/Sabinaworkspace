@@ -16,6 +16,24 @@
   },
   "vocab": [
     { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who plays sports", "ru": "спортсмен", "ex": "He is a young <b>athlete</b>." } ] },
+    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "He eats a <b>h{
+  "title": "George · Sports & Daily Routines — Homework",
+  "headline": "The Big Match",
+  "intro": "Read the story about a football match and answer the questions. Practice your Present Simple, Present Continuous, and Past Simple grammar!",
+  "hero": "⚽ → 🏃‍♂️ → 🏆",
+  "sub": "Sports & Routines · Reading & Grammar",
+  "eyebrow": "Topic · Sports & Routines · Homework",
+  "reading": {
+    "title": "The Big Match",
+    "subtitle": "A story about a football team",
+    "paragraphs": [
+      { "label": "A.", "text": "David is a 15-year-old student. He is an athlete. Every day, he wakes up at 6:30 AM. He eats a healthy breakfast and goes to school. After school, he trains with his team at the stadium. They usually practice for two hours." },
+      { "label": "B.", "text": "Today is very special. It is the final of a big tournament. Right now, David is at the stadium. He is wearing his red team shirt. Look! The coach is talking to the players. He is telling them to be careful. The fans are shouting and cheering." },
+      { "label": "C.", "text": "The match is starting now. David is running with the ball. A player from the other team is trying to take it. David kicks the ball. He is going to score a goal! Yes! The ball is in the net. David is very happy. After the match, he is going to rest." }
+    ]
+  },
+  "vocab": [
+    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who plays sports", "ru": "спортсмен", "ex": "He is a young <b>athlete</b>." } ] },
     { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "He eats a <b>healthy</b> breakfast." } ] },
     { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a place where people watch matches", "ru": "стадион", "ex": "The team trains at the <b>stadium</b>." } ] },
     { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a big competition", "ru": "турнир", "ex": "It is the final of a big <b>tournament</b>." } ] },
@@ -44,9 +62,9 @@
       "exp": "Key idea: rest." },
     { "type": "complete", "prompt": "He ___ (train) every day after school.", "answers": ["trains"] },
     { "type": "complete", "prompt": "Look! The coach ___ (talk) to the players.", "answers": ["is talking"] },
-    { "type": "complete", "prompt": "There ___ a big stadium in our city.", "answers": ["is"] },
-    { "type": "complete", "prompt": "There ___ many fans at the match.", "answers": ["are"] },
+    { "type": "complete", "prompt": "They ___ (play) a match last Saturday.", "answers": ["played"] },
+    { "type": "complete", "prompt": "David ___ (not / play) well yesterday.", "answers": ["did not play"] },
     { "type": "complete", "prompt": "David ___ (score) a goal right now!", "answers": ["is scoring"] },
-    { "type": "complete", "prompt": "He ___ (not / play) football today because he is sick.", "answers": ["is not playing"] }
+    { "type": "complete", "prompt": "He ___ (not / like) losing.", "answers": ["does not like"] }
   ]
 }

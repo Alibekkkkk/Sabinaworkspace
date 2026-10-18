@@ -15,7 +15,7 @@
     { "en": "to train", "emoji": "🏋️", "meanings": [
       { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." }
     ]},
-    { "en": "score", "emoji": "🥅", "meanings": [
+    { "en": "to score", "emoji": "🥅", "meanings": [
       { "context": "to get a point or goal", "ru": "забивать гол / набирать очки", "ex": "Look! He is going to <b>score</b>!" }
     ]},
     { "en": "tournament", "emoji": "🏆", "meanings": [
@@ -36,12 +36,12 @@
     { "word": "athlete", "meaning": "a person who plays sports" },
     { "word": "coach", "meaning": "a person who trains a team" },
     { "word": "stadium", "meaning": "a place where people watch matches" },
-    { "word": "train", "meaning": "to practice for a game" },
-    { "word": "score", "meaning": "to get a goal or point" },
+    { "word": "to train", "meaning": "to practice for a game" },
+    { "word": "to score", "meaning": "to get a goal or point" },
     { "word": "tournament", "meaning": "a big competition" },
     { "word": "equipment", "meaning": "things you need for a sport" },
     { "word": "healthy", "meaning": "good for your body" },
-    { "word": "rest", "meaning": "to relax after hard work" },
+    { "word": "to rest", "meaning": "to relax after hard work" },
     { "word": "match", "meaning": "a sports game" }
   ],
 
@@ -119,47 +119,47 @@
 
   "g7": {
     "pos": [
-      { "p": "There ___ a big stadium in our town.", "a": "is", "ex": "Singular noun -> There is." },
-      { "p": "There ___ many players in the team.", "a": "are", "ex": "Plural noun -> There are." },
-      { "p": "Please ___ the ball to me!", "a": "pass", "ex": "Imperative: giving a command." },
-      { "p": "There ___ some equipment in the bag.", "a": "is", "ex": "Uncountable noun -> There is." },
-      { "p": "___ careful! Don't fall!", "a": "Be", "ex": "Imperative with 'to be'." }
+      { "p": "He ___ (play) football yesterday.", "a": "played", "ex": "Past Simple: finished action." },
+      { "p": "We ___ (watch) a match on TV last night.", "a": "watched", "ex": "Past Simple: 'last night'." },
+      { "p": "She ___ (score) a goal in 2022.", "a": "scored", "ex": "Past Simple: finished time." },
+      { "p": "They ___ (train) very hard last week.", "a": "trained", "ex": "Past Simple: 'last week'." },
+      { "p": "I ___ (see) a great game yesterday.", "a": "saw", "ex": "Past Simple irregular verb." }
     ],
     "neg": [
-      { "p": "There ___ a swimming pool in the school.", "a": "is not", "ex": "Negative singular." },
-      { "p": "There ___ any restaurants near the stadium.", "a": "are not", "ex": "Negative plural." },
-      { "p": "___ run in the hallways.", "a": "Do not", "ex": "Negative imperative (Don't)." },
-      { "p": "___ late for the match!", "a": "Do not be", "ex": "Negative imperative with 'be'." },
-      { "p": "There ___ any tickets left for the game.", "a": "are not", "ex": "Negative plural." }
+      { "p": "He ___ (not / play) tennis yesterday.", "a": "did not play", "ex": "Past Simple negative." },
+      { "p": "We ___ (not / win) the match.", "a": "did not win", "ex": "Past Simple negative irregular." },
+      { "p": "She ___ (not / like) the food at the stadium.", "a": "did not like", "ex": "Past Simple negative." },
+      { "p": "I ___ (not / sleep) well last night.", "a": "did not sleep", "ex": "Past Simple negative." },
+      { "p": "They ___ (not / come) to practice.", "a": "did not come", "ex": "Past Simple negative irregular." }
     ],
     "q": [
-      { "p": "___ there a coach at the stadium?", "a": "Is", "ex": "Question form for singular." },
-      { "p": "___ there many fans in the stadium?", "a": "Are", "ex": "Question form for plural." },
-      { "p": "___ the players ready for the match?", "a": "Are", "ex": "Question with 'to be'." },
-      { "p": "___ there any water in your bottle?", "a": "Is", "ex": "Question form for uncountable." },
-      { "p": "___ let's go outside and play!", "a": "Come on,", "ex": "Phrase for suggestion." }
+      { "p": "___ you ___ (watch) the game yesterday?", "a": "Did you watch", "ex": "Past Simple question." },
+      { "p": "___ he ___ (score) a goal?", "a": "Did he score", "ex": "Past Simple question." },
+      { "p": "Where ___ they ___ (go) last summer?", "a": "did they go", "ex": "Past Simple question irregular." },
+      { "p": "___ she ___ (see) the coach?", "a": "Did she see", "ex": "Past Simple question irregular." },
+      { "p": "What time ___ the match ___ (start)?", "a": "did the match start", "ex": "Past Simple question." }
     ],
     "shuffled": [
-      { "p": "There ___ seven days in a week.", "a": "are" },
-      { "p": "There ___ a castle in the town.", "a": "is" },
-      { "p": "___ touch the hot stove!", "a": "Do not" },
-      { "p": "There ___ a lot of people in the park today.", "a": "are" },
-      { "p": "___ let's watch a movie tonight.", "a": "Come on," },
-      { "p": "There ___ not any milk in the fridge.", "a": "is" },
-      { "p": "Please ___ quiet in the library.", "a": "be" },
-      { "p": "___ go to the beach tomorrow!", "a": "Let's" },
-      { "p": "There ___ twenty-six letters in the English alphabet.", "a": "are" },
-      { "p": "There ___ a cinema and three cafes in this street.", "a": "is" },
-      { "p": "___ forget your sports equipment!", "a": "Do not" },
-      { "p": "There ___ not any big hotels here.", "a": "are" },
-      { "p": "___ stay at home. It's raining.", "a": "Let's" },
-      { "p": "There ___ fifty states in the USA.", "a": "are" },
-      { "p": "___ open the window, please.", "a": "Do" },
-      { "p": "There ___ not a university in this small town.", "a": "is" },
-      { "p": "___ not let's go out tonight.", "a": "Do" },
-      { "p": "There ___ a rugby team in our school.", "a": "is" },
-      { "p": "___ pass me the ball!", "a": "Please" },
-      { "p": "There ___ some sugar in the tea.", "a": "is" }
+      { "p": "I ___ (visit) my grandmother last Sunday.", "a": "visited" },
+      { "p": "The match ___ (start) at 7 PM.", "a": "started" },
+      { "p": "He ___ (not / want) to rest.", "a": "did not want" },
+      { "p": "We ___ (eat) pizza after the game.", "a": "ate" },
+      { "p": "She ___ (run) very fast yesterday.", "a": "ran" },
+      { "p": "They ___ (not / lose) the tournament.", "a": "did not lose" },
+      { "p": "I ___ (buy) new equipment last month.", "a": "bought" },
+      { "p": "The coach ___ (talk) to us for an hour.", "a": "talked" },
+      { "p": "___ you ___ (like) the movie?", "a": "Did you like" },
+      { "p": "He ___ (break) his arm last year.", "a": "broke" },
+      { "p": "We ___ (not / have) time to rest.", "a": "did not have" },
+      { "p": "The baby ___ (sleep) all night.", "a": "slept" },
+      { "p": "I ___ (write) a letter to my friend.", "a": "wrote" },
+      { "p": "They ___ (build) a new stadium.", "a": "built" },
+      { "p": "She ___ (not / hear) the coach.", "a": "did not hear" },
+      { "p": "___ he ___ (finish) his homework?", "a": "Did he finish" },
+      { "p": "The team ___ (fly) to London.", "a": "flew" },
+      { "p": "We ___ (swim) in the lake.", "a": "swam" },
+      { "p": "She ___ (sing) a song at the party.", "a": "sang" },
+      { "p": "I ___ (teach) him how to play.", "a": "taught" }
     ]
   },
 
@@ -188,7 +188,7 @@
     "shuffled": [
       { "prompt": "Build: She studies English every day.", "correct": ["She","studies","English","every","day."] },
       { "prompt": "Build: Look! The teacher is writing.", "correct": ["Look!","The","teacher","is","writing."] },
-      { "prompt": "Build: I am not liking this game.", "correct": ["I","do","not","like","this","game."] },
+      { "prompt": "Build: I do not like this game.", "correct": ["I","do","not","like","this","game."] },
       { "prompt": "Build: We are having a test now.", "correct": ["We","are","having","a","test","now."] },
       { "prompt": "Build: Tom usually walks to school.", "correct": ["Tom","usually","walks","to","school."] },
       { "prompt": "Build: Listen! Someone is knocking.", "correct": ["Listen!","Someone","is","knocking."] },
@@ -211,47 +211,47 @@
 
   "sbPs": {
     "pos": [
-      { "prompt": "Build a sentence with There is.", "correct": ["There","is","a","big","stadium."] },
-      { "prompt": "Build a sentence with There are.", "correct": ["There","are","twenty-six","letters."] },
-      { "prompt": "Build an imperative sentence.", "correct": ["Please","pass","the","ball."] },
-      { "prompt": "Build a sentence with There are.", "correct": ["There","are","many","players."] },
-      { "prompt": "Build an imperative sentence with 'Be'.", "correct": ["Be","careful!"] }
+      { "prompt": "Build a Past Simple sentence.", "correct": ["He","played","football","yesterday."] },
+      { "prompt": "Build a Past Simple sentence.", "correct": ["We","watched","a","match","last","night."] },
+      { "prompt": "Build a Past Simple sentence.", "correct": ["She","scored","a","goal","in","2022."] },
+      { "prompt": "Build a Past Simple sentence.", "correct": ["They","trained","very","hard","last","week."] },
+      { "prompt": "Build a Past Simple sentence.", "correct": ["I","saw","a","great","game","yesterday."] }
     ],
     "neg": [
-      { "prompt": "Build a negative sentence with There is.", "correct": ["There","is","not","a","swimming","pool."] },
-      { "prompt": "Build a negative sentence with There are.", "correct": ["There","are","not","any","restaurants."] },
-      { "prompt": "Build a negative imperative sentence.", "correct": ["Do","not","run","in","the","hallways."] },
-      { "prompt": "Build a negative imperative sentence.", "correct": ["Do","not","be","late!"] },
-      { "prompt": "Build a negative sentence with There are.", "correct": ["There","are","not","any","tickets."] }
+      { "prompt": "Build a negative Past Simple sentence.", "correct": ["He","did","not","play","tennis","yesterday."] },
+      { "prompt": "Build a negative Past Simple sentence.", "correct": ["We","did","not","win","the","match."] },
+      { "prompt": "Build a negative Past Simple sentence.", "correct": ["She","did","not","like","the","food."] },
+      { "prompt": "Build a negative Past Simple sentence.", "correct": ["I","did","not","sleep","well."] },
+      { "prompt": "Build a negative Past Simple sentence.", "correct": ["They","did","not","come","to","practice."] }
     ],
     "q": [
-      { "prompt": "Build a question with There is.", "correct": ["Is","there","a","coach?"] },
-      { "prompt": "Build a question with There are.", "correct": ["Are","there","many","fans?"] },
-      { "prompt": "Build a question with 'to be'.", "correct": ["Are","the","players","ready?"] },
-      { "prompt": "Build a question with There is.", "correct": ["Is","there","any","water?"] },
-      { "prompt": "Build a suggestion with Let's.", "correct": ["Let's","go","outside!"] }
+      { "prompt": "Build a Past Simple question.", "correct": ["Did","you","watch","the","game","yesterday?"] },
+      { "prompt": "Build a Past Simple question.", "correct": ["Did","he","score","a","goal?"] },
+      { "prompt": "Build a Past Simple question.", "correct": ["Where","did","they","go","last","summer?"] },
+      { "prompt": "Build a Past Simple question.", "correct": ["Did","she","see","the","coach?"] },
+      { "prompt": "Build a Past Simple question.", "correct": ["What","time","did","the","match","start?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: There are seven days in a week.", "correct": ["There","are","seven","days","in","a","week."] },
-      { "prompt": "Build: There is a castle in the town.", "correct": ["There","is","a","castle","in","the","town."] },
-      { "prompt": "Build: Do not touch the hot stove!", "correct": ["Do","not","touch","the","hot","stove!"] },
-      { "prompt": "Build: There are a lot of people here.", "correct": ["There","are","a","lot","of","people","here."] },
-      { "prompt": "Build: Come on, let's watch a movie.", "correct": ["Come","on,","let's","watch","a","movie."] },
-      { "prompt": "Build: There is not any milk.", "correct": ["There","is","not","any","milk."] },
-      { "prompt": "Build: Please be quiet in the library.", "correct": ["Please","be","quiet","in","the","library."] },
-      { "prompt": "Build: Let's go to the beach.", "correct": ["Let's","go","to","the","beach."] },
-      { "prompt": "Build: There is a cinema and three cafes.", "correct": ["There","is","a","cinema","and","three","cafes."] },
-      { "prompt": "Build: Do not forget your equipment!", "correct": ["Do","not","forget","your","equipment!"] },
-      { "prompt": "Build: There are not any big hotels.", "correct": ["There","are","not","any","big","hotels."] },
-      { "prompt": "Build: Let's stay at home.", "correct": ["Let's","stay","at","home."] },
-      { "prompt": "Build: There are fifty states in the USA.", "correct": ["There","are","fifty","states","in","the","USA."] },
-      { "prompt": "Build: Do open the window, please.", "correct": ["Do","open","the","window,","please."] },
-      { "prompt": "Build: There is not a university here.", "correct": ["There","is","not","a","university","here."] },
-      { "prompt": "Build: Do not let's go out tonight.", "correct": ["Do","not","let's","go","out","tonight."] },
-      { "prompt": "Build: There is a rugby team.", "correct": ["There","is","a","rugby","team."] },
-      { "prompt": "Build: Please pass me the ball!", "correct": ["Please","pass","me","the","ball!"] },
-      { "prompt": "Build: There is some sugar in the tea.", "correct": ["There","is","some","sugar","in","the","tea."] },
-      { "prompt": "Build: There are twenty-six letters in the alphabet.", "correct": ["There","are","twenty-six","letters","in","the","alphabet."] }
+      { "prompt": "Build: I visited my grandmother last Sunday.", "correct": ["I","visited","my","grandmother","last","Sunday."] },
+      { "prompt": "Build: The match started at 7 PM.", "correct": ["The","match","started","at","7","PM."] },
+      { "prompt": "Build: He did not want to rest.", "correct": ["He","did","not","want","to","rest."] },
+      { "prompt": "Build: We ate pizza after the game.", "correct": ["We","ate","pizza","after","the","game."] },
+      { "prompt": "Build: She ran very fast yesterday.", "correct": ["She","ran","very","fast","yesterday."] },
+      { "prompt": "Build: They did not lose the tournament.", "correct": ["They","did","not","lose","the","tournament."] },
+      { "prompt": "Build: I bought new equipment last month.", "correct": ["I","bought","new","equipment","last","month."] },
+      { "prompt": "Build: The coach talked to us for an hour.", "correct": ["The","coach","talked","to","us","for","an","hour."] },
+      { "prompt": "Build: Did you like the movie?", "correct": ["Did","you","like","the","movie?"] },
+      { "prompt": "Build: He broke his arm last year.", "correct": ["He","broke","his","arm","last","year."] },
+      { "prompt": "Build: We did not have time to rest.", "correct": ["We","did","not","have","time","to","rest."] },
+      { "prompt": "Build: The baby slept all night.", "correct": ["The","baby","slept","all","night."] },
+      { "prompt": "Build: I wrote a letter to my friend.", "correct": ["I","wrote","a","letter","to","my","friend."] },
+      { "prompt": "Build: They built a new stadium.", "correct": ["They","built","a","new","stadium."] },
+      { "prompt": "Build: She did not hear the coach.", "correct": ["She","did","not","hear","the","coach."] },
+      { "prompt": "Build: Did he finish his homework?", "correct": ["Did","he","finish","his","homework?"] },
+      { "prompt": "Build: The team flew to London.", "correct": ["The","team","flew","to","London."] },
+      { "prompt": "Build: We swam in the lake.", "correct": ["We","swam","in","the","lake."] },
+      { "prompt": "Build: She sang a song at the party.", "correct": ["She","sang","a","song","at","the","party."] },
+      { "prompt": "Build: I taught him how to play.", "correct": ["I","taught","him","how","to","play."] }
     ]
   },
 
@@ -304,10 +304,10 @@
   "testMcq": [
     { "q": "Which word means 'a person who trains a team'?", "options": ["athlete", "coach", "fan"], "correct": "coach", "exp": "A coach trains the players." },
     { "q": "Which word means 'a big competition'?", "options": ["match", "tournament", "stadium"], "correct": "tournament", "exp": "A tournament has many matches." },
-    { "q": "Which word means 'to relax after hard work'?", "options": ["train", "score", "rest"], "correct": "rest", "exp": "To rest is to relax and sleep." },
+    { "q": "Which word means 'to relax after hard work'?", "options": ["to train", "to score", "to rest"], "correct": "to rest", "exp": "To rest is to relax and sleep." },
     { "q": "Which word means 'good for your body'?", "options": ["healthy", "heavy", "light"], "correct": "healthy", "exp": "Healthy food is good for you." },
     { "q": "Which word means 'things you need for a sport'?", "options": ["equipment", "stadium", "match"], "correct": "equipment", "exp": "Equipment means sports tools." },
-    { "q": "Which word means 'to get a goal or point'?", "options": ["score", "train", "coach"], "correct": "score", "exp": "To score means to get a point." },
+    { "q": "Which word means 'to get a goal or point'?", "options": ["to score", "to train", "coach"], "correct": "to score", "exp": "To score means to get a point." },
     { "q": "Which word means 'a place where people watch matches'?", "options": ["stadium", "gym", "school"], "correct": "stadium", "exp": "A stadium is for watching sports." },
     { "q": "Which word means 'a person who plays sports'?", "options": ["coach", "athlete", "teacher"], "correct": "athlete", "exp": "An athlete is a sports person." }
   ],
@@ -315,18 +315,18 @@
   "testShort": [
     { "q": "Complete with Present Simple: He ______ (train) every day.", "answers": ["trains"], "exp": "He trains." },
     { "q": "Complete with Present Continuous: Look! He ______ (run).", "answers": ["is running"], "exp": "He is running." },
-    { "q": "Complete with 'going to': I ______ (travel) to London next summer.", "answers": ["am going to travel"], "exp": "I am going to travel." },
-    { "q": "Complete with 'There is/are': ______ a big stadium in the town.", "answers": ["There is"], "exp": "There is a big stadium." },
-    { "q": "Complete with 'There is/are': ______ many players in the team.", "answers": ["There are"], "exp": "There are many players." },
-    { "q": "Complete with Imperative: ______ (not / run) in the hallways.", "answers": ["Do not run", "Don't run"], "exp": "Do not run." }
+    { "q": "Complete with Past Simple: I ______ (play) football yesterday.", "answers": ["played"], "exp": "I played." },
+    { "q": "Complete with Past Simple: She ______ (go) to the stadium last night.", "answers": ["went"], "exp": "She went." },
+    { "q": "Complete with Present Simple: They ______ (not / like) losing.", "answers": ["do not like"], "exp": "They do not like." },
+    { "q": "Complete with Past Simple: He ______ (not / score) a goal.", "answers": ["did not score"], "exp": "He did not score." }
   ],
 
   "testTfng": [
     { "q": "We use Present Continuous for routines and habits.", "answer": "False", "exp": "We use Present Simple for routines." },
-    { "q": "We use 'There is' with plural nouns.", "answer": "False", "exp": "We use 'There are' with plural nouns." },
+    { "q": "We use Past Simple for finished actions in the past.", "answer": "True", "exp": "Yes, like 'played yesterday'." },
     { "q": "We use 'going to' for future intentions.", "answer": "True", "exp": "Yes, 'going to' shows future plans." },
     { "q": "We use Present Simple with the words 'Look!' and 'Listen!'.", "answer": "False", "exp": "We use Present Continuous with 'Look!' and 'Listen!'." },
-    { "q": "Imperatives are used to give commands.", "answer": "True", "exp": "Yes, like 'Stop!' or 'Pass the ball'." }
+    { "q": "The past form of 'run' is 'runned'.", "answer": "False", "exp": "The past form is 'ran'." }
   ],
 
   "testComplete": [
@@ -334,10 +334,10 @@
     { "p": "Look! The coach ___ (shout) at the players.", "a": "is shouting" },
     { "p": "I ___ (not / understand) this rule.", "a": "do not understand" },
     { "p": "They ___ (play) football in the park now.", "a": "are playing" },
-    { "p": "There ___ a big stadium in our city.", "a": "is" },
-    { "p": "There ___ many fans at the match.", "a": "are" },
-    { "p": "Please ___ (pass) me the ball!", "a": "pass" },
-    { "p": "I ___ (travel) to Spain next month.", "a": "am going to travel" },
+    { "p": "He ___ (play) football yesterday.", "a": "played" },
+    { "p": "We ___ (watch) a match on TV last night.", "a": "watched" },
+    { "p": "She ___ (not / like) the food at the stadium.", "a": "did not like" },
+    { "p": "___ you ___ (watch) the game yesterday?", "a": "Did you watch" },
     { "p": "The baby ___ (sleep) in the bedroom right now.", "a": "is sleeping" },
     { "p": "He rarely ___ (complain) about his job.", "a": "complains" }
   ]
