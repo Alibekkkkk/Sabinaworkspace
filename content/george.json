@@ -1,37 +1,16 @@
 {
   "vocab": [
-    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [
-      { "context": "a person who is good at sports", "ru": "спортсмен", "ex": "He is a professional <b>athlete</b>." }
-    ]},
-    { "en": "coach", "emoji": "📋", "meanings": [
-      { "context": "a person who trains a team", "ru": "тренер", "ex": "The <b>coach</b> is shouting at the players." }
-    ]},
-    { "en": "match", "emoji": "⚽", "meanings": [
-      { "context": "a sports game", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." }
-    ]},
-    { "en": "stadium", "emoji": "🏟️", "meanings": [
-      { "context": "a large building for sports", "ru": "стадион", "ex": "There is a big <b>stadium</b> in our city." }
-    ]},
-    { "en": "to train", "emoji": "🏋️", "meanings": [
-      { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." }
-    ]},
-    { "en": "to score", "emoji": "🥅", "meanings": [
-      { "context": "to get a point or goal", "ru": "забивать гол / набирать очки", "ex": "Look! He is going to <b>score</b>!" }
-    ]},
-    { "en": "tournament", "emoji": "🏆", "meanings": [
-      { "context": "a competition with many games", "ru": "турнир", "ex": "We are playing in a <b>tournament</b> this week." }
-    ]},
-    { "en": "equipment", "emoji": "🎒", "meanings": [
-      { "context": "tools needed for a sport", "ru": "снаряжение, экипировка", "ex": "My sports <b>equipment</b> is in the bag." }
-    ]},
-    { "en": "healthy", "emoji": "🍎", "meanings": [
-      { "context": "good for your body", "ru": "здоровый", "ex": "Eating vegetables is very <b>healthy</b>." }
-    ]},
-    { "en": "to rest", "emoji": "🛌", "meanings": [
-      { "context": "to relax and sleep", "ru": "отдыхать", "ex": "Athletes need to <b>rest</b> after a match." }
-    ]}
+    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who is good at sports", "ru": "спортсмен", "ex": "He is a professional <b>athlete</b>." } ] },
+    { "en": "coach", "emoji": "📋", "meanings": [ { "context": "a person who trains a team", "ru": "тренер", "ex": "The <b>coach</b> is shouting at the players." } ] },
+    { "en": "match", "emoji": "⚽", "meanings": [ { "context": "a sports game", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." } ] },
+    { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a large building for sports", "ru": "стадион", "ex": "There is a big <b>stadium</b> in our city." } ] },
+    { "en": "to train", "emoji": "🏋️", "meanings": [ { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." } ] },
+    { "en": "to score", "emoji": "🥅", "meanings": [ { "context": "to get a point or goal", "ru": "забивать гол / набирать очки", "ex": "Look! He is going to <b>score</b>!" } ] },
+    { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a competition with many games", "ru": "турнир", "ex": "We are playing in a <b>tournament</b> this week." } ] },
+    { "en": "equipment", "emoji": "🎒", "meanings": [ { "context": "tools needed for a sport", "ru": "снаряжение, экипировка", "ex": "My sports <b>equipment</b> is in the bag." } ] },
+    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "Eating vegetables is very <b>healthy</b>." } ] },
+    { "en": "to rest", "emoji": "🛌", "meanings": [ { "context": "to relax and sleep", "ru": "отдыхать", "ex": "Athletes need to <b>rest</b> after a match." } ] }
   ],
-
   "matchData": [
     { "word": "athlete", "meaning": "a person who plays sports" },
     { "word": "coach", "meaning": "a person who trains a team" },
@@ -44,9 +23,7 @@
     { "word": "to rest", "meaning": "to relax after hard work" },
     { "word": "match", "meaning": "a sports game" }
   ],
-
   "readingHtml": "<h1>Alex's Busy Day</h1><div class=\"subtitle\">Present Simple vs. Present Continuous</div><p><span class=\"para-label\">A.</span>Alex is a 15-year-old student and a football player. He <b>usually</b> wakes up at 7 o'clock. He eats a <b>healthy</b> breakfast and goes to school. After school, he <b>trains</b> with his team. They <b>play</b> a <b>match</b> every Saturday.</p><p><span class=\"para-label\">B.</span>Today is different. Right now, Alex is at the <b>stadium</b>. It is the final of a big <b>tournament</b>. Look! The <b>coach</b> is talking to the players. Alex is running with the ball. He is going to <b>score</b> a goal!</p><p><span class=\"para-label\">C.</span>After the match, Alex will <b>rest</b>. He needs to sleep because he is very tired. Tomorrow, he will put his <b>equipment</b> in the bag and go back to school.</p>",
-
   "readingQ": [
     { "type": "short", "prompt": "What time does Alex usually wake up?", "answers": ["7", "7 o'clock", "seven", "seven o'clock"], "exp": "He usually wakes up at 7 o'clock." },
     { "type": "short", "prompt": "What sport does Alex play?", "answers": ["football", "soccer"], "exp": "He is a football player." },
@@ -63,14 +40,12 @@
     { "type": "mcq", "prompt": "What does Alex eat for breakfast?", "options": ["Fast food", "Healthy food", "Only coffee"], "correct": "Healthy food", "exp": "The text says he eats a healthy breakfast." },
     { "type": "short", "prompt": "Complete: Alex is running with the ______.", "answers": ["ball"], "exp": "Alex is running with the ball." }
   ],
-
   "contextQ": [
     { "prompt": "In paragraph A, \"usually\" means...", "options": ["sometimes", "most of the time", "never"], "correct": "most of the time", "exp": "Usually means it is a habit or routine." },
     { "prompt": "In paragraph B, \"stadium\" is...", "options": ["a place for sports", "a type of food", "a school"], "correct": "a place for sports", "exp": "A stadium is where matches happen." },
     { "prompt": "In paragraph C, \"rest\" means...", "options": ["to run fast", "to relax and sleep", "to play again"], "correct": "to relax and sleep", "exp": "To rest is to take a break and recover." },
     { "prompt": "In paragraph B, \"tournament\" is...", "options": ["a small game", "a big competition", "a type of shoe"], "correct": "a big competition", "exp": "A tournament has many matches to find a winner." }
   ],
-
   "g6": {
     "pos": [
       { "p": "He ___ (train) every day after school.", "a": "trains", "ex": "Present Simple: routine/habit." },
@@ -116,7 +91,6 @@
       { "p": "Why ___ you ___ (wear) a heavy coat today?", "a": "are you wearing" }
     ]
   },
-
   "g7": {
     "pos": [
       { "p": "He ___ (play) football yesterday.", "a": "played", "ex": "Past Simple: finished action." },
@@ -162,7 +136,6 @@
       { "p": "I ___ (teach) him how to play.", "a": "taught" }
     ]
   },
-
   "sbPp": {
     "pos": [
       { "prompt": "Build a Present Simple sentence about a daily routine.", "correct": ["He","trains","every","day."] },
@@ -208,7 +181,6 @@
       { "prompt": "Build: How often do your parents visit?", "correct": ["How","often","do","your","parents","visit?"] }
     ]
   },
-
   "sbPs": {
     "pos": [
       { "prompt": "Build a Past Simple sentence.", "correct": ["He","played","football","yesterday."] },
@@ -254,7 +226,6 @@
       { "prompt": "Build: I taught him how to play.", "correct": ["I","taught","him","how","to","play."] }
     ]
   },
-
   "g10": {
     "pos": [
       { "p": "I ___ (travel) to London next summer.", "a": "am going to travel", "ex": "Future intention with 'going to'." },
@@ -300,7 +271,6 @@
       { "p": "___ you ___ (invite) Martin to your party?", "a": "Are you going to invite" }
     ]
   },
-
   "testMcq": [
     { "q": "Which word means 'a person who trains a team'?", "options": ["athlete", "coach", "fan"], "correct": "coach", "exp": "A coach trains the players." },
     { "q": "Which word means 'a big competition'?", "options": ["match", "tournament", "stadium"], "correct": "tournament", "exp": "A tournament has many matches." },
@@ -311,7 +281,6 @@
     { "q": "Which word means 'a place where people watch matches'?", "options": ["stadium", "gym", "school"], "correct": "stadium", "exp": "A stadium is for watching sports." },
     { "q": "Which word means 'a person who plays sports'?", "options": ["coach", "athlete", "teacher"], "correct": "athlete", "exp": "An athlete is a sports person." }
   ],
-
   "testShort": [
     { "q": "Complete with Present Simple: He ______ (train) every day.", "answers": ["trains"], "exp": "He trains." },
     { "q": "Complete with Present Continuous: Look! He ______ (run).", "answers": ["is running"], "exp": "He is running." },
@@ -320,7 +289,6 @@
     { "q": "Complete with Present Simple: They ______ (not / like) losing.", "answers": ["do not like"], "exp": "They do not like." },
     { "q": "Complete with Past Simple: He ______ (not / score) a goal.", "answers": ["did not score"], "exp": "He did not score." }
   ],
-
   "testTfng": [
     { "q": "We use Present Continuous for routines and habits.", "answer": "False", "exp": "We use Present Simple for routines." },
     { "q": "We use Past Simple for finished actions in the past.", "answer": "True", "exp": "Yes, like 'played yesterday'." },
@@ -328,7 +296,6 @@
     { "q": "We use Present Simple with the words 'Look!' and 'Listen!'.", "answer": "False", "exp": "We use Present Continuous with 'Look!' and 'Listen!'." },
     { "q": "The past form of 'run' is 'runned'.", "answer": "False", "exp": "The past form is 'ran'." }
   ],
-
   "testComplete": [
     { "p": "She usually ___ (eat) healthy food.", "a": "eats" },
     { "p": "Look! The coach ___ (shout) at the players.", "a": "is shouting" },

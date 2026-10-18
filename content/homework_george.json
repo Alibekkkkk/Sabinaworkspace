@@ -1,24 +1,6 @@
 {
   "title": "George · Sports & Daily Routines — Homework",
   "headline": "The Big Match",
-  "intro": "Read the story about a football match and answer the questions. Practice your Present Simple and Present Continuous grammar!",
-  "hero": "⚽ → 🏃‍♂️ → 🏆",
-  "sub": "Sports & Routines · Reading & Grammar",
-  "eyebrow": "Topic · Sports & Routines · Homework",
-  "reading": {
-    "title": "The Big Match",
-    "subtitle": "A story about a football team",
-    "paragraphs": [
-      { "label": "A.", "text": "David is a 15-year-old student. He is an athlete. Every day, he wakes up at 6:30 AM. He eats a healthy breakfast and goes to school. After school, he trains with his team at the stadium. They usually practice for two hours." },
-      { "label": "B.", "text": "Today is very special. It is the final of a big tournament. Right now, David is at the stadium. He is wearing his red team shirt. Look! The coach is talking to the players. He is telling them to be careful. The fans are shouting and cheering." },
-      { "label": "C.", "text": "The match is starting now. David is running with the ball. A player from the other team is trying to take it. David kicks the ball. He is going to score a goal! Yes! The ball is in the net. David is very happy. After the match, he is going to rest." }
-    ]
-  },
-  "vocab": [
-    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who plays sports", "ru": "спортсмен", "ex": "He is a young <b>athlete</b>." } ] },
-    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "He eats a <b>h{
-  "title": "George · Sports & Daily Routines — Homework",
-  "headline": "The Big Match",
   "intro": "Read the story about a football match and answer the questions. Practice your Present Simple, Present Continuous, and Past Simple grammar!",
   "hero": "⚽ → 🏃‍♂️ → 🏆",
   "sub": "Sports & Routines · Reading & Grammar",
@@ -38,6 +20,8 @@
     { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a place where people watch matches", "ru": "стадион", "ex": "The team trains at the <b>stadium</b>." } ] },
     { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a big competition", "ru": "турнир", "ex": "It is the final of a big <b>tournament</b>." } ] },
     { "en": "coach", "emoji": "📋", "meanings": [ { "context": "a person who trains a team", "ru": "тренер", "ex": "The <b>coach</b> is talking to the team." } ] },
+    { "en": "match", "emoji": "⚽", "meanings": [ { "context": "a sports game", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." } ] },
+    { "en": "to train", "emoji": "🏋️", "meanings": [ { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." } ] },
     { "en": "to score", "emoji": "🥅", "meanings": [ { "context": "to get a goal", "ru": "забивать гол", "ex": "He is going to <b>score</b> a goal!" } ] },
     { "en": "to rest", "emoji": "🛌", "meanings": [ { "context": "to relax after work", "ru": "отдыхать", "ex": "He is going to <b>rest</b> after the game." } ] }
   ],
