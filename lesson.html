@@ -1570,9 +1570,27 @@ function goToStage(n){
   state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n);
 }
 function renderStage(){
-  const main=document.getElementById('main');if(!main)return;main.innerHTML='';
+  const main=document.getElementById('main');if(!main)return;
   const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9};
-  try{fns[state.currentStage]()}catch(e){console.error(e);main.innerHTML='<p>Error loading stage.</p>'}
+  try{
+    fns[state.currentStage]();
+    
+    // Insert persistent header
+    const lesson = getCurrentLesson();
+    const title = lesson ? lesson.title : 'Lesson';
+    const stageObj = lesson ? lesson.stages.find(s => s.id === state.currentStage) : null;
+    const icon = stageObj ? stageObj.icon : '📘';
+    
+    const header = document.createElement('div');
+    header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
+    if(state.currentStage === 3) header.style.maxWidth = '1400px';
+    header.innerHTML = `<span style="font-size:36px;">${icon}</span> ${escapeHtml(title)}`;
+    
+    main.insertBefore(header, main.firstChild);
+  }catch(e){
+    console.error(e);
+    main.innerHTML='<p>Error loading stage.</p>';
+  }
 }
 function stageFooter(prevId,nextId,extraHTML){
   const f=document.createElement('div');f.className='stage-footer';let html='';

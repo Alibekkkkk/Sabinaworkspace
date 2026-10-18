@@ -437,17 +437,12 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <label for="lessonCustomUrl">Custom URL (optional — leave blank for default)</label>
     <input type="text" id="lessonCustomUrl" placeholder="e.g. lesson.html" style="text-transform:none;">
     
-    <label for="lessonContentUrl">Content file (e.g. sabina, gaziz, aisha)</label>
+    <label for="lessonContentUrl">Content file (e.g. sabina, gaziz, aisha, homework_george)</label>
     <input type="text" id="lessonContentUrl" placeholder="e.g. sabina" style="text-transform:lowercase;">
     
     <div id="homeworkExtras" style="display:none;">
       <label for="lessonDue">Homework due (date or note)</label>
       <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
-      <label for="homeworkVariant">Homework variant</label>
-      <select id="homeworkVariant">
-        <option value="gaziz">Sustainable Cities (Gaziz style)</option>
-        <option value="sabina">Natural Disasters (Sabina style)</option>
-      </select>
     </div>
     <label>Visibility</label>
     <div style="display:flex;gap:8px;margin-bottom:14px;">
@@ -1279,8 +1274,9 @@ function openHomework(id) {
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
   
-  const variant = l.homeworkVariant || 'gaziz';
-  url.searchParams.set('variant', variant);
+  // Pass the content name directly as the 'variant' param
+  const contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
+  url.searchParams.set('variant', contentFile || 'gaziz');
   
   if (activeCode) url.searchParams.set('code', activeCode);
   frame.src = url.href;
@@ -1294,8 +1290,8 @@ function openCurrentHomeworkInTab() {
   url.searchParams.set('lesson', currentHomeworkId);
   url.searchParams.set('teacher', '1');
   
-  const variant = l.homeworkVariant || 'gaziz';
-  url.searchParams.set('variant', variant);
+  const contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
+  url.searchParams.set('variant', contentFile || 'gaziz');
   
   if (activeCode) url.searchParams.set('code', activeCode);
   window.open(url.href, '_blank');
@@ -1317,7 +1313,6 @@ function openLessonModal(id) {
   document.getElementById('lessonPublished').checked = l.published !== false;
   lessonVisibility = (l.assignedTo && l.assignedTo.length) ? 'some' : 'all';
   lessonType = l.homework ? 'homework' : 'classwork';
-  document.getElementById('homeworkVariant').value = l.homeworkVariant || 'gaziz';
   setLessonVisibility(lessonVisibility);
   setLessonType(lessonType);
   renderStudentPickList(l.assignedTo || []);
@@ -1359,7 +1354,6 @@ function submitLesson() {
 	contentUrl: document.getElementById('lessonContentUrl').value.trim() ? 'content/' + document.getElementById('lessonContentUrl').value.trim() + '.json' : '',
     homework: lessonType === 'homework',
     homeworkDue: lessonType === 'homework' ? (document.getElementById('lessonDue').value || '').trim() : '',
-    homeworkVariant: lessonType === 'homework' ? document.getElementById('homeworkVariant').value : '',
     assignedTo: assignedTo,
     stages: (curriculum[id] && curriculum[id].stages) || STAGE_LIST,
     published: document.getElementById('lessonPublished').checked,
