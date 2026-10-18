@@ -1,0 +1,469 @@
+{
+  "vocab": [
+    { "en": "environment", "emoji": "🌍", "meanings": [
+      { "context": "the natural world", "ru": "окружающая среда", "ex": "We must protect the <b>environment</b> for future generations." },
+      { "context": "surroundings or conditions", "ru": "обстановка, условия", "ex": "Children learn best in a safe and friendly <b>environment</b>." }
+    ]},
+    { "en": "pollution", "emoji": "💨", "meanings": [
+      { "context": "harmful substances", "ru": "загрязнение", "ex": "Air <b>pollution</b> in the city centre has dropped by 40%." },
+      { "context": "noise or light", "ru": "шумовое загрязнение", "ex": "Noise <b>pollution</b> from the ring road keeps residents awake." }
+    ]},
+    { "en": "transport", "emoji": "🚌", "meanings": [
+      { "context": "ways of moving people", "ru": "транспорт", "ex": "Public <b>transport</b> in Copenhagen is fast and reliable." },
+      { "context": "to move something", "displayEn": "to transport", "ru": "перевозить", "ex": "The company <b>transports</b> goods by electric truck." }
+    ]},
+    { "en": "community", "emoji": "👥", "meanings": [
+      { "context": "people in one area", "ru": "сообщество, местные жители", "ex": "The whole <b>community</b> helped clean the riverbank." },
+      { "context": "a group with shared interests", "ru": "община, круг", "ex": "She joined an online <b>community</b> of urban gardeners." }
+    ]},
+    { "en": "to improve", "emoji": "✨", "meanings": [
+      { "context": "make better", "ru": "улучшать", "ex": "The council wants to <b>improve</b> air quality in the city centre." },
+      { "context": "become better", "ru": "улучшаться", "ex": "Her English has <b>improved</b> a lot this year." }
+    ]},
+    { "en": "to increase", "emoji": "📈", "meanings": [
+      { "context": "become larger", "ru": "увеличиваться, расти", "ex": "Cycling rates have <b>increased</b> every year since 2015." },
+      { "context": "make larger", "ru": "увеличивать", "ex": "The city plans to <b>increase</b> the number of electric buses." },
+      { "context": "a rise (noun)", "displayEn": "increase", "ru": "рост, увеличение", "ex": "There has been a sharp <b>increase</b> in recycling." }
+    ]},
+    { "en": "to reduce", "emoji": "📉", "meanings": [
+      { "context": "make smaller", "ru": "уменьшать, сокращать", "ex": "The new plan will <b>reduce</b> traffic in the old town." },
+      { "context": "become smaller", "ru": "уменьшаться", "ex": "Pollution has <b>reduced</b> significantly since 2015." }
+    ]},
+    { "en": "to provide", "emoji": "🎁", "meanings": [
+      { "context": "give what is needed", "ru": "предоставлять, обеспечивать", "ex": "The council <b>provides</b> free bike repairs for residents." },
+      { "context": "supply for a purpose", "ru": "снабжать", "ex": "Local farms <b>provide</b> vegetables for the school canteen." }
+    ]},
+    { "en": "to affect", "emoji": "🔄", "meanings": [
+      { "context": "influence or change", "ru": "влиять на", "ex": "Air pollution <b>affects</b> everyone, especially children and the elderly." },
+      { "context": "cause emotional change", "ru": "воздействовать эмоционально", "ex": "The story of the flood deeply <b>affected</b> the readers." }
+    ]},
+    { "en": "result", "emoji": "🎯", "meanings": [
+      { "context": "outcome", "ru": "результат", "ex": "The <b>result</b> of the project was cleaner air and happier residents." },
+      { "context": "to happen because of", "displayEn": "to result", "ru": "приводить к", "ex": "New cycling lanes <b>resulted</b> in fewer accidents." }
+    ]},
+    { "en": "benefit", "emoji": "👍", "meanings": [
+      { "context": "a good effect", "ru": "польза, выгода", "ex": "One <b>benefit</b> of cycling is better health." },
+      { "context": "to gain from", "displayEn": "to benefit", "ru": "извлекать пользу, получать выгоду", "ex": "Everyone <b>benefits</b> from cleaner air." }
+    ]},
+    { "en": "cost", "emoji": "💰", "meanings": [
+      { "context": "price", "ru": "стоимость, цена", "ex": "The <b>cost</b> of the new metro line was very high." },
+      { "context": "to have a price", "displayEn": "to cost", "ru": "стоить", "ex": "Solar panels <b>cost</b> less than they did ten years ago." },
+      { "context": "to cause loss", "displayEn": "to cost", "ru": "стоить (потерь)", "ex": "The delay <b>cost</b> the company millions of dollars." }
+    ]},
+    { "en": "issue", "emoji": "❔", "meanings": [
+      { "context": "a problem to discuss", "ru": "проблема, вопрос", "ex": "Traffic congestion is a major <b>issue</b> in many cities." },
+      { "context": "to officially release", "displayEn": "to issue", "ru": "выпускать", "ex": "The government <b>issued</b> a new report on air quality." }
+    ]},
+    { "en": "solution", "emoji": "💡", "meanings": [
+      { "context": "an answer to a problem", "ru": "решение", "ex": "Cycling is one <b>solution</b> to urban pollution." },
+      { "context": "a liquid mixture (chemistry)", "ru": "раствор", "ex": "The lab technician prepared a salt <b>solution</b>." }
+    ]},
+    { "en": "public", "emoji": "🏛️", "meanings": [
+      { "context": "for everyone", "ru": "общественный, публичный", "ex": "Public transport should be cheap and reliable." },
+      { "context": "people in general", "ru": "публика, общественность", "ex": "The <b>public</b> was invited to comment on the new plan." }
+    ]},
+    { "en": "local", "emoji": "📍", "meanings": [
+      { "context": "nearby, from this area", "ru": "местный", "ex": "Local shops give discounts to residents who cycle." },
+      { "context": "a person from the area", "ru": "местный житель", "ex": "The <b>locals</b> know the best cycling routes." }
+    ]},
+    { "en": "energy", "emoji": "⚡", "meanings": [
+      { "context": "power for heat or light", "ru": "энергия", "ex": "The city uses wind <b>energy</b> to power public buildings." },
+      { "context": "physical or mental strength", "ru": "силы, энергия", "ex": "After a long bike ride, she had no <b>energy</b> left." }
+    ]},
+    { "en": "resource", "emoji": "🧰", "meanings": [
+      { "context": "useful material or supply", "ru": "ресурс", "ex": "Water is a precious <b>resource</b> in dry regions." },
+      { "context": "something useful for a task", "ru": "средство, возможность", "ex": "The internet is a great <b>resource</b> for language learners." }
+    ]},
+    { "en": "to develop", "emoji": "🌱", "meanings": [
+      { "context": "build or expand a place", "ru": "развивать, застраивать", "ex": "The city <b>developed</b> the empty lot into a public park." },
+      { "context": "grow or gain skills", "ru": "развивать(ся)", "ex": "She <b>developed</b> strong English skills through daily practice." },
+      { "context": "create a product or idea", "ru": "разрабатывать", "ex": "Engineers <b>developed</b> an app that maps safe cycling routes." }
+    ]},
+    { "en": "to support", "emoji": "🤝", "meanings": [
+      { "context": "help or encourage", "ru": "поддерживать", "ex": "Local shops <b>support</b> the cycling campaign." },
+      { "context": "agree with a plan", "ru": "одобрять, поддерживать", "ex": "Most residents <b>support</b> the pedestrianisation plan." },
+      { "context": "help or encouragement (noun)", "displayEn": "support", "ru": "поддержка", "ex": "She needs more <b>support</b> with her grammar." }
+    ]}
+  ],
+
+  "matchData": [
+    { "word": "environment", "meaning": "the natural world around us" },
+    { "word": "pollution", "meaning": "harmful material in air, water, or land" },
+    { "word": "transport", "meaning": "ways of moving people or goods" },
+    { "word": "community", "meaning": "people who live in one area" },
+    { "word": "to improve", "meaning": "make something better" },
+    { "word": "to increase", "meaning": "become or make greater" },
+    { "word": "to reduce", "meaning": "make or become smaller" },
+    { "word": "to provide", "meaning": "give or make something available" },
+    { "word": "to affect", "meaning": "change or influence something" },
+    { "word": "benefit", "meaning": "a good or helpful result" }
+  ],
+
+  "readingHtml": "<h1>The City That Said Goodbye to Cars</h1><div class=\"subtitle\">A case study in urban transformation</div><p><span class=\"para-label\">A.</span>In 2015, the mayor of Copenhagen stood in front of a crowded town hall and made a promise that many thought was impossible: within a decade, the city would become the first capital in the world to be carbon-neutral. At the time, Copenhagen was struggling with the same problems that face most growing cities — congested roads, rising pollution, and residents who complained that their neighbourhoods had become unlivable. Few believed the plan would work. Ten years later, the city has proved many of those sceptics wrong.</p><p><span class=\"para-label\">B.</span>The idea was not new. As early as 2009, city planners had begun to discuss a bold strategy: to reduce the number of cars in the city centre and to make cycling, walking, and public transport the primary ways of getting around. What made Copenhagen\u2019s plan different was not the goal, but the scale. Rather than gently discouraging drivers, the council made a series of decisions that changed the physical shape of the city. Parking spaces were removed. Whole streets were turned into pedestrian-only zones. A network of elevated cycle paths — the so-called \u201Ccycle super-highways\u201D — was built to connect the suburbs with the city centre.</p><p><span class=\"para-label\">C.</span>The cycling infrastructure is perhaps the most striking feature of the transformation. Copenhagen now has over 400 kilometres of dedicated cycle lanes, many of them separated from car traffic by curbs or planters. In winter, the snow is cleared from cycle paths before it is cleared from roads. At major intersections, cyclists are given priority with their own traffic lights. Perhaps most importantly, the city made a decision that no other capital had made: it began to measure its success not by how fast cars could move, but by how many people chose to cycle. Today, more than 60 per cent of Copenhagen residents commute to work or school by bike — a figure that would have seemed absurd a generation ago.</p><p><span class=\"para-label\">D.</span>The transformation was not limited to transport. The city\u2019s harbour, once an industrial area that residents avoided, has been cleaned and reopened as a public space. Old warehouses have been converted into apartments, restaurants, and cultural centres. A series of new bridges allow pedestrians and cyclists to cross the water easily. In summer, locals swim in the harbour — something that would have been unthinkable in the 1990s, when the water was considered unsafe. The city has also invested heavily in renewable energy, particularly wind power and district heating systems that use waste heat from factories.</p><p><span class=\"para-label\">E.</span>Not everyone welcomed the changes. Small business owners in the city centre complained that removing parking spaces had reduced their customers. Some residents in the suburbs argued that the new cycle highways served wealthier neighbourhoods better than poorer ones. Critics noted that the transition had been expensive, and that the council had spent millions on projects that would take decades to pay back. Others pointed out that Copenhagen\u2019s success was possible partly because the city was relatively small and wealthy — conditions that many other cities do not share.</p><p><span class=\"para-label\">F.</span>Despite the criticisms, the results have been difficult to ignore. Air pollution in the city centre has dropped by more than 40 per cent since 2015. Traffic accidents involving cyclists have fallen, partly because of safer road design. Most importantly, surveys suggest that residents are happier with their city than they were a decade ago. Copenhagen has become a model that other cities now study carefully — from Paris to Bogotá to Seoul. The question is no longer whether a city can reduce its dependence on cars, but how quickly others will follow.</p>",
+
+  "readingQ": [
+    { "type": "short", "prompt": "In what year did the mayor make the carbon-neutral promise?", "answers": ["2015"], "exp": "The article says the promise was made in 2015." },
+    { "type": "short", "prompt": "What percentage of Copenhagen residents currently commute by bicycle?", "answers": ["60","60%","60 per cent","more than 60","over 60"], "exp": "More than 60 per cent of residents cycle to work or school." },
+    { "type": "short", "prompt": "By how much has air pollution dropped in the city centre since 2015?", "answers": ["40","40%","40 per cent","more than 40","over 40"], "exp": "Air pollution has dropped by more than 40 per cent." },
+    { "type": "short", "prompt": "In which decade was the harbour considered unsafe for swimming?", "answers": ["1990s","the 1990s","1990"], "exp": "The water was considered unsafe in the 1990s." },
+    { "type": "short", "prompt": "What is cleared from cycle paths first in winter?", "answers": ["snow","the snow"], "exp": "Snow is cleared from cycle paths before roads." },
+    { "type": "short", "prompt": "Name ONE city mentioned in the article as studying Copenhagen\u2019s model.", "answers": ["paris","bogota","bogotá","seoul"], "exp": "Paris, Bogotá and Seoul are all mentioned." },
+    { "type": "tfng", "prompt": "Copenhagen promised to become carbon-neutral within ten years.", "answer": "True", "exp": "The mayor promised carbon neutrality \"within a decade.\"" },
+    { "type": "tfng", "prompt": "The cycle super-highways were built underground.", "answer": "False", "exp": "They were elevated, not underground." },
+    { "type": "tfng", "prompt": "Snow is cleared from roads before cycle paths.", "answer": "False", "exp": "Snow is cleared from cycle paths first." },
+    { "type": "tfng", "prompt": "The mayor of Copenhagen was re-elected after the transformation.", "answer": "Not Given", "exp": "The article never mentions re-election." },
+    { "type": "long", "prompt": "In your own words, explain why Copenhagen\u2019s plan was considered different from other cities\u2019 plans.",
+      "keywordGroups": [["scale","size","extent"],["physical","shape","structure"],["removed","removal","parking"],["pedestrian","walking","walk"],["bold","ambitious","radical","large"]],
+      "minWords": 12, "minGroups": 3,
+      "sample": "Copenhagen\u2019s plan was different because of its scale and because it changed the physical shape of the city — for example, by removing parking spaces and creating pedestrian-only zones.",
+      "exp": "Key ideas: scale/size, physical change, removal of parking, pedestrian zones." },
+    { "type": "long", "prompt": "Describe TWO benefits of the transformation that are mentioned in the article.",
+      "keywordGroups": [["pollution","cleaner","air"],["accident","safe","safety"],["happy","happier","satisfied"],["cycle","bike","commute","travel"],["health","healthy"]],
+      "minWords": 12, "minGroups": 2,
+      "sample": "Two benefits are that air pollution has dropped by more than 40 per cent and that traffic accidents involving cyclists have fallen.",
+      "exp": "Key ideas: reduced pollution, fewer accidents, happier residents, more cycling." },
+    { "type": "long", "prompt": "Explain why some residents criticised the changes.",
+      "keywordGroups": [["business","shops","owners"],["customers","trade"],["expensive","cost","money","funding"],["wealthy","rich","poor","poorer"],["suburb","suburbs"]],
+      "minWords": 10, "minGroups": 2,
+      "sample": "Some residents criticised the changes because removing parking reduced customers for local businesses, and because the new cycle highways served wealthier neighbourhoods better than poorer ones.",
+      "exp": "Key ideas: business customers, expensive, wealthier vs poorer areas." },
+    { "type": "short", "prompt": "Complete the summary: \"The city made a decision that no other capital had made: to measure success by how many people chose to ______.\"", "answers": ["cycle","bike","ride"], "exp": "The city measures success by how many people cycle." },
+    { "type": "short", "prompt": "Complete: \"The council removed parking spaces and turned whole streets into ______ -only zones.\"", "answers": ["pedestrian","pedestrians"], "exp": "Streets became pedestrian-only zones." },
+    { "type": "short", "prompt": "Complete: \"The city invested heavily in renewable energy, particularly wind power and ______ heating.\"", "answers": ["district"], "exp": "District heating uses waste heat from factories." },
+    { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["A city can reduce its dependence on cars with bold planning","Bicycles are dangerous in winter","Only wealthy cities can be sustainable"], "correct": "A city can reduce its dependence on cars with bold planning", "exp": "The article tells the story of Copenhagen\u2019s successful urban transformation." },
+    { "type": "mcq", "prompt": "Which of these is NOT stated as a benefit of the transformation?", "options": ["Lower air pollution","Fewer cycling accidents","Cheaper housing for residents"], "correct": "Cheaper housing for residents", "exp": "The article never says housing became cheaper." },
+    { "type": "mcq", "prompt": "What is the author\u2019s overall tone towards Copenhagen\u2019s plan?", "options": ["Broadly positive with balanced criticisms","Entirely critical","Neutral and uninterested"], "correct": "Broadly positive with balanced criticisms", "exp": "The article praises results but includes paragraph E\u2019s criticisms." }
+  ],
+
+  "contextQ": [
+    { "prompt": "In paragraph A, \"sceptics\" are people who...", "options": ["doubt something is true","support a plan","write about cities"], "correct": "doubt something is true", "exp": "A sceptic doubts claims." },
+    { "prompt": "In paragraph B, \"scale\" refers to...", "options": ["the size or extent of the plan","a weighing machine","a map"], "correct": "the size or extent of the plan", "exp": "Here scale means the size of the change." },
+    { "prompt": "In paragraph C, \"commute\" means...", "options": ["travel regularly between home and work","shop online","move to another country"], "correct": "travel regularly between home and work", "exp": "To commute is to make a regular journey." },
+    { "prompt": "In paragraph D, \"converted\" means...", "options": ["changed from one use to another","destroyed","painted"], "correct": "changed from one use to another", "exp": "Old warehouses were changed into apartments." },
+    { "prompt": "In paragraph E, \"transition\" means...", "options": ["a change from one state to another","a delay","a holiday"], "correct": "a change from one state to another", "exp": "The transition was the move to sustainable transport." },
+    { "prompt": "In paragraph F, \"dependence\" means...", "options": ["relying on something","being independent","traveling slowly"], "correct": "relying on something", "exp": "Dependence on cars means relying on them." },
+    { "prompt": "In paragraph B, \"elevated\" cycle paths are...", "options": ["raised above the ground","underground","on the water"], "correct": "raised above the ground", "exp": "Elevated means raised." },
+    { "prompt": "In paragraph C, \"priority\" means...", "options": ["the right to go first","a type of vehicle","a small road"], "correct": "the right to go first", "exp": "Cyclists get the right of way." }
+  ],
+
+  "g6": {
+    "pos": [
+      { "p": "The city ___ (install) solar panels on all public buildings since 2020.", "a": "has installed", "ex": "Present perfect: has + installed. Result matters now." },
+      { "p": "Residents ___ (adopt) electric bikes in large numbers this year.", "a": "have adopted", "ex": "Plural subject → have + adopted." },
+      { "p": "The council ___ (plant) more than ten thousand trees along the ring road.", "a": "has planted", "ex": "Singular \"council\" → has + planted." },
+      { "p": "Local companies ___ (develop) apps that show real-time bus arrivals.", "a": "have developed", "ex": "Plural → have + developed." },
+      { "p": "Our neighbourhood ___ (become) much quieter since the traffic plan started.", "a": "has become", "ex": "\"Since\" triggers present perfect." }
+    ],
+    "neg": [
+      { "p": "The city ___ (not / solve) the problem of noise from the ring road yet.", "a": "has not solved", "ex": "\"Yet\" with a negative → has not + V3." },
+      { "p": "We ___ (not / see) such clean air in the city centre for decades.", "a": "have not seen", "ex": "\"For decades\" triggers present perfect." },
+      { "p": "The council ___ (not / decide) which suburbs will receive the new metro line.", "a": "has not decided", "ex": "Negative present perfect with singular subject." },
+      { "p": "Many residents ___ (not / receive) the promised recycling bins.", "a": "have not received", "ex": "Plural subject → have not + V3." },
+      { "p": "The mayor ___ (not / explain) how the project will be funded.", "a": "has not explained", "ex": "Singular subject → has not + V3." }
+    ],
+    "q": [
+      { "p": "___ the city ___ (reduce) its carbon emissions since 2015?", "a": "Has the city reduced", "ex": "Question form: Has + subject + V3." },
+      { "p": "___ you ever ___ (travel) by cargo bike?", "a": "Have you ever travelled", "ex": "\"Ever\" + present perfect for experience." },
+      { "p": "___ the council ___ (approve) the new cycle bridge yet?", "a": "Has the council approved", "ex": "\"Yet\" in a question → present perfect." },
+      { "p": "___ residents ___ (complain) about the parking changes?", "a": "Have residents complained", "ex": "Plural subject in question." },
+      { "p": "___ your school ___ (start) an environment club?", "a": "Has your school started", "ex": "Singular subject in question." }
+    ],
+    "shuffled": [
+      { "p": "The city ___ (open) three new parks in the last five years.", "a": "has opened" },
+      { "p": "I ___ (use) public transport every day since I moved here.", "a": "have used" },
+      { "p": "Scientists ___ (warn) about air pollution for decades.", "a": "have warned" },
+      { "p": "The council ___ (spend) millions on the new bus network.", "a": "has spent" },
+      { "p": "___ you ___ (hear) about the new electric ferry?", "a": "Have you heard" },
+      { "p": "Our family ___ (not / own) a car since 2018.", "a": "has not owned" },
+      { "p": "How long ___ the city ___ (have) this cycling policy?", "a": "has the city had" },
+      { "p": "Local volunteers ___ (clean) the riverbank every spring.", "a": "have cleaned" },
+      { "p": "The government ___ (invest) heavily in renewable energy recently.", "a": "has invested" },
+      { "p": "We ___ (already / visit) the new exhibition at the science museum.", "a": "have already visited" },
+      { "p": "The mayor ___ (just / announce) a new green transport plan.", "a": "has just announced" },
+      { "p": "The harbour ___ (not / look) this clean for over thirty years.", "a": "has not looked" },
+      { "p": "___ the council ___ (install) new LED street lights on your road?", "a": "Has the council installed" },
+      { "p": "My parents ___ (live) in this neighbourhood for over twenty years.", "a": "have lived" },
+      { "p": "The new bus app ___ (help) thousands of commuters every day.", "a": "has helped" },
+      { "p": "I ___ (never / see) such a busy cycle lane before.", "a": "have never seen" },
+      { "p": "The city ___ (not / build) the new metro line yet.", "a": "has not built" },
+      { "p": "___ you ___ (try) the new electric scooter rental?", "a": "Have you tried" },
+      { "p": "Our school ___ (start) a recycling programme this term.", "a": "has started" },
+      { "p": "Residents ___ (complain) about noise since the roadworks began.", "a": "have complained" },
+      { "p": "How many trees ___ the council ___ (plant) this year?", "a": "has the council planted" },
+      { "p": "The park ___ (become) a favourite spot for families.", "a": "has become" },
+      { "p": "She ___ (not / ride) a bike since she was a teenager.", "a": "has not ridden" },
+      { "p": "___ the city ___ (reduce) its carbon footprint?", "a": "Has the city reduced" },
+      { "p": "We ___ (know) each other since primary school.", "a": "have known" },
+      { "p": "Local shops ___ (begin) to offer discounts to cyclists.", "a": "have begun" },
+      { "p": "The new bridge ___ (improve) traffic in the area.", "a": "has improved" },
+      { "p": "___ they ___ (finish) the cycle path along the river?", "a": "Have they finished" },
+      { "p": "I ___ (just / read) an article about Copenhagen.", "a": "have just read" },
+      { "p": "The council ___ (not / decide) on the new parking rules yet.", "a": "has not decided" }
+    ]
+  },
+
+  "g7": {
+    "pos": [
+      { "p": "The new cycle lane ___ (open) by the mayor in 2023.", "a": "was opened", "ex": "Past passive: was + V3." },
+      { "p": "Thousands of trees ___ (plant) along the ring road last spring.", "a": "were planted", "ex": "Plural subject → were + V3." },
+      { "p": "The old market ___ (convert) into a public park.", "a": "was converted", "ex": "Singular subject → was + V3." },
+      { "p": "New rules ___ (introduce) to reduce traffic in the city centre.", "a": "were introduced", "ex": "Plural subject → were + V3." },
+      { "p": "The plan ___ (approve) by the council last month.", "a": "was approved", "ex": "Past passive with singular subject." }
+    ],
+    "neg": [
+      { "p": "The proposal ___ (not / accept) by the residents.", "a": "was not accepted", "ex": "Negative past passive." },
+      { "p": "The old bus routes ___ (not / replace) in time.", "a": "were not replaced", "ex": "Plural negative passive." },
+      { "p": "The harbour ___ (not / clean) before the festival.", "a": "was not cleaned", "ex": "Singular negative passive." },
+      { "p": "New funding ___ (not / approve) for the metro line.", "a": "was not approved", "ex": "Past passive negative." },
+      { "p": "The complaints ___ (not / consider) by the council.", "a": "were not considered", "ex": "Plural negative passive." }
+    ],
+    "q": [
+      { "p": "___ the new bridge ___ (build) last year?", "a": "Was the new bridge built", "ex": "Past passive question." },
+      { "p": "___ the trees ___ (plant) by volunteers?", "a": "Were the trees planted", "ex": "Plural past passive question." },
+      { "p": "___ the cycle lane ___ (widen) in 2022?", "a": "Was the cycle lane widened", "ex": "Past passive question." },
+      { "p": "___ the old buildings ___ (protect) by the council?", "a": "Were the old buildings protected", "ex": "Plural past passive question." },
+      { "p": "___ the new lights ___ (install) across the city?", "a": "Were the new lights installed", "ex": "Plural past passive question." }
+    ],
+    "shuffled": [
+      { "p": "The new park ___ (design) by a local architect.", "a": "was designed" },
+      { "p": "Several cycle routes ___ (add) in the last decade.", "a": "were added" },
+      { "p": "The bus system ___ (modernise) by the council.", "a": "was modernised" },
+      { "p": "Solar panels ___ (install) on the town hall.", "a": "were installed" },
+      { "p": "The pedestrian zone ___ (expand) in 2021.", "a": "was expanded" },
+      { "p": "The plan ___ (discuss) at a public meeting.", "a": "was discussed" },
+      { "p": "New funding ___ (announce) for sustainable transport.", "a": "was announced" },
+      { "p": "The riverbank ___ (clean) by volunteers.", "a": "was cleaned" },
+      { "p": "Local opinions ___ (consider) by the mayor.", "a": "were considered" },
+      { "p": "The bus stop ___ (move) closer to the school.", "a": "was moved" },
+      { "p": "Recycling bins ___ (place) on every street corner.", "a": "were placed" },
+      { "p": "The cycle path ___ (paint) in a bright colour.", "a": "was painted" },
+      { "p": "Community gardens ___ (create) on unused land.", "a": "were created" },
+      { "p": "The project ___ (fund) by the local government.", "a": "was funded" },
+      { "p": "___ the new plan ___ (reject) by the residents?", "a": "Was the new plan rejected" },
+      { "p": "The mayor ___ (interview) by local journalists.", "a": "was interviewed" },
+      { "p": "New rules ___ (write) to protect the riverside.", "a": "were written" },
+      { "p": "___ the cycle lanes ___ (add) to the main roads?", "a": "Were the cycle lanes added" },
+      { "p": "The park benches ___ (repair) last summer.", "a": "were repaired" },
+      { "p": "The council budget ___ (increase) for green projects.", "a": "was increased" },
+      { "p": "Several trees ___ (remove) to widen the road.", "a": "were removed" },
+      { "p": "The pedestrian bridge ___ (complete) in 2019.", "a": "was completed" },
+      { "p": "Air quality ___ (monitor) daily in the city centre.", "a": "was monitored" },
+      { "p": "The metro station ___ (design) with green energy.", "a": "was designed" },
+      { "p": "New information boards ___ (put) at every stop.", "a": "were put" },
+      { "p": "The project ___ (approve) after long debates.", "a": "was approved" },
+      { "p": "The old bridge ___ (replace) with a wider one.", "a": "was replaced" },
+      { "p": "More benches ___ (add) along the river walk.", "a": "were added" },
+      { "p": "The plan ___ (announce) at the town hall.", "a": "was announced" },
+      { "p": "Public feedback ___ (collect) via the city website.", "a": "was collected" }
+    ]
+  },
+
+  "sbPp": {
+    "pos": [
+      { "prompt": "Build a present perfect sentence about the city park.", "correct": ["The","city","has","opened","three","new","parks","recently."] },
+      { "prompt": "Build a present perfect sentence about residents and electric bikes.", "correct": ["Residents","have","bought","electric","bikes","this","year."] },
+      { "prompt": "Build a present perfect sentence about the council and LED lights.", "correct": ["The","council","has","installed","LED","lights","in","every","school."] },
+      { "prompt": "Build a present perfect sentence about you and the new ferry.", "correct": ["I","have","travelled","on","the","new","ferry","twice."] },
+      { "prompt": "Build a present perfect sentence about local volunteers.", "correct": ["Local","volunteers","have","cleaned","the","riverbank","for","years."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative present perfect sentence about the bridge.", "correct": ["The","city","has","not","finished","the","new","bridge","yet."] },
+      { "prompt": "Build a negative present perfect sentence about noise.", "correct": ["We","have","not","heard","any","noise","since","Monday."] },
+      { "prompt": "Build a negative present perfect sentence about the council.", "correct": ["The","council","has","not","decided","where","to","build","the","park."] },
+      { "prompt": "Build a negative present perfect sentence about recycling.", "correct": ["The","school","has","not","started","a","recycling","programme","yet."] },
+      { "prompt": "Build a negative present perfect sentence about traffic.", "correct": ["Traffic","has","not","improved","in","the","last","year."] }
+    ],
+    "q": [
+      { "prompt": "Build a present perfect question about the new bus route.", "correct": ["Have","you","tried","the","new","bus","route","yet?"] },
+      { "prompt": "Build a present perfect question about the harbour.", "correct": ["Has","the","city","cleaned","the","harbour","recently?"] },
+      { "prompt": "Build a present perfect question about solar panels.", "correct": ["Has","your","school","installed","solar","panels?"] },
+      { "prompt": "Build a present perfect question about complaints.", "correct": ["Have","residents","complained","about","the","noise?"] },
+      { "prompt": "Build a present perfect question with \"ever\".", "correct": ["Have","you","ever","cycled","across","the","city","centre?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: The city has grown very quickly.", "correct": ["The","city","has","grown","very","quickly."] },
+      { "prompt": "Build: She has lived here for ten years.", "correct": ["She","has","lived","here","for","ten","years."] },
+      { "prompt": "Build: We have already visited the museum.", "correct": ["We","have","already","visited","the","museum."] },
+      { "prompt": "Build: The mayor has just announced a new plan.", "correct": ["The","mayor","has","just","announced","a","new","plan."] },
+      { "prompt": "Build: They have not arrived yet.", "correct": ["They","have","not","arrived","yet."] },
+      { "prompt": "Build: I have never seen such clean air.", "correct": ["I","have","never","seen","such","clean","air."] },
+      { "prompt": "Build: Have you finished your homework?", "correct": ["Have","you","finished","your","homework?"] },
+      { "prompt": "Build: The company has hired fifty new workers.", "correct": ["The","company","has","hired","fifty","new","workers."] },
+      { "prompt": "Build: We have known each other since childhood.", "correct": ["We","have","known","each","other","since","childhood."] },
+      { "prompt": "Build: The council has planted thousands of trees.", "correct": ["The","council","has","planted","thousands","of","trees."] },
+      { "prompt": "Build: He has not called me back.", "correct": ["He","has","not","called","me","back."] },
+      { "prompt": "Build: Has the ferry left the harbour?", "correct": ["Has","the","ferry","left","the","harbour?"] },
+      { "prompt": "Build: I have read three books this month.", "correct": ["I","have","read","three","books","this","month."] },
+      { "prompt": "Build: The park has become very popular.", "correct": ["The","park","has","become","very","popular."] },
+      { "prompt": "Build: They have opened a new cycling path.", "correct": ["They","have","opened","a","new","cycling","path."] },
+      { "prompt": "Build: Have you ever been to Copenhagen?", "correct": ["Have","you","ever","been","to","Copenhagen?"] },
+      { "prompt": "Build: My sister has learned to ride a bike.", "correct": ["My","sister","has","learned","to","ride","a","bike."] },
+      { "prompt": "Build: We have not decided yet.", "correct": ["We","have","not","decided","yet."] },
+      { "prompt": "Build: The city has reduced pollution significantly.", "correct": ["The","city","has","reduced","pollution","significantly."] },
+      { "prompt": "Build: Have they finished the new bridge?", "correct": ["Have","they","finished","the","new","bridge?"] },
+      { "prompt": "Build: I have just eaten lunch.", "correct": ["I","have","just","eaten","lunch."] },
+      { "prompt": "Build: The council has spent millions on transport.", "correct": ["The","council","has","spent","millions","on","transport."] },
+      { "prompt": "Build: She has never ridden a cargo bike.", "correct": ["She","has","never","ridden","a","cargo","bike."] },
+      { "prompt": "Build: Our neighbours have moved away.", "correct": ["Our","neighbours","have","moved","away."] },
+      { "prompt": "Build: Has the mayor spoken to residents?", "correct": ["Has","the","mayor","spoken","to","residents?"] },
+      { "prompt": "Build: I have always loved this city.", "correct": ["I","have","always","loved","this","city."] },
+      { "prompt": "Build: The school has started a green club.", "correct": ["The","school","has","started","a","green","club."] },
+      { "prompt": "Build: We have visited the harbour twice.", "correct": ["We","have","visited","the","harbour","twice."] },
+      { "prompt": "Build: Have you heard the good news?", "correct": ["Have","you","heard","the","good","news?"] },
+      { "prompt": "Build: The government has invested in wind power.", "correct": ["The","government","has","invested","in","wind","power."] }
+    ]
+  },
+
+  "sbPs": {
+    "pos": [
+      { "prompt": "Build a past passive sentence about the new park.", "correct": ["The","new","park","was","opened","last","year."] },
+      { "prompt": "Build a past passive sentence about the cycle lanes.", "correct": ["New","cycle","lanes","were","built","in","2022."] },
+      { "prompt": "Build a past passive sentence about the old market.", "correct": ["The","old","market","was","converted","into","a","park."] },
+      { "prompt": "Build a past passive sentence about the trees.", "correct": ["Thousands","of","trees","were","planted","last","spring."] },
+      { "prompt": "Build a past passive sentence about the plan.", "correct": ["The","plan","was","approved","by","the","council."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative past passive sentence about the proposal.", "correct": ["The","proposal","was","not","accepted","by","residents."] },
+      { "prompt": "Build a negative past passive sentence about the buses.", "correct": ["The","old","buses","were","not","replaced","in","time."] },
+      { "prompt": "Build a negative past passive sentence about the harbour.", "correct": ["The","harbour","was","not","cleaned","before","the","festival."] },
+      { "prompt": "Build a negative past passive sentence about the funding.", "correct": ["New","funding","was","not","approved","for","the","metro."] },
+      { "prompt": "Build a negative past passive sentence about the complaints.", "correct": ["The","complaints","were","not","considered","by","the","council."] }
+    ],
+    "q": [
+      { "prompt": "Build a past passive question about the bridge.", "correct": ["Was","the","new","bridge","built","last","year?"] },
+      { "prompt": "Build a past passive question about the trees.", "correct": ["Were","the","trees","planted","by","volunteers?"] },
+      { "prompt": "Build a past passive question about the lane.", "correct": ["Was","the","cycle","lane","widened","in","2022?"] },
+      { "prompt": "Build a past passive question about the buildings.", "correct": ["Were","the","old","buildings","protected","by","the","council?"] },
+      { "prompt": "Build a past passive question about the lights.", "correct": ["Were","the","new","lights","installed","across","the","city?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: The new park was designed by an architect.", "correct": ["The","new","park","was","designed","by","an","architect."] },
+      { "prompt": "Build: Several cycle routes were added.", "correct": ["Several","cycle","routes","were","added."] },
+      { "prompt": "Build: The bus system was modernised.", "correct": ["The","bus","system","was","modernised."] },
+      { "prompt": "Build: Solar panels were installed.", "correct": ["Solar","panels","were","installed."] },
+      { "prompt": "Build: The pedestrian zone was expanded.", "correct": ["The","pedestrian","zone","was","expanded."] },
+      { "prompt": "Build: The plan was discussed at a meeting.", "correct": ["The","plan","was","discussed","at","a","meeting."] },
+      { "prompt": "Build: New funding was announced.", "correct": ["New","funding","was","announced."] },
+      { "prompt": "Build: The riverbank was cleaned by volunteers.", "correct": ["The","riverbank","was","cleaned","by","volunteers."] },
+      { "prompt": "Build: Local opinions were considered.", "correct": ["Local","opinions","were","considered."] },
+      { "prompt": "Build: The bus stop was moved closer.", "correct": ["The","bus","stop","was","moved","closer."] },
+      { "prompt": "Build: Recycling bins were placed on every corner.", "correct": ["Recycling","bins","were","placed","on","every","corner."] },
+      { "prompt": "Build: The cycle path was painted brightly.", "correct": ["The","cycle","path","was","painted","brightly."] },
+      { "prompt": "Build: Community gardens were created.", "correct": ["Community","gardens","were","created."] },
+      { "prompt": "Build: The project was funded by the government.", "correct": ["The","project","was","funded","by","the","government."] },
+      { "prompt": "Build: Was the new plan rejected?", "correct": ["Was","the","new","plan","rejected?"] },
+      { "prompt": "Build: The mayor was interviewed by journalists.", "correct": ["The","mayor","was","interviewed","by","journalists."] },
+      { "prompt": "Build: New rules were written.", "correct": ["New","rules","were","written."] },
+      { "prompt": "Build: Were the cycle lanes added?", "correct": ["Were","the","cycle","lanes","added?"] },
+      { "prompt": "Build: The park benches were repaired.", "correct": ["The","park","benches","were","repaired."] },
+      { "prompt": "Build: The council budget was increased.", "correct": ["The","council","budget","was","increased."] },
+      { "prompt": "Build: Several trees were removed.", "correct": ["Several","trees","were","removed."] },
+      { "prompt": "Build: The pedestrian bridge was completed.", "correct": ["The","pedestrian","bridge","was","completed."] },
+      { "prompt": "Build: Air quality was monitored daily.", "correct": ["Air","quality","was","monitored","daily."] },
+      { "prompt": "Build: The station was designed with green energy.", "correct": ["The","station","was","designed","with","green","energy."] },
+      { "prompt": "Build: New information boards were put up.", "correct": ["New","information","boards","were","put","up."] },
+      { "prompt": "Build: The project was approved after debates.", "correct": ["The","project","was","approved","after","debates."] },
+      { "prompt": "Build: The old bridge was replaced.", "correct": ["The","old","bridge","was","replaced."] },
+      { "prompt": "Build: More benches were added.", "correct": ["More","benches","were","added."] },
+      { "prompt": "Build: The plan was announced at the town hall.", "correct": ["The","plan","was","announced","at","the","town","hall."] },
+      { "prompt": "Build: Public feedback was collected online.", "correct": ["Public","feedback","was","collected","online."] }
+    ]
+  },
+
+  "g10": {
+    "pos": [
+      { "p": "The council ___ (add) three new bus routes in 2022.", "a": "added", "ex": "Finished year → past simple." },
+      { "p": "The city ___ (reduce) its energy use over the past year.", "a": "has reduced", "ex": "\"Over the past year\" → present perfect." },
+      { "p": "The council ___ (open) the first cycle lane in 2021.", "a": "opened", "ex": "\"In 2021\" → past simple." },
+      { "p": "The new pass ___ (help) many commuters so far.", "a": "has helped", "ex": "\"So far\" → present perfect." },
+      { "p": "Residents ___ (see) cleaner buses on the roads since April.", "a": "have seen", "ex": "\"Since April\" → present perfect." }
+    ],
+    "neg": [
+      { "p": "The city ___ (not / build) the new metro line yet.", "a": "has not built", "ex": "\"Yet\" → present perfect." },
+      { "p": "They ___ (not / finish) the cycle bridge in 2023.", "a": "did not finish", "ex": "Finished time → past simple." },
+      { "p": "We ___ (not / see) the mayor at the meeting yesterday.", "a": "did not see", "ex": "\"Yesterday\" → past simple." },
+      { "p": "She ___ (not / try) the new bus app so far.", "a": "has not tried", "ex": "\"So far\" → present perfect." },
+      { "p": "I ___ (not / receive) any updates since Monday.", "a": "have not received", "ex": "\"Since Monday\" → present perfect." }
+    ],
+    "q": [
+      { "p": "___ you ___ (visit) the new park last week?", "a": "Did you visit", "ex": "Finished time → past simple question." },
+      { "p": "___ the city ___ (provide) clear maps so far?", "a": "Has the city provided", "ex": "\"So far\" → present perfect question." },
+      { "p": "___ they ___ (install) the new lights in 2020?", "a": "Did they install", "ex": "Finished year → past simple." },
+      { "p": "___ you ever ___ (cycle) across the old bridge?", "a": "Have you ever cycled", "ex": "\"Ever\" → present perfect." },
+      { "p": "___ the mayor ___ (speak) at yesterday\u2019s meeting?", "a": "Did the mayor speak", "ex": "\"Yesterday\" → past simple." }
+    ],
+    "shuffled": [
+      { "p": "The council ___ (add) the cycle lane in 2020.", "a": "added" },
+      { "p": "Cycling ___ (become) very popular in this city.", "a": "has become" },
+      { "p": "She ___ (write) an essay about Copenhagen yesterday.", "a": "wrote" },
+      { "p": "We ___ (visit) the harbour museum twice.", "a": "have visited" },
+      { "p": "They ___ (open) the new bridge last spring.", "a": "opened" },
+      { "p": "I ___ (not / see) such clean air before.", "a": "have not seen" },
+      { "p": "The mayor ___ (announce) the plan in 2015.", "a": "announced" },
+      { "p": "The school ___ (start) a new recycling programme recently.", "a": "has started" },
+      { "p": "___ you ___ (finish) the exercise yet?", "a": "Have you finished" },
+      { "p": "The council ___ (approve) the budget last month.", "a": "approved" },
+      { "p": "She ___ (live) in this neighbourhood for ten years.", "a": "has lived" },
+      { "p": "We ___ (walk) ten kilometres last Saturday.", "a": "walked" },
+      { "p": "The workers ___ (build) the cycle path in two months.", "a": "built" },
+      { "p": "My parents ___ (not / own) a car since 2018.", "a": "have not owned" },
+      { "p": "___ they ___ (plant) the trees yesterday?", "a": "Did they plant" },
+      { "p": "I ___ (already / read) three books about cities.", "a": "have already read" },
+      { "p": "The city ___ (spend) millions on transport in 2020.", "a": "spent" },
+      { "p": "People ___ (complain) about the noise since the roadworks started.", "a": "have complained" },
+      { "p": "___ she ___ (cycle) to school when she was young?", "a": "Did she cycle" },
+      { "p": "The mayor ___ (just / announce) a new green initiative.", "a": "has just announced" },
+      { "p": "They ___ (not / complete) the project on time.", "a": "did not complete" },
+      { "p": "I ___ (read) three articles last night.", "a": "read" },
+      { "p": "The government ___ (invest) heavily in wind power recently.", "a": "has invested" },
+      { "p": "___ you ever ___ (be) to Copenhagen?", "a": "Have you ever been" },
+      { "p": "The bridge ___ (collapse) in the storm last year.", "a": "collapsed" },
+      { "p": "Our family ___ (live) here since 2015.", "a": "has lived" },
+      { "p": "He ___ (not / come) to the meeting on Monday.", "a": "did not come" },
+      { "p": "___ the council ___ (decide) on the parking rules yet?", "a": "Has the council decided" },
+      { "p": "She ___ (buy) an electric bike last summer.", "a": "bought" },
+      { "p": "We ___ (know) each other since primary school.", "a": "have known" }
+    ]
+  },
+
+  "testMcq": [
+    { "q": "Which word means \"harmful material in air, water, or land\"?", "options": ["pollution","community","transport"], "correct": "pollution", "exp": "Pollution harms the environment." },
+    { "q": "Which word means \"a good or helpful result\"?", "options": ["benefit","cost","issue"], "correct": "benefit", "exp": "A benefit is a good or helpful result." },
+    { "q": "Which word means \"give or make something available\"?", "options": ["to provide","to affect","to result"], "correct": "to provide", "exp": "To provide is to give what is needed." },
+    { "q": "Which word means \"an answer to a problem\"?", "options": ["solution","issue","cost"], "correct": "solution", "exp": "A solution solves a problem." },
+    { "q": "Which word means \"the natural world around us\"?", "options": ["environment","community","energy"], "correct": "environment", "exp": "The environment is the natural world." },
+    { "q": "Which word means \"become or make greater\"?", "options": ["to increase","to reduce","to affect"], "correct": "to increase", "exp": "To increase means become larger." },
+    { "q": "Which word means \"ways of moving people or goods\"?", "options": ["transport","community","benefit"], "correct": "transport", "exp": "Transport is how people/goods move." },
+    { "q": "Which word means \"to change or influence something\"?", "options": ["to affect","to provide","to result"], "correct": "to affect", "exp": "To affect = change/influence." }
+  ],
+
+  "testShort": [
+    { "q": "In what year did the mayor of Copenhagen promise carbon neutrality?", "answers": ["2015"], "exp": "2015." },
+    { "q": "What percentage of residents commute by bike?", "answers": ["60","60%","60 per cent","more than 60","over 60"], "exp": "More than 60 per cent." },
+    { "q": "By how much has air pollution dropped?", "answers": ["40","40%","40 per cent","more than 40","over 40"], "exp": "By more than 40 per cent." },
+    { "q": "In which decade was the harbour unsafe for swimming?", "answers": ["1990s","the 1990s","1990"], "exp": "The 1990s." },
+    { "q": "What is cleared from cycle paths first in winter?", "answers": ["snow","the snow"], "exp": "Snow." },
+    { "q": "Name ONE city mentioned as studying Copenhagen\u2019s model.", "answers": ["paris","bogota","bogotá","seoul"], "exp": "Paris, Bogotá, Seoul." }
+  ],
+
+  "testTfng": [
+    { "q": "Copenhagen promised carbon neutrality within ten years.", "answer": "True", "exp": "Within a decade." },
+    { "q": "The cycle paths were built underground.", "answer": "False", "exp": "They were elevated." },
+    { "q": "Snow is cleared from roads before cycle paths.", "answer": "False", "exp": "Cycle paths first." },
+    { "q": "The mayor was re-elected.", "answer": "Not Given", "exp": "Not mentioned." },
+    { "q": "The article mentions Paris, Bogotá and Seoul.", "answer": "True", "exp": "Yes, all three." }
+  ],
+
+  "testComplete": [
+    { "p": "The city ___ (open) five new parks since 2020.", "a": "has opened" },
+    { "p": "The council ___ (approve) the plan in 2021.", "a": "approved" },
+    { "p": "She ___ (not / finish) her homework yet.", "a": "has not finished" },
+    { "p": "We ___ (visit) the harbour museum last Sunday.", "a": "visited" },
+    { "p": "___ you ever ___ (see) a cargo bike?", "a": "Have you ever seen" },
+    { "p": "The mayor ___ (announce) the plan in 2015.", "a": "announced" },
+    { "p": "We ___ (know) each other since primary school.", "a": "have known" },
+    { "p": "They ___ (not / complete) the project on time.", "a": "did not complete" },
+    { "p": "Cycling ___ (become) very popular in this city.", "a": "has become" },
+    { "p": "___ they ___ (install) the new bins last week?", "a": "Did they install" }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "title": "Gaziz · Sustainable Cities — Homework",
+  "headline": "Rivergate revisits its plans",
+  "intro": "Read the case study and answer every question. This is a single-page homework: work through the article and the questions on the right. You cannot submit until all questions are answered.",
+  "hero": "🏙️ → 🚲 → 🌳",
+  "sub": "Sustainable Cities · Reading & Grammar",
+  "eyebrow": "Topic · Sustainable Cities · Homework",
+  "reading": {
+    "title": "Rivergate Revisits Its Plans",
+    "subtitle": "A follow-up case study on sustainable urban change",
+    "paragraphs": [
+      { "label": "A.", "text": "In 2018, the small city of Rivergate launched an ambitious programme to reduce its dependence on cars. The council promised to make cycling and public transport the primary ways of moving around by 2030. At the time, few residents believed the plan would succeed. Traffic was heavy, and most families owned at least one car. Yet five years later, the situation has changed dramatically. The number of cyclists has tripled, and the city has become a model for other towns in the region." },
+      { "label": "B.", "text": "The transformation did not happen overnight. Council planners began with a modest experiment: they closed one street in the city centre to cars for three months. When the trial ended, local shops reported that their customers had not disappeared — in fact, sales had risen slightly. This surprising result gave the council confidence to expand the programme. In 2020, the council converted five more streets into pedestrian-only zones and installed over a hundred bike racks across the city." },
+      { "label": "C.", "text": "The most visible change has been the new network of cycle paths. Rivergate now has more than 200 kilometres of dedicated lanes, many of them separated from car traffic by trees and planters. In winter, cycle paths are cleared of snow before roads, a decision that was controversial at the time but has since become popular. Cyclists are given priority at most intersections. Perhaps most importantly, the city has measured success not by how fast cars move, but by how many people choose to cycle or walk." },
+      { "label": "D.", "text": "Alongside transport, Rivergate has invested in public spaces. The old industrial harbour has been cleaned and reopened as a riverside park. Warehouses that once stood empty have been converted into apartments, cafés, and a small theatre. Residents can now swim in the river during the summer months — something that would have been unthinkable ten years ago, when the water was polluted." },
+      { "label": "E.", "text": "Not everyone has welcomed the changes. Some shopkeepers complained that removing parking spaces had reduced their customers. Others argued that the new cycle paths mostly served wealthier neighbourhoods. Critics pointed out that the programme had been expensive and that the council had spent millions of euros on projects that would take decades to pay back. Some also questioned whether a small city like Rivergate could really serve as a model for larger urban areas." },
+      { "label": "F.", "text": "Despite the criticism, the results have been difficult to dismiss. Air pollution has fallen by 45 per cent. Traffic accidents involving cyclists have dropped sharply. Surveys suggest that residents are more satisfied with their city than they were a decade ago. Rivergate has also attracted new investment: several technology companies have moved their offices to the city centre, citing the pleasant environment as a key factor. The question for other cities is no longer whether sustainable transformation is possible, but how quickly they can follow Rivergate\u2019s example." }
+    ]
+  },
+  "vocab": [
+    { "en": "ambitious", "emoji": "🚀", "meanings": [ { "context": "demanding or difficult", "ru": "амбициозный, масштабный", "ex": "The council launched an <b>ambitious</b> programme to reduce car use." }, { "context": "having a strong desire to succeed", "ru": "целеустремлённый", "ex": "She is an <b>ambitious</b> young architect." } ] },
+    { "en": "dependence", "emoji": "🔗", "meanings": [ { "context": "relying on something", "ru": "зависимость", "ex": "The city aims to reduce its <b>dependence</b> on cars." } ] },
+    { "en": "experiment", "emoji": "🧪", "meanings": [ { "context": "a test or trial", "ru": "эксперимент, испытание", "ex": "Planners began with a modest <b>experiment</b>: closing one street for three months." } ] },
+    { "en": "convert", "emoji": "🔁", "meanings": [ { "context": "change from one use to another", "ru": "преобразовывать", "ex": "The council <b>converted</b> five more streets into pedestrian zones." } ] },
+    { "en": "dedicated", "emoji": "🎯", "meanings": [ { "context": "made for a specific purpose", "ru": "специально выделенный", "ex": "Rivergate has 200 kilometres of <b>dedicated</b> cycle lanes." }, { "context": "devoted to a task", "ru": "преданный", "ex": "She is a <b>dedicated</b> teacher." } ] },
+    { "en": "controversial", "emoji": "⚔️", "meanings": [ { "context": "causing disagreement", "ru": "спорный, вызывающий споры", "ex": "Clearing cycle paths before roads was <b>controversial</b> at first." } ] },
+    { "en": "priority", "emoji": "🥇", "meanings": [ { "context": "the right to go first", "ru": "приоритет", "ex": "Cyclists are given <b>priority</b> at most intersections." } ] },
+    { "en": "convert", "emoji": "🏭", "meanings": [ { "context": "repurpose a building", "ru": "переоборудовать", "ex": "Warehouses were <b>converted</b> into apartments and cafés." } ] },
+    { "en": "critics", "emoji": "🗣️", "meanings": [ { "context": "people who express disapproval", "ru": "критики", "ex": "<b>Critics</b> argued the programme had been too expensive." } ] },
+    { "en": "investment", "emoji": "💼", "meanings": [ { "context": "money put into a project", "ru": "инвестиция", "ex": "Rivergate has attracted new <b>investment</b> from technology companies." } ] }
+  ],
+  "questions": [
+    { "type": "short", "prompt": "In what year did Rivergate launch its programme to reduce car dependence?", "answers": ["2018"], "exp": "The article says the programme launched in 2018." },
+    { "type": "short", "prompt": "By what percentage has air pollution fallen in Rivergate?", "answers": ["45","45%","45 per cent"], "exp": "Air pollution has fallen by 45 per cent." },
+    { "type": "short", "prompt": "How many kilometres of cycle paths does Rivergate now have?", "answers": ["200","more than 200"], "exp": "The city has more than 200 kilometres of dedicated cycle lanes." },
+    { "type": "short", "prompt": "What was installed on the streets after the pilot experiment succeeded?", "answers": ["bike racks","bike racks across the city"], "exp": "The council installed over a hundred bike racks." },
+    { "type": "tfng", "prompt": "The pilot experiment showed that sales in local shops fell.", "answer": "False", "exp": "Sales actually rose slightly." },
+    { "type": "tfng", "prompt": "Cycle paths are cleared of snow before roads in winter.", "answer": "True", "exp": "The passage confirms this." },
+    { "type": "tfng", "prompt": "The mayor of Rivergate was re-elected after the programme.", "answer": "Not Given", "exp": "The article never mentions re-election." },
+    { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["A small city successfully transformed its urban planning","Cycling is dangerous in winter","Industrial harbours should be demolished"], "correct": "A small city successfully transformed its urban planning", "exp": "The article tells the story of Rivergate\u2019s transformation." },
+    { "type": "mcq", "prompt": "Which of the following is NOT stated as a result of the changes?", "options": ["Lower air pollution","Attracting technology companies","A rise in average salaries"], "correct": "A rise in average salaries", "exp": "The article mentions pollution and investment, not salaries." },
+    { "type": "mcq", "prompt": "What is the author\u2019s overall tone?", "options": ["Broadly positive with balanced criticisms","Entirely critical","Neutral and detached"], "correct": "Broadly positive with balanced criticisms", "exp": "The article praises the results but includes paragraph E\u2019s criticisms." },
+    { "type": "long", "prompt": "In your own words, explain why the pilot experiment was important for Rivergate.",
+      "keywordGroups": [["experiment","trial","test"],["sales","customers","shops"],["rose","increased","grew","rise"],["confidence","believe","trust"],["expand","continue","more"]],
+      "minWords": 10, "minGroups": 2,
+      "sample": "The pilot experiment was important because it showed that closing a street to cars did not reduce sales in local shops — in fact, sales rose, and this gave the council confidence to expand the programme.",
+      "exp": "Key ideas: experiment/trial, sales didn\u2019t fall, confidence, expansion." },
+    { "type": "long", "prompt": "Describe TWO benefits of the transformation mentioned in the article.",
+      "keywordGroups": [["pollution","cleaner","air"],["accident","safe","safety"],["happy","happier","satisfied"],["investment","company","business"],["cycle","bike","commute"]],
+      "minWords": 10, "minGroups": 2,
+      "sample": "Two benefits are that air pollution has fallen by 45 per cent, and that the city has attracted new investment from technology companies.",
+      "exp": "Key ideas: reduced pollution, fewer accidents, happier residents, new investment." },
+    { "type": "complete", "prompt": "The city ___ (reduce) its dependence on cars since 2018.", "answers": ["has reduced"] },
+    { "type": "complete", "prompt": "The council ___ (close) one street to cars in the pilot experiment.", "answers": ["closed"] },
+    { "type": "complete", "prompt": "Rivergate ___ (attract) several technology companies recently.", "answers": ["has attracted"] }
+  ]
+}
