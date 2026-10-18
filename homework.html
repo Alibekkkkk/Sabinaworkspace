@@ -53,6 +53,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .q-opts{display:flex;gap:8px;flex-wrap:wrap}
 .q-opt{padding:10px 16px;background:var(--bg);border:2px solid var(--border);border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .15s}
 .q-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.q-opt.selected{border-color:var(--primary);background:var(--primary-dark);color:#fff;}
 .q-opt.correct{background:var(--success-soft);border-color:var(--success);color:var(--success)}
 .q-opt.wrong{background:var(--error-soft);border-color:var(--error);color:var(--error)}
 .q-input-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -176,9 +177,9 @@ const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomai
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
 
 const params=new URLSearchParams(location.search);
-const variant=params.get('variant');
+const variant=params.get('variant')||'gaziz';
 const code=(params.get('code')||'').toUpperCase();
-const homeworkId=params.get('lesson')||('homework_'+ (variant||'default'));
+const homeworkId=params.get('lesson')||('homework_'+variant);
 const homeworkVersion=6;
 const teacherPreviewRequested=params.get('teacher')==='1';
 const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
@@ -403,121 +404,113 @@ function renderQuestions(){
     card.innerHTML='<div class="q-num">Question '+(idx+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(q.prompt).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
     const body=document.createElement('div');
     card.appendChild(body);
+    
     if(q.type==='short'||q.type==='complete'){
       const row=document.createElement('div');row.className='q-input-row';
       const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';inp.dataset.answerIdx=idx;
-      const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
-      const fb=document.createElement('div');fb.className='q-feedback';
-      let done=false;
-      function submit(){
-        if(done)return;
-        const val=norm(inp.value);
-        const accepted=q.type==='short'?q.answers:q.answers;
-        const ok=accepted.some(function(a){return norm(a)===val});
-        if(ok){
-          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;
-          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
-          answers[idx]=inp.value;updateProgress();
-        }else{
-          inp.classList.add('wrong');
-          fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again.';
-          setTimeout(function(){inp.classList.remove('wrong')},600);
-        }
-      }
-      btn.onclick=submit;
-      inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
       inp.addEventListener('input',function(){
         if(inp.value.trim().length>0){answers[idx]=inp.value;updateProgress()}
         else{delete answers[idx];updateProgress()}
       });
-      row.appendChild(inp);row.appendChild(btn);
-      body.appendChild(row);body.appendChild(fb);
+      if(submitted){
+        inp.value=answers[idx]||'';
+        inp.disabled=true;
+        const val=norm(inp.value);
+        const accepted=q.answers || [];
+        const ok=accepted.some(function(a){return norm(a)===val});
+        if(ok)inp.classList.add('correct'); else inp.classList.add('wrong');
+      }
+      row.appendChild(inp);
+      body.appendChild(row);
+      if(submitted){
+        const fb=document.createElement('div');
+        fb.className='q-feedback ' + (q.answers && q.answers.some(a=>norm(a)===norm(inp.value)) ? 'correct' : 'wrong');
+        fb.innerHTML=(q.answers && q.answers.some(a=>norm(a)===norm(inp.value)) ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
+        fb.style.display='block';
+        body.appendChild(fb);
+      }
       body.insertAdjacentHTML('beforeend',flagButtonHTML(idx));
+      
     }else if(q.type==='tfng'){
       const opts=document.createElement('div');opts.className='tfng-opts';
-      shuffle(['True','False','Not Given']).forEach(function(o){
+      ['True','False','Not Given'].forEach(function(o){
         const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-        b.onclick=function(){
-          if(b.disabled)return;
-          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
-          const fb=card.querySelector('.q-feedback');
-          if(o===q.answer){b.classList.add('correct');fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
-          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===q.answer)x.classList.add('correct')});fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
-          answers[idx]=o;updateProgress();
-        };
+        if(submitted){
+          b.disabled=true;
+          if(o===q.answer)b.classList.add('correct');
+          if(answers[idx]===o && o!==q.answer)b.classList.add('wrong');
+        } else {
+          if(answers[idx]===o) b.classList.add('selected');
+          b.onclick=function(){
+            opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')});
+            b.classList.add('selected');
+            answers[idx]=o;updateProgress();
+          };
+        }
         opts.appendChild(b);
       });
       body.appendChild(opts);
-      const fb=document.createElement('div');fb.className='q-feedback';body.appendChild(fb);
+      if(submitted){
+        const fb=document.createElement('div');
+        fb.className='q-feedback ' + (answers[idx]===q.answer ? 'correct' : 'wrong');
+        fb.innerHTML=(answers[idx]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
+        fb.style.display='block';
+        body.appendChild(fb);
+      }
+      
     }else if(q.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
       shuffle(q.options).forEach(function(o){
         const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-        b.onclick=function(){
-          if(b.disabled)return;
-          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
-          const fb=card.querySelector('.q-feedback');
-          if(o===q.correct){b.classList.add('correct');fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
-          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===q.correct)x.classList.add('correct')});fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(q.exp||'')+'</span>'}
-          answers[idx]=o;updateProgress();
-        };
+        if(submitted){
+          b.disabled=true;
+          if(o===q.correct)b.classList.add('correct');
+          if(answers[idx]===o && o!==q.correct)b.classList.add('wrong');
+        } else {
+          if(answers[idx]===o) b.classList.add('selected');
+          b.onclick=function(){
+            opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')});
+            b.classList.add('selected');
+            answers[idx]=o;updateProgress();
+          };
+        }
         opts.appendChild(b);
       });
       body.appendChild(opts);
-      const fb=document.createElement('div');fb.className='q-feedback';body.appendChild(fb);
+      if(submitted){
+        const fb=document.createElement('div');
+        fb.className='q-feedback ' + (answers[idx]===q.correct ? 'correct' : 'wrong');
+        fb.innerHTML=(answers[idx]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
+        fb.style.display='block';
+        body.appendChild(fb);
+      }
+      
     }else if(q.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';ta.dataset.answerIdx=idx;
-      const row=document.createElement('div');row.className='q-input-row';row.style.marginTop='10px';
-      const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer';
-      const fb=document.createElement('div');fb.className='q-feedback';
-      let done=false;
-      function submit(){
-        if(done)return;
-        const txt=ta.value.trim();
-        const res=checkLongAnswer(txt,q.keywordGroups,q.minWords,q.minGroups);
-        if(res.pass){
-          ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;
-          fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
-        }else{
-          ta.classList.add('wrong');
-          fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>';
-        }
-        answers[idx]=txt;updateProgress();
-      }
-      btn.onclick=submit;
       ta.addEventListener('input',function(){
         if(ta.value.trim().length>0){answers[idx]=ta.value;updateProgress()}
         else{delete answers[idx];updateProgress()}
       });
-      row.appendChild(btn);
-      body.appendChild(ta);body.appendChild(row);body.appendChild(fb);
+      if(submitted){
+        ta.value=answers[idx]||'';
+        ta.disabled=true;
+        const res=checkLongAnswer(ta.value,q.keywordGroups,q.minWords,q.minGroups);
+        if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong');
+      }
+      body.appendChild(ta);
+      if(submitted){
+        const res=checkLongAnswer(answers[idx]||'',q.keywordGroups,q.minWords,q.minGroups);
+        const fb=document.createElement('div');
+        fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong');
+        fb.innerHTML=(res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>';
+        fb.style.display='block';
+        body.appendChild(fb);
+      }
       body.insertAdjacentHTML('beforeend',flagButtonHTML(idx));
     }
     host.appendChild(card);
   });
-  restoreAnswers();
   updateProgress();
-}
-
-/* ================== RESTORE SAVED ANSWERS ================== */
-function restoreAnswers(){
-  lesson.questions.forEach(function(q,idx){
-    if(!(idx in answers))return;
-    const saved=answers[idx];
-    if(q.type==='short'||q.type==='complete'||q.type==='long'){
-      const ta=document.querySelector('[data-answer-idx="'+idx+'"]');
-      if(ta){ta.value=saved}
-    }else if(q.type==='tfng'||q.type==='mcq'){
-      const card=document.querySelectorAll('#questionsHost .q-card')[idx];
-      if(!card)return;
-      card.querySelectorAll('.q-opt').forEach(function(b){
-        if(b.textContent===saved){b.disabled=true;
-          if(q.type==='tfng'){if(saved===q.answer)b.classList.add('correct');else b.classList.add('wrong')}
-          else{if(saved===q.correct)b.classList.add('correct');else b.classList.add('wrong')}
-        }
-      });
-    }
-  });
 }
 
 /* ================== SUBMIT ================== */
@@ -554,11 +547,15 @@ function submitAll(){
       updatedAt:Date.now()
     }).catch(function(e){console.error(e)});
   }
+  
+  // Re-render to show results
+  renderQuestions();
+  
   const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
   banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+
     '<div class="big">'+score+' / '+total+'</div>'+
-    '<p>Your answers have been sent to your teacher. You can close this page.</p>';
+    '<p>Your answers have been sent to your teacher. You can review your results below.</p>';
   host.insertBefore(banner,host.firstChild);
   window.scrollTo({top:0,behavior:'smooth'});
   if(typeof confetti==='function')confetti();
@@ -582,7 +579,7 @@ function confetti(){
 /* ================== CONTENT LOADER ================== */
 async function loadHomeworkContent() {
   if (!variant) {
-      throw new Error("No 'variant' parameter specified in the URL. Please check the dashboard link.");
+      throw new Error("No 'variant' parameter specified in the URL.");
   }
   const fileName = variant.startsWith('homework_') ? variant : 'homework_' + variant;
   
@@ -654,7 +651,7 @@ function startHomework(){
         const host=document.getElementById('questionsHost');
         const banner=document.createElement('div');banner.className='result-banner';
         banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+
-          '<p>Your teacher has your answers.</p>';
+          '<p>Your teacher has your answers. You can review the feedback below.</p>';
         host.insertBefore(banner,host.firstChild);
       }
     }).catch(function(e){

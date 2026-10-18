@@ -370,7 +370,6 @@ function initFirebase(){
         const l = curriculumCache[id];
         if (l.homework) return null;
         
-        // FILTERING LOGIC: Only show lessons assigned to this student
         if (l.assignedTo && l.assignedTo.length > 0) {
             if (!code || l.assignedTo.indexOf(code) === -1) return null;
         }
@@ -442,7 +441,6 @@ function initFirebase(){
       firebase.database().ref('students/'+code).once('value').then(function(snap){
         const s=snap.val();
         if(!s||s.uid!==user.uid){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">Your account is not linked to this student code.</p></div>';return}
-        // Update Workspace name
         document.getElementById('workspaceName').textContent = s.name;
         startStudentSession(code);
       });
@@ -639,6 +637,9 @@ function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{sessionRe
 function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
 
 function getWordStatus(word){
+  // AUTO-TICK FOR SABINA
+  if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return 'learned';
+  
   const s=vocabState[word];
   if(!s)return 'learning';
   if((s.perfectStreak||0)>=2)return 'learned';
@@ -651,6 +652,7 @@ function getVocabCounts(){
   return c;
 }
 function shouldShowPractice(){
+  if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return false;
   if(!Object.keys(vocabState).length)return false;
   return Object.keys(vocabState).some(function(w){return getWordStatus(w)!=='learned'});
 }
@@ -1550,7 +1552,6 @@ function renderSidebar(){
         const isActive=lesson.id===state.currentLessonId;
         const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':'');
         
-        // Use dynamic title from Firebase if available
         const fbLesson = curriculumCache[lesson.id];
         const title = (fbLesson && fbLesson.title) ? fbLesson.title : lesson.title;
         
@@ -1627,21 +1628,43 @@ function goToStage(n){
 function renderStage(){
   const main=document.getElementById('main');if(!main)return;
   main.innerHTML='';
-  const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9};
+  
+  const lesson = getCurrentLesson();
+  const stages = (curriculumCache[state.currentLessonId] && curriculumCache[state.currentLessonId].stages) 
+                 ? curriculumCache[state.currentLessonId].stages 
+                 : DEFAULT_STAGES;
+                 
+  const stageIndex = stages.findIndex(s => s.id === state.currentStage);
+  const displayStageNum = stageIndex !== -1 ? stageIndex + 1 : state.currentStage; // 1-based
+
+  // Map exact index to rendering function
+  let fn = null;
+  if (stageIndex === stages.length - 1) {
+      fn = renderStage9;
+  } else {
+      switch(stageIndex) {
+          case 0: fn = renderStage1; break;
+          case 1: fn = renderStage2; break;
+          case 2: fn = renderStage3; break;
+          case 3: fn = renderStage4; break;
+          case 4: fn = renderStage5; break;
+          case 5: fn = renderStage6; break;
+          case 6: fn = renderStage7; break;
+          case 7: fn = renderStage8; break;
+          default: fn = renderStage1;
+      }
+  }
+  
   try{
-    fns[state.currentStage]();
+    if(typeof fn === 'function') fn(); else main.innerHTML='<p>Error: Stage content not found.</p>';
     
-    const lesson = getCurrentLesson();
-    const stages = lesson ? lesson.stages : DEFAULT_STAGES;
     const title = lesson ? lesson.title : 'Lesson';
     const stageObj = stages.find(s => s.id === state.currentStage);
-    
-    // Fixed undefined icon
     const icon = (stageObj && stageObj.icon) ? stageObj.icon : '📘';
     
     const header = document.createElement('div');
     header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
-    if(state.currentStage === 3) header.style.maxWidth = '1400px';
+    if(stageIndex === 2) header.style.maxWidth = '1400px';
     header.innerHTML = `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`;
     
     main.insertBefore(header, main.firstChild);
