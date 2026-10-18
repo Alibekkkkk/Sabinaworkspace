@@ -1231,7 +1231,6 @@ function renderHomeworkTree() {
     const l = curriculum[id] || {};
     if (!l.homework) return false;
     if (activeCode) {
-      // Strict filter: Must be explicitly assigned to the active student
       return Array.isArray(l.assignedTo) && l.assignedTo.indexOf(activeCode) !== -1;
     }
     return true;
@@ -1270,20 +1269,21 @@ function openHomework(id) {
   document.getElementById('homeworkBar').style.display = 'flex';
   document.getElementById('homeworkPlaceholder').style.display = 'none';
   const frame = document.getElementById('homeworkFrame');
-  frame.style.display = 'block';
-  
-  const url = new URL('homework.html', window.location.href);
-  url.searchParams.set('lesson', id);
-  url.searchParams.set('teacher', '1');
   
   const contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   if(!contentFile) {
       alert("This homework assignment does not have a 'Content file' specified. Please click Edit info and set it to the correct JSON file (e.g., homework_george).");
       document.getElementById('homeworkBar').style.display = 'none';
       frame.style.display = 'none';
+      frame.src = 'about:blank';
       document.getElementById('homeworkPlaceholder').style.display = 'grid';
       return;
   }
+  
+  frame.style.display = 'block';
+  const url = new URL('homework.html', window.location.href);
+  url.searchParams.set('lesson', id);
+  url.searchParams.set('teacher', '1');
   url.searchParams.set('variant', contentFile);
   
   if (activeCode) url.searchParams.set('code', activeCode);
@@ -1294,15 +1294,16 @@ function openHomework(id) {
 function openCurrentHomeworkInTab() {
   if (!currentHomeworkId) return;
   const l = curriculum[currentHomeworkId] || {};
-  const url = new URL('homework.html', window.location.href);
-  url.searchParams.set('lesson', currentHomeworkId);
-  url.searchParams.set('teacher', '1');
   
   const contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   if(!contentFile) {
       alert("This homework assignment does not have a 'Content file' specified. Please click Edit info and set it.");
       return;
   }
+  
+  const url = new URL('homework.html', window.location.href);
+  url.searchParams.set('lesson', currentHomeworkId);
+  url.searchParams.set('teacher', '1');
   url.searchParams.set('variant', contentFile);
   
   if (activeCode) url.searchParams.set('code', activeCode);

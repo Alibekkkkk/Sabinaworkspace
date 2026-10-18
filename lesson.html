@@ -308,8 +308,9 @@ const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
-/* ================== CURRICULUM (9 stages) ================== */
-const CURRICULUM=[{year:"2026",months:[{month:"October",lessons:[{id:"lesson_1",title:"Lesson 1: Vocabulary, Reading & Tenses",stages:[
+/* ================== CURRICULUM (Loaded from Firebase) ================== */
+let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
+const DEFAULT_STAGES = [
   {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
   {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
   {id:3,label:'Reading & Questions',sub:'Article + practice',icon:'📖'},
@@ -319,13 +320,23 @@ const CURRICULUM=[{year:"2026",months:[{month:"October",lessons:[{id:"lesson_1",
   {id:7,label:'Sentence Builder — Passive',sub:'Build',icon:'🧱'},
   {id:8,label:'Completing Sentence — Choose the Tense',sub:'Mixed',icon:'🧭'},
   {id:9,label:'Lesson 1 — Test Your Knowledge',sub:'Timed test',icon:'⚡'}
-]}]}]}];
+];
 
 /* ================== STATE ================== */
 const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
-CURRICULUM.forEach(function(y){y.months.forEach(function(m){m.lessons.forEach(function(l){l.stages.forEach(function(s){const k=l.id+"_"+s.id;state.scores[k]=0;state.done[k]=false})})})});
-function getCurrentLesson(){const y=CURRICULUM.find(function(x){return x.year===state.currentYear});if(!y)return null;const m=y.months.find(function(x){return x.month===state.currentMonth});if(!m)return null;return m.lessons.find(function(l){return l.id===state.currentLessonId})||null}
-function totalScore(){const l=getCurrentLesson();if(!l)return 0;return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)}
+
+function getCurrentLesson(){
+  const y=CURRICULUM.find(function(x){return x.year===state.currentYear});
+  if(!y)return null;
+  const m=y.months.find(function(x){return x.month===state.currentMonth});
+  if(!m)return null;
+  return m.lessons.find(function(l){return l.id===state.currentLessonId})||null
+}
+function totalScore(){
+  const l=getCurrentLesson();
+  if(!l)return 0;
+  return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)
+}
 
 /* ================== CONTENT PLACEHOLDERS (Loaded via JSON) ================== */
 let VOCAB = [];
@@ -353,14 +364,32 @@ function initFirebase(){
     
     fbDb.ref('curriculum').on('value',function(s){
       curriculumCache=s.val()||{};
-      renderSidebar();
+      const fbLessons = Object.keys(curriculumCache).map(id => {
+        const l = curriculumCache[id];
+        if (l.homework) return null;
+        return {
+          id: id,
+          title: l.title || 'Untitled Lesson',
+          stages: (l.stages && l.stages.length) ? l.stages : DEFAULT_STAGES,
+          year: l.year || '2026',
+          month: l.month || 'October',
+          order: l.order || 0
+        };
+      }).filter(Boolean).sort((a,b) => a.order - b.order);
       
-      // Update the title dynamically if it's already rendered
-      const fbLesson = curriculumCache[state.currentLessonId];
-      if (fbLesson && fbLesson.title) {
-          const headerSpan = document.getElementById('stage-title-text');
-          if (headerSpan) headerSpan.textContent = fbLesson.title;
+      if (fbLessons.length === 0) {
+         fbLessons.push({ id: state.currentLessonId || 'lesson_1', title: 'Lesson', stages: DEFAULT_STAGES, year: '2026', month: 'October' });
       }
+
+      CURRICULUM[0].months[0].lessons = fbLessons;
+      
+      // Ensure the current lesson ID is set if it wasn't found
+      if (!state.currentLessonId && fbLessons.length > 0) {
+          state.currentLessonId = fbLessons[0].id;
+      }
+      
+      renderSidebar();
+      renderStage(); 
     });
     
     if(teacherPreviewRequested){
@@ -1533,7 +1562,10 @@ function renderSidebar(){
               hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){
                 const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it});
                 const url=new URL(it.customUrl||'homework.html',window.location.href);
-                url.searchParams.set('lesson',id);if(studentCode)url.searchParams.set('code',studentCode);
+                url.searchParams.set('lesson',id);
+                if(studentCode)url.searchParams.set('code',studentCode);
+                const contentFile = (it.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
+                if (contentFile) url.searchParams.set('variant', contentFile);
                 return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>';
               }).join('');
               hwList.addEventListener('click',function(e){e.stopPropagation()});
@@ -1592,23 +1624,16 @@ function renderStage(){
   try{
     fns[state.currentStage]();
     
-    // Insert persistent header
     const lesson = getCurrentLesson();
-    const fbLesson = curriculumCache[state.currentLessonId];
-    let title = 'Lesson';
-    if (fbLesson && fbLesson.title) {
-        title = fbLesson.title;
-    } else if (lesson) {
-        title = lesson.title;
-    }
-    
-    const stageObj = lesson ? lesson.stages.find(s => s.id === state.currentStage) : null;
+    const stages = lesson ? lesson.stages : DEFAULT_STAGES;
+    const title = lesson ? lesson.title : 'Lesson';
+    const stageObj = stages.find(s => s.id === state.currentStage);
     const icon = stageObj ? stageObj.icon : '📘';
     
     const header = document.createElement('div');
     header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
     if(state.currentStage === 3) header.style.maxWidth = '1400px';
-    header.innerHTML = `<span style="font-size:36px;">${icon}</span> <span id="stage-title-text">${escapeHtml(title)}</span>`;
+    header.innerHTML = `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`;
     
     main.insertBefore(header, main.firstChild);
   }catch(e){
