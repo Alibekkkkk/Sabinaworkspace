@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
 :root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--accent-dark:#d94a15;--success:#4caf7d;--border:#2a3346;--bg-light:#f4f1ea;--panel-light:#fff;--ink-light:#2c3e50;--ink-soft-light:#6c757d;--border-light:#e0dbd0}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -33,13 +34,16 @@ body.light input{background:#f8f8f8;border-color:var(--border-light);color:var(-
 input:focus{border-color:var(--accent);background:var(--panel)}
 body.light input:focus{background:#fff}
 input.code-input{font-family:'Fira Code','Courier New',monospace;text-transform:uppercase;letter-spacing:3px;text-align:center;font-size:22px;font-weight:800}
-.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-family:inherit;font-size:18px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 0 var(--accent-dark);margin-bottom:12px}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-family:inherit;font-size:18px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 0 var(--accent-dark);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px;}
 .btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--accent-dark)}
 .btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--accent-dark)}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--border);box-shadow:none}
 body.light .btn.ghost{color:var(--ink-light);border-color:var(--border-light)}
 .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn.google{background:#fff;color:#333;border:1px solid #ddd;box-shadow:0 2px 5px rgba(0,0,0,.1);font-weight:700;}
+.btn.google:hover{background:#f9f9f9;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.g-icon{width:20px;height:20px;background:#fff;border-radius:4px;display:grid;place-items:center;font-weight:800;color:#4285f4;font-family:Arial,sans-serif;font-size:14px}
 .helper{font-size:15px;color:var(--ink-soft);text-align:center;line-height:1.5;margin-bottom:8px}
 body.light .helper{color:var(--ink-soft-light)}
 .alert{padding:14px 18px;border-radius:12px;font-size:16px;font-weight:600;margin-bottom:16px;display:none;line-height:1.5}
@@ -110,17 +114,23 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
       <div class="alert" id="alertBox"></div>
 
       <div id="loginForm">
+        <button class="btn google" onclick="doGoogleLogin()">
+          <span class="g-icon">G</span> Continue with Google
+        </button>
+        <div style="text-align:center; color:var(--ink-soft); margin:16px 0; font-size:14px;">— or use your code —</div>
         <label for="loginCode">Your student code</label>
         <input type="text" id="loginCode" class="code-input" placeholder="SABIN" maxlength="12" autocomplete="off">
         <button class="btn" onclick="doLogin()">Enter my lessons →</button>
-        <p class="helper">Don't have a code yet? Click <b>Register</b> above.</p>
       </div>
 
       <div id="registerForm" style="display:none;">
+        <button class="btn google" onclick="doGoogleLogin()">
+          <span class="g-icon">G</span> Register with Google
+        </button>
+        <div style="text-align:center; color:var(--ink-soft); margin:16px 0; font-size:14px;">— or create a code —</div>
         <label for="regName">What is your name?</label>
         <input type="text" id="regName" placeholder="e.g. Sabina" maxlength="40" autocomplete="off">
         <button class="btn" onclick="doRegister()">Create my account</button>
-        <p class="helper">You'll get a personal code — save it to sign in next time.</p>
       </div>
     </div>
   </div>
@@ -198,10 +208,6 @@ function switchTab(which){
   document.getElementById('loginForm').style.display = which === 'login' ? 'block' : 'none';
   document.getElementById('registerForm').style.display = which === 'register' ? 'block' : 'none';
   document.getElementById('alertBox').className = 'alert';
-  setTimeout(() => {
-    const inp = which === 'login' ? document.getElementById('loginCode') : document.getElementById('regName');
-    inp.focus();
-  }, 50);
 }
 
 function doLogin(){
@@ -245,6 +251,41 @@ function doRegister(){
       setTimeout(() => enterPortal(), 2500);
     });
   }).catch(err => showAlert('Error: ' + err.message, 'error'));
+}
+
+function doGoogleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then((result) => {
+    const user = result.user;
+    db.ref('studentByUid/' + user.uid).once('value').then(snap => {
+      if (snap.exists()) {
+        // Already linked to a code
+        const code = snap.val();
+        state.currentCode = code;
+        db.ref('students/' + code).once('value').then(s => {
+          state.currentName = s.val() ? s.val().name : 'Student';
+          localStorage.setItem('nd_student_code', code);
+          localStorage.setItem('nd_student_name', state.currentName);
+          enterPortal();
+        });
+      } else {
+        // Check if pending
+        db.ref('pendingStudents/' + user.uid).once('value').then(pSnap => {
+          if (pSnap.exists()) {
+            showAlert('Your registration is pending teacher approval.', 'success');
+          } else {
+            db.ref('pendingStudents/' + user.uid).set({
+              name: user.displayName || 'Student',
+              email: user.email,
+              ts: Date.now()
+            }).then(() => {
+              showAlert('Registration sent! Please wait for teacher approval.', 'success');
+            });
+          }
+        });
+      }
+    });
+  }).catch(err => showAlert(err.message, 'error'));
 }
 
 function enterPortal(){
@@ -334,6 +375,7 @@ function renderLessons(){
 
 function signOut(){
   if (!confirm('Sign out? You can log back in with your code.')) return;
+  firebase.auth().signOut();
   localStorage.removeItem('nd_student_code');
   localStorage.removeItem('nd_student_name');
   state.currentCode = '';

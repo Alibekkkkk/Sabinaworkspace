@@ -245,7 +245,7 @@ html.dark .q-feedback.info{color:#f5c66b}
 <body>
 
 <div class="topbar">
-  <div class="logo"><div class="mark">🌪️</div><span class="text">IELTS Studio</span></div>
+  <div class="logo"><div class="mark">🌪️</div><span class="text" id="workspaceName">Workspace</span></div>
   <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
   <div class="session-input"><label class="lbl" for="sessionCodeInput">Code:</label>
     <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" autocapitalize="characters" autocomplete="off" onkeydown="if(event.key==='Enter')changeSessionCode()">
@@ -370,6 +370,12 @@ function initFirebase(){
               if (st.notes) document.getElementById('notesArea').value = st.notes;
               loadVocabStateCloud().then(function(){ renderSidebar(); renderStage(); updateHUD(); });
             });
+            fbDb.ref('students/' + code).once('value').then(snap => {
+               const name = snap.val() ? snap.val().name : 'Student';
+               document.getElementById('workspaceName').textContent = name;
+            });
+          } else {
+            document.getElementById('workspaceName').textContent = 'Teacher Workspace';
           }
           updateSyncUI('teacher');
           document.getElementById('timerPill').style.display='none';
@@ -388,6 +394,8 @@ function initFirebase(){
       firebase.database().ref('students/'+code).once('value').then(function(snap){
         const s=snap.val();
         if(!s||s.uid!==user.uid){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">Your account is not linked to this student code.</p></div>';return}
+        // Update Workspace name
+        document.getElementById('workspaceName').textContent = s.name;
         startStudentSession(code);
       });
     });
@@ -1499,19 +1507,21 @@ function renderSidebar(){
         list.appendChild(lEl);
         if(isActive){
           const studentCode=getSessionCode();
-          const assignedHW=Object.keys(curriculumCache||{}).map(id=>curriculumCache[id]).filter(it=>{
-            return it && it.homework && it.published!==false && Array.isArray(it.assignedTo) && it.assignedTo.includes(studentCode);
-          });
-          if(assignedHW.length){
-            const hwList=document.createElement('div');hwList.className='homework-sub-list';
-            hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){
-              const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it});
-              const url=new URL(it.customUrl||'homework.html',window.location.href);
-              url.searchParams.set('lesson',id);if(studentCode)url.searchParams.set('code',studentCode);
-              return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>';
-            }).join('');
-            hwList.addEventListener('click',function(e){e.stopPropagation()});
-            list.appendChild(hwList);
+          if (studentCode) {
+            const assignedHW=Object.keys(curriculumCache||{}).map(id=>curriculumCache[id]).filter(it=>{
+              return it && it.homework && it.published!==false && Array.isArray(it.assignedTo) && it.assignedTo.includes(studentCode);
+            });
+            if(assignedHW.length){
+              const hwList=document.createElement('div');hwList.className='homework-sub-list';
+              hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){
+                const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it});
+                const url=new URL(it.customUrl||'homework.html',window.location.href);
+                url.searchParams.set('lesson',id);if(studentCode)url.searchParams.set('code',studentCode);
+                return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>';
+              }).join('');
+              hwList.addEventListener('click',function(e){e.stopPropagation()});
+              list.appendChild(hwList);
+            }
           }
           const sub=document.createElement('div');sub.className='stage-sub-list';
           lesson.stages.forEach(function(st){
@@ -1627,7 +1637,6 @@ async function loadContent() {
   }
 
   if(!teacherPreviewRequested)loadState();
-  // SMART RESUME
   if(!teacherPreviewRequested && state.currentStage === 1){
     for(let i = 1; i <= 9; i++){
       if(!state.done[state.currentLessonId + "_" + i]){
@@ -1640,6 +1649,13 @@ async function loadContent() {
   if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
   const savedCode=teacherPreviewRequested?'':getSessionCode();
   if(savedCode){const sci=document.getElementById('sessionCodeInput');if(sci)sci.value=savedCode}
+  
+  if (savedCode) {
+    // Name loading handled in initFirebase
+  } else {
+    document.getElementById('workspaceName').textContent = 'Teacher Workspace';
+  }
+
   renderSidebar();renderStage();startTimer();updateHUD();
   if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.add('active')}
   if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}

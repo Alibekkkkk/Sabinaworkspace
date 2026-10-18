@@ -485,7 +485,8 @@ let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {};
 let activeCode = null, activeFeedRef = null;
 let editingLessonId = null, lessonVisibility = 'all', lessonType = 'classwork';
 let pendingLinkUid = null;
-let currentClassworkId = null, currentHomeworkId = null;
+let currentClassworkId = null, currentClassworkCode = '';
+let currentHomeworkId = null, currentHomeworkCode = '';
 let expandedYears = {}, expandedMonths = {};
 const UNDO_STORAGE_KEY = 'teacherDashboardUndoV2';
 let undoStack = [];
@@ -1139,27 +1140,47 @@ function renderClassworkTree() {
     const l = curriculum[id] || {};
     const year = l.year || '2026';
     const month = l.month || 'October';
-    if (!grouped[year]) grouped[year] = {};
-    if (!grouped[year][month]) grouped[year][month] = [];
-    grouped[year][month].push({ id: id, title: l.title || id, private: Array.isArray(l.assignedTo) && l.assignedTo.length });
+    const assigned = Array.isArray(l.assignedTo) ? l.assignedTo : [];
+
+    if (assigned.length === 0) {
+        if (!grouped['🌍 All Students']) grouped['🌍 All Students'] = {};
+        if (!grouped['🌍 All Students'][year]) grouped['🌍 All Students'][year] = {};
+        if (!grouped['🌍 All Students'][year][month]) grouped['🌍 All Students'][year][month] = [];
+        grouped['🌍 All Students'][year][month].push({ id: id, title: l.title || id, studentCode: '' });
+    } else {
+        assigned.forEach(code => {
+            const name = (studentsMap[code] && studentsMap[code].name) || code;
+            if (!grouped['👤 ' + name]) grouped['👤 ' + name] = {};
+            if (!grouped['👤 ' + name][year]) grouped['👤 ' + name][year] = {};
+            if (!grouped['👤 ' + name][year][month]) grouped['👤 ' + name][year][month] = [];
+            grouped['👤 ' + name][year][month].push({ id: id, title: l.title || id, studentCode: code });
+        });
+    }
   });
-  const years = Object.keys(grouped).sort().reverse();
-  container.innerHTML = years.map(function(year) {
-    const isYOpen = expandedYears[year] !== false;
-    return '<div class="tree-year' + (isYOpen ? ' open' : '') + '" onclick="toggleYear(\'' + year + '\')"><span>📅 ' + year + '</span><span class="arrow">▶</span></div>' +
-      (isYOpen ? Object.keys(grouped[year]).sort().map(function(month) {
-        const isMOpen = expandedMonths[year + '_' + month] !== false;
-        return '<div class="tree-month' + (isMOpen ? ' open' : '') + '" onclick="toggleMonth(\'' + year + '\',\'' + month + '\')"><span>📁 ' + month + '</span><span class="arrow">▶</span></div>' +
-          (isMOpen ? grouped[year][month].map(function(row) {
-            return '<div class="tree-lesson' + (row.id === currentClassworkId ? ' active' : '') + '" onclick="openClassworkLesson(\'' + row.id + '\')">' +
-              (row.private ? '<span class="dot-private" title="Private"></span>' : '') +
-              '<span>' + escapeHtml(row.title) + '</span></div>';
-          }).join('') : '');
+
+  const groups = Object.keys(grouped).sort();
+  container.innerHTML = groups.map(function(studentName) {
+    const isSOpen = expandedYears['student_' + studentName] !== false;
+    return '<div class="tree-year' + (isSOpen ? ' open' : '') + '" onclick="toggleYear(\'student_' + studentName + '\')"><span>' + studentName + '</span><span class="arrow">▶</span></div>' +
+      (isSOpen ? Object.keys(grouped[studentName]).sort().reverse().map(function(year) {
+        return Object.keys(grouped[studentName][year]).sort().map(function(month) {
+          const key = studentName + '_' + year + '_' + month;
+          const isMOpen = expandedMonths[key] !== false;
+          return '<div class="tree-month' + (isMOpen ? ' open' : '') + '" onclick="toggleMonth(\'' + studentName + '\',\'' + year + '\',\'' + month + '\')"><span>📁 ' + month + ' ' + year + '</span><span class="arrow">▶</span></div>' +
+            (isMOpen ? grouped[studentName][year][month].map(function(row) {
+              return '<div class="tree-lesson' + (row.id === currentClassworkId ? ' active' : '') + '" onclick="openClassworkLesson(\'' + row.id + '\', \'' + row.studentCode + '\')">' +
+                '<span>' + escapeHtml(row.title) + '</span></div>';
+            }).join('') : '');
+        }).join('');
       }).join('') : '');
   }).join('');
 }
 function toggleYear(year) { expandedYears[year] = expandedYears[year] === false; renderClassworkTree(); }
-function toggleMonth(year, month) { expandedMonths[year + '_' + month] = expandedMonths[year + '_' + month] === false; renderClassworkTree(); }
+function toggleMonth(studentName, year, month) {
+  const k = studentName + '_' + year + '_' + month;
+  expandedMonths[k] = expandedMonths[k] === false;
+  renderClassworkTree();
+}
 
 function resolveContentName(lesson) {
   if (lesson && lesson.contentUrl) {
@@ -1173,8 +1194,9 @@ function resolveContentName(lesson) {
   return 'sabina';
 }
 
-function openClassworkLesson(id) {
+function openClassworkLesson(id, specificCode) {
   currentClassworkId = id;
+  currentClassworkCode = specificCode || '';
   const l = curriculum[id] || {};
   document.getElementById('classworkTitle').textContent = l.title || id;
   document.getElementById('classworkBar').style.display = 'flex';
@@ -1186,7 +1208,7 @@ function openClassworkLesson(id) {
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
   url.searchParams.set('content', resolveContentName(l));
-  if (activeCode) url.searchParams.set('code', activeCode); 
+  if (currentClassworkCode) url.searchParams.set('code', currentClassworkCode); 
   frame.src = url.href;
   renderClassworkTree();
 }
@@ -1198,7 +1220,7 @@ function openCurrentClassworkInTab() {
   url.searchParams.set('lesson', currentClassworkId);
   url.searchParams.set('teacher', '1');
   url.searchParams.set('content', resolveContentName(l));
-  if (activeCode) url.searchParams.set('code', activeCode);
+  if (currentClassworkCode) url.searchParams.set('code', currentClassworkCode);
   window.open(url.href, '_blank');
 }
 
@@ -1351,7 +1373,7 @@ function submitLesson() {
       closeLessonModal();
       showToast(editingLessonId ? 'Lesson saved' : 'Lesson created');
       if (payload.homework) { renderHomeworkTree(); if (currentHomeworkId === id) openHomework(id); }
-      else { renderClassworkTree(); if (currentClassworkId === id) openClassworkLesson(id); }
+      else { renderClassworkTree(); if (currentClassworkId === id) openClassworkLesson(id, currentClassworkCode); }
     })
     .catch(function(err) { alert('Save failed: ' + err.message); });
 }
