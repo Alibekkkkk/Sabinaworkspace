@@ -1,0 +1,165 @@
+{
+  "vocab": [
+    { "en": "achieve", "emoji": "🏆", "meanings": [
+      { "context": "to succeed in doing something good (verb)", "displayEn": "to achieve", "ru": "достигать (успешно справляться с чем-то)", "ex": "She <b>achieved</b> her goal of learning English." },
+      { "context": "something done successfully (noun)", "displayEn": "achievement", "ru": "достижение (успешный результат)", "ex": "Winning the competition was a great <b>achievement</b>." }
+    ]},
+    { "en": "challenge", "emoji": "⛰️", "meanings": [
+      { "context": "something difficult to do (noun)", "displayEn": "challenge", "ru": "испытание (трудная задача)", "ex": "Learning a new language is a big <b>challenge</b>." },
+      { "context": "to invite someone to compete (verb)", "displayEn": "to challenge", "ru": "бросать вызов (приглашать к соревнованию)", "ex": "He <b>challenged</b> me to a game of chess." }
+    ]},
+    { "en": "progress", "emoji": "📈", "meanings": [
+      { "context": "movement forward or improvement (noun)", "displayEn": "progress", "ru": "прогресс (движение вперед или улучшение)", "ex": "You are making excellent <b>progress</b> in math." },
+      { "context": "to move forward or improve (verb)", "displayEn": "to progress", "ru": "продвигаться (развиваться)", "ex": "The project is <b>progressing</b> well." }
+    ]},
+    { "en": "to improve", "emoji": "✨", "meanings": [
+      { "context": "to make something better (verb)", "ru": "улучшать (делать лучше)", "ex": "I want to <b>improve</b> my speaking skills." }
+    ]},
+    { "en": "to succeed", "emoji": "🎯", "meanings": [
+      { "context": "to achieve what you wanted (verb)", "ru": "добиваться успеха (достигать цели)", "ex": "If you work hard, you will <b>succeed</b>." }
+    ]},
+    { "en": "success", "emoji": "🌟", "meanings": [
+      { "context": "the achieving of a goal (noun)", "ru": "успех (достижение цели)", "ex": "Her business is a huge <b>success</b>." }
+    ]},
+    { "en": "habit", "emoji": "🔄", "meanings": [
+      { "context": "something you do regularly (noun)", "ru": "привычка (регулярное действие)", "ex": "Reading before bed is a good <b>habit</b>." }
+    ]},
+    { "en": "to practice", "emoji": "🎹", "meanings": [
+      { "context": "to do something regularly to get better (verb)", "ru": "практиковаться (регулярно делать для навыка)", "ex": "You need to <b>practice</b> the piano every day." }
+    ]},
+    { "en": "experience", "emoji": "💼", "meanings": [
+      { "context": "knowledge from doing things (uncountable noun)", "displayEn": "experience", "ru": "опыт (знания от практики)", "ex": "She has a lot of <b>experience</b> in teaching." },
+      { "context": "something that happens to you (countable noun)", "displayEn": "an experience", "ru": "случай, переживание (событие)", "ex": "Living abroad was a wonderful <b>experience</b>." }
+    ]},
+    { "en": "skill", "emoji": "🛠️", "meanings": [
+      { "context": "the ability to do something well (noun)", "ru": "навык (умение делать что-то хорошо)", "ex": "Communication is a very important <b>skill</b>." }
+    ]}
+  ],
+  "matchData": [
+    { "word": "achieve", "meaning": "to succeed in doing something good" },
+    { "word": "challenge", "meaning": "something difficult to do" },
+    { "word": "progress", "meaning": "movement forward or improvement" },
+    { "word": "to improve", "meaning": "to make something better" },
+    { "word": "to succeed", "meaning": "to achieve what you wanted" },
+    { "word": "success", "meaning": "the achieving of a goal" },
+    { "word": "habit", "meaning": "something you do regularly" },
+    { "word": "to practice", "meaning": "to do something regularly to get better" },
+    { "word": "experience", "meaning": "knowledge from doing things" },
+    { "word": "skill", "meaning": "the ability to do something well" }
+  ],
+  "readingHtml": "<h1>Araylim's Learning Journey</h1><div class=\"subtitle\">Revision: Present and Past Tenses</div><p><span class=\"para-label\">A.</span>Araylim is 14 years old and she loves learning new things. Every day, she <b>wakes</b> up at 7 AM and <b>reads</b> a book for thirty minutes. This is a good <b>habit</b>. She has a big <b>goal</b>: she wants to <b>improve</b> her English to an advanced level. She usually <b>practices</b> speaking with her friends.</p><p><span class=\"para-label\">B.</span>Yesterday, Araylim <b>had</b> a difficult exam. While she <b>was taking</b> the test, she <b>felt</b> a bit nervous. However, she <b>remembered</b> all her vocabulary and <b>succeeded</b>. She <b>has already received</b> her results, and she got a perfect score! It was a great <b>achievement</b>.</p><p><span class=\"para-label\">C.</span>Now, she <b>is studying</b> for a new <b>challenge</b>. She <b>has been learning</b> French since January. She says that learning a new <b>skill</b> is a wonderful <b>experience</b>. Her parents are very proud of her <b>progress</b>.</p>",
+  "readingQ": [
+    { "type": "short", "prompt": "What time does Araylim wake up every day?", "answers": ["7", "7 am", "7 am."], "exp": "She wakes up at 7 AM." },
+    { "type": "tfng", "prompt": "She failed her exam yesterday.", "answer": "False", "exp": "She succeeded and got a perfect score." },
+    { "type": "mcq", "prompt": "What is Araylim studying for currently?", "options": ["A math test", "A new challenge (French)", "A history project"], "correct": "A new challenge (French)", "exp": "She is studying for a new challenge: learning French." },
+    { "type": "short", "prompt": "Since when has she been learning French?", "answers": ["january", "since january"], "exp": "She has been learning French since January." }
+  ],
+  "contextQ": [
+    { "prompt": "In paragraph A, \"habit\" means...", "options": ["something you do regularly", "a difficult exam", "a type of book"], "correct": "something you do regularly", "exp": "A habit is a regular action." },
+    { "prompt": "In paragraph B, \"achievement\" is...", "options": ["a failure", "something done successfully", "a difficult question"], "correct": "something done successfully", "exp": "An achievement is a successful result." },
+    { "prompt": "In paragraph C, \"experience\" refers to...", "options": ["knowledge from doing things", "a type of exam", "a mistake"], "correct": "knowledge from doing things", "exp": "Experience is what you gain by doing things." }
+  ],
+  "g6": {
+    "pos": [
+      { "p": "She usually ___ (read) a book before bed.", "a": "reads", "ex": "Present Simple: habit." },
+      { "p": "Look! She ___ (practice) the piano right now.", "a": "is practicing", "ex": "Present Continuous: happening now." },
+      { "p": "He ___ (have) a lot of experience in teaching.", "a": "has", "ex": "Present Simple: state/fact." }
+    ],
+    "neg": [
+      { "p": "I ___ (not / understand) this grammar rule yet.", "a": "do not understand", "ex": "Present Simple negative." },
+      { "p": "They ___ (not / study) at the moment.", "a": "are not studying", "ex": "Present Continuous negative." }
+    ],
+    "q": [
+      { "p": "___ she ___ (want) to improve her English?", "a": "Does she want", "ex": "Present Simple question." },
+      { "p": "___ you ___ (listen) to me right now?", "a": "Are you listening", "ex": "Present Continuous question." }
+    ],
+    "shuffled": [
+      { "p": "Water ___ (boil) at 100 degrees.", "a": "boils" },
+      { "p": "I ___ (not / believe) his story.", "a": "do not believe" },
+      { "p": "They ___ (play) football in the park now.", "a": "are playing" }
+    ]
+  },
+  "g7": {
+    "pos": [
+      { "p": "She ___ (pass) her exam yesterday.", "a": "passed", "ex": "Past Simple: finished time." },
+      { "p": "While she ___ (take) the test, she felt nervous.", "a": "was taking", "ex": "Past Continuous: interrupted action." },
+      { "p": "They ___ (visit) Paris last summer.", "a": "visited", "ex": "Past Simple: completed action." }
+    ],
+    "neg": [
+      { "p": "I ___ (not / sleep) well last night.", "a": "did not sleep", "ex": "Past Simple negative." },
+      { "p": "He ___ (not / study) when I called him.", "a": "was not studying", "ex": "Past Continuous negative." }
+    ],
+    "q": [
+      { "p": "___ you ___ (watch) the movie yesterday?", "a": "Did you watch", "ex": "Past Simple question." },
+      { "p": "___ they ___ (play) tennis at 5 PM?", "a": "Were they playing", "ex": "Past Continuous question." }
+    ],
+    "shuffled": [
+      { "p": "I ___ (see) a great film last week.", "a": "saw" },
+      { "p": "She ___ (not / hear) the phone ring.", "a": "did not hear" },
+      { "p": "We ___ (walk) home when it started to rain.", "a": "were walking" }
+    ]
+  },
+  "sbPp": {
+    "pos": [
+      { "prompt": "Build a Present Perfect sentence about her success.", "correct": ["She","has","achieved","her","goal."] },
+      { "prompt": "Build a Present Perfect sentence about learning.", "correct": ["I","have","learned","a","lot","this","year."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative Present Perfect sentence about the test.", "correct": ["He","has","not","finished","the","test","yet."] }
+    ],
+    "q": [
+      { "prompt": "Build a Present Perfect question about experience.", "correct": ["Have","you","ever","been","to","London?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: They have made great progress.", "correct": ["They","have","made","great","progress."] },
+      { "prompt": "Build: I have never seen this movie.", "correct": ["I","have","never","seen","this","movie."] }
+    ]
+  },
+  "sbPs": {
+    "pos": [
+      { "prompt": "Build a Past Simple sentence about the exam.", "correct": ["She","passed","the","exam","yesterday."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative Past Simple sentence about the movie.", "correct": ["I","did","not","like","the","movie."] }
+    ],
+    "q": [
+      { "prompt": "Build a Past Simple question about the weekend.", "correct": ["Did","you","have","a","good","weekend?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: We visited our grandparents last week.", "correct": ["We","visited","our","grandparents","last","week."] }
+    ]
+  },
+  "g10": {
+    "pos": [
+      { "p": "She ___ (read) a book every night.", "a": "reads", "ex": "Present Simple habit." },
+      { "p": "She ___ (read) a book when I walked in.", "a": "was reading", "ex": "Past Continuous." },
+      { "p": "She ___ (already / read) three chapters today.", "a": "has already read", "ex": "Present Perfect." }
+    ],
+    "neg": [
+      { "p": "He ___ (not / finish) his homework yet.", "a": "has not finished", "ex": "Present Perfect negative." },
+      { "p": "They ___ (not / come) to the party last night.", "a": "did not come", "ex": "Past Simple negative." }
+    ],
+    "q": [
+      { "p": "___ you ___ (ever / try) Japanese food?", "a": "Have you ever tried", "ex": "Present Perfect experience." },
+      { "p": "___ she ___ (call) you yesterday?", "a": "Did she call", "ex": "Past Simple question." }
+    ],
+    "shuffled": [
+      { "p": "I ___ (live) here since 2018.", "a": "have lived" },
+      { "p": "The train ___ (leave) at 8 AM yesterday.", "a": "left" },
+      { "p": "Look! It ___ (snow).", "a": "is snowing" }
+    ]
+  },
+  "testMcq": [
+    { "q": "Which word means 'to make something better'?", "options": ["to improve", "to achieve", "to practice"], "correct": "to improve", "exp": "To improve means to make better." }
+  ],
+  "testShort": [
+    { "q": "What time does Araylim wake up?", "answers": ["7", "7 am"], "exp": "She wakes up at 7 AM." }
+  ],
+  "testTfng": [
+    { "q": "Araylim failed her exam.", "answer": "False", "exp": "She succeeded and got a perfect score." }
+  ],
+  "testComplete": [
+    { "p": "She ___ (study) French since January.", "a": "has been studying" },
+    { "p": "While she ___ (take) the test, she felt nervous.", "a": "was taking" }
+  ]
+}

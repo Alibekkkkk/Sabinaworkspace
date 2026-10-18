@@ -1,0 +1,150 @@
+{
+  "vocab": [
+    { "en": "destination", "emoji": "📍", "meanings": [
+      { "context": "the place you are travelling to (noun)", "ru": "пункт назначения (место, куда направляются)", "ex": "Paris is our final <b>destination</b>." }
+    ]},
+    { "en": "to explore", "emoji": "🗺️", "meanings": [
+      { "context": "to travel around to learn about a place (verb)", "ru": "исследовать (путешествовать для изучения)", "ex": "We want to <b>explore</b> the old city." }
+    ]},
+    { "en": "luggage", "emoji": "🧳", "meanings": [
+      { "context": "the bags you take when you travel (uncountable noun)", "ru": "багаж (сумки в путешествии)", "ex": "You must not leave your <b>luggage</b> alone." }
+    ]},
+    { "en": "to book", "emoji": "🎫", "meanings": [
+      { "context": "to reserve something in advance (verb)", "displayEn": "to book", "ru": "бронировать (резервировать заранее)", "ex": "I need to <b>book</b> a hotel room." },
+      { "context": "a written work (noun)", "displayEn": "book", "ru": "книга (печатное издание)", "ex": "She is reading a very interesting <b>book</b>." }
+    ]},
+    { "en": "opportunity", "emoji": "🚪", "meanings": [
+      { "context": "a chance to do something good (noun)", "ru": "возможность (шанс сделать что-то хорошее)", "ex": "This trip is a great <b>opportunity</b> to practice English." }
+    ]},
+    { "en": "to avoid", "emoji": "🚫", "meanings": [
+      { "context": "to stay away from something (verb)", "ru": "избегать (держаться подальше)", "ex": "We should <b>avoid</b> travelling during rush hour." }
+    ]},
+    { "en": "to manage", "emoji": "✅", "meanings": [
+      { "context": "to succeed in doing something difficult (verb)", "ru": "справляться, успешно выполнять (с трудом достигать)", "ex": "Did you <b>manage</b> to pack everything?" }
+    ]},
+    { "en": "to advise", "emoji": "💡", "meanings": [
+      { "context": "to tell someone what you think they should do (verb)", "ru": "советовать (рекомендовать)", "ex": "I <b>advise</b> you to buy travel insurance." }
+    ]},
+    { "en": "to be allowed to", "emoji": "🛂", "meanings": [
+      { "context": "to have permission to do something (verb)", "ru": "иметь разрешение (быть допущенным)", "ex": "You are not <b>allowed to</b> take liquids through security." }
+    ]},
+    { "en": "to have to", "emoji": "⚠️", "meanings": [
+      { "context": "used to say something is necessary (verb)", "ru": "быть должным (вынужденным)", "ex": "I <b>have to</b> renew my passport before the trip." }
+    ]}
+  ],
+  "matchData": [
+    { "word": "destination", "meaning": "the place you are travelling to" },
+    { "word": "to explore", "meaning": "to travel around to learn about a place" },
+    { "word": "luggage", "meaning": "the bags you take when you travel" },
+    { "word": "to book", "meaning": "to reserve something in advance" },
+    { "word": "opportunity", "meaning": "a chance to do something good" },
+    { "word": "to avoid", "meaning": "to stay away from something" },
+    { "word": "to manage", "meaning": "to succeed in doing something difficult" },
+    { "word": "to advise", "meaning": "to tell someone what you think they should do" },
+    { "word": "to be allowed to", "meaning": "to have permission to do something" },
+    { "word": "to have to", "meaning": "used to say something is necessary" }
+  ],
+  "readingHtml": "<h1>The Future of Travel</h1><div class=\"subtitle\">Future Tenses and Modals</div><p><span class=\"para-label\">A.</span>Next summer, Araylim <b>is going to travel</b> to London. She <b>is flying</b> there on July 15th. She is very excited because it is a great <b>opportunity</b>. Her flight <b>leaves</b> at 9 AM. While she is there, she <b>will be exploring</b> many museums.</p><p><span class=\"para-label\">B.</span>Her parents gave her some advice. \"You <b>must not</b> leave your <b>luggage</b> alone,\" her mother said. \"You <b>should</b> always keep your passport safe.\" Araylim <b>has to</b> remember to check in online. She <b>is allowed to</b> take one small bag onto the plane.</p><p><span class=\"para-label\">C.</span>By the time she returns, she <b>will have visited</b> at least five famous places. She hopes she <b>will manage</b> to speak English every day. She wants to <b>avoid</b> speaking Russian to practice more.</p>",
+  "readingQ": [
+    { "type": "short", "prompt": "Where is Araylim going next summer?", "answers": ["london"], "exp": "She is going to London." },
+    { "type": "tfng", "prompt": "She is flying on July 15th.", "answer": "True", "exp": "The text says she is flying on July 15th." },
+    { "type": "mcq", "prompt": "What does she want to avoid doing?", "options": ["Speaking English", "Visiting museums", "Speaking Russian"], "correct": "Speaking Russian", "exp": "She wants to avoid speaking Russian to practice more." }
+  ],
+  "contextQ": [
+    { "prompt": "In paragraph A, \"opportunity\" means...", "options": ["a chance to do something", "a type of airplane", "a difficult problem"], "correct": "a chance to do something", "exp": "An opportunity is a good chance." },
+    { "prompt": "In paragraph B, \"luggage\" refers to...", "options": ["the bags you take when you travel", "the food you eat", "the clothes you wear"], "correct": "the bags you take when you travel", "exp": "Luggage means travel bags." }
+  ],
+  "g6": {
+    "pos": [
+      { "p": "Look at those clouds! It ___ (rain).", "a": "is going to rain", "ex": "Going to: prediction based on evidence." },
+      { "p": "I ___ (meet) her tomorrow at 5 PM.", "a": "am meeting", "ex": "Present Continuous for future arrangements." },
+      { "p": "The train ___ (leave) at 8 AM tomorrow.", "a": "leaves", "ex": "Present Simple for timetables." }
+    ],
+    "neg": [
+      { "p": "I ___ (not / travel) to Paris next week.", "a": "am not going to travel", "ex": "Going to negative." }
+    ],
+    "q": [
+      { "p": "___ you ___ (come) to the party tonight?", "a": "Are you coming", "ex": "Present Continuous for future question." }
+    ],
+    "shuffled": [
+      { "p": "I ___ (buy) a new phone tomorrow.", "a": "am going to buy" },
+      { "p": "Don't worry, I ___ (help) you.", "a": "will help" }
+    ]
+  },
+  "g7": {
+    "pos": [
+      { "p": "You ___ (should) see a doctor if you feel sick.", "a": "should", "ex": "Modal verb for advice." },
+      { "p": "I ___ (must) finish my homework today.", "a": "must", "ex": "Modal verb for obligation." },
+      { "p": "She ___ (have to) wear a uniform at school.", "a": "has to", "ex": "Modal verb for external obligation." }
+    ],
+    "neg": [
+      { "p": "You ___ (must not) smoke in the hospital.", "a": "must not", "ex": "Modal verb for prohibition." },
+      { "p": "You ___ (not / have to) come if you are busy.", "a": "do not have to", "ex": "Not necessary." }
+    ],
+    "q": [
+      { "p": "___ I ___ (can) borrow your pen?", "a": "Can I borrow", "ex": "Modal verb for permission." }
+    ],
+    "shuffled": [
+      { "p": "You ___ (should not) eat too much sugar.", "a": "should not" },
+      { "p": "They ___ (might) come to the party later.", "a": "might" }
+    ]
+  },
+  "sbPp": {
+    "pos": [
+      { "prompt": "Build a Future sentence with 'going to'.", "correct": ["I","am","going","to","book","a","hotel."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative sentence with 'will'.", "correct": ["I","will","not","forget","your","luggage."] }
+    ],
+    "q": [
+      { "prompt": "Build a question with 'will'.", "correct": ["Will","you","travel","to","London?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: She is flying to Paris tomorrow.", "correct": ["She","is","flying","to","Paris","tomorrow."] }
+    ]
+  },
+  "sbPs": {
+    "pos": [
+      { "prompt": "Build a sentence with 'must'.", "correct": ["You","must","show","your","passport."] }
+    ],
+    "neg": [
+      { "prompt": "Build a sentence with 'should not'.", "correct": ["You","should","not","leave","your","bag","here."] }
+    ],
+    "q": [
+      { "prompt": "Build a question with 'have to'.", "correct": ["Do","we","have","to","book","a","ticket?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: They can visit the museum for free.", "correct": ["They","can","visit","the","museum","for","free."] }
+    ]
+  },
+  "g10": {
+    "pos": [
+      { "p": "I ___ (see) the dentist tomorrow.", "a": "am seeing", "ex": "Future arrangement." },
+      { "p": "Look at the sky! It ___ (snow).", "a": "is going to snow", "ex": "Prediction." },
+      { "p": "I ___ (call) you when I arrive.", "a": "will call", "ex": "Promise/instant decision." }
+    ],
+    "neg": [
+      { "p": "We ___ (not / have to) pay. It's free.", "a": "do not have to", "ex": "No obligation." }
+    ],
+    "q": [
+      { "p": "___ you ___ (travel) by train or by bus?", "a": "Are you going to travel", "ex": "Future plan question." }
+    ],
+    "shuffled": [
+      { "p": "You ___ (must) be careful.", "a": "must" },
+      { "p": "I ___ (might) go to the beach.", "a": "might" }
+    ]
+  },
+  "testMcq": [
+    { "q": "Which word means 'the place you are travelling to'?", "options": ["destination", "luggage", "opportunity"], "correct": "destination", "exp": "Destination is the place you travel to." }
+  ],
+  "testShort": [
+    { "q": "Where is Araylim going next summer?", "answers": ["london"], "exp": "To London." }
+  ],
+  "testTfng": [
+    { "q": "She is allowed to take a large bag on the plane.", "answer": "False", "exp": "She is allowed to take one small bag." }
+  ],
+  "testComplete": [
+    { "p": "By the time she returns, she ___ (visit) five places.", "a": "will have visited" },
+    { "p": "You ___ (should) keep your passport safe.", "a": "should" }
+  ]
+}

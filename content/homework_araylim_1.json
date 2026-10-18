@@ -1,0 +1,32 @@
+{
+  "title": "Araylim · Revision — Homework",
+  "headline": "The Science Project",
+  "intro": "Read the story and answer the questions. Practice your present and past tenses!",
+  "hero": "🔬 → 🏆",
+  "sub": "Revision · Reading & Grammar",
+  "eyebrow": "Topic · Revision · Homework",
+  "reading": {
+    "title": "The Science Project",
+    "subtitle": "A story about a challenge",
+    "paragraphs": [
+      { "label": "A.", "text": "Last month, Araylim had a big challenge. Her science teacher asked the class to build a small robot. Araylim had never built a robot before, so she felt nervous. But she decided to try her best. She spent many hours reading books and watching videos about robots." },
+      { "label": "B.", "text": "While she was building the robot, she made a few mistakes. Once, she connected the wrong wire and the robot did not move. However, she did not give up. She asked her father for help, and he showed her how to fix it. They worked together for three days." },
+      { "label": "C.", "text": "Finally, the robot was finished. When Araylim presented it in class, the robot walked across the table! The teacher was very impressed and gave her an A. Araylim has learned that hard work and practice always lead to success." }
+    ]
+  },
+  "vocab": [
+    { "en": "challenge", "emoji": "⛰️", "meanings": [ { "context": "a difficult task (noun)", "ru": "испытание (трудная задача)", "ex": "Building a robot was a big <b>challenge</b>." } ] },
+    { "en": "to build", "emoji": "🔨", "meanings": [ { "context": "to make something by putting parts together (verb)", "ru": "строить, собирать (создавать из частей)", "ex": "She wanted to <b>build</b> a robot." } ] },
+    { "en": "mistake", "emoji": "❌", "meanings": [ { "context": "something done wrong (noun)", "ru": "ошибка (неправильное действие)", "ex": "She made a few <b>mistakes</b>." } ] },
+    { "en": "to fix", "emoji": "🔧", "meanings": [ { "context": "to repair something (verb)", "ru": "чинить, исправлять (восстанавливать работу)", "ex": "He showed her how to <b>fix</b> the robot." } ] },
+    { "en": "success", "emoji": "🌟", "meanings": [ { "context": "achieving a goal (noun)", "ru": "успех (достижение цели)", "ex": "Hard work leads to <b>success</b>." } ] }
+  ],
+  "questions": [
+    { "type": "short", "prompt": "What did the teacher ask the class to build?", "answers": ["a robot", "robot", "small robot"], "exp": "The teacher asked them to build a small robot." },
+    { "type": "tfng", "prompt": "Araylim had built many robots before.", "answer": "False", "exp": "She had never built a robot before." },
+    { "type": "tfng", "prompt": "She gave up when she made a mistake.", "answer": "False", "exp": "She did not give up." },
+    { "type": "mcq", "prompt": "Who helped her fix the robot?", "options": ["Her teacher", "Her father", "Her friend"], "correct": "Her father", "exp": "She asked her father for help." },
+    { "type": "complete", "prompt": "While she ___ (build) the robot, she made a few mistakes.", "answers": ["was building"] },
+    { "type": "complete", "prompt": "Araylim ___ (learn) that hard work leads to success.", "answers": ["has learned", "has learnt"] }
+  ]
+}

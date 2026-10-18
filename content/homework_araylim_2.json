@@ -1,0 +1,32 @@
+{
+  "title": "Araylim · Future & Modals — Homework",
+  "headline": "A Trip to the Mountains",
+  "intro": "Read the email and answer the questions. Practice future forms and modal verbs!",
+  "hero": "🏔️ → 🎒",
+  "sub": "Future & Modals · Reading & Grammar",
+  "eyebrow": "Topic · Future & Modals · Homework",
+  "reading": {
+    "title": "A Trip to the Mountains",
+    "subtitle": "An email from a friend",
+    "paragraphs": [
+      { "label": "A.", "text": "Hi Araylim! I have great news. My family and I are going to visit the mountains next month. We are leaving on Friday afternoon. We have already booked a small cabin near a lake. You should come with us! It is a wonderful opportunity to relax." },
+      { "label": "B.", "text": "There are a few things you must know. You have to bring warm clothes because it will be cold at night. You don't have to bring food, because we will buy it there. Also, you must not forget your hiking boots. We will be walking a lot." },
+      { "label": "C.", "text": "By the time we return, we will have climbed the highest mountain in the area. I hope you can join us. Let me know if you can come by tomorrow. I will book the extra bed as soon as I hear from you." }
+    ]
+  },
+  "vocab": [
+    { "en": "to book", "emoji": "🎫", "meanings": [ { "context": "to reserve in advance (verb)", "ru": "бронировать (резервировать заранее)", "ex": "We have <b>booked</b> a cabin." } ] },
+    { "en": "opportunity", "emoji": "🚪", "meanings": [ { "context": "a chance to do something (noun)", "ru": "возможность (шанс)", "ex": "It is a great <b>opportunity</b>." } ] },
+    { "en": "to have to", "emoji": "⚠️", "meanings": [ { "context": "necessary (verb)", "ru": "быть должным (необходимость)", "ex": "You <b>have to</b> bring warm clothes." } ] },
+    { "en": "must not", "emoji": "🚫", "meanings": [ { "context": "prohibited (verb)", "ru": "нельзя (запрещено)", "ex": "You <b>must not</b> forget your boots." } ] },
+    { "en": "to climb", "emoji": "🧗", "meanings": [ { "context": "to go up a mountain (verb)", "ru": "взбираться (подниматься вверх)", "ex": "We will <b>climb</b> the mountain." } ] }
+  ],
+  "questions": [
+    { "type": "short", "prompt": "Where are they going next month?", "answers": ["the mountains", "mountains"], "exp": "They are going to the mountains." },
+    { "type": "tfng", "prompt": "They have not booked a cabin yet.", "answer": "False", "exp": "They have already booked a cabin." },
+    { "type": "mcq", "prompt": "Why must Araylim bring warm clothes?", "options": ["Because it will rain", "Because it will be cold at night", "Because it is fashionable"], "correct": "Because it will be cold at night", "exp": "It will be cold at night." },
+    { "type": "tfng", "prompt": "Araylim has to bring her own food.", "answer": "False", "exp": "She doesn't have to bring food." },
+    { "type": "complete", "prompt": "By the time they return, they ___ (climb) the highest mountain.", "answers": ["will have climbed"] },
+    { "type": "complete", "prompt": "You ___ (should) come with us! It's a great chance.", "answers": ["should"] }
+  ]
+}
