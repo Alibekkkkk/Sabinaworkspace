@@ -278,7 +278,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
               <h2>Session Info</h2>
               <div class="info-row"><span class="k">Current stage</span><span class="v" id="currentStage">—</span></div>
               <div class="info-row"><span class="k">Elapsed</span><span class="v" id="elapsedTime">00:00</span></div>
-              <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 10</span></div>
+              <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 9</span></div>
               <div class="info-row"><span class="k">Streak</span><span class="v" id="streakVal">0 🔥</span></div>
               <div class="info-row"><span class="k">Last activity</span><span class="v" id="lastActivity">—</span></div>
             </div>
@@ -487,12 +487,17 @@ let expandedYears = {}, expandedMonths = {};
 const UNDO_STORAGE_KEY = 'teacherDashboardUndoV2';
 let undoStack = [];
 
-const STAGE_NAMES = ['Vocabulary','Word Match','Reading','Close Reading','Comprehension','Present Passive','Past Passive','Present Perfect','Sentence Builder','Speed Round'];
+const STAGE_NAMES = ['Vocabulary','Word Match','Reading & Questions','Completing Sent 1','Completing Sent 2','Sentence Builder 1','Sentence Builder 2','Choose the Tense','Test Your Knowledge'];
 const STAGE_LIST = [
-  {id:1,label:'Vocabulary'},{id:2,label:'Word Match'},{id:3,label:'Reading'},
-  {id:4,label:'Close Reading'},{id:5,label:'Comprehension'},{id:6,label:'Present Passive'},
-  {id:7,label:'Past Passive'},{id:8,label:'Present Perfect'},{id:9,label:'Sentence Builder'},
-  {id:10,label:'Speed Round'}
+  {id:1,label:'Vocabulary'},
+  {id:2,label:'Word Match'},
+  {id:3,label:'Reading & Questions'},
+  {id:4,label:'Completing Sent 1'},
+  {id:5,label:'Completing Sent 2'},
+  {id:6,label:'Sentence Builder 1'},
+  {id:7,label:'Sentence Builder 2'},
+  {id:8,label:'Choose the Tense'},
+  {id:9,label:'Test Your Knowledge'}
 ];
 
 /* ============================================================
@@ -770,9 +775,8 @@ function renderStudentsList() {
     else if (lastSeen && age < 600000) dotClass = 'stale';
     const linked = s.uid ? '🔗' : '⚠️';
     
-    // VISUAL PROGRESS BAR
     const doneCount = Object.keys(meta.done || {}).filter(k => meta.done[k]).length;
-    const totalStages = 10; 
+    const totalStages = 9; 
     const pct = Math.round((doneCount / totalStages) * 100);
     const barColor = pct === 100 ? 'var(--success)' : (pct > 50 ? 'var(--warn)' : 'var(--accent)');
     const progressBar = `<div style="width:100%; height:6px; background:var(--border); border-radius:6px; margin-top:8px;"><div style="width:${pct}%; height:100%; background:${barColor}; border-radius:6px; transition:width 0.3s;"></div></div>`;
@@ -807,7 +811,7 @@ function deselectStudent() {
   renderStudentsList();
   renderOverview();
   renderClassworkTree();
-  switchMainTab('students'); // Switch to students tab
+  switchMainTab('students'); 
 }
 
 /* ============================================================
@@ -825,12 +829,11 @@ function renderSelectedView() {
   const sec = meta.elapsed || 0;
   document.getElementById('elapsedTime').textContent = String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0');
   const doneCount = Object.keys(meta.done || {}).filter(function(k) { return meta.done[k]; }).length;
-  document.getElementById('stagesDone').textContent = doneCount + ' / 10';
+  document.getElementById('stagesDone').textContent = doneCount + ' / 9';
   document.getElementById('streakVal').textContent = (meta.streak || 0) + ' 🔥';
   document.getElementById('lastActivity').textContent = meta.lastSeen ? new Date(meta.lastSeen).toLocaleTimeString() : '—';
   document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
 
-  // 1. NEW STAGE MAP WITH ICONS
   document.getElementById('stageVis').innerHTML = STAGE_LIST.map(function(st) {
     const isDone = meta.done && meta.done[st.id];
     const isCurrent = (meta.stage || 1) === st.id;
@@ -838,7 +841,6 @@ function renderSelectedView() {
     return '<div class="stage-chip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '') + '" style="display:flex; align-items:center; gap:6px;">' + icon + ' ' + st.id + '. ' + st.label + '</div>';
   }).join('');
 
-  // 2. NEW CONTROL GRID WITH RESUME BUTTON
   document.getElementById('controlGrid').innerHTML = 
     '<button class="btn" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;" onclick="sendGoto(' + (meta.stage || 1) + ')">' +
       '🎯 Tell Student to Resume at Stage ' + (meta.stage || 1) +
@@ -891,7 +893,6 @@ function attachHistoryListener() {
 function resetStage(stageId) {
   if(!confirm('Reset student progress for Stage ' + stageId + '?')) return;
   const ts = Date.now();
-  // Send command to student to reset this stage
   fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'resetStage', stage: stageId, ts: ts })
     .then(() => {
       showToast('Sent: reset stage ' + stageId);
@@ -1187,6 +1188,7 @@ function resolveContentName(lesson) {
     const n = String(studentsMap[activeCode].name || '').toLowerCase();
     if (n.indexOf('gaziz') !== -1) return 'gaziz';
     if (n.indexOf('sabina') !== -1) return 'sabina';
+    if (n.indexOf('george') !== -1) return 'george';
   }
   return 'sabina';
 }

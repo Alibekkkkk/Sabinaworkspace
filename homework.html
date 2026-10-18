@@ -8,6 +8,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+  // Apply theme immediately to avoid flash
+  try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
+</script>
 <style>
 :root{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
@@ -22,7 +26,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .hw-top .tts-group{display:flex;gap:6px;flex-wrap:wrap}
 .hw-top button,.hw-top a{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:9px;padding:8px 12px;text-decoration:none;font:700 15px 'EB Garamond','Times New Roman',serif;cursor:pointer;transition:all .15s;font-family:inherit}
 .hw-top button:hover,.hw-top a:hover{border-color:var(--accent);color:var(--accent)}
-.hw-top .tts-group button.playing{background:var(--accent);color:#fff;border-color:var(--accent)}
 .wrap{max-width:1500px;margin:20px auto 60px;padding:0 22px}
 .hero{padding:26px 4px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
 .hero .eyebrow{font:12px 'Fira Code',monospace;letter-spacing:1.3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
@@ -45,7 +48,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
 .v-word{background:rgba(238,90,36,.12);color:var(--accent-dark);font-weight:700;cursor:pointer;padding:1px 5px;border-radius:5px;border-bottom:2px dotted var(--accent);font-family:inherit;font-size:inherit}
 .v-word:hover{background:var(--accent);color:#fff}
-.v-word.learned{background:var(--success-soft);color:var(--success);border-bottom-color:var(--success)}
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
 .q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
@@ -63,31 +65,18 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .q-input.wrong{border-color:var(--error);background:var(--error-soft);color:var(--error)}
 .q-textarea{width:100%;min-height:90px;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-family:'EB Garamond','Times New Roman',serif;font-size:16px;line-height:1.5;color:var(--ink);background:var(--bg);outline:none;resize:vertical}
 .q-textarea:focus{border-color:var(--accent);background:var(--panel)}
-.q-textarea.correct{border-color:var(--success);background:var(--success-soft)}
-.q-textarea.wrong{border-color:var(--error);background:var(--error-soft)}
 .q-feedback{margin-top:10px;padding:10px 14px;border-radius:10px;font-size:15px;font-weight:600;display:none}
 .q-feedback.correct{background:var(--success-soft);color:var(--success);display:block;border-left:4px solid var(--success)}
 .q-feedback.wrong{background:var(--error-soft);color:var(--error);display:block;border-left:4px solid var(--error)}
 .q-feedback .exp{display:block;font-weight:500;font-size:14px;color:var(--ink-soft);margin-top:6px;font-style:italic}
 .q-feedback .sample{display:block;font-weight:600;font-size:14px;color:var(--ink);margin-top:8px;padding:8px 12px;background:rgba(0,0,0,.04);border-radius:8px;font-style:italic}
-.tfng-opts{display:flex;gap:8px;flex-wrap:wrap}
-.tfng-opts .q-opt{padding:9px 14px;font-size:14px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 3px 0 var(--accent-dark)}
 .btn:hover{transform:translateY(-1px);box-shadow:0 4px 0 var(--accent-dark)}
-.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--accent-dark)}
 .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
-.btn.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--border);box-shadow:0 2px 0 var(--border)}
-.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
-.btn.flag{background:var(--warn);box-shadow:0 3px 0 #c96b00;color:#fff;padding:7px 14px;font-size:14px}
-.btn.flag:hover{background:#e08600}
-.btn.flag.done{background:var(--success);box-shadow:0 3px 0 #1e7e34;opacity:.7}
-.review-btn-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.review-btn-row .hint{font-size:12px;color:var(--ink-soft);font-style:italic}
 .submit-bar{position:sticky;bottom:0;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-top:16px;box-shadow:0 -4px 20px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
 .submit-bar .hint{font-size:14px;color:var(--ink-soft);font-weight:600}
 .submit-bar .hint b{color:var(--accent)}
 .submit-bar .submit-btn{padding:14px 34px;font-size:17px}
-.submit-bar .submit-btn:disabled{opacity:.5;cursor:not-allowed}
 .result-banner{background:linear-gradient(135deg,rgba(46,158,91,.1),rgba(46,158,91,.03));border:2px dashed var(--success);border-radius:16px;padding:28px 22px;margin-bottom:16px;text-align:center}
 .result-banner .icon{font-size:56px;margin-bottom:10px}
 .result-banner h3{font-size:24px;color:var(--success);margin-bottom:8px;font-weight:800}
@@ -96,8 +85,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .vocab-backdrop{position:fixed;inset:0;background:rgba(20,25,40,.85);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
 .vocab-backdrop.open{display:flex}
 .vocab-card{background:var(--panel);border-radius:22px;max-width:640px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg);position:relative;padding:28px 30px 24px;text-align:left}
-.vocab-card .close-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--panel);color:var(--ink);font-size:20px;cursor:pointer;font-family:inherit}
-.vocab-card .close-x:hover{color:var(--error);border-color:var(--error)}
+.vocab-card .close-x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--panel);color:var(--ink);font-size:20px;cursor:pointer}
 .vocab-card .head{text-align:center;margin-bottom:18px}
 .vocab-card .head .emoji{font-size:64px;line-height:1;margin-bottom:8px}
 .vocab-card .head .word{font-size:30px;font-weight:800;color:var(--primary)}
@@ -105,11 +93,8 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .fc-meaning .context{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
 .fc-meaning .translation{font-size:19px;font-weight:700;color:var(--ink);margin-bottom:8px}
 .fc-meaning .example{font-size:14px;line-height:1.6;color:var(--ink-soft);font-style:italic;padding-left:10px;border-left:2px solid var(--border)}
-.fc-meaning .example b{color:var(--primary);font-style:normal}
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-::selection{background:var(--accent);color:#fff}
-@media(max-width:640px){.wrap{padding:0 12px}.passage{padding:20px 22px;font-size:17px;max-height:none}.hw-top{padding:10px 12px;gap:8px}.hw-top .title-block .brand{font-size:17px}.hw-top button,.hw-top a{padding:7px 10px;font-size:13px}}
 </style>
 </head>
 <body>
@@ -121,12 +106,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <div class="sub" id="hwSub">Topic · Homework</div>
   </div>
   <div class="spacer"></div>
-  <div class="tts-group">
-    <button id="ttsPlay" onclick="speakLong()">▶️ Listen</button>
-    <button id="ttsPause" style="display:none" onclick="pauseTTS()">⏸ Pause</button>
-    <button id="ttsResume" style="display:none" onclick="resumeTTS()">▶️ Resume</button>
-    <button id="ttsStop" style="display:none" onclick="stopTTS()">⏹ Stop</button>
-  </div>
   <button onclick="toggleTheme()" id="themeButton">🌙 Theme</button>
   <a href="portal.html">← Classwork</a>
 </div>
@@ -172,7 +151,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 </div>
 
 <script>
-/* ================== FIREBASE ================== */
 const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
 
@@ -186,114 +164,37 @@ const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 
 let lesson = null;
 
-/* ================== HELPERS ================== */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
 
-/* ================== TTS ================== */
-let soundOn=true,ukVoice=null;
-let ttsState='idle',ttsUtterId=0,ttsFullText='',ttsCharStart=0;
-
-function pickUKVoice(){if(!('speechSynthesis' in window))return null;const v=window.speechSynthesis.getVoices();return v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang&&x.lang.toLowerCase().startsWith('en-gb'))||v.find(x=>x.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(x.name))||null}
-if('speechSynthesis' in window){ukVoice=pickUKVoice();window.speechSynthesis.onvoiceschanged=()=>{ukVoice=pickUKVoice()}}
-
-function speakLong(text){
-  if(!soundOn)return;
-  if(!('speechSynthesis' in window))return;
-  try{
-    window.speechSynthesis.cancel();
-    ttsUtterId++;
-    const myId=ttsUtterId;
-    const raw=text!==undefined?text:document.getElementById('passageBody').innerText;
-    ttsFullText=String(raw).replace(/\s+/g,' ').trim();
-    ttsCharStart=0;
-    const u=new SpeechSynthesisUtterance(ttsFullText);
-    u.lang='en-GB';u.rate=.9;u.pitch=1;
-    if(ukVoice)u.voice=ukVoice;
-    u.onboundary=function(e){if(ttsUtterId===myId&&typeof e.charIndex==='number')ttsCharStart=e.charIndex};
-    u.onend=function(){if(ttsUtterId===myId){ttsState='idle';ttsCharStart=0;updateTTSButtons()}};
-    u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
-    window.speechSynthesis.speak(u);
-    ttsState='playing';
-    updateTTSButtons();
-  }catch(e){}
-}
-
-function pauseTTS(){
-  if(!('speechSynthesis' in window))return;
-  if(ttsState!=='playing')return;
-  try{window.speechSynthesis.pause()}catch(e){}
-  ttsState='paused';
-  updateTTSButtons();
-}
-
-function resumeTTS(){
-  if(!('speechSynthesis' in window))return;
-  if(ttsState!=='paused')return;
-  ttsState='playing';
-  updateTTSButtons();
-  try{window.speechSynthesis.resume()}catch(e){}
-  setTimeout(function(){
-    if(ttsState!=='playing')return;
-    if(!window.speechSynthesis.speaking||window.speechSynthesis.paused){
-      try{
-        window.speechSynthesis.cancel();
-        ttsUtterId++;
-        const myId=ttsUtterId;
-        const baseOffset=ttsCharStart;
-        const remaining=ttsFullText.substring(Math.max(0,baseOffset)).replace(/^\s+/,'');
-        if(!remaining){ttsState='idle';updateTTSButtons();return}
-        const u=new SpeechSynthesisUtterance(remaining);
-        u.lang='en-GB';u.rate=.9;u.pitch=1;
-        if(ukVoice)u.voice=ukVoice;
-        u.onboundary=function(e){if(ttsUtterId===myId&&typeof e.charIndex==='number')ttsCharStart=baseOffset+e.charIndex};
-        u.onend=function(){if(ttsUtterId===myId){ttsState='idle';ttsCharStart=0;updateTTSButtons()}};
-        u.onerror=function(){if(ttsUtterId===myId){ttsState='idle';updateTTSButtons()}};
-        window.speechSynthesis.speak(u);
-      }catch(e){}
-    }
-  },200);
-}
-
-function stopTTS(){
-  if(!('speechSynthesis' in window))return;
-  ttsUtterId++;
-  try{window.speechSynthesis.cancel()}catch(e){}
-  ttsState='idle';
-  ttsCharStart=0;
-  updateTTSButtons();
-}
-
-function updateTTSButtons(){
-  const p=document.getElementById('ttsPlay');
-  const pa=document.getElementById('ttsPause');
-  const r=document.getElementById('ttsResume');
-  const s=document.getElementById('ttsStop');
-  const setVis=function(el,on){if(!el)return;el.style.display=on?'':'none'};
-  setVis(p,ttsState==='idle');
-  setVis(pa,ttsState==='playing');
-  setVis(r,ttsState==='paused');
-  setVis(s,ttsState!=='idle');
-}
-
-/* ================== THEME ================== */
 function toggleTheme(){
   document.documentElement.classList.toggle('dark');
   const dark=document.documentElement.classList.contains('dark');
   try{localStorage.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){}
   const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme';
 }
-try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 document.getElementById('themeButton').textContent=document.documentElement.classList.contains('dark')?'☀️ Theme':'🌙 Theme';
 
-/* ================== STATE ================== */
 let answers={};
 let submitted=false;
 let reviewFlags={};
+let saveTimeout;
 
-/* ================== RENDER PASSAGE ================== */
+function debouncedSave(){
+  clearTimeout(saveTimeout);
+  saveTimeout=setTimeout(()=>{
+    if(sessionRef&&!teacherMode&&!submitted){
+      sessionRef.child('homework/'+homeworkId).update({
+        version:homeworkVersion,
+        answers:answers,
+        updatedAt:Date.now()
+      }).catch(console.error);
+    }
+  },800);
+}
+
 function renderPassage(){
   const p=lesson.reading;
   const body=document.getElementById('passageBody');
@@ -315,7 +216,6 @@ function renderPassage(){
   });
 }
 
-/* ================== VOCAB MODAL ================== */
 function openVocab(word){
   const v=lesson.vocab.find(function(x){return x.en===word});
   if(!v)return;
@@ -330,7 +230,6 @@ function openVocab(word){
 }
 function closeVocab(){document.getElementById('vocabBackdrop').classList.remove('open')}
 
-/* ================== PROGRESS ================== */
 function updateProgress(){
   const total=lesson.questions.length;
   const answered=Object.keys(answers).length;
@@ -341,6 +240,7 @@ function updateProgress(){
   const remaining=total-answered;
   const hint=document.getElementById('submitHint');
   const btn=document.getElementById('submitBtn');
+  
   if(submitted){
     if(btn){btn.disabled=true;btn.textContent='✓ Submitted'}
     if(hint)hint.innerHTML='Homework already submitted.';
@@ -355,35 +255,6 @@ function updateProgress(){
   }
 }
 
-/* ================== FLAG FOR REVIEW ================== */
-function flagForReview(idx,prompt,studentAnswer,autoResult){
-  if(teacherMode)return;
-  if(!sessionRef){alert('Cannot send to teacher — no session connected.');return}
-  const payload={stage:'homework',questionId:'hw_'+idx,prompt:prompt,studentAnswer:studentAnswer,autoResult:autoResult,ts:Date.now(),homeworkId:homeworkId};
-  sessionRef.child('reviewQueue').push(payload).then(function(){
-    reviewFlags[idx]=true;
-    const btn=document.querySelector('[data-flag-idx="'+idx+'"]');
-    if(btn){btn.classList.add('done');btn.textContent='✓ Sent to teacher'}
-  }).catch(function(e){alert('Failed to send: '+e.message)});
-}
-
-/* ================== BUILD FLAG BUTTON ================== */
-function flagButtonHTML(idx){
-  if(teacherMode)return '';
-  return '<div class="review-btn-row"><button class="btn flag" data-flag-idx="'+idx+'" onclick="flagFromButton(this)">🚩 Flag for teacher review</button><span class="hint">If you think your answer is correct but the check says no, click here.</span></div>';
-}
-function flagFromButton(btn){
-  const idx=Number(btn.dataset.flagIdx);
-  const q=lesson.questions[idx];if(!q)return;
-  let studentAnswer='';
-  if(q.type==='long'||q.type==='short'||q.type==='complete'){
-    const ta=document.querySelector('[data-answer-idx="'+idx+'"]');
-    if(ta)studentAnswer=ta.value||'';
-  }
-  flagForReview(idx,q.prompt,studentAnswer,'flagged-manually');
-}
-
-/* ================== CHECK LONG ANSWER ================== */
 function checkLongAnswer(text,keywordGroups,minWords,minGroups){
   const t=norm(text);
   const words=t.split(/\s+/).filter(function(w){return w.length>0});
@@ -394,7 +265,6 @@ function checkLongAnswer(text,keywordGroups,minWords,minGroups){
   return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched};
 }
 
-/* ================== RENDER QUESTIONS ================== */
 function renderQuestions(){
   const host=document.getElementById('questionsHost');if(!host)return;
   host.innerHTML='';
@@ -408,31 +278,32 @@ function renderQuestions(){
     if(q.type==='short'||q.type==='complete'){
       const row=document.createElement('div');row.className='q-input-row';
       const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';inp.dataset.answerIdx=idx;
-      inp.addEventListener('input',function(){
-        if(inp.value.trim().length>0){answers[idx]=inp.value;updateProgress()}
-        else{delete answers[idx];updateProgress()}
-      });
-      if(submitted){
+      if(submitted){inp.value=answers[idx]||'';inp.disabled=true}
+      else {
         inp.value=answers[idx]||'';
-        inp.disabled=true;
+        inp.addEventListener('input',function(){
+          if(inp.value.trim().length>0){answers[idx]=inp.value;}
+          else{delete answers[idx];}
+          updateProgress();
+          debouncedSave();
+        });
+      }
+      row.appendChild(inp);body.appendChild(row);
+      
+      if(submitted){
         const val=norm(inp.value);
         const accepted=q.answers || [];
         const ok=accepted.some(function(a){return norm(a)===val});
         if(ok)inp.classList.add('correct'); else inp.classList.add('wrong');
-      }
-      row.appendChild(inp);
-      body.appendChild(row);
-      if(submitted){
         const fb=document.createElement('div');
-        fb.className='q-feedback ' + (q.answers && q.answers.some(a=>norm(a)===norm(inp.value)) ? 'correct' : 'wrong');
-        fb.innerHTML=(q.answers && q.answers.some(a=>norm(a)===norm(inp.value)) ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
+        fb.className='q-feedback ' + (ok ? 'correct' : 'wrong');
+        fb.innerHTML=(ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
         fb.style.display='block';
         body.appendChild(fb);
       }
-      body.insertAdjacentHTML('beforeend',flagButtonHTML(idx));
       
     }else if(q.type==='tfng'){
-      const opts=document.createElement('div');opts.className='tfng-opts';
+      const opts=document.createElement('div');opts.className='q-opts';
       ['True','False','Not Given'].forEach(function(o){
         const b=document.createElement('button');b.className='q-opt';b.textContent=o;
         if(submitted){
@@ -444,7 +315,7 @@ function renderQuestions(){
           b.onclick=function(){
             opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')});
             b.classList.add('selected');
-            answers[idx]=o;updateProgress();
+            answers[idx]=o;updateProgress();debouncedSave();
           };
         }
         opts.appendChild(b);
@@ -471,7 +342,7 @@ function renderQuestions(){
           b.onclick=function(){
             opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')});
             b.classList.add('selected');
-            answers[idx]=o;updateProgress();
+            answers[idx]=o;updateProgress();debouncedSave();
           };
         }
         opts.appendChild(b);
@@ -487,33 +358,31 @@ function renderQuestions(){
       
     }else if(q.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';ta.dataset.answerIdx=idx;
-      ta.addEventListener('input',function(){
-        if(ta.value.trim().length>0){answers[idx]=ta.value;updateProgress()}
-        else{delete answers[idx];updateProgress()}
-      });
-      if(submitted){
+      if(submitted){ta.value=answers[idx]||'';ta.disabled=true}
+      else {
         ta.value=answers[idx]||'';
-        ta.disabled=true;
-        const res=checkLongAnswer(ta.value,q.keywordGroups,q.minWords,q.minGroups);
-        if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong');
+        ta.addEventListener('input',function(){
+          if(ta.value.trim().length>0){answers[idx]=ta.value;}
+          else{delete answers[idx];}
+          updateProgress();debouncedSave();
+        });
       }
       body.appendChild(ta);
       if(submitted){
         const res=checkLongAnswer(answers[idx]||'',q.keywordGroups,q.minWords,q.minGroups);
+        if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong');
         const fb=document.createElement('div');
         fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong');
         fb.innerHTML=(res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>';
         fb.style.display='block';
         body.appendChild(fb);
       }
-      body.insertAdjacentHTML('beforeend',flagButtonHTML(idx));
     }
     host.appendChild(card);
   });
   updateProgress();
 }
 
-/* ================== SUBMIT ================== */
 function submitAll(){
   if(submitted)return;
   const total=lesson.questions.length;
@@ -547,10 +416,7 @@ function submitAll(){
       updatedAt:Date.now()
     }).catch(function(e){console.error(e)});
   }
-  
-  // Re-render to show results
   renderQuestions();
-  
   const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
   banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+
@@ -562,7 +428,6 @@ function submitAll(){
   updateProgress();
 }
 
-/* ================== CONFETTI ================== */
 function confetti(){
   const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];
   for(let i=0;i<70;i++){
@@ -576,19 +441,14 @@ function confetti(){
   }
 }
 
-/* ================== CONTENT LOADER ================== */
 async function loadHomeworkContent() {
-  if (!variant) {
-      throw new Error("No 'variant' parameter specified in the URL.");
-  }
+  if (!variant) throw new Error("No 'variant' parameter specified in the URL.");
   const fileName = variant.startsWith('homework_') ? variant : 'homework_' + variant;
-  
   const res = await fetch('content/' + fileName + '.json', { cache: 'no-store' });
   if (!res.ok) throw new Error('content/' + fileName + '.json not found');
   lesson = await res.json();
 }
 
-/* ================== FIREBASE INIT + AUTH ================== */
 function initFirebase(){
   try{
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
@@ -655,15 +515,13 @@ function startHomework(){
         host.insertBefore(banner,host.firstChild);
       }
     }).catch(function(e){
-      console.error(e);
-      renderPassage();renderQuestions();
+      console.error(e);renderPassage();renderQuestions();
     });
   }else{
     renderPassage();renderQuestions();
   }
 }
 
-/* ================== BOOT ================== */
 (async function boot() {
   try {
     await loadHomeworkContent();
@@ -673,7 +531,6 @@ function startHomework(){
   }
   initFirebase();
 })();
-
 </script>
 </body>
 </html>

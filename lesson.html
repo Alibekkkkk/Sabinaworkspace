@@ -8,6 +8,10 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+  // Apply theme immediately to avoid flash
+  try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
+</script>
 <style>
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
@@ -314,12 +318,12 @@ const DEFAULT_STAGES = [
   {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
   {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
   {id:3,label:'Reading & Questions',sub:'Article + practice',icon:'📖'},
-  {id:4,label:'Completing Sentence — Present Perfect',sub:'Grammar',icon:'⏳'},
-  {id:5,label:'Completing Sentence — Passive Voice',sub:'Grammar',icon:'🛡️'},
-  {id:6,label:'Sentence Builder — Present Perfect',sub:'Build',icon:'🧩'},
-  {id:7,label:'Sentence Builder — Passive',sub:'Build',icon:'🧱'},
-  {id:8,label:'Completing Sentence — Choose the Tense',sub:'Mixed',icon:'🧭'},
-  {id:9,label:'Lesson 1 — Test Your Knowledge',sub:'Timed test',icon:'⚡'}
+  {id:4,label:'Completing Sentence 1',sub:'Grammar',icon:'⏳'},
+  {id:5,label:'Completing Sentence 2',sub:'Grammar',icon:'🛡️'},
+  {id:6,label:'Sentence Builder 1',sub:'Build',icon:'🧩'},
+  {id:7,label:'Sentence Builder 2',sub:'Build',icon:'🧱'},
+  {id:8,label:'Choose the Tense',sub:'Mixed',icon:'🧭'},
+  {id:9,label:'Test Your Knowledge',sub:'Timed test',icon:'⚡'}
 ];
 
 /* ================== STATE ================== */
@@ -339,6 +343,7 @@ function totalScore(){
 }
 
 /* ================== CONTENT PLACEHOLDERS (Loaded via JSON) ================== */
+let activeContentName = 'sabina';
 let VOCAB = [];
 let MATCH_DATA = [];
 let READING_HTML = "";
@@ -1220,8 +1225,35 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
 }
 function resetGrammarStage(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
 
-function renderStage4(){renderCompletingSentence(G6,4,3,5,'⏳ Completing Sentence — Present Perfect','Stage 4 — Grammar','Subject + have/has + past participle (V3)','<li>Use <b>have</b> with I, you, we, they (and plural nouns).</li><li>Use <b>has</b> with he, she, it (and singular nouns like "council", "region").</li><li>Negative: <b>have/has not + V3</b>. Question: <b>Have/Has + subject + V3?</b></li>','Complete each sentence. Part 1 has positives, Part 2 has negatives, Part 3 has questions, then a large mixed set.<span class="ru">Дополните предложения. Секции: утверждения → отрицания → вопросы → микс.</span>')}
-function renderStage5(){renderCompletingSentence(G7,5,4,6,'🛡️ Completing Sentence — Passive Voice','Stage 5 — Grammar','Subject + was/were + past participle (V3)','<li>Past passive: <b>was</b> + V3 (singular), <b>were</b> + V3 (plural).</li><li>Use passive when the action matters more than the doer: The town <b>was destroyed</b>.</li><li>Negative: <b>was/were not + V3</b>. Question: <b>Was/Were + subject + V3?</b></li>','Complete each sentence using the passive voice. Same structure as Stage 4.<span class="ru">Дополните предложения в пассивном залоге.</span>')}
+function renderStage4(){
+    let title = '⏳ Completing Sentence — Present Perfect';
+    let formula = 'Subject + have/has + past participle (V3)';
+    let listHTML = '<li>Use <b>have</b> with I, you, we, they (and plural nouns).</li><li>Use <b>has</b> with he, she, it (and singular nouns like "council", "region").</li><li>Negative: <b>have/has not + V3</b>. Question: <b>Have/Has + subject + V3?</b></li>';
+    let lead = 'Complete each sentence. Part 1 has positives, Part 2 has negatives, Part 3 has questions, then a large mixed set.<span class="ru">Дополните предложения. Секции: утверждения → отрицания → вопросы → микс.</span>';
+    
+    if (activeContentName === 'george') {
+        title = '⏳ Completing Sentence — Present Tenses';
+        formula = 'Subject + V1 / am/is/are + V-ing';
+        listHTML = '<li>Present Simple: habits, routines, facts.</li><li>Present Continuous: happening right now.</li><li>Look for time words: usually, every day, right now, Look!</li>';
+        lead = 'Complete each sentence using Present Simple or Present Continuous.<span class="ru">Дополните предложения, используя Present Simple или Present Continuous.</span>';
+    }
+    renderCompletingSentence(G6,4,3,5,title,'Stage 4 — Grammar',formula,listHTML,lead);
+}
+
+function renderStage5(){
+    let title = '🛡️ Completing Sentence — Passive Voice';
+    let formula = 'Subject + was/were + past participle (V3)';
+    let listHTML = '<li>Past passive: <b>was</b> + V3 (singular), <b>were</b> + V3 (plural).</li><li>Use passive when the action matters more than the doer: The town <b>was destroyed</b>.</li><li>Negative: <b>was/were not + V3</b>. Question: <b>Was/Were + subject + V3?</b></li>';
+    let lead = 'Complete each sentence using the passive voice. Same structure as Stage 4.<span class="ru">Дополните предложения в пассивном залоге.</span>';
+    
+    if (activeContentName === 'george') {
+        title = '⏳ Completing Sentence — Past Simple';
+        formula = 'Subject + V2 (or did not + V1)';
+        listHTML = '<li>Finished actions in the past.</li><li>Look for time words: yesterday, last week, in 2022, ago.</li><li>Negative: <b>did not + V1</b>. Question: <b>Did + subject + V1?</b></li>';
+        lead = 'Complete each sentence using Past Simple.<span class="ru">Дополните предложения в Past Simple.</span>';
+    }
+    renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
+}
 
 /* ================== STAGES 6/7 — SENTENCE BUILDER ================== */
 const SB_STATE={};
@@ -1314,11 +1346,51 @@ function checkSBItem(stageId,idx){
   }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Check the word order.';sWrong()}
 }
 
-function renderStage6(){renderSentenceBuilder(SB_PP,6,5,7,'🧩 Sentence Builder — Present Perfect','Stage 6 — Grammar','have/has + past participle (V3)','<li>Build sentences word by word.</li><li>Part 1: positives, Part 2: negatives, Part 3: questions, then a big mixed set.</li>','Build each sentence. Same order as the completing-sentence stages.<span class="ru">Соберите предложения по частям.</span>')}
-function renderStage7(){renderSentenceBuilder(SB_PS,7,6,8,'🧱 Sentence Builder — Passive Voice','Stage 7 — Grammar','was/were + past participle (V3)','<li>Build past passive sentences word by word.</li><li>Same 5+5+5 structure.</li>','Build each sentence.<span class="ru">Соберите предложения.</span>')}
+function renderStage6(){
+    let title = '🧩 Sentence Builder — Present Perfect';
+    let formula = 'have/has + past participle (V3)';
+    let listHTML = '<li>Build sentences word by word.</li><li>Part 1: positives, Part 2: negatives, Part 3: questions, then a big mixed set.</li>';
+    let lead = 'Build each sentence. Same order as the completing-sentence stages.<span class="ru">Соберите предложения по частям.</span>';
+    
+    if (activeContentName === 'george') {
+        title = '🧩 Sentence Builder — Present Tenses';
+        formula = 'Subject + V1 / am/is/are + V-ing';
+        listHTML = '<li>Build sentences about routines and actions happening now.</li>';
+        lead = 'Build each sentence.<span class="ru">Соберите предложения.</span>';
+    }
+    renderSentenceBuilder(SB_PP,6,5,7,title,'Stage 6 — Grammar',formula,listHTML,lead);
+}
+
+function renderStage7(){
+    let title = '🧱 Sentence Builder — Passive Voice';
+    let formula = 'was/were + past participle (V3)';
+    let listHTML = '<li>Build past passive sentences word by word.</li><li>Same 5+5+5 structure.</li>';
+    let lead = 'Build each sentence.<span class="ru">Соберите предложения.</span>';
+    
+    if (activeContentName === 'george') {
+        title = '🧱 Sentence Builder — Past Simple';
+        formula = 'Subject + V2 (or did not + V1)';
+        listHTML = '<li>Build past simple sentences.</li>';
+        lead = 'Build each sentence.<span class="ru">Соберите предложения.</span>';
+    }
+    renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
+}
 
 /* ================== STAGE 8 — CHOOSE THE TENSE ================== */
-function renderStage8(){renderCompletingSentence(G10,8,7,9,'🧭 Completing Sentence — Choose the Tense','Stage 8 — Grammar','Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)','<li>Use past simple with finished times: yesterday, in 2020, last week, ago.</li><li>Use present perfect with: since, for, yet, ever, never, just, already, so far, recently.</li>','Choose the correct tense for each sentence. Same structure: 5+5+5 then 30 mixed.<span class="ru">Выберите правильное время.</span>')}
+function renderStage8(){
+    let title = '🧭 Completing Sentence — Choose the Tense';
+    let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
+    let listHTML = '<li>Use past simple with finished times: yesterday, in 2020, last week, ago.</li><li>Use present perfect with: since, for, yet, ever, never, just, already, so far, recently.</li>';
+    let lead = 'Choose the correct tense for each sentence.<span class="ru">Выберите правильное время.</span>';
+    
+    if (activeContentName === 'george') {
+        title = '🧭 Completing Sentence — Mixed Tenses';
+        formula = 'Present Simple/Continuous · Past Simple · Future (going to)';
+        listHTML = '<li>Look at the time words to identify the correct tense.</li>';
+        lead = 'Choose the correct tense for each sentence.<span class="ru">Выберите правильное время.</span>';
+    }
+    renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
+}
 
 /* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
@@ -1584,9 +1656,12 @@ function renderSidebar(){
             const key=lesson.id+"_"+st.id;
             const isA=st.id===state.currentStage;
             let isD=state.done[key];
+            if (document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) {
+                if (st.id === 1 || st.id === 2) isD = true; 
+            }
             if (st.id === 1) {
                 const counts = getVocabCounts();
-                isD = (counts.learned === VOCAB.length);
+                if(counts.learned === VOCAB.length) isD = true;
             }
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
             
@@ -1635,7 +1710,6 @@ function renderStage(){
                  : DEFAULT_STAGES;
                  
   const stageIndex = stages.findIndex(s => s.id === state.currentStage);
-  const displayStageNum = stageIndex !== -1 ? stageIndex + 1 : state.currentStage; // 1-based
 
   // Map exact index to rendering function
   let fn = null;
@@ -1689,7 +1763,14 @@ function startTimer(){
   },1000);
 }
 function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
-function toggleDark(){document.documentElement.classList.toggle('dark');const dt=document.getElementById('darkToggle');if(dt)dt.classList.toggle('active',document.documentElement.classList.contains('dark'));saveState()}
+function toggleDark(){
+  document.documentElement.classList.toggle('dark');
+  const dark = document.documentElement.classList.contains('dark');
+  try{localStorage.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){}
+  const dt=document.getElementById('darkToggle');
+  if(dt)dt.classList.toggle('active',dark);
+  saveState();
+}
 function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.classList.toggle('open')}
 document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
 function showToast(text){
@@ -1702,9 +1783,9 @@ function showToast(text){
 
 /* ================== CONTENT LOADER ================== */
 async function loadContent() {
-  const name = new URLSearchParams(location.search).get('content') || 'sabina';
-  const res = await fetch('content/' + name + '.json', { cache: 'no-store' });
-  if (!res.ok) throw new Error('content/' + name + '.json not found');
+  activeContentName = new URLSearchParams(location.search).get('content') || 'sabina';
+  const res = await fetch('content/' + activeContentName + '.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('content/' + activeContentName + '.json not found');
   const c = await res.json();
   VOCAB         = c.vocab;
   MATCH_DATA    = c.matchData;
