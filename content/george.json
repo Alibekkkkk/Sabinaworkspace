@@ -3,25 +3,31 @@
     { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who is good at sports", "ru": "спортсмен", "ex": "He is a professional <b>athlete</b>." } ] },
     { "en": "coach", "emoji": "📋", "meanings": [ { "context": "a person who trains a team", "ru": "тренер", "ex": "The <b>coach</b> is shouting at the players." } ] },
     { "en": "match", "emoji": "⚽", "meanings": [ { "context": "a sports game", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." } ] },
+    { "en": "to match", "emoji": "🔗", "meanings": [ { "context": "to be the same or go well together", "ru": "соответствовать, подходить", "ex": "These shoes <b>match</b> your shirt." } ] },
     { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a large building for sports", "ru": "стадион", "ex": "There is a big <b>stadium</b> in our city." } ] },
     { "en": "to train", "emoji": "🏋️", "meanings": [ { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." } ] },
     { "en": "to score", "emoji": "🥅", "meanings": [ { "context": "to get a point or goal", "ru": "забивать гол / набирать очки", "ex": "Look! He is going to <b>score</b>!" } ] },
+    { "en": "score", "emoji": "💯", "meanings": [ { "context": "the number of points in a game", "ru": "счет", "ex": "The final <b>score</b> was 2-1." } ] },
     { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a competition with many games", "ru": "турнир", "ex": "We are playing in a <b>tournament</b> this week." } ] },
     { "en": "equipment", "emoji": "🎒", "meanings": [ { "context": "tools needed for a sport", "ru": "снаряжение, экипировка", "ex": "My sports <b>equipment</b> is in the bag." } ] },
     { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "Eating vegetables is very <b>healthy</b>." } ] },
-    { "en": "to rest", "emoji": "🛌", "meanings": [ { "context": "to relax and sleep", "ru": "отдыхать", "ex": "Athletes need to <b>rest</b> after a match." } ] }
+    { "en": "to rest", "emoji": "🛌", "meanings": [ { "context": "to relax and sleep", "ru": "отдыхать", "ex": "Athletes need to <b>rest</b> after a match." } ] },
+    { "en": "rest", "emoji": "☕", "meanings": [ { "context": "a period of relaxing", "ru": "отдых", "ex": "You look tired. Take a <b>rest</b>." } ] }
   ],
   "matchData": [
     { "word": "athlete", "meaning": "a person who plays sports" },
     { "word": "coach", "meaning": "a person who trains a team" },
+    { "word": "match", "meaning": "a sports game" },
+    { "word": "to match", "meaning": "to be the same or go well together" },
     { "word": "stadium", "meaning": "a place where people watch matches" },
     { "word": "to train", "meaning": "to practice for a game" },
     { "word": "to score", "meaning": "to get a goal or point" },
+    { "word": "score", "meaning": "the number of points in a game" },
     { "word": "tournament", "meaning": "a big competition" },
     { "word": "equipment", "meaning": "things you need for a sport" },
     { "word": "healthy", "meaning": "good for your body" },
     { "word": "to rest", "meaning": "to relax after hard work" },
-    { "word": "match", "meaning": "a sports game" }
+    { "word": "rest", "meaning": "a period of relaxing" }
   ],
   "readingHtml": "<h1>Alex's Busy Day</h1><div class=\"subtitle\">Present Simple vs. Present Continuous</div><p><span class=\"para-label\">A.</span>Alex is a 15-year-old student and a football player. He <b>usually</b> wakes up at 7 o'clock. He eats a <b>healthy</b> breakfast and goes to school. After school, he <b>trains</b> with his team. They <b>play</b> a <b>match</b> every Saturday.</p><p><span class=\"para-label\">B.</span>Today is different. Right now, Alex is at the <b>stadium</b>. It is the final of a big <b>tournament</b>. Look! The <b>coach</b> is talking to the players. Alex is running with the ball. He is going to <b>score</b> a goal!</p><p><span class=\"para-label\">C.</span>After the match, Alex will <b>rest</b>. He needs to sleep because he is very tired. Tomorrow, he will put his <b>equipment</b> in the bag and go back to school.</p>",
   "readingQ": [

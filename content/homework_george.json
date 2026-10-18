@@ -16,14 +16,18 @@
   },
   "vocab": [
     { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who plays sports", "ru": "спортсмен", "ex": "He is a young <b>athlete</b>." } ] },
-    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "He eats a <b>healthy</b> breakfast." } ] },
-    { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a place where people watch matches", "ru": "стадион", "ex": "The team trains at the <b>stadium</b>." } ] },
-    { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a big competition", "ru": "турнир", "ex": "It is the final of a big <b>tournament</b>." } ] },
     { "en": "coach", "emoji": "📋", "meanings": [ { "context": "a person who trains a team", "ru": "тренер", "ex": "The <b>coach</b> is talking to the team." } ] },
     { "en": "match", "emoji": "⚽", "meanings": [ { "context": "a sports game", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." } ] },
+    { "en": "to match", "emoji": "🔗", "meanings": [ { "context": "to be the same or go well together", "ru": "соответствовать, подходить", "ex": "These shoes <b>match</b> your shirt." } ] },
+    { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a place where people watch matches", "ru": "стадион", "ex": "The team trains at the <b>stadium</b>." } ] },
     { "en": "to train", "emoji": "🏋️", "meanings": [ { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." } ] },
     { "en": "to score", "emoji": "🥅", "meanings": [ { "context": "to get a goal", "ru": "забивать гол", "ex": "He is going to <b>score</b> a goal!" } ] },
-    { "en": "to rest", "emoji": "🛌", "meanings": [ { "context": "to relax after work", "ru": "отдыхать", "ex": "He is going to <b>rest</b> after the game." } ] }
+    { "en": "score", "emoji": "💯", "meanings": [ { "context": "the number of points in a game", "ru": "счет", "ex": "The final <b>score</b> was 2-1." } ] },
+    { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a big competition", "ru": "турнир", "ex": "It is the final of a big <b>tournament</b>." } ] },
+    { "en": "equipment", "emoji": "🎒", "meanings": [ { "context": "tools needed for a sport", "ru": "снаряжение, экипировка", "ex": "My sports <b>equipment</b> is in the bag." } ] },
+    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "He eats a <b>healthy</b> breakfast." } ] },
+    { "en": "to rest", "emoji": "🛌", "meanings": [ { "context": "to relax after work", "ru": "отдыхать", "ex": "He is going to <b>rest</b> after the game." } ] },
+    { "en": "rest", "emoji": "☕", "meanings": [ { "context": "a period of relaxing", "ru": "отдых", "ex": "You look tired. Take a <b>rest</b>." } ] }
   ],
   "questions": [
     { "type": "short", "prompt": "What time does David wake up every day?", "answers": ["6:30", "6:30 AM", "six thirty"], "exp": "He wakes up at 6:30 AM." },
