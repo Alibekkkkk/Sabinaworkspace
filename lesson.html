@@ -350,7 +350,19 @@ function initFirebase(){
     fbDb=firebase.database();
     const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
     if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
-    fbDb.ref('curriculum').on('value',function(s){curriculumCache=s.val()||{};renderSidebar()});
+    
+    fbDb.ref('curriculum').on('value',function(s){
+      curriculumCache=s.val()||{};
+      renderSidebar();
+      
+      // Update the title dynamically if it's already rendered
+      const fbLesson = curriculumCache[state.currentLessonId];
+      if (fbLesson && fbLesson.title) {
+          const headerSpan = document.getElementById('stage-title-text');
+          if (headerSpan) headerSpan.textContent = fbLesson.title;
+      }
+    });
+    
     if(teacherPreviewRequested){
       document.querySelector('.session-input').style.display='none';
       firebase.auth().onAuthStateChanged(function(user){
@@ -1502,7 +1514,12 @@ function renderSidebar(){
       if(isM)m.lessons.forEach(function(lesson){
         const isActive=lesson.id===state.currentLessonId;
         const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':'');
-        lEl.innerHTML='<span>📘 '+lesson.title+'</span>';
+        
+        // Use dynamic title from Firebase if available
+        const fbLesson = curriculumCache[lesson.id];
+        const title = (fbLesson && fbLesson.title) ? fbLesson.title : lesson.title;
+        
+        lEl.innerHTML='<span>📘 '+title+'</span>';
         lEl.onclick=function(){state.currentLessonId=lesson.id;state.currentStage=1;renderSidebar();renderStage()};
         list.appendChild(lEl);
         if(isActive){
@@ -1577,14 +1594,21 @@ function renderStage(){
     
     // Insert persistent header
     const lesson = getCurrentLesson();
-    const title = lesson ? lesson.title : 'Lesson';
+    const fbLesson = curriculumCache[state.currentLessonId];
+    let title = 'Lesson';
+    if (fbLesson && fbLesson.title) {
+        title = fbLesson.title;
+    } else if (lesson) {
+        title = lesson.title;
+    }
+    
     const stageObj = lesson ? lesson.stages.find(s => s.id === state.currentStage) : null;
     const icon = stageObj ? stageObj.icon : '📘';
     
     const header = document.createElement('div');
     header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
     if(state.currentStage === 3) header.style.maxWidth = '1400px';
-    header.innerHTML = `<span style="font-size:36px;">${icon}</span> ${escapeHtml(title)}`;
+    header.innerHTML = `<span style="font-size:36px;">${icon}</span> <span id="stage-title-text">${escapeHtml(title)}</span>`;
     
     main.insertBefore(header, main.firstChild);
   }catch(e){
