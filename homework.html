@@ -9,7 +9,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
-  // Apply theme immediately to avoid flash
   try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
@@ -23,7 +22,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .hw-top .title-block .brand{font-size:20px;font-weight:800;line-height:1.1}
 .hw-top .title-block .sub{font:11px 'Fira Code',monospace;color:var(--ink-soft);letter-spacing:1.3px;text-transform:uppercase;margin-top:2px}
 .hw-top .spacer{flex:1}
-.hw-top .tts-group{display:flex;gap:6px;flex-wrap:wrap}
 .hw-top button,.hw-top a{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:9px;padding:8px 12px;text-decoration:none;font:700 15px 'EB Garamond','Times New Roman',serif;cursor:pointer;transition:all .15s;font-family:inherit}
 .hw-top button:hover,.hw-top a:hover{border-color:var(--accent);color:var(--accent)}
 .wrap{max-width:1500px;margin:20px auto 60px;padding:0 22px}
@@ -204,8 +202,13 @@ function renderPassage(){
   p.paragraphs.forEach(function(par){
     let text=escapeHtml(par.text);
     vocabWords.forEach(function(w){
-      const escW=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      const re=new RegExp('\\b('+escW+')\\b','gi');
+      // If the word is "to match", we strip "to " so the regex matches "match" or "matches" in the text
+      let matchStr = w;
+      if (w.startsWith('to ')) matchStr = w.substring(3);
+      
+      const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      // [a-z]* matches base word and basic inflections (e.g., train, trains, trained)
+      const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi');
       text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>');
     });
     html+='<p><span class="para-label">'+escapeHtml(par.label)+'</span>'+text+'</p>';
