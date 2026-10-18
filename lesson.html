@@ -422,15 +422,22 @@ function applyTeacherResetCommand(cmd){
   try{localStorage.setItem(k,'1')}catch(e){}
   
   if(cmd.action === 'reset'){
-    if(cmd.type === 'vocab'){
-      vocabState={};
-      saveVocabState();
-      if(document.getElementById('fcModal').classList.contains('open')) closeFCModal();
-      renderStage();
-      if(typeof showToast==='function') showToast('Vocabulary progress reset');
-    } else {
-      teacherReset();
-    }
+  if(cmd.type === 'vocab'){
+  vocabState={};
+  saveVocabState();
+  
+  // NEW: This clears the green checkmark from the sidebar
+  const key = state.currentLessonId + "_1";
+  state.done[key] = false;
+  state.scores[key] = 0;
+  saveState();
+
+  if(document.getElementById('fcModal').classList.contains('open')) closeFCModal();
+  renderStage();
+  if(typeof showToast==='function') showToast('Vocabulary progress reset');
+} else {
+  teacherReset();
+}
   } else if(cmd.action === 'resetStage') {
     const key = state.currentLessonId + '_' + cmd.stage;
     state.scores[key] = 0;
@@ -873,8 +880,12 @@ function finalizeRound(){
   saveVocabState();
   const learned=VOCAB.filter(function(x){return getWordStatus(x.en)==='learned'}).length;
   const key=state.currentLessonId+"_1";
-  if(learned>=15&&!state.done[key]){setScore(1,10);markDone(1)}
-  else{setScore(1,Math.min(10,Math.floor(learned/1.5)))}
+  if(learned===VOCAB.length){
+    if(!state.done[key]){setScore(1,10);markDone(1)}
+  } else {
+    state.done[key] = false;
+    setScore(1,Math.min(10,Math.floor(learned/1.5)));
+  }
   broadcastAction('vocab_round_done',quizWord+' ('+getWordStatus(quizWord)+')');
 
   if(practiceMode){
@@ -1039,43 +1050,37 @@ function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct')
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
 /* ================== STAGE 3 — READING & QUESTIONS (combined) ================== */
-const READING_HTML='<h1>When the Earth Wakes</h1><div class="subtitle">A case study of three connected natural disasters</div>'+
-'<p><span class="para-label">A.</span>In the summer of 2023, a coastal region in southern Europe experienced three disasters in the space of six weeks. First came a heat wave: temperatures climbed above 42°C for ten consecutive days. Then, when the rains finally arrived, they came with unusual force — rivers overflowed their banks, and floods swept through several towns. Later that same summer, a wildfire broke out in the hills above the coast, destroying more than 400 hectares of forest. Scientists later described the three events as \u201Cconnected.\u201D</p>'+
-'<p><span class="para-label">B.</span>The heat wave was the first warning. Meteorologists had forecast high temperatures, but few people expected a heat wave of this intensity. Hospitals reported a sharp rise in admissions for heat exhaustion and dehydration. Local authorities opened cooling centres in public libraries and community halls, where residents could escape the worst of the heat. The heat also dried out the soil and vegetation, creating the perfect conditions for what was to come.</p>'+
-'<p><span class="para-label">C.</span>When the rain came, it was heavy and sudden. Within two days, more than 200 millimetres of rain had fallen — more than the region normally receives in an entire month. Rivers that had been almost dry overflowed their banks. The town of Marlowe was the worst affected: floodwater reached the ground floor of buildings and cut off the main road for nearly a week. Rescue teams used boats to reach residents trapped in their homes. The floods were later described as the worst the region had seen in fifty years.</p>'+
-'<p><span class="para-label">D.</span>The wildfire began in August, three weeks after the floods. By then, the vegetation that had survived the rain had dried out again under the summer sun. Strong winds helped the fire spread quickly across the hills. Firefighters worked for eleven days to bring it under control. Over 400 hectares of forest were destroyed, and several families lost their homes. Although no lives were lost, the ecological damage was severe: many species of plants and small animals were affected, and the soil in the burned areas will take years to recover.</p>'+
-'<p><span class="para-label">E.</span>Scientists who studied the events concluded that they were not separate. The heat wave had dried the vegetation, making the wildfire more likely. The heavy rain that ended the heat wave had been intensified by the unusually warm air, which holds more moisture. The floods, in turn, had washed away trees and weakened riverbanks, making some areas more vulnerable. In other words, each disaster had helped to create the conditions for the next one.</p>'+
-'<p><span class="para-label">F.</span>The events of that summer have prompted local authorities to rethink their emergency planning. New early-warning systems are being installed in coastal towns. Cooling centres will now open automatically when temperatures exceed 38°C. Firebreaks are being widened in the hills, and residents are being trained in evacuation procedures. Scientists warn that similar events will become more common in the future — not because the region is unlucky, but because a warming climate is making extreme weather more frequent and more intense.</p>';
+const READING_HTML='<h1>The Great Flood of Marlowe</h1><div class="subtitle">A story about a natural disaster</div>'+
+'<p><span class="para-label">A.</span>In the spring of 2023, heavy rain fell on the town of Marlowe for three days. The river in the town centre was usually calm, but the rain was too much. The water level rose quickly. On the third day, the river overflowed. Water covered the streets and entered the ground floors of many houses.</p>'+
+'<p><span class="para-label">B.</span>When the flood started, the local council told everyone to evacuate. Rescue teams used small boats to travel through the streets. They helped elderly people and children who were trapped in their homes. The water stayed in the town for a whole week.</p>'+
+'<p><span class="para-label">C.</span>After the water went down, the people of Marlowe began to clean up. The council provided free food and water. Now, the town is making a plan. They want to build new defences to protect the town from future floods.</p>';
 
 const READING_Q=[
-  {type:'short',prompt:'How many consecutive days did temperatures rise above 42°C?',answers:['10','ten'],exp:'Temperatures rose above 42°C for ten consecutive days.'},
-  {type:'short',prompt:'How many millimetres of rain fell within two days?',answers:['200','more than 200','200 mm'],exp:'More than 200 millimetres of rain fell in two days.'},
-  {type:'short',prompt:'How many hectares of forest were destroyed by the wildfire?',answers:['400','more than 400','over 400'],exp:'Over 400 hectares were destroyed.'},
-  {type:'short',prompt:'How many days did firefighters work to control the wildfire?',answers:['11','eleven'],exp:'Firefighters worked for eleven days.'},
-  {type:'short',prompt:'Name the town that was worst affected by the floods.',answers:['marlowe'],exp:'The town of Marlowe was the worst affected.'},
-  {type:'short',prompt:'At what temperature will cooling centres now open automatically?',answers:['38','38°c','38 c','38 degrees'],exp:'They will open automatically when temperatures exceed 38°C.'},
-  {type:'tfng',prompt:'The three disasters took place within six weeks of each other.',answer:'True',exp:'The article says three disasters in the space of six weeks.'},
-  {type:'tfng',prompt:'Lives were lost in the wildfire.',answer:'False',exp:'The article says no lives were lost.'},
-  {type:'tfng',prompt:'The local council had planned for events of this intensity.',answer:'Not Given',exp:'The article never says whether they had planned for this.'},
-  {type:'tfng',prompt:'The wildfire happened before the floods.',answer:'False',exp:'The wildfire happened three weeks after the floods.'},
-  {type:'long',prompt:'In your own words, explain why scientists described the three disasters as \u201Cconnected.\u201D',
-    keywordGroups:[['heat','hot','temperature'],['dried','dry','vegetation'],['fire','wildfire'],['rain','flood','moisture'],['connected','linked','related','warm']],
-    minWords:12,minGroups:3,
-    sample:'The disasters were connected because the heat wave dried out the vegetation, which made the wildfire more likely. The warm air also held more moisture, which intensified the rain and caused the floods.',
-    exp:'Key ideas: heat dried vegetation, warm air held moisture, chain of disasters.'},
-  {type:'long',prompt:'Describe TWO measures that local authorities are now taking to prepare for future disasters.',
-    keywordGroups:[['warning','system','early'],['cooling','centre','center'],['firebreak','trees','hills'],['evacuation','training','residents'],['prepare','plan','ready']],
-    minWords:10,minGroups:2,
-    sample:'Two measures are that new early-warning systems are being installed in coastal towns, and that cooling centres will open automatically when temperatures exceed 38°C.',
-    exp:'Key ideas: early warnings, cooling centres, firebreaks, evacuation training.'},
-  {type:'long',prompt:'Why does the article say similar disasters will become more common in the future?',
-    keywordGroups:[['climate','warming','warm'],['extreme','weather','intense'],['frequent','common','often'],['future','will','become']],
-    minWords:10,minGroups:2,
-    sample:'The article says a warming climate is making extreme weather more frequent and more intense, so similar events will become more common.',
-    exp:'Key ideas: warming climate, extreme weather, more frequent.'},
-  {type:'mcq',prompt:'What is the main idea of the article?',options:['Three disasters were connected by climate conditions','Coastal towns are always in danger','Wildfires are the worst type of disaster'],correct:'Three disasters were connected by climate conditions',exp:'The article emphasises that the three disasters were linked.'},
-  {type:'mcq',prompt:'Which of these is NOT stated as a consequence of the events?',options:['New early-warning systems','Automatic cooling centres','A ban on coastal construction'],correct:'A ban on coastal construction',exp:'A construction ban is not mentioned.'},
-  {type:'mcq',prompt:'How did the heat wave contribute to the wildfire?',options:['It dried out the vegetation','It caused strong winds','It attracted firefighters away'],correct:'It dried out the vegetation',exp:'Heat dried the vegetation, making the wildfire more likely.'}
+  {type:'short',prompt:'How many days did the heavy rain fall?',answers:['3','three'],exp:'The text says heavy rain fell for three days.'},
+  {type:'short',prompt:'What is the name of the town in the story?',answers:['marlowe'],exp:'The town is called Marlowe.'},
+  {type:'tfng',prompt:'The river was usually calm before the rain.',answer:'True',exp:'The text says the river was usually calm.'},
+  {type:'tfng',prompt:'Rescue teams used helicopters to save people.',answer:'False',exp:'The text says they used small boats.'},
+  {type:'tfng',prompt:'The water stayed in the town for one month.',answer:'False',exp:'The water stayed for a whole week.'},
+  {type:'long',prompt:'In your own words, explain how the rescue teams helped people during the flood.',
+    keywordGroups:[['boat','boats'],['help','save','rescue'],['elderly','old'],['children','kids'],['trapped','stuck','home']],
+    minWords:8,minGroups:2,
+    sample:'The rescue teams used small boats to help elderly people and children who were trapped in their homes.',
+    exp:'Key ideas: using boats, helping elderly/children, trapped people.'},
+  {type:'long',prompt:'What is the town planning to do to protect itself in the future?',
+    keywordGroups:[['build','construct','make'],['defences','defense','protection'],['future','next','flood']],
+    minWords:6,minGroups:2,
+    sample:'The town is planning to build new defences to protect the town from future floods.',
+    exp:'Key ideas: building defences, protecting the town.'},
+  {type:'mcq',prompt:'Why did the river overflow?',options:['Because of heavy rain','Because of a heat wave','Because of an earthquake'],correct:'Because of heavy rain',exp:'Heavy rain caused the river to overflow.'},
+  {type:'mcq',prompt:'What is the town planning to build?',options:['New defences','A new hospital','A new school'],correct:'New defences',exp:'The town wants to build new defences.'},
+  {type:'short',prompt:'Complete: The council provided free ______ and water.',answers:['food'],exp:'The council provided free food.'}
+];
+
+const CONTEXT_Q=[
+  {prompt:'In paragraph A, "overflowed" means...',options:['spilled over the edge','dried up','froze'],correct:'spilled over the edge',exp:'The river spilled over its banks.'},
+  {prompt:'In paragraph B, "evacuate" means...',options:['move to a safe place','stay at home','buy food'],correct:'move to a safe place',exp:'Evacuate means to leave a dangerous place.'},
+  {prompt:'In paragraph C, "defences" means...',options:['things that protect you','boats','heavy rain'],correct:'things that protect you',exp:'Defences protect the town from floods.'},
+  {prompt:'In paragraph B, "trapped" means...',options:['unable to leave','very happy','swimming'],correct:'unable to leave',exp:'They were trapped because of the water.'}
 ];
 
 const CONTEXT_Q=[
@@ -1949,7 +1954,12 @@ function renderSidebar(){
           const sub=document.createElement('div');sub.className='stage-sub-list';
           lesson.stages.forEach(function(st){
             const key=lesson.id+"_"+st.id;
-            const isA=st.id===state.currentStage;const isD=state.done[key];
+            const isA=st.id===state.currentStage;
+            let isD=state.done[key];
+            if (st.id === 1) {
+                const counts = getVocabCounts();
+                isD = (counts.learned === VOCAB.length);
+            }
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
             
             const row = document.createElement('div');

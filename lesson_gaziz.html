@@ -408,7 +408,28 @@ function startStudentSession(code){
 function getSessionCode(){const u=new URLSearchParams(window.location.search).get('code');if(u){if(!teacherPreviewRequested)localStorage.setItem('nd_session_code',u.toUpperCase());return u.toUpperCase()}return (localStorage.getItem('nd_session_code')||'').toUpperCase()}
 function changeSessionCode(){const i=document.getElementById('sessionCodeInput');const c=(i.value||'').toUpperCase().trim();if(!c){localStorage.removeItem('nd_session_code');updateSyncUI('nocode');return}localStorage.setItem('nd_session_code',c);if(!fbDb){initFirebase();return}if(sessionRef)sessionRef.off();if(commandRef)commandRef.off();startStudentSession(c)}
 function updateSyncUI(s){const d=document.getElementById('syncDot');const t=document.getElementById('syncStatus');d.classList.remove('warn','off');if(s==='live')t.textContent='Live · Connected';else if(s==='teacher')t.textContent='Teacher preview';else if(s==='nocode'){d.classList.add('warn');t.textContent='Set code above'}else if(s==='error'){d.classList.add('off');t.textContent='Error'}}
-function applyTeacherResetCommand(cmd){if(!cmd||cmd.action!=='reset'||!cmd.ts)return;const k='nd_teacher_reset_seen_'+getSessionCode();let s=0;try{s=Number(localStorage.getItem(k)||0)}catch(e){}if(Number(cmd.ts)<=s)return;try{localStorage.setItem(k,String(cmd.ts))}catch(e){}teacherReset()}
+function applyTeacherResetCommand(cmd){
+  if(!cmd||cmd.action!=='reset'||!cmd.ts)return;
+  const k='nd_teacher_reset_seen_'+getSessionCode()+'_'+cmd.ts;
+  if(localStorage.getItem(k))return;
+  try{localStorage.setItem(k,'1')}catch(e){}
+  
+  if(cmd.type === 'vocab'){
+    // Reset ONLY vocabulary
+    vocabState={};
+    saveVocabState();
+    const key = state.currentLessonId + "_1";
+    state.done[key] = false;
+    state.scores[key] = 0;
+    saveState();
+    if(document.getElementById('fcModal').classList.contains('open')) closeFCModal();
+    renderStage();
+    if(typeof showToast==='function') showToast('Vocabulary progress reset');
+  } else {
+    // Reset everything
+    teacherReset();
+  }
+}
 function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
 
 /* ================== AUDIO + TTS ================== */
@@ -859,10 +880,14 @@ function finalizeRound(){
   }
   if((s.perfectStreak||0)>=2){s.wrongCount=0}
   saveVocabState();
-  const learned=VOCAB.filter(function(x){return getWordStatus(x.en)==='learned'}).length;
+    const learned=VOCAB.filter(function(x){return getWordStatus(x.en)==='learned'}).length;
   const key=state.currentLessonId+"_1";
-  if(learned>=15&&!state.done[key]){setScore(1,10);markDone(1)}
-  else{setScore(1,Math.min(10,Math.floor(learned/1.5)))}
+  if(learned===VOCAB.length){
+    if(!state.done[key]){setScore(1,10);markDone(1)}
+  } else {
+    state.done[key] = false;
+    setScore(1,Math.min(10,Math.floor(learned/1.5)));
+  }
   broadcastAction('vocab_round_done',quizWord+' ('+getWordStatus(quizWord)+')');
 
   if(practiceMode){
@@ -1939,7 +1964,12 @@ function renderSidebar(){
           const sub=document.createElement('div');sub.className='stage-sub-list';
           lesson.stages.forEach(function(st){
             const key=lesson.id+"_"+st.id;
-            const isA=st.id===state.currentStage;const isD=state.done[key];
+            const isA=st.id===state.currentStage;
+            let isD=state.done[key];
+            if (st.id === 1) {
+                const counts = getVocabCounts();
+                isD = (counts.learned === VOCAB.length);
+            }
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
             
             const row = document.createElement('div');
