@@ -6,99 +6,141 @@
 <title>My Learning Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
-:root{--bg:#f5f3ed;--panel:#fffefa;--panel-2:#edf4ed;--ink:#18302b;--ink-soft:#677771;--primary:#2c6653;--accent:#2c6653;--accent-dark:#1f5141;--success:#43845a;--warn:#916313;--error:#b33e37;--border:#dce1d8}
+:root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--accent-dark:#d94a15;--success:#4caf7d;--border:#2a3346;--bg-light:#f4f1ea;--panel-light:#fff;--ink-light:#2c3e50;--ink-soft-light:#6c757d;--border-light:#e0dbd0}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
-.wrap{width:100%;max-width:960px}
-.header{text-align:center;padding:40px 20px 24px}
+body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;transition:background .3s,color .3s}
+body.light{background:var(--bg-light);color:var(--ink-light)}
+.wrap{width:100%;max-width:1000px}
+.header{text-align:center;padding:30px 20px 20px}
 .header .logo{font-size:56px;margin-bottom:12px}
 .header h1{font-size:42px;margin-bottom:6px;font-weight:800;letter-spacing:-.5px}
 .header p{font-size:18px;color:var(--ink-soft);max-width:600px;margin:0 auto;line-height:1.5}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:34px;max-width:520px;margin:0 auto 20px;box-shadow:0 20px 50px rgba(0,0,0,.08);text-align:center}
-.btn{padding:14px 22px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 0 var(--accent-dark);min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%}
+body.light .header p{color:var(--ink-soft-light)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:520px;margin:0 auto 20px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+body.light .card{background:var(--panel-light);border-color:var(--border-light);box-shadow:0 20px 50px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:8px;margin-bottom:26px;border-bottom:1px solid var(--border);padding-bottom:14px}
+body.light .tabs{border-color:var(--border-light)}
+.tab{flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--ink-soft);font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s}
+body.light .tab{border-color:var(--border-light);color:var(--ink-soft-light)}
+.tab:hover{color:var(--accent);border-color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+label{display:block;font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px}
+body.light label{color:var(--ink-soft-light)}
+input{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:12px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:18px;font-weight:600;outline:none;transition:all .15s;margin-bottom:18px}
+body.light input{background:#f8f8f8;border-color:var(--border-light);color:var(--ink-light)}
+input:focus{border-color:var(--accent);background:var(--panel)}
+body.light input:focus{background:#fff}
+input.code-input{font-family:'Fira Code','Courier New',monospace;text-transform:uppercase;letter-spacing:3px;text-align:center;font-size:22px;font-weight:800}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-family:inherit;font-size:18px;font-weight:700;cursor:pointer;transition:all .15s;box-shadow:0 4px 0 var(--accent-dark);margin-bottom:12px}
 .btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--accent-dark)}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--accent-dark)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--border);box-shadow:none}
+body.light .btn.ghost{color:var(--ink-light);border-color:var(--border-light)}
 .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
-.google-icon{width:22px;height:22px;background:#fff;border-radius:5px;display:grid;place-items:center;font-weight:800;color:#4285f4;font-family:Arial,sans-serif;font-size:15px;flex-shrink:0}
-.helper{font-size:15px;color:var(--ink-soft);line-height:1.5;margin-top:12px}
-.status-icon{font-size:64px;margin-bottom:16px}
-.status-title{font-size:26px;font-weight:800;margin-bottom:10px}
-.status-text{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-bottom:22px}
-#authError{color:var(--error);font-size:14px;min-height:20px;margin-top:14px;line-height:1.5}
-.welcome{text-align:center;margin-bottom:28px;padding:20px}
-.welcome .avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:#fff;margin:0 auto 16px;box-shadow:0 12px 30px rgba(44,102,83,.3)}
+.helper{font-size:15px;color:var(--ink-soft);text-align:center;line-height:1.5;margin-bottom:8px}
+body.light .helper{color:var(--ink-soft-light)}
+.alert{padding:14px 18px;border-radius:12px;font-size:16px;font-weight:600;margin-bottom:16px;display:none;line-height:1.5}
+.alert.show{display:block}
+.alert.error{background:rgba(239,84,104,.15);color:#ff8a9a;border-left:4px solid #ef5468}
+.alert.success{background:rgba(76,175,125,.15);color:#7fd4a8;border-left:4px solid var(--success)}
+body.light .alert.error{background:#f8d7da;color:#721c24}
+body.light .alert.success{background:#d4edda;color:#155724}
+.welcome{text-align:center;margin-bottom:30px;padding:20px}
+.welcome .avatar{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:#fff;margin:0 auto 16px;box-shadow:0 12px 30px rgba(255,138,91,.35)}
 .welcome h2{font-size:34px;margin-bottom:6px;font-weight:800}
 .welcome p{font-size:17px;color:var(--ink-soft)}
+body.light .welcome p{color:var(--ink-soft-light)}
 .lessons-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
 .lessons-header h3{font-size:24px;font-weight:800}
-.lessons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.lessons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .lesson-card{background:var(--panel);border:2px solid var(--border);border-radius:18px;padding:24px;cursor:pointer;transition:all .2s;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.lesson-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 16px 40px rgba(44,102,83,.15)}
+body.light .lesson-card{background:var(--panel-light);border-color:var(--border-light);color:var(--ink-light)}
+.lesson-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 16px 40px rgba(255,138,91,.2)}
 .lesson-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:6px;background:linear-gradient(90deg,var(--accent),var(--accent-dark))}
 .lesson-card .icon{font-size:48px;margin-bottom:14px}
-.lesson-card .title{font-size:22px;font-weight:800;margin-bottom:8px;color:inherit}
+.lesson-card .title{font-size:24px;font-weight:800;margin-bottom:8px;color:inherit}
 .lesson-card .desc{font-size:15px;color:var(--ink-soft);line-height:1.5;margin-bottom:18px;flex:1}
+body.light .lesson-card .desc{color:var(--ink-soft-light)}
 .lesson-card .meta{display:flex;gap:14px;font-size:14px;color:var(--ink-soft);font-weight:700;margin-bottom:14px;flex-wrap:wrap}
+body.light .lesson-card .meta{color:var(--ink-soft-light)}
 .lesson-card .meta b{color:var(--accent)}
 .lesson-card .progress-rail{height:8px;background:var(--bg);border-radius:6px;overflow:hidden;margin-bottom:12px}
+body.light .lesson-card .progress-rail{background:#f0ebe0}
 .lesson-card .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:6px;transition:width .4s}
 .lesson-card .open-btn{padding:11px 20px;border-radius:10px;background:var(--accent);color:#fff;font-weight:700;font-size:16px;text-align:center;border:none;font-family:inherit;cursor:pointer}
-.lesson-card .private-tag{position:absolute;top:14px;right:14px;background:rgba(44,102,83,.15);color:var(--accent);font-size:11px;font-weight:800;padding:3px 8px;border-radius:10px;letter-spacing:.5px;z-index:2}
-.lesson-card .homework-tag{position:absolute;top:14px;right:14px;background:rgba(255,183,77,.2);color:#7a5a10;font-size:12px;font-weight:800;padding:5px 9px;border-radius:10px;letter-spacing:.3px;max-width:calc(100% - 100px);text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
-.empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:17px;line-height:1.6}
+.lesson-card:hover .open-btn{background:var(--accent-dark)}
+.lesson-card .private-tag{position:absolute;top:14px;right:14px;background:rgba(255,138,91,.2);color:var(--accent);font-size:11px;font-weight:800;padding:3px 8px;border-radius:10px;letter-spacing:.5px;z-index:2}
+.lesson-card .homework-tag{position:absolute;top:14px;right:14px;background:rgba(255,183,77,.18);color:#ffc15c;font-size:12px;font-weight:800;padding:5px 9px;border-radius:10px;letter-spacing:.3px;max-width:calc(100% - 100px);text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.lesson-card .private-tag + .homework-tag,
+.lesson-card .homework-tag + .private-tag{top:48px}
+.empty{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:17px}
+body.light .empty{color:var(--ink-soft-light)}
 .actions-bar{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
 .actions-bar button{padding:10px 20px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--ink-soft);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+body.light .actions-bar button{border-color:var(--border-light);color:var(--ink-soft-light)}
 .actions-bar button:hover{color:var(--accent);border-color:var(--accent)}
+.code-badge{display:inline-block;padding:10px 20px;background:var(--bg);border:2px dashed var(--accent);border-radius:12px;font-family:'Fira Code','Courier New',monospace;font-size:22px;font-weight:800;letter-spacing:4px;color:var(--accent);margin:10px 0 16px}
+body.light .code-badge{background:#fff8f0}
+.theme-toggle{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--panel);border:1px solid var(--border);color:var(--ink);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:10}
+body.light .theme-toggle{background:var(--panel-light);border-color:var(--border-light);color:var(--ink-light)}
+.theme-toggle:hover{transform:scale(1.1);border-color:var(--accent)}
 </style>
 </head>
 <body>
 
+<button class="theme-toggle" onclick="toggleTheme()" title="Theme">🌙</button>
+
 <div class="wrap">
-  <!-- Sign-in step -->
-  <div id="signinStep">
+  <div id="loginScreen">
     <div class="header">
       <div class="logo">🌍</div>
       <h1>Learning Studio</h1>
-      <p>Sign in with Google to access your lessons. Your teacher must approve your account before you can see them.</p>
+      <p>Register or sign in to access your lessons, track progress, and pick up where you left off.</p>
     </div>
+
     <div class="card">
-      <button class="btn" onclick="studentGoogleSignIn()">
-        <span class="google-icon">G</span>
-        Continue with Google
-      </button>
-      <div id="authError" role="alert"></div>
-      <p class="helper" style="margin-top:20px;">Already have a code from your teacher? You'll link it automatically after signing in.</p>
+      <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign in</button>
+        <button class="tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <div class="alert" id="alertBox"></div>
+
+      <div id="loginForm">
+        <label for="loginCode">Your student code</label>
+        <input type="text" id="loginCode" class="code-input" placeholder="SABIN" maxlength="12" autocomplete="off">
+        <button class="btn" onclick="doLogin()">Enter my lessons →</button>
+        <p class="helper">Don't have a code yet? Click <b>Register</b> above.</p>
+      </div>
+
+      <div id="registerForm" style="display:none;">
+        <label for="regName">What is your name?</label>
+        <input type="text" id="regName" placeholder="e.g. Sabina" maxlength="40" autocomplete="off">
+        <button class="btn" onclick="doRegister()">Create my account</button>
+        <p class="helper">You'll get a personal code — save it to sign in next time.</p>
+      </div>
     </div>
   </div>
 
-  <!-- Pending step -->
-  <div id="pendingStep" style="display:none;">
-    <div class="header">
-      <div class="logo">⏳</div>
-      <h1>Waiting for approval</h1>
-    </div>
-    <div class="card">
-      <div class="status-icon">🕐</div>
-      <div class="status-title">Your account is pending</div>
-      <p class="status-text">Your teacher needs to approve your Google account before you can see your lessons. Please wait, or let your teacher know you've signed in.</p>
-      <p class="helper" id="pendingEmail"></p>
-      <button class="btn ghost" onclick="signOutStudent()" style="margin-top:16px;">Sign out</button>
-    </div>
-  </div>
-
-  <!-- Lessons step -->
-  <div id="lessonsStep" style="display:none;">
+  <div id="lessonsScreen" style="display:none;">
     <div class="welcome" id="welcomeBox"></div>
+
     <div class="lessons-header">
       <h3>📚 Your Lessons</h3>
-      <button class="btn ghost" style="width:auto;padding:10px 20px;font-size:15px;" onclick="signOutStudent()">Sign out</button>
+      <button class="btn ghost" style="width:auto;padding:10px 20px;margin:0;font-size:15px;" onclick="signOut()">Sign out</button>
     </div>
+
     <div class="lessons-grid" id="lessonsGrid"></div>
+
     <div class="empty" id="emptyLessons" style="display:none;">
       No lessons available yet.<br>Ask your teacher to publish the first lesson.
+    </div>
+
+    <div class="actions-bar">
+      <button onclick="showCodeInfo()">🔑 Show my code</button>
     </div>
   </div>
 </div>
@@ -113,131 +155,125 @@ const firebaseConfig = {
   messagingSenderId: "64645562064",
   appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const auth = firebase.auth();
 
 const state = {
-  currentCode: '',
-  currentName: '',
+  currentCode: localStorage.getItem('nd_student_code') || '',
+  currentName: localStorage.getItem('nd_student_name') || '',
   lessons: {},
   progress: { scores: {}, done: {} },
   homework: {}
 };
 
-/* ============================================================
-   AUTH
-============================================================ */
-function studentGoogleSignIn() {
-  document.getElementById('authError').textContent = 'Opening Google sign-in…';
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
-  auth.signInWithPopup(provider).then(function(result) {
-    document.getElementById('authError').textContent = '';
-  }).catch(function(err) {
-    if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment')) {
-      document.getElementById('authError').textContent = 'Popup was blocked — trying redirect instead…';
-      auth.signInWithRedirect(provider);
-      return;
-    }
-    document.getElementById('authError').textContent = (err && err.message) || 'Sign-in failed.';
-  });
+if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
+function toggleTheme(){
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  localStorage.setItem('nd_theme', isLight ? 'light' : 'dark');
+  document.querySelector('.theme-toggle').textContent = isLight ? '☀️' : '🌙';
+}
+if (document.body.classList.contains('light')) document.querySelector('.theme-toggle').textContent = '☀️';
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+function showAlert(msg, type){
+  const el = document.getElementById('alertBox');
+  el.className = 'alert show ' + type;
+  el.textContent = msg;
+  setTimeout(() => { el.className = 'alert'; }, 5000);
+}
+function generateCode(existing){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code;
+  do {
+    code = 'S';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  } while (existing && existing[code]);
+  return code;
 }
 
-function signOutStudent() {
-  if (!confirm('Sign out?')) return;
-  auth.signOut();
-  state.currentCode = '';
-  state.currentName = '';
-  document.getElementById('lessonsStep').style.display = 'none';
-  document.getElementById('pendingStep').style.display = 'none';
-  document.getElementById('signinStep').style.display = 'block';
+function switchTab(which){
+  document.getElementById('tabLogin').classList.toggle('active', which === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', which === 'register');
+  document.getElementById('loginForm').style.display = which === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = which === 'register' ? 'block' : 'none';
+  document.getElementById('alertBox').className = 'alert';
+  setTimeout(() => {
+    const inp = which === 'login' ? document.getElementById('loginCode') : document.getElementById('regName');
+    inp.focus();
+  }, 50);
 }
 
-auth.getRedirectResult().catch(function(err) {
-  console.error('Redirect error:', err);
-  document.getElementById('authError').textContent = (err && err.message) || '';
-});
-
-auth.onAuthStateChanged(function(user) {
-  if (!user) {
-    document.getElementById('signinStep').style.display = 'block';
-    document.getElementById('pendingStep').style.display = 'none';
-    document.getElementById('lessonsStep').style.display = 'none';
-    return;
-  }
-  // Signed in. Is this UID linked to a code?
-  db.ref('studentByUid/' + user.uid).once('value').then(function(snap) {
-    const code = snap.val();
-    if (code) {
-      enterPortalWithCode(code, user);
-      return;
-    }
-    // Not linked yet. Register as pending (or update existing entry).
-    db.ref('pendingStudents/' + user.uid).once('value').then(function(pSnap) {
-      const updates = {
-        name: user.displayName || 'Student',
-        email: user.email || ''
-      };
-      if (!pSnap.exists()) updates.requestedAt = Date.now();
-      db.ref('pendingStudents/' + user.uid).update(updates);
-      showPendingScreen(user);
-    });
-  }).catch(function(err) {
-    console.error('Lookup error:', err);
-    document.getElementById('authError').textContent = 'Could not load your account: ' + err.message;
-  });
-});
-
-function showPendingScreen(user) {
-  document.getElementById('signinStep').style.display = 'none';
-  document.getElementById('lessonsStep').style.display = 'none';
-  document.getElementById('pendingStep').style.display = 'block';
-  document.getElementById('pendingEmail').textContent = 'Signed in as ' + (user.email || '');
-}
-
-function enterPortalWithCode(code, user) {
-  db.ref('students/' + code).once('value').then(function(snap) {
+function doLogin(){
+  const code = (document.getElementById('loginCode').value || '').toUpperCase().trim().replace(/[^A-Z0-9]/g, '');
+  if (!code) { showAlert('Please enter your student code.', 'error'); return; }
+  db.ref('students/' + code).once('value').then(snap => {
     const data = snap.val();
-    if (!data || data.uid !== user.uid) {
-      document.getElementById('authError').textContent = 'Your account is not authorised for code ' + code + '.';
-      auth.signOut();
+    if (!data) {
+      showAlert('Code "' + code + '" not found. Check the spelling or register a new account.', 'error');
       return;
     }
     state.currentCode = code;
     state.currentName = data.name || 'Student';
-    document.getElementById('signinStep').style.display = 'none';
-    document.getElementById('pendingStep').style.display = 'none';
-    document.getElementById('lessonsStep').style.display = 'block';
-    document.getElementById('welcomeBox').innerHTML =
-      '<div class="avatar">' + escapeHtml(state.currentName.charAt(0).toUpperCase()) + '</div>' +
-      '<h2>Welcome, ' + escapeHtml(state.currentName) + '! 👋</h2>' +
-      '<p>Code: <b style="color:var(--accent);font-family:\'Fira Code\',monospace;letter-spacing:2px;">' + escapeHtml(code) + '</b></p>';
-    loadLessons();
-  });
+    localStorage.setItem('nd_student_code', code);
+    localStorage.setItem('nd_student_name', state.currentName);
+    db.ref('students/' + code).update({ lastLogin: Date.now() });
+    enterPortal();
+  }).catch(err => showAlert('Connection error: ' + err.message, 'error'));
 }
 
-/* ============================================================
-   LESSONS
-============================================================ */
-function loadLessons() {
-  db.ref('curriculum').on('value', function(snap) {
+function doRegister(){
+  const name = (document.getElementById('regName').value || '').trim();
+  if (!name) { showAlert('Please enter your name.', 'error'); return; }
+  if (name.length < 2) { showAlert('Name must be at least 2 characters.', 'error'); return; }
+  db.ref('students').once('value').then(snap => {
+    const all = snap.val() || {};
+    const code = generateCode(all);
+    const payload = {
+      name: name, code: code,
+      createdAt: Date.now(), lastLogin: Date.now(),
+      selfRegistered: true
+    };
+    return db.ref('students/' + code).set(payload).then(() => {
+      state.currentCode = code;
+      state.currentName = name;
+      localStorage.setItem('nd_student_code', code);
+      localStorage.setItem('nd_student_name', name);
+      const el = document.getElementById('alertBox');
+      el.className = 'alert show success';
+      el.innerHTML = '✓ Welcome, <b>' + escapeHtml(name) + '</b>!<br>Your code is: <span class="code-badge">' + code + '</span><br><span style="font-size:14px;">Save this code — you\'ll need it to sign in next time.</span>';
+      setTimeout(() => enterPortal(), 2500);
+    });
+  }).catch(err => showAlert('Error: ' + err.message, 'error'));
+}
+
+function enterPortal(){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('lessonsScreen').style.display = 'block';
+  document.getElementById('welcomeBox').innerHTML =
+    '<div class="avatar">' + escapeHtml(state.currentName.charAt(0).toUpperCase()) + '</div>' +
+    '<h2>Welcome, ' + escapeHtml(state.currentName) + '! 👋</h2>' +
+    '<p>Code: <b style="color:var(--accent);font-family:Fira Code,monospace;letter-spacing:2px;">' + escapeHtml(state.currentCode) + '</b></p>';
+  loadLessons();
+}
+
+function loadLessons(){
+  db.ref('curriculum').on('value', snap => {
     state.lessons = snap.val() || {};
     renderLessons();
   });
-  db.ref('sessions/' + state.currentCode + '/homework').on('value', function(hwSnap) {
+  db.ref('sessions/' + state.currentCode + '/homework').on('value', hwSnap => {
     state.homework = hwSnap.val() || {};
     renderLessons();
   });
-  db.ref('sessions/' + state.currentCode + '/state').on('value', function(progSnap) {
+  db.ref('sessions/' + state.currentCode + '/state').on('value', progSnap => {
     const st = progSnap.val() || {};
     state.progress = { scores: st.scores || {}, done: st.done || {} };
     renderLessons();
   });
 }
 
-function renderLessons() {
+function renderLessons(){
   const grid = document.getElementById('lessonsGrid');
   const empty = document.getElementById('emptyLessons');
   const lessons = Object.values(state.lessons || {}).filter(function(l) {
@@ -247,7 +283,8 @@ function renderLessons() {
     }
     return true;
   });
-  lessons.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+  lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
+
   if (!lessons.length) {
     grid.innerHTML = '';
     empty.style.display = 'block';
@@ -255,13 +292,13 @@ function renderLessons() {
   }
   empty.style.display = 'none';
   grid.innerHTML = '';
-  lessons.forEach(function(lesson) {
-    const lessonId = lesson.id || Object.keys(state.lessons).find(function(k) { return state.lessons[k] === lesson; });
+  lessons.forEach(lesson => {
+    const lessonId = lesson.id || Object.keys(state.lessons).find(k => state.lessons[k] === lesson);
     const stages = lesson.stages || [];
     let totalStages = stages.length;
-    let doneCount = stages.filter(function(s) { return state.progress.done[lessonId + '_' + s.id]; }).length;
+    let doneCount = stages.filter(s => state.progress.done[lessonId + '_' + s.id]).length;
     let pct = totalStages ? Math.round((doneCount / totalStages) * 100) : 0;
-    let lessonScore = stages.reduce(function(sum, s) { return sum + (state.progress.scores[lessonId + '_' + s.id] || 0); }, 0);
+    let lessonScore = stages.reduce((sum, s) => sum + (state.progress.scores[lessonId + '_' + s.id] || 0), 0);
     let maxScore = lesson.maxScore || 80;
     const homeworkResult = (state.homework || {})[lessonId];
     if (lesson.customUrl && lesson.customUrl.indexOf('homework.html') !== -1) {
@@ -271,8 +308,10 @@ function renderLessons() {
       lessonScore = homeworkResult ? (homeworkResult.score || 0) : 0;
       maxScore = homeworkResult ? (homeworkResult.total || 16) : (lesson.maxScore || 16);
     }
+
     const assignedTo = lesson.assignedTo || [];
     const isPrivate = assignedTo.length > 0;
+
     const targetFile = lesson.customUrl ? lesson.customUrl : 'lesson.html';
     const card = document.createElement('a');
     card.className = 'lesson-card';
@@ -293,11 +332,38 @@ function renderLessons() {
   });
 }
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, function(ch) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
-  });
+function signOut(){
+  if (!confirm('Sign out? You can log back in with your code.')) return;
+  localStorage.removeItem('nd_student_code');
+  localStorage.removeItem('nd_student_name');
+  state.currentCode = '';
+  state.currentName = '';
+  document.getElementById('loginScreen').style.display = 'block';
+  document.getElementById('lessonsScreen').style.display = 'none';
+  document.getElementById('loginCode').value = '';
+  document.getElementById('regName').value = '';
 }
+
+function showCodeInfo(){
+  alert('Your student code is:\n\n  ' + state.currentCode + '\n\nWrite it down! You\'ll need it to sign in from another device or after clearing your browser data.');
+}
+
+if (state.currentCode && state.currentName) {
+  db.ref('students/' + state.currentCode).once('value').then(snap => {
+    if (snap.val()) {
+      enterPortal();
+    } else {
+      localStorage.removeItem('nd_student_code');
+      localStorage.removeItem('nd_student_name');
+      document.getElementById('loginCode').value = state.currentCode;
+    }
+  });
+} else {
+  setTimeout(() => document.getElementById('loginCode').focus(), 200);
+}
+
+document.getElementById('loginCode').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('regName').addEventListener('keydown', e => { if (e.key === 'Enter') doRegister(); });
 </script>
 </body>
 </html>

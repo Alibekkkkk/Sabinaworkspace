@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sabina — Natural Disasters: Vocabulary, Reading & Tenses</title>
+<title>Lesson — Vocabulary, Reading & Tenses</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -309,8 +309,8 @@ const teacherPreviewRequested=new URLSearchParams(window.location.search).get('t
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
 /* ================== CURRICULUM (9 stages) ================== */
-const CURRICULUM=[{year:"2026",months:[{month:"October",lessons:[{id:"lesson_1",title:"Lesson 1: Natural Disasters — Vocabulary, Reading & Tenses",stages:[
-  {id:1,label:'Natural Disasters Vocabulary',sub:'Cards',icon:'🌪️'},
+const CURRICULUM=[{year:"2026",months:[{month:"October",lessons:[{id:"lesson_1",title:"Lesson 1: Vocabulary, Reading & Tenses",stages:[
+  {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
   {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
   {id:3,label:'Reading & Questions',sub:'Article + practice',icon:'📖'},
   {id:4,label:'Completing Sentence — Present Perfect',sub:'Grammar',icon:'⏳'},
@@ -326,6 +326,22 @@ const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1
 CURRICULUM.forEach(function(y){y.months.forEach(function(m){m.lessons.forEach(function(l){l.stages.forEach(function(s){const k=l.id+"_"+s.id;state.scores[k]=0;state.done[k]=false})})})});
 function getCurrentLesson(){const y=CURRICULUM.find(function(x){return x.year===state.currentYear});if(!y)return null;const m=y.months.find(function(x){return x.month===state.currentMonth});if(!m)return null;return m.lessons.find(function(l){return l.id===state.currentLessonId})||null}
 function totalScore(){const l=getCurrentLesson();if(!l)return 0;return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)}
+
+/* ================== CONTENT PLACEHOLDERS (Loaded via JSON) ================== */
+let VOCAB = [];
+let MATCH_DATA = [];
+let READING_HTML = "";
+let READING_Q = [];
+let CONTEXT_Q = [];
+let G6 = {};
+let G7 = {};
+let SB_PP = {};
+let SB_PS = {};
+let G10 = {};
+let TEST_MCQ = [];
+let TEST_SHORT = [];
+let TEST_TFNG = [];
+let TEST_COMPLETE = [];
 
 /* ================== FIREBASE INIT ================== */
 function initFirebase(){
@@ -534,74 +550,6 @@ function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
     broadcastAction('review_flagged',prompt.substring(0,40));
   }).catch(function(e){alert('Failed to send: '+e.message)});
 }
-
-/* ================== VOCABULARY (Natural Disasters, rich) ================== */
-const VOCAB=[
-  {en:'blizzard',emoji:'❄️',meanings:[
-    {context:'a long snowstorm',ru:'снежная буря, пурга',ex:'A <b>blizzard</b> is a long snowstorm with very strong winds.'},
-    {context:'a sudden rush of snow',ru:'снежный вихрь',ex:'The mountain pass was closed by a sudden <b>blizzard</b>.'}
-  ]},
-  {en:'drought',emoji:'🏜️',meanings:[
-    {context:'a long period without rain',ru:'засуха',ex:'A <b>drought</b> is a long period with very little or no rain.'},
-    {context:'a serious shortage',ru:'нехватка, дефицит',ex:'The country suffered a <b>drought</b> of investment.'}
-  ]},
-  {en:'earthquake',emoji:'🏚️',meanings:[
-    {context:'a sudden shaking of the ground',ru:'землетрясение',ex:'An <b>earthquake</b> happens when the Earth\u2019s crust moves suddenly.'}
-  ]},
-  {en:'flood',emoji:'🌊',meanings:[
-    {context:'water covering dry land',ru:'наводнение, паводок',ex:'A <b>flood</b> happens when water covers land that is usually dry.'},
-    {context:'a large amount of something',ru:'поток, масса (чего-либо)',ex:'A <b>flood</b> of messages arrived after the announcement.'}
-  ]},
-  {en:'heat wave',emoji:'🥵',meanings:[
-    {context:'a period of very hot weather',ru:'волна жары',ex:'A <b>heat wave</b> brings temperatures much higher than usual.'}
-  ]},
-  {en:'hurricane',emoji:'🌀',meanings:[
-    {context:'a giant tropical storm',ru:'ураган',ex:'A <b>hurricane</b> is a giant swirling storm with winds up to 160 mph.'}
-  ]},
-  {en:'tornado',emoji:'🌪️',meanings:[
-    {context:'a rotating column of air',ru:'торнадо, смерч',ex:'A <b>tornado</b> is a destructive rotating column of air.'}
-  ]},
-  {en:'tsunami',emoji:'🌊',meanings:[
-    {context:'a huge ocean wave',ru:'цунами',ex:'A <b>tsunami</b> is a very large ocean wave that surges onto land.'}
-  ]},
-  {en:'wildfire',emoji:'🔥',meanings:[
-    {context:'a fire that spreads in nature',ru:'лесной пожар',ex:'A <b>wildfire</b> is a forest or grass fire that spreads quickly.'}
-  ]},
-  {en:'landslide',emoji:'⛰️',meanings:[
-    {context:'rocks sliding down a slope',ru:'оползень',ex:'A <b>landslide</b> happens when rocks and earth slide down a slope.'}
-  ]},
-  {en:'avalanche',emoji:'🏔️',meanings:[
-    {context:'snow and ice sliding down',ru:'лавина',ex:'An <b>avalanche</b> can follow heavy snowfall.'}
-  ]},
-  {en:'volcano',emoji:'🌋',meanings:[
-    {context:'a mountain that can erupt',ru:'вулкан',ex:'Active <b>volcanoes</b> send ash into the air and lava onto the ground.'}
-  ]},
-  {en:'eruption',emoji:'💥',meanings:[
-    {context:'when a volcano explodes',ru:'извержение',ex:'The <b>eruption</b> sent ash clouds into the sky.'}
-  ]},
-  {en:'magnitude',emoji:'📊',meanings:[
-    {context:'the strength of an earthquake',ru:'магнитуда',ex:'The <b>magnitude</b> of an earthquake describes its strength.'},
-    {context:'importance or scale',ru:'масштаб, величина',ex:'Few understood the <b>magnitude</b> of the disaster.'}
-  ]},
-  {en:'tremor',emoji:'📳',meanings:[
-    {context:'a small shaking',ru:'толчок, дрожь',ex:'The earthquake was minor, with only a few small <b>tremors</b>.'}
-  ]},
-  {en:'crust',emoji:'🪨',meanings:[
-    {context:'Earth\u2019s outer layer',ru:'земная кора',ex:'An earthquake happens when the Earth\u2019s <b>crust</b> moves suddenly.'}
-  ]},
-  {en:'humid',emoji:'💧',meanings:[
-    {context:'warm and wet in the air',ru:'влажный',ex:'Warm, <b>humid</b> air rises quickly into the sky.'}
-  ]},
-  {en:'deforestation',emoji:'🪓',meanings:[
-    {context:'the removal of many trees',ru:'вырубка лесов',ex:'<b>Deforestation</b> can make droughts worse.'}
-  ]},
-  {en:'atmosphere',emoji:'🌍',meanings:[
-    {context:'the air around Earth',ru:'атмосфера',ex:'High pressure in the <b>atmosphere</b> can cause a heat wave.'}
-  ]},
-  {en:'evacuation',emoji:'🚨',meanings:[
-    {context:'organized removal from danger',ru:'эвакуация',ex:'The <b>evacuation</b> of the coastal town began at dawn.'}
-  ]}
-];
 
 /* ================== STAGE 1 — ADAPTIVE VOCABULARY QUIZ ================== */
 let s1Filter='learning';
@@ -966,18 +914,6 @@ function fcMarkKnow(){}
 function fcMarkAgain(){}
 
 /* ================== STAGE 2 — WORD MATCH ================== */
-const MATCH_DATA=[
-  {word:'blizzard',meaning:'a long snowstorm with strong winds'},
-  {word:'drought',meaning:'a long period with very little rain'},
-  {word:'earthquake',meaning:'a sudden shaking of the ground'},
-  {word:'flood',meaning:'water covering dry land'},
-  {word:'hurricane',meaning:'a giant swirling storm'},
-  {word:'tornado',meaning:'a rotating column of air'},
-  {word:'tsunami',meaning:'a very large ocean wave'},
-  {word:'wildfire',meaning:'a fire that spreads quickly in nature'},
-  {word:'landslide',meaning:'rocks sliding down a slope'},
-  {word:'volcano',meaning:'a mountain that can erupt'}
-];
 function renderStage2(){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
@@ -1019,39 +955,6 @@ function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct')
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
 /* ================== STAGE 3 — READING & QUESTIONS ================== */
-const READING_HTML='<h1>The Great Flood of Marlowe</h1><div class="subtitle">A story about a natural disaster</div>'+
-'<p><span class="para-label">A.</span>In the spring of 2023, heavy rain fell on the town of Marlowe for three days. The river in the town centre was usually calm, but the rain was too much. The water level rose quickly. On the third day, the river overflowed. Water covered the streets and entered the ground floors of many houses.</p>'+
-'<p><span class="para-label">B.</span>When the flood started, the local council told everyone to evacuate. Rescue teams used small boats to travel through the streets. They helped elderly people and children who were trapped in their homes. The water stayed in the town for a whole week.</p>'+
-'<p><span class="para-label">C.</span>After the water went down, the people of Marlowe began to clean up. The council provided free food and water. Now, the town is making a plan. They want to build new defences to protect the town from future floods.</p>';
-
-const READING_Q=[
-  {type:'short',prompt:'How many days did the heavy rain fall?',answers:['3','three'],exp:'The text says heavy rain fell for three days.'},
-  {type:'short',prompt:'What is the name of the town in the story?',answers:['marlowe'],exp:'The town is called Marlowe.'},
-  {type:'tfng',prompt:'The river was usually calm before the rain.',answer:'True',exp:'The text says the river was usually calm.'},
-  {type:'tfng',prompt:'Rescue teams used helicopters to save people.',answer:'False',exp:'The text says they used small boats.'},
-  {type:'tfng',prompt:'The water stayed in the town for one month.',answer:'False',exp:'The water stayed for a whole week.'},
-  {type:'long',prompt:'In your own words, explain how the rescue teams helped people during the flood.',
-    keywordGroups:[['boat','boats'],['help','save','rescue'],['elderly','old'],['children','kids'],['trapped','stuck','home']],
-    minWords:8,minGroups:2,
-    sample:'The rescue teams used small boats to help elderly people and children who were trapped in their homes.',
-    exp:'Key ideas: using boats, helping elderly/children, trapped people.'},
-  {type:'long',prompt:'What is the town planning to do to protect itself in the future?',
-    keywordGroups:[['build','construct','make'],['defences','defense','protection'],['future','next','flood']],
-    minWords:6,minGroups:2,
-    sample:'The town is planning to build new defences to protect the town from future floods.',
-    exp:'Key ideas: building defences, protecting the town.'},
-  {type:'mcq',prompt:'Why did the river overflow?',options:['Because of heavy rain','Because of a heat wave','Because of an earthquake'],correct:'Because of heavy rain',exp:'Heavy rain caused the river to overflow.'},
-  {type:'mcq',prompt:'What is the town planning to build?',options:['New defences','A new hospital','A new school'],correct:'New defences',exp:'The town wants to build new defences.'},
-  {type:'short',prompt:'Complete: The council provided free ______ and water.',answers:['food'],exp:'The council provided free food.'}
-];
-
-const CONTEXT_Q=[
-  {prompt:'In paragraph A, "overflowed" means...',options:['spilled over the edge','dried up','froze'],correct:'spilled over the edge',exp:'The river spilled over its banks.'},
-  {prompt:'In paragraph B, "evacuate" means...',options:['move to a safe place','stay at home','buy food'],correct:'move to a safe place',exp:'Evacuate means to leave a dangerous place.'},
-  {prompt:'In paragraph C, "defences" means...',options:['things that protect you','boats','heavy rain'],correct:'things that protect you',exp:'Defences protect the town from floods.'},
-  {prompt:'In paragraph B, "trapped" means...',options:['unable to leave','very happy','swimming'],correct:'unable to leave',exp:'They were trapped because of the water.'}
-];
-
 let s4Answers={};
 function renderStage3(){
   const main=document.getElementById('main');
@@ -1208,108 +1111,6 @@ function checkS4(){
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
 /* ================== STAGES 4/5 — COMPLETING SENTENCE ================== */
-const G6={pos:[
-  {p:'The region ___ (experience) three disasters in six weeks.',a:'has experienced',ex:'Present perfect: result matters now.'},
-  {p:'Scientists ___ (study) the events carefully.',a:'have studied',ex:'Plural subject → have + V3.'},
-  {p:'The heat ___ (dry) the vegetation since June.',a:'has dried',ex:'Singular subject → has + V3.'},
-  {p:'Rivers ___ (overflow) their banks twice this year.',a:'have overflowed',ex:'Plural → have + V3.'},
-  {p:'The town ___ (become) more vulnerable to floods.',a:'has become',ex:'"Become" has the same V1 and V3 form.'}
-],neg:[
-  {p:'The council ___ (not / install) new warning systems yet.',a:'has not installed',ex:'"Yet" → present perfect negative.'},
-  {p:'We ___ (not / see) such heavy rain for years.',a:'have not seen',ex:'"For years" → present perfect.'},
-  {p:'The mayor ___ (not / announce) the evacuation plan.',a:'has not announced',ex:'Singular subject → has not + V3.'},
-  {p:'Firefighters ___ (not / finish) clearing the roads.',a:'have not finished',ex:'Plural subject → have not + V3.'},
-  {p:'The soil ___ (not / recover) from the fire.',a:'has not recovered',ex:'Singular uncountable → has not + V3.'}
-],q:[
-  {p:'___ the region ___ (recover) from the wildfire?',a:'Has the region recovered',ex:'Question: Has + subject + V3.'},
-  {p:'___ you ever ___ (see) a wildfire?',a:'Have you ever seen',ex:'"Ever" for experience.'},
-  {p:'___ scientists ___ (link) the disasters?',a:'Have scientists linked',ex:'Plural question.'},
-  {p:'___ the river ___ (flood) again since June?',a:'Has the river flooded',ex:'Singular question with "since".'},
-  {p:'___ residents ___ (train) in evacuation procedures yet?',a:'Have residents trained',ex:'Plural question with "yet".'}
-],shuffled:[
-  {p:'The wildfire ___ (destroy) over 400 hectares.',a:'has destroyed'},
-  {p:'Temperatures ___ (rise) sharply this summer.',a:'have risen'},
-  {p:'The council ___ (open) new cooling centres.',a:'has opened'},
-  {p:'We ___ (learn) a lot about connected disasters.',a:'have learned'},
-  {p:'The harbour ___ (not / flood) recently.',a:'has not flooded'},
-  {p:'___ they ___ (widen) the firebreaks yet?',a:'Have they widened'},
-  {p:'The heat ___ (affect) many residents.',a:'has affected'},
-  {p:'I ___ (never / experience) such heat.',a:'have never experienced'},
-  {p:'Rescue teams ___ (save) dozens of families.',a:'have saved'},
-  {p:'The warning system ___ (just / start) working.',a:'has just started'},
-  {p:'Authorities ___ (already / close) the coastal road.',a:'have already closed'},
-  {p:'The storm ___ (not / arrive) yet.',a:'has not arrived'},
-  {p:'Local hospitals ___ (treat) many heat-related cases.',a:'have treated'},
-  {p:'Water levels ___ (rise) since last night.',a:'have risen'},
-  {p:'___ you ___ (read) the report about the floods?',a:'Have you read'},
-  {p:'The vegetation ___ (dry) out completely.',a:'has dried'},
-  {p:'Many species ___ (lose) their habitats.',a:'have lost'},
-  {p:'The mayor ___ (promise) better planning.',a:'has promised'},
-  {p:'She ___ (not / hear) about the wildfire yet.',a:'has not heard'},
-  {p:'The region ___ (change) dramatically.',a:'has changed'},
-  {p:'Scientists ___ (warn) about this for years.',a:'have warned'},
-  {p:'The reservoir ___ (not / recover) after the drought.',a:'has not recovered'},
-  {p:'___ the town ___ (build) new defences?',a:'Has the town built'},
-  {p:'The events ___ (prompt) a rethink of planning.',a:'have prompted'},
-  {p:'We ___ (see) three floods this decade.',a:'have seen'},
-  {p:'The fire ___ (burn) for eleven days.',a:'has burned'},
-  {p:'___ you ever ___ (hear) of a tsunami here?',a:'Have you ever heard'},
-  {p:'The community ___ (rebuild) many homes.',a:'has rebuilt'},
-  {p:'Air quality ___ (improve) since the fire stopped.',a:'has improved'},
-  {p:'The council ___ (not / decide) on new rules yet.',a:'has not decided'}
-]};
-
-const G7={pos:[
-  {p:'The town ___ (destroy) by the flood in 2023.',a:'was destroyed',ex:'Past passive: was + V3.'},
-  {p:'The wildfire ___ (cause) by the extreme heat.',a:'was caused',ex:'Past passive with singular subject.'},
-  {p:'Hundreds of homes ___ (damage) by the storm.',a:'were damaged',ex:'Plural subject → were + V3.'},
-  {p:'The coastal road ___ (close) after the landslide.',a:'was closed',ex:'Past passive with singular subject.'},
-  {p:'New warning systems ___ (install) last year.',a:'were installed',ex:'Plural subject → were + V3.'}
-],neg:[
-  {p:'The wildfire ___ (not / contain) quickly.',a:'was not contained',ex:'Negative past passive.'},
-  {p:'The evacuation ___ (not / organise) well.',a:'was not organised',ex:'Singular subject in negative.'},
-  {p:'Some residents ___ (not / warn) in time.',a:'were not warned',ex:'Plural negative passive.'},
-  {p:'The river ___ (not / monitor) before the flood.',a:'was not monitored',ex:'Past passive negative.'},
-  {p:'The cooling centres ___ (not / open) early enough.',a:'were not opened',ex:'Plural negative passive.'}
-],q:[
-  {p:'___ the town ___ (evacuate) before the flood?',a:'Was the town evacuated',ex:'Past passive question.'},
-  {p:'___ the warning systems ___ (test) recently?',a:'Were the warning systems tested',ex:'Plural question in past passive.'},
-  {p:'___ the wildfire ___ (spot) by satellites?',a:'Was the wildfire spotted',ex:'Past passive question.'},
-  {p:'___ new firebreaks ___ (create) last summer?',a:'Were new firebreaks created',ex:'Plural past passive question.'},
-  {p:'___ the report ___ (publish) yet?',a:'Was the report published',ex:'Past passive question with "yet".'}
-],shuffled:[
-  {p:'The flood ___ (cause) by two days of rain.',a:'was caused'},
-  {p:'The wildfire ___ (spot) by a local farmer.',a:'was spotted'},
-  {p:'Many homes ___ (destroy) in the storm.',a:'were destroyed'},
-  {p:'The evacuation ___ (complete) in six hours.',a:'was completed'},
-  {p:'The riverbanks ___ (weaken) by the flood.',a:'were weakened'},
-  {p:'Cooling centres ___ (open) across the region.',a:'were opened'},
-  {p:'The burned soil ___ (leave) to recover naturally.',a:'was left'},
-  {p:'Several bridges ___ (damage) by the landslide.',a:'were damaged'},
-  {p:'The report ___ (write) by a team of scientists.',a:'was written'},
-  {p:'New rules ___ (introduce) after the events.',a:'were introduced'},
-  {p:'The mayor ___ (criticise) for the slow response.',a:'was criticised'},
-  {p:'Coastal towns ___ (warn) by text message.',a:'were warned'},
-  {p:'The old harbour ___ (flood) twice last year.',a:'was flooded'},
-  {p:'Firebreaks ___ (widen) in the hills.',a:'were widened'},
-  {p:'The species in the forest ___ (affect) severely.',a:'were affected'},
-  {p:'___ the road ___ (repair) after the storm?',a:'Was the road repaired'},
-  {p:'The wildfire ___ (not / control) for eleven days.',a:'was not controlled'},
-  {p:'Emergency shelters ___ (set) up in schools.',a:'were set'},
-  {p:'The drought ___ (follow) by heavy rain.',a:'was followed'},
-  {p:'Residents ___ (train) in evacuation drills.',a:'were trained'},
-  {p:'The crisis ___ (handle) by local authorities.',a:'was handled'},
-  {p:'___ the evacuation ___ (announce) in advance?',a:'Was the evacuation announced'},
-  {p:'The vegetation ___ (destroy) by the fire.',a:'was destroyed'},
-  {p:'Two towns ___ (cut) off by the floodwater.',a:'were cut'},
-  {p:'The council ___ (blame) for poor planning.',a:'was blamed'},
-  {p:'New trees ___ (plant) in the burned areas.',a:'were planted'},
-  {p:'The warning ___ (send) too late.',a:'was sent'},
-  {p:'The region ___ (affect) by three disasters.',a:'was affected'},
-  {p:'Some homes ___ (not / rebuild) after the fire.',a:'were not rebuilt'},
-  {p:'The lessons ___ (learn) the hard way.',a:'were learned'}
-]};
-
 function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
   const v=document.createElement('div');v.className='stage-view active';
@@ -1366,108 +1167,6 @@ function renderStage4(){renderCompletingSentence(G6,4,3,5,'⏳ Completing Senten
 function renderStage5(){renderCompletingSentence(G7,5,4,6,'🛡️ Completing Sentence — Passive Voice','Stage 5 — Grammar','Subject + was/were + past participle (V3)','<li>Past passive: <b>was</b> + V3 (singular), <b>were</b> + V3 (plural).</li><li>Use passive when the action matters more than the doer: The town <b>was destroyed</b>.</li><li>Negative: <b>was/were not + V3</b>. Question: <b>Was/Were + subject + V3?</b></li>','Complete each sentence using the passive voice. Same structure as Stage 4.<span class="ru">Дополните предложения в пассивном залоге.</span>')}
 
 /* ================== STAGES 6/7 — SENTENCE BUILDER ================== */
-const SB_PP={pos:[
-  {prompt:'Build a present perfect sentence about the heat wave.',correct:['The','heat','has','dried','the','vegetation.']},
-  {prompt:'Build a present perfect sentence about scientists.',correct:['Scientists','have','linked','the','disasters.']},
-  {prompt:'Build a present perfect sentence about the council.',correct:['The','council','has','opened','new','cooling','centres.']},
-  {prompt:'Build a present perfect sentence about floods.',correct:['Floods','have','destroyed','many','homes.']},
-  {prompt:'Build a present perfect sentence about the region.',correct:['The','region','has','changed','dramatically.']}
-],neg:[
-  {prompt:'Build a negative present perfect sentence about the warning systems.',correct:['The','council','has','not','installed','new','warning','systems','yet.']},
-  {prompt:'Build a negative present perfect sentence about rain.',correct:['We','have','not','seen','such','rain','for','years.']},
-  {prompt:'Build a negative present perfect sentence about the mayor.',correct:['The','mayor','has','not','announced','the','plan.']},
-  {prompt:'Build a negative present perfect sentence about firefighters.',correct:['Firefighters','have','not','finished','clearing','the','roads.']},
-  {prompt:'Build a negative present perfect sentence about the soil.',correct:['The','soil','has','not','recovered','from','the','fire.']}
-],q:[
-  {prompt:'Build a present perfect question about the region.',correct:['Has','the','region','recovered','from','the','wildfire?']},
-  {prompt:'Build a present perfect question with "ever".',correct:['Have','you','ever','seen','a','wildfire?']},
-  {prompt:'Build a present perfect question about scientists.',correct:['Have','scientists','linked','the','disasters?']},
-  {prompt:'Build a present perfect question about the river.',correct:['Has','the','river','flooded','again','since','June?']},
-  {prompt:'Build a present perfect question about residents.',correct:['Have','residents','trained','in','evacuation','procedures','yet?']}
-],shuffled:[
-  {prompt:'Build: The wildfire has destroyed over 400 hectares.',correct:['The','wildfire','has','destroyed','over','400','hectares.']},
-  {prompt:'Build: Temperatures have risen sharply.',correct:['Temperatures','have','risen','sharply.']},
-  {prompt:'Build: The council has opened new cooling centres.',correct:['The','council','has','opened','new','cooling','centres.']},
-  {prompt:'Build: We have learned a lot.',correct:['We','have','learned','a','lot.']},
-  {prompt:'Build: I have never experienced such heat.',correct:['I','have','never','experienced','such','heat.']},
-  {prompt:'Build: Rescue teams have saved dozens of families.',correct:['Rescue','teams','have','saved','dozens','of','families.']},
-  {prompt:'Build: The warning system has just started.',correct:['The','warning','system','has','just','started.']},
-  {prompt:'Build: Authorities have already closed the road.',correct:['Authorities','have','already','closed','the','road.']},
-  {prompt:'Build: The storm has not arrived yet.',correct:['The','storm','has','not','arrived','yet.']},
-  {prompt:'Build: Hospitals have treated many cases.',correct:['Hospitals','have','treated','many','cases.']},
-  {prompt:'Build: Water levels have risen.',correct:['Water','levels','have','risen.']},
-  {prompt:'Build: Have you read the report?',correct:['Have','you','read','the','report?']},
-  {prompt:'Build: The vegetation has dried out.',correct:['The','vegetation','has','dried','out.']},
-  {prompt:'Build: Many species have lost their habitats.',correct:['Many','species','have','lost','their','habitats.']},
-  {prompt:'Build: The mayor has promised better planning.',correct:['The','mayor','has','promised','better','planning.']},
-  {prompt:'Build: She has not heard the news yet.',correct:['She','has','not','heard','the','news','yet.']},
-  {prompt:'Build: The region has changed dramatically.',correct:['The','region','has','changed','dramatically.']},
-  {prompt:'Build: Scientists have warned about this.',correct:['Scientists','have','warned','about','this.']},
-  {prompt:'Build: The reservoir has not recovered.',correct:['The','reservoir','has','not','recovered.']},
-  {prompt:'Build: Has the town built new defences?',correct:['Has','the','town','built','new','defences?']},
-  {prompt:'Build: The events have prompted a rethink.',correct:['The','events','have','prompted','a','rethink.']},
-  {prompt:'Build: We have seen three floods.',correct:['We','have','seen','three','floods.']},
-  {prompt:'Build: The fire has burned for eleven days.',correct:['The','fire','has','burned','for','eleven','days.']},
-  {prompt:'Build: Have you heard of a tsunami?',correct:['Have','you','heard','of','a','tsunami?']},
-  {prompt:'Build: The community has rebuilt many homes.',correct:['The','community','has','rebuilt','many','homes.']},
-  {prompt:'Build: Air quality has improved.',correct:['Air','quality','has','improved.']},
-  {prompt:'Build: The council has not decided yet.',correct:['The','council','has','not','decided','yet.']},
-  {prompt:'Build: I have seen such rain before.',correct:['I','have','seen','such','rain','before.']},
-  {prompt:'Build: They have trained residents in drills.',correct:['They','have','trained','residents','in','drills.']},
-  {prompt:'Build: The heat has affected many residents.',correct:['The','heat','has','affected','many','residents.']}
-]};
-
-const SB_PS={pos:[
-  {prompt:'Build a past passive sentence about the flood.',correct:['The','town','was','destroyed','by','the','flood.']},
-  {prompt:'Build a past passive sentence about the wildfire.',correct:['The','wildfire','was','caused','by','extreme','heat.']},
-  {prompt:'Build a past passive sentence about homes.',correct:['Hundreds','of','homes','were','damaged','by','the','storm.']},
-  {prompt:'Build a past passive sentence about the coastal road.',correct:['The','coastal','road','was','closed','after','the','landslide.']},
-  {prompt:'Build a past passive sentence about warning systems.',correct:['New','warning','systems','were','installed','last','year.']}
-],neg:[
-  {prompt:'Build a negative past passive sentence about the wildfire.',correct:['The','wildfire','was','not','contained','quickly.']},
-  {prompt:'Build a negative past passive sentence about the evacuation.',correct:['The','evacuation','was','not','organised','well.']},
-  {prompt:'Build a negative past passive sentence about residents.',correct:['Some','residents','were','not','warned','in','time.']},
-  {prompt:'Build a negative past passive sentence about the river.',correct:['The','river','was','not','monitored','before','the','flood.']},
-  {prompt:'Build a negative past passive sentence about cooling centres.',correct:['The','cooling','centres','were','not','opened','early','enough.']}
-],q:[
-  {prompt:'Build a past passive question about the town.',correct:['Was','the','town','evacuated','before','the','flood?']},
-  {prompt:'Build a past passive question about warning systems.',correct:['Were','the','warning','systems','tested','recently?']},
-  {prompt:'Build a past passive question about the wildfire.',correct:['Was','the','wildfire','spotted','by','satellites?']},
-  {prompt:'Build a past passive question about firebreaks.',correct:['Were','new','firebreaks','created','last','summer?']},
-  {prompt:'Build a past passive question about the report.',correct:['Was','the','report','published','yet?']}
-],shuffled:[
-  {prompt:'Build: The flood was caused by heavy rain.',correct:['The','flood','was','caused','by','heavy','rain.']},
-  {prompt:'Build: The wildfire was spotted by a farmer.',correct:['The','wildfire','was','spotted','by','a','farmer.']},
-  {prompt:'Build: Many homes were destroyed.',correct:['Many','homes','were','destroyed.']},
-  {prompt:'Build: The evacuation was completed quickly.',correct:['The','evacuation','was','completed','quickly.']},
-  {prompt:'Build: The riverbanks were weakened by the flood.',correct:['The','riverbanks','were','weakened','by','the','flood.']},
-  {prompt:'Build: Cooling centres were opened.',correct:['Cooling','centres','were','opened.']},
-  {prompt:'Build: The soil was left to recover.',correct:['The','soil','was','left','to','recover.']},
-  {prompt:'Build: Several bridges were damaged.',correct:['Several','bridges','were','damaged.']},
-  {prompt:'Build: The report was written by scientists.',correct:['The','report','was','written','by','scientists.']},
-  {prompt:'Build: New rules were introduced.',correct:['New','rules','were','introduced.']},
-  {prompt:'Build: The mayor was criticised.',correct:['The','mayor','was','criticised.']},
-  {prompt:'Build: Coastal towns were warned by text.',correct:['Coastal','towns','were','warned','by','text.']},
-  {prompt:'Build: The harbour was flooded twice.',correct:['The','harbour','was','flooded','twice.']},
-  {prompt:'Build: Firebreaks were widened.',correct:['Firebreaks','were','widened.']},
-  {prompt:'Build: Species were affected severely.',correct:['Species','were','affected','severely.']},
-  {prompt:'Build: Was the road repaired?',correct:['Was','the','road','repaired?']},
-  {prompt:'Build: The wildfire was not controlled.',correct:['The','wildfire','was','not','controlled.']},
-  {prompt:'Build: Emergency shelters were set up.',correct:['Emergency','shelters','were','set','up.']},
-  {prompt:'Build: The drought was followed by rain.',correct:['The','drought','was','followed','by','rain.']},
-  {prompt:'Build: Residents were trained in drills.',correct:['Residents','were','trained','in','drills.']},
-  {prompt:'Build: The crisis was handled well.',correct:['The','crisis','was','handled','well.']},
-  {prompt:'Build: Was the evacuation announced?',correct:['Was','the','evacuation','announced?']},
-  {prompt:'Build: The vegetation was destroyed.',correct:['The','vegetation','was','destroyed.']},
-  {prompt:'Build: Two towns were cut off.',correct:['Two','towns','were','cut','off.']},
-  {prompt:'Build: The council was blamed.',correct:['The','council','was','blamed.']},
-  {prompt:'Build: New trees were planted.',correct:['New','trees','were','planted.']},
-  {prompt:'Build: The warning was sent too late.',correct:['The','warning','was','sent','too','late.']},
-  {prompt:'Build: The region was affected.',correct:['The','region','was','affected.']},
-  {prompt:'Build: Some homes were not rebuilt.',correct:['Some','homes','were','not','rebuilt.']},
-  {prompt:'Build: The lessons were learned.',correct:['The','lessons','were','learned.']}
-]};
-
 const SB_STATE={};
 const SB_DATA={};
 function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
@@ -1562,97 +1261,9 @@ function renderStage6(){renderSentenceBuilder(SB_PP,6,5,7,'🧩 Sentence Builder
 function renderStage7(){renderSentenceBuilder(SB_PS,7,6,8,'🧱 Sentence Builder — Passive Voice','Stage 7 — Grammar','was/were + past participle (V3)','<li>Build past passive sentences word by word.</li><li>Same 5+5+5 structure.</li>','Build each sentence.<span class="ru">Соберите предложения.</span>')}
 
 /* ================== STAGE 8 — CHOOSE THE TENSE ================== */
-const G10={pos:[
-  {p:'The wildfire ___ (destroy) 400 hectares last August.',a:'destroyed',ex:'Finished time → past simple.'},
-  {p:'Air pollution ___ (improve) since the fire stopped.',a:'has improved',ex:'"Since" → present perfect.'},
-  {p:'The council ___ (open) cooling centres in 2023.',a:'opened',ex:'Finished year → past simple.'},
-  {p:'The region ___ (recover) slowly over the past year.',a:'has recovered',ex:'"Over the past year" → present perfect.'},
-  {p:'Temperatures ___ (rise) above 42°C last week.',a:'rose',ex:'"Last week" → past simple.'}
-],neg:[
-  {p:'The council ___ (not / install) warning systems yet.',a:'has not installed',ex:'"Yet" → present perfect.'},
-  {p:'They ___ (not / finish) the evacuation in time yesterday.',a:'did not finish',ex:'"Yesterday" → past simple.'},
-  {p:'We ___ (not / see) the mayor at the meeting.',a:'did not see',ex:'Finished event → past simple.'},
-  {p:'She ___ (not / hear) about the wildfire yet.',a:'has not heard',ex:'"Yet" → present perfect.'},
-  {p:'I ___ (not / receive) any updates since Monday.',a:'have not received',ex:'"Since Monday" → present perfect.'}
-],q:[
-  {p:'___ the town ___ (evacuate) before the flood?',a:'Was the town evacuated',ex:'Passive past question.'},
-  {p:'___ the council ___ (provide) clear warnings so far?',a:'Has the council provided',ex:'"So far" → present perfect.'},
-  {p:'___ they ___ (install) the new lights in 2020?',a:'Did they install',ex:'Finished year → past simple.'},
-  {p:'___ you ever ___ (experience) a heat wave?',a:'Have you ever experienced',ex:'"Ever" → present perfect.'},
-  {p:'___ the mayor ___ (speak) at yesterday\u2019s meeting?',a:'Did the mayor speak',ex:'"Yesterday" → past simple.'}
-],shuffled:[
-  {p:'The council ___ (add) the cycle lane in 2020.',a:'added'},
-  {p:'Cycling ___ (become) very popular here.',a:'has become'},
-  {p:'She ___ (write) an essay about floods yesterday.',a:'wrote'},
-  {p:'We ___ (visit) the harbour museum twice.',a:'have visited'},
-  {p:'They ___ (open) the new bridge last spring.',a:'opened'},
-  {p:'I ___ (not / see) such clean air before.',a:'have not seen'},
-  {p:'The mayor ___ (announce) the plan in 2015.',a:'announced'},
-  {p:'The school ___ (start) a recycling programme recently.',a:'has started'},
-  {p:'___ you ___ (finish) the exercise yet?',a:'Have you finished'},
-  {p:'The council ___ (approve) the budget last month.',a:'approved'},
-  {p:'She ___ (live) in this neighbourhood for ten years.',a:'has lived'},
-  {p:'We ___ (walk) ten kilometres last Saturday.',a:'walked'},
-  {p:'The workers ___ (build) the bridge in two months.',a:'built'},
-  {p:'My parents ___ (not / own) a car since 2018.',a:'have not owned'},
-  {p:'___ they ___ (plant) the trees yesterday?',a:'Did they plant'},
-  {p:'I ___ (already / read) three books about disasters.',a:'have already read'},
-  {p:'The city ___ (spend) millions on defence in 2020.',a:'spent'},
-  {p:'People ___ (complain) about the noise since the works started.',a:'have complained'},
-  {p:'___ she ___ (cycle) to school when she was young?',a:'Did she cycle'},
-  {p:'The mayor ___ (just / announce) a new green initiative.',a:'has just announced'},
-  {p:'They ___ (not / complete) the project on time.',a:'did not complete'},
-  {p:'I ___ (read) three articles last night.',a:'read'},
-  {p:'The government ___ (invest) heavily in wind power recently.',a:'has invested'},
-  {p:'___ you ever ___ (be) to Copenhagen?',a:'Have you ever been'},
-  {p:'The bridge ___ (collapse) in the storm last year.',a:'collapsed'},
-  {p:'Our family ___ (live) here since 2015.',a:'has lived'},
-  {p:'He ___ (not / come) to the meeting on Monday.',a:'did not come'},
-  {p:'___ the council ___ (decide) on the parking rules yet?',a:'Has the council decided'},
-  {p:'She ___ (buy) an electric bike last summer.',a:'bought'},
-  {p:'We ___ (know) each other since primary school.',a:'have known'}
-]};
 function renderStage8(){renderCompletingSentence(G10,8,7,9,'🧭 Completing Sentence — Choose the Tense','Stage 8 — Grammar','Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)','<li>Use past simple with finished times: yesterday, in 2020, last week, ago.</li><li>Use present perfect with: since, for, yet, ever, never, just, already, so far, recently.</li>','Choose the correct tense for each sentence. Same structure: 5+5+5 then 30 mixed.<span class="ru">Выберите правильное время.</span>')}
 
 /* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
-const TEST_MCQ=[
-  {q:'Which word means "a sudden shaking of the ground"?',options:['earthquake','drought','blizzard'],correct:'earthquake',exp:'An earthquake shakes the ground.'},
-  {q:'Which word means "a long period with very little rain"?',options:['drought','flood','tornado'],correct:'drought',exp:'A drought = too little rain.'},
-  {q:'Which word means "a very large ocean wave"?',options:['tsunami','hurricane','avalanche'],correct:'tsunami',exp:'A tsunami is a huge ocean wave.'},
-  {q:'Which word means "the strength of an earthquake"?',options:['magnitude','tremor','atmosphere'],correct:'magnitude',exp:'Magnitude = strength.'},
-  {q:'Which word means "organized removal from danger"?',options:['evacuation','eruption','deforestation'],correct:'evacuation',exp:'Evacuation = getting to safety.'},
-  {q:'Which word means "the removal of many trees"?',options:['deforestation','eruption','structure'],correct:'deforestation',exp:'Deforestation = cutting down forests.'},
-  {q:'Which word means "a small shaking"?',options:['tremor','crust','magnitude'],correct:'tremor',exp:'A tremor is a small shake.'},
-  {q:'Which word means "warm and wet in the air"?',options:['humid','vulnerable','ecological'],correct:'humid',exp:'Humid air feels warm and wet.'}
-];
-const TEST_SHORT=[
-  {q:'How many consecutive days did temperatures rise above 42°C?',answers:['10','ten'],exp:'Ten consecutive days.'},
-  {q:'How many millimetres of rain fell in two days?',answers:['200','more than 200','200 mm'],exp:'More than 200 mm.'},
-  {q:'How many hectares of forest were destroyed?',answers:['400','more than 400','over 400'],exp:'Over 400 hectares.'},
-  {q:'How many days did firefighters work?',answers:['11','eleven'],exp:'Eleven days.'},
-  {q:'Name the town worst affected by the floods.',answers:['marlowe'],exp:'Marlowe.'},
-  {q:'At what temperature will cooling centres open automatically?',answers:['38','38°c','38 c','38 degrees'],exp:'Above 38°C.'}
-];
-const TEST_TFNG=[
-  {q:'The three disasters took place within six weeks.',answer:'True',exp:'Within six weeks.'},
-  {q:'Lives were lost in the wildfire.',answer:'False',exp:'No lives were lost.'},
-  {q:'The council had planned for this intensity.',answer:'Not Given',exp:'Never stated.'},
-  {q:'The wildfire happened before the floods.',answer:'False',exp:'It happened after the floods.'},
-  {q:'Paris is mentioned in the article.',answer:'Not Given',exp:'Paris isn\u2019t mentioned.'}
-];
-const TEST_COMPLETE=[
-  {p:'The region ___ (experience) three disasters since June.',a:'has experienced'},
-  {p:'The wildfire ___ (destroy) 400 hectares last August.',a:'destroyed'},
-  {p:'The town ___ (not / rebuild) yet.',a:'has not rebuilt'},
-  {p:'Many homes ___ (destroy) in the flood.',a:'were destroyed'},
-  {p:'___ you ever ___ (see) a wildfire?',a:'Have you ever seen'},
-  {p:'The council ___ (open) cooling centres in 2023.',a:'opened'},
-  {p:'The report ___ (write) by scientists last month.',a:'was written'},
-  {p:'___ the river ___ (flood) again since June?',a:'Has the river flooded'},
-  {p:'Temperatures ___ (rise) sharply last week.',a:'rose'},
-  {p:'Air quality ___ (improve) since the fire stopped.',a:'has improved'}
-];
-
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 let TEST_TIME_LIMIT = 0; 
 
@@ -1980,25 +1591,60 @@ function showToast(text){
   window.__toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2200);
 }
 
+/* ================== CONTENT LOADER ================== */
+async function loadContent() {
+  const name = new URLSearchParams(location.search).get('content') || 'sabina';
+  const res = await fetch('content/' + name + '.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('content/' + name + '.json not found');
+  const c = await res.json();
+  VOCAB         = c.vocab;
+  MATCH_DATA    = c.matchData;
+  READING_HTML  = c.readingHtml;
+  READING_Q     = c.readingQ;
+  CONTEXT_Q     = c.contextQ;
+  G6            = c.g6;
+  G7            = c.g7;
+  SB_PP         = c.sbPp;
+  SB_PS         = c.sbPs;
+  G10           = c.g10;
+  TEST_MCQ      = c.testMcq;
+  TEST_SHORT    = c.testShort;
+  TEST_TFNG     = c.testTfng;
+  TEST_COMPLETE = c.testComplete;
+}
+
 /* ================== INIT ================== */
-if(!teacherPreviewRequested)loadState();
-// SMART RESUME
-if(!teacherPreviewRequested && state.currentStage === 1){
-  for(let i = 1; i <= 9; i++){
-    if(!state.done[state.currentLessonId + "_" + i]){
-      state.currentStage = i;
-      break;
+(async function boot() {
+  try {
+    await loadContent();
+  } catch (e) {
+    document.getElementById('main').innerHTML =
+      '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' +
+        '<h2>Content failed to load</h2>' +
+        '<p style="color:var(--ink-soft)">' + e.message + '</p>' +
+      '</div>';
+    return;
+  }
+
+  if(!teacherPreviewRequested)loadState();
+  // SMART RESUME
+  if(!teacherPreviewRequested && state.currentStage === 1){
+    for(let i = 1; i <= 9; i++){
+      if(!state.done[state.currentLessonId + "_" + i]){
+        state.currentStage = i;
+        break;
+      }
     }
   }
-}
-const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
-if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
-const savedCode=teacherPreviewRequested?'':getSessionCode();
-if(savedCode){const sci=document.getElementById('sessionCodeInput');if(sci)sci.value=savedCode}
-renderSidebar();renderStage();startTimer();updateHUD();
-if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.add('active')}
-if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}
-initFirebase();
+  const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
+  if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
+  const savedCode=teacherPreviewRequested?'':getSessionCode();
+  if(savedCode){const sci=document.getElementById('sessionCodeInput');if(sci)sci.value=savedCode}
+  renderSidebar();renderStage();startTimer();updateHUD();
+  if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.add('active')}
+  if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}
+  initFirebase();
+})();
 
 document.addEventListener('visibilitychange', function() {
   if (document.visibilityState === 'hidden' && testState.active) {

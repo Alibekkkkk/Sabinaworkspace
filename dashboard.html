@@ -433,8 +433,13 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
       <button type="button" class="btn" id="typeClassworkBtn" onclick="setLessonType('classwork')" style="flex:1;">📚 Classwork</button>
       <button type="button" class="btn" id="typeHomeworkBtn" onclick="setLessonType('homework')" style="flex:1;">📌 Homework</button>
     </div>
+    
     <label for="lessonCustomUrl">Custom URL (optional — leave blank for default)</label>
-    <input type="text" id="lessonCustomUrl" placeholder="e.g. lesson_gaziz.html" style="text-transform:none;">
+    <input type="text" id="lessonCustomUrl" placeholder="e.g. lesson.html" style="text-transform:none;">
+    
+    <label for="lessonContentUrl">Content file (e.g. sabina, gaziz, aisha)</label>
+    <input type="text" id="lessonContentUrl" placeholder="e.g. sabina" style="text-transform:lowercase;">
+    
     <div id="homeworkExtras" style="display:none;">
       <label for="lessonDue">Homework due (date or note)</label>
       <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
@@ -757,6 +762,7 @@ function renderStudentsList() {
   });
   document.getElementById('studentsCount').textContent = Object.keys(studentsMap).length;
   if (!codes.length) { list.innerHTML = '<div class="no-data" style="padding:20px;">No students yet.</div>'; return; }
+  
   list.innerHTML = codes.map(function(code) {
     const s = studentsMap[code];
     const meta = studentMeta[code] || {};
@@ -766,10 +772,19 @@ function renderStudentsList() {
     if (lastSeen && age < 60000) dotClass = 'live';
     else if (lastSeen && age < 600000) dotClass = 'stale';
     const linked = s.uid ? '🔗' : '⚠️';
+    
+    // VISUAL PROGRESS BAR
+    const doneCount = Object.keys(meta.done || {}).filter(k => meta.done[k]).length;
+    const totalStages = 10; 
+    const pct = Math.round((doneCount / totalStages) * 100);
+    const barColor = pct === 100 ? 'var(--success)' : (pct > 50 ? 'var(--warn)' : 'var(--accent)');
+    const progressBar = `<div style="width:100%; height:6px; background:var(--border); border-radius:6px; margin-top:8px;"><div style="width:${pct}%; height:100%; background:${barColor}; border-radius:6px; transition:width 0.3s;"></div></div>`;
+
     return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(\'' + code + '\')">' +
       '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
       '<div class="code">' + linked + ' ' + code + '</div>' +
-      '<div class="stats"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span></div>' +
+      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span></div>' +
+      progressBar +
       '</div>';
   }).join('');
 }
@@ -800,42 +815,6 @@ function deselectStudent() {
 /* ============================================================
    SELECTED STUDENT VIEW
 ============================================================ */
-function renderStudentsList() {
-  const list = document.getElementById('studentsList');
-  const query = (document.getElementById('studentSearch').value || '').toLowerCase().trim();
-  const codes = Object.keys(studentsMap).filter(function(code) {
-    const s = studentsMap[code];
-    return !query || (s.name || '').toLowerCase().indexOf(query) !== -1 || code.toLowerCase().indexOf(query) !== -1;
-  });
-  document.getElementById('studentsCount').textContent = Object.keys(studentsMap).length;
-  if (!codes.length) { list.innerHTML = '<div class="no-data" style="padding:20px;">No students yet.</div>'; return; }
-  
-  list.innerHTML = codes.map(function(code) {
-    const s = studentsMap[code];
-    const meta = studentMeta[code] || {};
-    const lastSeen = meta.lastSeen || 0;
-    const age = Date.now() - lastSeen;
-    let dotClass = 'off';
-    if (lastSeen && age < 60000) dotClass = 'live';
-    else if (lastSeen && age < 600000) dotClass = 'stale';
-    const linked = s.uid ? '🔗' : '⚠️';
-    
-    // VISUAL PROGRESS BAR
-    const doneCount = Object.keys(meta.done || {}).filter(k => meta.done[k]).length;
-    const totalStages = 10; 
-    const pct = Math.round((doneCount / totalStages) * 100);
-    const barColor = pct === 100 ? 'var(--success)' : (pct > 50 ? 'var(--warn)' : 'var(--accent)');
-    const progressBar = `<div style="width:100%; height:6px; background:var(--border); border-radius:6px; margin-top:8px;"><div style="width:${pct}%; height:100%; background:${barColor}; border-radius:6px; transition:width 0.3s;"></div></div>`;
-
-    return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(\'' + code + '\')">' +
-      '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
-      '<div class="code">' + linked + ' ' + code + '</div>' +
-      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span></div>' +
-      progressBar +
-      '</div>';
-  }).join('');
-}
-
 function renderSelectedView() {
   if (!activeCode || !studentsMap[activeCode]) return;
   const s = studentsMap[activeCode];
@@ -914,7 +893,6 @@ function attachHistoryListener() {
 function resetStage(stageId) {
   if(!confirm('Reset student progress for Stage ' + stageId + '?')) return;
   const ts = Date.now();
-  const key = state.currentLessonId + '_' + stageId; // We need to clear this in the student's local state
   // Send command to student to reset this stage
   fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'resetStage', stage: stageId, ts: ts })
     .then(() => {
@@ -1183,15 +1161,18 @@ function renderClassworkTree() {
 function toggleYear(year) { expandedYears[year] = expandedYears[year] === false; renderClassworkTree(); }
 function toggleMonth(year, month) { expandedMonths[year + '_' + month] = expandedMonths[year + '_' + month] === false; renderClassworkTree(); }
 
-function pickLessonFile(lesson){
-  if(activeCode && studentsMap[activeCode]){
-    const n=String(studentsMap[activeCode].name||'').toLowerCase();
-    if(n.indexOf('gaziz')!==-1) return 'lesson_gaziz.html';
-    if(n.indexOf('sabina')!==-1) return 'lesson.html';
+function resolveContentName(lesson) {
+  if (lesson && lesson.contentUrl) {
+    return lesson.contentUrl.replace(/^content\//, '').replace(/\.json$/, '');
   }
-  if(lesson && lesson.customUrl) return lesson.customUrl;
-  return 'lesson.html';
+  if (activeCode && studentsMap[activeCode]) {
+    const n = String(studentsMap[activeCode].name || '').toLowerCase();
+    if (n.indexOf('gaziz') !== -1) return 'gaziz';
+    if (n.indexOf('sabina') !== -1) return 'sabina';
+  }
+  return 'sabina';
 }
+
 function openClassworkLesson(id) {
   currentClassworkId = id;
   const l = curriculum[id] || {};
@@ -1200,11 +1181,12 @@ function openClassworkLesson(id) {
   document.getElementById('classworkPlaceholder').style.display = 'none';
   const frame = document.getElementById('classworkFrame');
   frame.style.display = 'block';
-  const base = pickLessonFile(l);
-  const url = new URL(base, window.location.href);
+  
+  const url = new URL('lesson.html', window.location.href);
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
-  if (activeCode) url.searchParams.set('code', activeCode); // <--- IMPORTANT FIX
+  url.searchParams.set('content', resolveContentName(l));
+  if (activeCode) url.searchParams.set('code', activeCode); 
   frame.src = url.href;
   renderClassworkTree();
 }
@@ -1212,10 +1194,10 @@ function openClassworkLesson(id) {
 function openCurrentClassworkInTab() {
   if (!currentClassworkId) return;
   const l = curriculum[currentClassworkId] || {};
-  const base = pickLessonFile(l);
-  const url = new URL(base, window.location.href);
+  const url = new URL('lesson.html', window.location.href);
   url.searchParams.set('lesson', currentClassworkId);
   url.searchParams.set('teacher', '1');
+  url.searchParams.set('content', resolveContentName(l));
   if (activeCode) url.searchParams.set('code', activeCode);
   window.open(url.href, '_blank');
 }
@@ -1270,12 +1252,15 @@ function openHomework(id) {
   document.getElementById('homeworkPlaceholder').style.display = 'none';
   const frame = document.getElementById('homeworkFrame');
   frame.style.display = 'block';
-  const base = l.customUrl || 'homework.html';
-  const url = new URL(base, window.location.href);
+  
+  const url = new URL('homework.html', window.location.href);
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
+  
+  const variant = l.homeworkVariant || 'gaziz';
+  url.searchParams.set('variant', variant);
+  
   if (activeCode) url.searchParams.set('code', activeCode);
-  if (l.homeworkVariant) url.searchParams.set('variant', l.homeworkVariant);
   frame.src = url.href;
   renderHomeworkTree();
 }
@@ -1283,12 +1268,14 @@ function openHomework(id) {
 function openCurrentHomeworkInTab() {
   if (!currentHomeworkId) return;
   const l = curriculum[currentHomeworkId] || {};
-  const base = l.customUrl || 'homework.html';
-  const url = new URL(base, window.location.href);
+  const url = new URL('homework.html', window.location.href);
   url.searchParams.set('lesson', currentHomeworkId);
   url.searchParams.set('teacher', '1');
+  
+  const variant = l.homeworkVariant || 'gaziz';
+  url.searchParams.set('variant', variant);
+  
   if (activeCode) url.searchParams.set('code', activeCode);
-  if (l.homeworkVariant) url.searchParams.set('variant', l.homeworkVariant);
   window.open(url.href, '_blank');
 }
 
@@ -1303,6 +1290,7 @@ function openLessonModal(id) {
   document.getElementById('lessonDesc').value = l.description || '';
   document.getElementById('lessonIcon').value = l.icon || '📘';
   document.getElementById('lessonCustomUrl').value = l.customUrl || '';
+  document.getElementById('lessonContentUrl').value = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   document.getElementById('lessonDue').value = l.homeworkDue || '';
   document.getElementById('lessonPublished').checked = l.published !== false;
   lessonVisibility = (l.assignedTo && l.assignedTo.length) ? 'some' : 'all';
@@ -1346,6 +1334,7 @@ function submitLesson() {
     description: (document.getElementById('lessonDesc').value || '').trim(),
     icon: (document.getElementById('lessonIcon').value || '📘').trim() || '📘',
     customUrl: (document.getElementById('lessonCustomUrl').value || '').trim(),
+	contentUrl: document.getElementById('lessonContentUrl').value.trim() ? 'content/' + document.getElementById('lessonContentUrl').value.trim() + '.json' : '',
     homework: lessonType === 'homework',
     homeworkDue: lessonType === 'homework' ? (document.getElementById('lessonDue').value || '').trim() : '',
     homeworkVariant: lessonType === 'homework' ? document.getElementById('homeworkVariant').value : '',

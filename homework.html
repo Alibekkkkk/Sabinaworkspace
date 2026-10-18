@@ -176,12 +176,14 @@ const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomai
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
 
 const params=new URLSearchParams(location.search);
-const variant=params.get('variant')==='sabina'?'sabina':'gaziz';
+const variant=params.get('variant')||'gaziz';
 const code=(params.get('code')||'').toUpperCase();
 const homeworkId=params.get('lesson')||('homework_'+variant);
 const homeworkVersion=6;
 const teacherPreviewRequested=params.get('teacher')==='1';
 const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
+
+let lesson = null;
 
 /* ================== HELPERS ================== */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
@@ -285,175 +287,10 @@ function toggleTheme(){
 try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 document.getElementById('themeButton').textContent=document.documentElement.classList.contains('dark')?'☀️ Theme':'🌙 Theme';
 
-/* ================== CONTENT ================== */
-const CONTENT={
-  gaziz:{
-    title:'Gaziz · Sustainable Cities — Homework',
-    headline:'Rivergate revisits its plans',
-    intro:'Read the case study and answer every question. This is a single-page homework: work through the article and the questions on the right. You cannot submit until all questions are answered.',
-    hero:'🏙️ → 🚲 → 🌳',
-    sub:'Sustainable Cities · Reading & Grammar',
-    eyebrow:'Topic · Sustainable Cities · Homework',
-    reading:{
-      title:'Rivergate Revisits Its Plans',
-      subtitle:'A follow-up case study on sustainable urban change',
-      paragraphs:[
-        {label:'A.',text:'In 2018, the small city of Rivergate launched an ambitious programme to reduce its dependence on cars. The council promised to make cycling and public transport the primary ways of moving around by 2030. At the time, few residents believed the plan would succeed. Traffic was heavy, and most families owned at least one car. Yet five years later, the situation has changed dramatically. The number of cyclists has tripled, and the city has become a model for other towns in the region.'},
-        {label:'B.',text:'The transformation did not happen overnight. Council planners began with a modest experiment: they closed one street in the city centre to cars for three months. When the trial ended, local shops reported that their customers had not disappeared — in fact, sales had risen slightly. This surprising result gave the council confidence to expand the programme. In 2020, the council converted five more streets into pedestrian-only zones and installed over a hundred bike racks across the city.'},
-        {label:'C.',text:'The most visible change has been the new network of cycle paths. Rivergate now has more than 200 kilometres of dedicated lanes, many of them separated from car traffic by trees and planters. In winter, cycle paths are cleared of snow before roads, a decision that was controversial at the time but has since become popular. Cyclists are given priority at most intersections. Perhaps most importantly, the city has measured success not by how fast cars move, but by how many people choose to cycle or walk.'},
-        {label:'D.',text:'Alongside transport, Rivergate has invested in public spaces. The old industrial harbour has been cleaned and reopened as a riverside park. Warehouses that once stood empty have been converted into apartments, cafés, and a small theatre. Residents can now swim in the river during the summer months — something that would have been unthinkable ten years ago, when the water was polluted.'},
-        {label:'E.',text:'Not everyone has welcomed the changes. Some shopkeepers complained that removing parking spaces had reduced their customers. Others argued that the new cycle paths mostly served wealthier neighbourhoods. Critics pointed out that the programme had been expensive and that the council had spent millions of euros on projects that would take decades to pay back. Some also questioned whether a small city like Rivergate could really serve as a model for larger urban areas.'},
-        {label:'F.',text:'Despite the criticism, the results have been difficult to dismiss. Air pollution has fallen by 45 per cent. Traffic accidents involving cyclists have dropped sharply. Surveys suggest that residents are more satisfied with their city than they were a decade ago. Rivergate has also attracted new investment: several technology companies have moved their offices to the city centre, citing the pleasant environment as a key factor. The question for other cities is no longer whether sustainable transformation is possible, but how quickly they can follow Rivergate\u2019s example.'}
-      ]
-    },
-    vocab:[
-      {en:'ambitious',emoji:'🚀',meanings:[
-        {context:'demanding or difficult',ru:'амбициозный, масштабный',ex:'The council launched an <b>ambitious</b> programme to reduce car use.'},
-        {context:'having a strong desire to succeed',ru:'целеустремлённый',ex:'She is an <b>ambitious</b> young architect.'}
-      ]},
-      {en:'dependence',emoji:'🔗',meanings:[
-        {context:'relying on something',ru:'зависимость',ex:'The city aims to reduce its <b>dependence</b> on cars.'}
-      ]},
-      {en:'experiment',emoji:'🧪',meanings:[
-        {context:'a test or trial',ru:'эксперимент, испытание',ex:'Planners began with a modest <b>experiment</b>: closing one street for three months.'}
-      ]},
-      {en:'convert',emoji:'🔁',meanings:[
-        {context:'change from one use to another',ru:'преобразовывать',ex:'The council <b>converted</b> five more streets into pedestrian zones.'}
-      ]},
-      {en:'dedicated',emoji:'🎯',meanings:[
-        {context:'made for a specific purpose',ru:'специально выделенный',ex:'Rivergate has 200 kilometres of <b>dedicated</b> cycle lanes.'},
-        {context:'devoted to a task',ru:'преданный',ex:'She is a <b>dedicated</b> teacher.'}
-      ]},
-      {en:'controversial',emoji:'⚔️',meanings:[
-        {context:'causing disagreement',ru:'спорный, вызывающий споры',ex:'Clearing cycle paths before roads was <b>controversial</b> at first.'}
-      ]},
-      {en:'priority',emoji:'🥇',meanings:[
-        {context:'the right to go first',ru:'приоритет',ex:'Cyclists are given <b>priority</b> at most intersections.'}
-      ]},
-      {en:'convert',emoji:'🏭',meanings:[
-        {context:'repurpose a building',ru:'переоборудовать',ex:'Warehouses were <b>converted</b> into apartments and cafés.'}
-      ]},
-      {en:'critics',emoji:'🗣️',meanings:[
-        {context:'people who express disapproval',ru:'критики',ex:'<b>Critics</b> argued the programme had been too expensive.'}
-      ]},
-      {en:'investment',emoji:'💼',meanings:[
-        {context:'money put into a project',ru:'инвестиция',ex:'Rivergate has attracted new <b>investment</b> from technology companies.'}
-      ]}
-    ],
-    questions:[
-      {type:'short',prompt:'In what year did Rivergate launch its programme to reduce car dependence?',answers:['2018'],exp:'The article says the programme launched in 2018.'},
-      {type:'short',prompt:'By what percentage has air pollution fallen in Rivergate?',answers:['45','45%','45 per cent'],exp:'Air pollution has fallen by 45 per cent.'},
-      {type:'short',prompt:'How many kilometres of cycle paths does Rivergate now have?',answers:['200','more than 200'],exp:'The city has more than 200 kilometres of dedicated cycle lanes.'},
-      {type:'short',prompt:'What was installed on the streets after the pilot experiment succeeded?',answers:['bike racks','bike racks across the city'],exp:'The council installed over a hundred bike racks.'},
-      {type:'tfng',prompt:'The pilot experiment showed that sales in local shops fell.',answer:'False',exp:'Sales actually rose slightly.'},
-      {type:'tfng',prompt:'Cycle paths are cleared of snow before roads in winter.',answer:'True',exp:'The passage confirms this.'},
-      {type:'tfng',prompt:'The mayor of Rivergate was re-elected after the programme.',answer:'Not Given',exp:'The article never mentions re-election.'},
-      {type:'mcq',prompt:'What is the main idea of the article?',options:['A small city successfully transformed its urban planning','Cycling is dangerous in winter','Industrial harbours should be demolished'],correct:'A small city successfully transformed its urban planning',exp:'The article tells the story of Rivergate\u2019s transformation.'},
-      {type:'mcq',prompt:'Which of the following is NOT stated as a result of the changes?',options:['Lower air pollution','Attracting technology companies','A rise in average salaries'],correct:'A rise in average salaries',exp:'The article mentions pollution and investment, not salaries.'},
-      {type:'mcq',prompt:'What is the author\u2019s overall tone?',options:['Broadly positive with balanced criticisms','Entirely critical','Neutral and detached'],correct:'Broadly positive with balanced criticisms',exp:'The article praises the results but includes paragraph E\u2019s criticisms.'},
-      {type:'long',prompt:'In your own words, explain why the pilot experiment was important for Rivergate.',
-        keywordGroups:[['experiment','trial','test'],['sales','customers','shops'],['rose','increased','grew','rise'],['confidence','believe','trust'],['expand','continue','more']],
-        minWords:10,minGroups:2,
-        sample:'The pilot experiment was important because it showed that closing a street to cars did not reduce sales in local shops — in fact, sales rose, and this gave the council confidence to expand the programme.',
-        exp:'Key ideas: experiment/trial, sales didn\u2019t fall, confidence, expansion.'},
-      {type:'long',prompt:'Describe TWO benefits of the transformation mentioned in the article.',
-        keywordGroups:[['pollution','cleaner','air'],['accident','safe','safety'],['happy','happier','satisfied'],['investment','company','business'],['cycle','bike','commute']],
-        minWords:10,minGroups:2,
-        sample:'Two benefits are that air pollution has fallen by 45 per cent, and that the city has attracted new investment from technology companies.',
-        exp:'Key ideas: reduced pollution, fewer accidents, happier residents, new investment.'},
-      {type:'complete',prompt:'The city ___ (reduce) its dependence on cars since 2018.',answers:['has reduced']},
-      {type:'complete',prompt:'The council ___ (close) one street to cars in the pilot experiment.',answers:['closed']},
-      {type:'complete',prompt:'Rivergate ___ (attract) several technology companies recently.',answers:['has attracted']}
-    ]
-  },
-  sabina:{
-    title:'Sabina · Natural Disasters — Homework',
-    headline:'The summer the weather changed',
-    intro:'Read the report and answer every question. This is a single-page homework: work through the article and the questions on the right. You cannot submit until all questions are answered.',
-    hero:'⛈️ → 🌊 → 🔥',
-    sub:'Natural Disasters · Reading & Grammar',
-    eyebrow:'Topic · Natural Disasters · Homework',
-    reading:{
-      title:'The Summer the Weather Changed',
-      subtitle:'A report on three linked natural disasters',
-      paragraphs:[
-        {label:'A.',text:'In the summer of 2023, three separate natural disasters struck the same coastal region in the space of six weeks. First came a heat wave: temperatures rose above 42°C for ten consecutive days. Then, when the rains finally arrived, they came with unusual force. Rivers overflowed, and floods swept through several towns. Later that same summer, a wildfire broke out in the hills above the coast, destroying more than 400 hectares of forest. Scientists later described the events as \u201Cconnected\u201D.'},
-        {label:'B.',text:'The heat wave was the first warning. Meteorologists had forecast high temperatures, but few people had expected a heat wave of this intensity. Hospitals reported a sharp rise in admissions for heat exhaustion and dehydration. Local authorities opened cooling centres in public libraries and community halls, where residents could escape the worst of the heat. The heat also dried out the soil and vegetation, creating the perfect conditions for the disasters that followed.'},
-        {label:'C.',text:'When the rain came, it was heavy and sudden. Within two days, more than 200 millimetres of rain had fallen — more than the region normally receives in an entire month. Rivers that had been almost dry overflowed their banks. The town of Marlowe was the worst affected: water reached the ground floor of buildings and cut off the main road for nearly a week. Rescue teams used boats to reach residents who had been trapped in their homes. The floods were later described as the worst the region had seen in fifty years.'},
-        {label:'D.',text:'The wildfire began in August, three weeks after the floods. By then, the vegetation that had survived the rain had dried out again under the summer sun. Strong winds helped the fire spread quickly across the hills. Firefighters worked for eleven days to bring it under control. Over 400 hectares of forest were destroyed, and several families lost their homes. Although no lives were lost, the ecological damage was severe: many species of plants and small animals were affected, and the soil in the burned areas will take years to recover.'},
-        {label:'E.',text:'Scientists who studied the events concluded that they were not separate. The heat wave had dried the vegetation, making the wildfire more likely. The heavy rain that ended the heat wave had been intensified by the unusually warm air, which holds more moisture. The floods, in turn, had washed away trees and weakened riverbanks, making some areas more vulnerable. In other words, each disaster had helped to create the conditions for the next one.'},
-        {label:'F.',text:'The events of that summer have prompted local authorities to rethink their emergency planning. New early-warning systems are being installed in coastal towns. Cooling centres will now open automatically when temperatures exceed 38°C. Firebreaks are being widened in the hills, and residents are being trained in evacuation procedures. Scientists warn that similar events will become more common in the future — not because the region is unlucky, but because a warming climate is making extreme weather more frequent and more intense.'}
-      ]
-    },
-    vocab:[
-      {en:'consecutive',emoji:'🔢',meanings:[
-        {context:'following one after another',ru:'последовательные',ex:'Temperatures rose above 42°C for ten <b>consecutive</b> days.'}
-      ]},
-      {en:'overflow',emoji:'🌊',meanings:[
-        {context:'spill over the edge',ru:'выходить из берегов',ex:'Rivers <b>overflowed</b> their banks after the heavy rain.'},
-        {context:'be too full for capacity',ru:'переполняться',ex:'The stadium <b>overflowed</b> with fans.'}
-      ]},
-      {en:'intensity',emoji:'🔥',meanings:[
-        {context:'strength or force',ru:'интенсивность',ex:'Few expected a heat wave of this <b>intensity</b>.'}
-      ]},
-      {en:'vegetation',emoji:'🌿',meanings:[
-        {context:'plants, trees, and grass in an area',ru:'растительность',ex:'The heat dried out the soil and <b>vegetation</b>.'}
-      ]},
-      {en:'rescue',emoji:'🚁',meanings:[
-        {context:'saving from danger',ru:'спасение',ex:'<b>Rescue</b> teams used boats to reach trapped residents.'},
-        {context:'to save someone',ru:'спасать',ex:'They <b>rescued</b> three families from the roof.'}
-      ]},
-      {en:'ecological',emoji:'🌍',meanings:[
-        {context:'relating to the environment',ru:'экологический',ex:'The <b>ecological</b> damage was severe.'}
-      ]},
-      {en:'species',emoji:'🦌',meanings:[
-        {context:'a group of similar living things',ru:'вид (биология)',ex:'Many <b>species</b> of plants were affected.'}
-      ]},
-      {en:'vulnerable',emoji:'⚠️',meanings:[
-        {context:'easily harmed',ru:'уязвимый',ex:'Floods made some areas more <b>vulnerable</b>.'}
-      ]},
-      {en:'evacuation',emoji:'🚨',meanings:[
-        {context:'organized removal from a place',ru:'эвакуация',ex:'Residents were trained in <b>evacuation</b> procedures.'}
-      ]},
-      {en:'prompt',emoji:'💡',meanings:[
-        {context:'to cause something to happen',ru:'побуждать, вызывать',ex:'The events have <b>prompted</b> local authorities to rethink their planning.'}
-      ]}
-    ],
-    questions:[
-      {type:'short',prompt:'How many consecutive days did temperatures rise above 42°C?',answers:['10','ten'],exp:'Temperatures rose above 42°C for ten consecutive days.'},
-      {type:'short',prompt:'How many millimetres of rain fell in two days?',answers:['200','more than 200','200 mm'],exp:'More than 200 millimetres of rain fell in two days.'},
-      {type:'short',prompt:'How many hectares of forest were destroyed by the wildfire?',answers:['400','more than 400','over 400'],exp:'Over 400 hectares were destroyed.'},
-      {type:'short',prompt:'How many days did firefighters work to control the wildfire?',answers:['11','eleven'],exp:'Firefighters worked for eleven days.'},
-      {type:'tfng',prompt:'The events took place over six weeks.',answer:'True',exp:'The article says three disasters in six weeks.'},
-      {type:'tfng',prompt:'Lives were lost in the wildfire.',answer:'False',exp:'The article says no lives were lost.'},
-      {type:'tfng',prompt:'The local council had planned for events of this intensity.',answer:'Not Given',exp:'The article doesn\u2019t say whether they had planned for this.'},
-      {type:'mcq',prompt:'What is the main idea of the article?',options:['Three disasters were connected by climate conditions','Coastal towns are always in danger','Wildfires are the worst type of disaster'],correct:'Three disasters were connected by climate conditions',exp:'The article emphasises that the three disasters were linked.'},
-      {type:'mcq',prompt:'Which of these is NOT stated as a consequence of the events?',options:['New early-warning systems','Automatic cooling centres','A ban on coastal construction'],correct:'A ban on coastal construction',exp:'A construction ban is not mentioned.'},
-      {type:'mcq',prompt:'How did the heat wave contribute to the wildfire?',options:['It dried out the vegetation','It caused strong winds','It attracted firefighters away'],correct:'It dried out the vegetation',exp:'Heat dried the vegetation, making the wildfire more likely.'},
-      {type:'long',prompt:'In your own words, explain why the scientists described the three disasters as \u201Cconnected.\u201D',
-        keywordGroups:[['heat','hot','temperature'],['dried','dry','vegetation'],['fire','wildfire'],['rain','flood','moisture'],['connected','linked','related','warm']],
-        minWords:12,minGroups:3,
-        sample:'The disasters were connected because the heat wave dried out the vegetation, which made the wildfire more likely. The warm air also held more moisture, which intensified the rain and caused the floods.',
-        exp:'Key ideas: heat dried vegetation, warm air held moisture, chain of disasters.'},
-      {type:'long',prompt:'Describe TWO measures that local authorities are taking to prepare for future disasters.',
-        keywordGroups:[['warning','system','early'],['cooling','centre','center'],['firebreak','trees','hills'],['evacuation','training','residents'],['prepare','plan','ready']],
-        minWords:10,minGroups:2,
-        sample:'Two measures are that new early-warning systems are being installed in coastal towns, and that cooling centres will open automatically when temperatures exceed 38°C.',
-        exp:'Key ideas: early warnings, cooling centres, firebreaks, evacuation training.'},
-      {type:'complete',prompt:'Scientists ___ (warn) that similar events will become more common.',answers:['have warned']},
-      {type:'complete',prompt:'The wildfire ___ (destroy) over 400 hectares of forest last August.',answers:['destroyed']},
-      {type:'complete',prompt:'Local authorities ___ (install) new warning systems since the events.',answers:['have installed']}
-    ]
-  }
-};
-
-const lesson=CONTENT[variant];
-
-
 /* ================== STATE ================== */
-let answers={};          /* keyed by question index, holds student's answer */
+let answers={};
 let submitted=false;
-let reviewFlags={};      /* keyed by question index, true if flagged */
+let reviewFlags={};
 
 /* ================== RENDER PASSAGE ================== */
 function renderPassage(){
@@ -461,11 +298,9 @@ function renderPassage(){
   const body=document.getElementById('passageBody');
   if(!body)return;
   let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>';
-  /* Collect every vocab word so we can highlight them inside the passage */
   const vocabWords=lesson.vocab.map(v=>v.en);
   p.paragraphs.forEach(function(par){
     let text=escapeHtml(par.text);
-    /* Bold any vocab word (simple word-boundary, case-insensitive) */
     vocabWords.forEach(function(w){
       const escW=w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       const re=new RegExp('\\b('+escW+')\\b','gi');
@@ -591,7 +426,6 @@ function renderQuestions(){
       }
       btn.onclick=submit;
       inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
-      /* Mark as answered as soon as the student types anything (so progress unlocks even if wrong) */
       inp.addEventListener('input',function(){
         if(inp.value.trim().length>0){answers[idx]=inp.value;updateProgress()}
         else{delete answers[idx];updateProgress()}
@@ -661,7 +495,6 @@ function renderQuestions(){
     }
     host.appendChild(card);
   });
-  /* Restore previously saved answers on page load */
   restoreAnswers();
   updateProgress();
 }
@@ -679,7 +512,6 @@ function restoreAnswers(){
       if(!card)return;
       card.querySelectorAll('.q-opt').forEach(function(b){
         if(b.textContent===saved){b.disabled=true;
-          /* apply visual state without re-running the click handler */
           if(q.type==='tfng'){if(saved===q.answer)b.classList.add('correct');else b.classList.add('wrong')}
           else{if(saved===q.correct)b.classList.add('correct');else b.classList.add('wrong')}
         }
@@ -695,7 +527,6 @@ function submitAll(){
   if(Object.keys(answers).length<total){
     if(!confirm('Some questions are still blank. Submit anyway?'))return;
   }
-  /* Grade everything one more time to compute score */
   let score=0;
   lesson.questions.forEach(function(q,idx){
     const a=answers[idx];
@@ -712,7 +543,6 @@ function submitAll(){
     }
   });
   submitted=true;
-  /* Save to Firebase */
   if(sessionRef&&!teacherMode){
     sessionRef.child('homework/'+homeworkId).update({
       version:homeworkVersion,
@@ -724,7 +554,6 @@ function submitAll(){
       updatedAt:Date.now()
     }).catch(function(e){console.error(e)});
   }
-  /* Visual result */
   const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
   banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+
@@ -750,6 +579,13 @@ function confetti(){
   }
 }
 
+/* ================== CONTENT LOADER ================== */
+async function loadHomeworkContent() {
+  const res = await fetch('content/homework_' + variant + '.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('content/homework_' + variant + '.json not found');
+  lesson = await res.json();
+}
+
 /* ================== FIREBASE INIT + AUTH ================== */
 function initFirebase(){
   try{
@@ -757,7 +593,6 @@ function initFirebase(){
     fbDb=firebase.database();
     fbAuth=firebase.auth();
 
-    /* Display title from content */
     document.title=lesson.title;
     document.getElementById('hwTitle').textContent=lesson.title;
     document.getElementById('hwSub').textContent=lesson.sub;
@@ -798,7 +633,6 @@ function initFirebase(){
 function startHomework(){
   if(fbDb&&!teacherMode){
     sessionRef=fbDb.ref('sessions/'+code);
-    /* Load previous answers if resuming */
     sessionRef.child('homework/'+homeworkId).once('value').then(function(snap){
       const data=snap.val()||{};
       if(Number(data.version)===homeworkVersion){
@@ -812,7 +646,6 @@ function startHomework(){
       }
       renderPassage();renderQuestions();
       if(submitted){
-        /* Show submitted state immediately */
         const host=document.getElementById('questionsHost');
         const banner=document.createElement('div');banner.className='result-banner';
         banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+
@@ -829,7 +662,16 @@ function startHomework(){
 }
 
 /* ================== BOOT ================== */
-initFirebase();
+(async function boot() {
+  try {
+    await loadHomeworkContent();
+  } catch (e) {
+    document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Homework content failed to load</h2><p>' + e.message + '</p></div>';
+    return;
+  }
+  initFirebase();
+})();
+
 </script>
 </body>
 </html>
