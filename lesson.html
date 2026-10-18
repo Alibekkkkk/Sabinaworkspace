@@ -364,9 +364,17 @@ function initFirebase(){
     
     fbDb.ref('curriculum').on('value',function(s){
       curriculumCache=s.val()||{};
+      const code = getSessionCode();
+      
       const fbLessons = Object.keys(curriculumCache).map(id => {
         const l = curriculumCache[id];
         if (l.homework) return null;
+        
+        // FILTERING LOGIC: Only show lessons assigned to this student
+        if (l.assignedTo && l.assignedTo.length > 0) {
+            if (!code || l.assignedTo.indexOf(code) === -1) return null;
+        }
+        
         return {
           id: id,
           title: l.title || 'Untitled Lesson',
@@ -383,7 +391,6 @@ function initFirebase(){
 
       CURRICULUM[0].months[0].lessons = fbLessons;
       
-      // Ensure the current lesson ID is set if it wasn't found
       if (!state.currentLessonId && fbLessons.length > 0) {
           state.currentLessonId = fbLessons[0].id;
       }
@@ -652,7 +659,6 @@ function renderStage1(){
   loadVocabStateLocal();
   const main=document.getElementById('main');
   if(!main)return;
-  main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
   const counts=getVocabCounts();
   const showPractice=shouldShowPractice();
@@ -1620,6 +1626,7 @@ function goToStage(n){
 }
 function renderStage(){
   const main=document.getElementById('main');if(!main)return;
+  main.innerHTML='';
   const fns={1:renderStage1,2:renderStage2,3:renderStage3,4:renderStage4,5:renderStage5,6:renderStage6,7:renderStage7,8:renderStage8,9:renderStage9};
   try{
     fns[state.currentStage]();
@@ -1628,7 +1635,9 @@ function renderStage(){
     const stages = lesson ? lesson.stages : DEFAULT_STAGES;
     const title = lesson ? lesson.title : 'Lesson';
     const stageObj = stages.find(s => s.id === state.currentStage);
-    const icon = stageObj ? stageObj.icon : '📘';
+    
+    // Fixed undefined icon
+    const icon = (stageObj && stageObj.icon) ? stageObj.icon : '📘';
     
     const header = document.createElement('div');
     header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
