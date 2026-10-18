@@ -55,7 +55,7 @@ body{display:flex;flex-direction:column}
 .stage-sub-list{display:flex;flex-direction:column;gap:2px;padding-left:8px;margin-bottom:8px;border-left:2px solid var(--border);margin-left:22px}
 .stage-sub-item{padding:7px 12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink-soft);display:flex;align-items:center;gap:8px;background:transparent;border:none;text-align:left;width:100%;font-family:inherit}
 .stage-sub-item:hover{background:var(--bg);color:var(--ink)}
-.stage-sub-item.active{background:var(--bg);color:var(--accent);font-weight:800}
+.stage-sub-item.active{background:rgba(238,90,36,0.12) !important;border:1px solid var(--accent) !important;color:var(--accent) !important;font-weight:800;transform:translateX(4px);box-shadow:-3px 0 0 var(--accent);}
 .stage-sub-item.done{color:var(--success)}
 .homework-sub-list{margin:2px 0 8px 30px;padding:7px 8px 7px 12px;border-left:2px solid var(--accent);background:rgba(255,138,91,.07);border-radius:0 9px 9px 0}
 .homework-sub-label{font:11px 'Fira Code',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin:2px 6px 5px}
@@ -240,18 +240,6 @@ html.dark .q-feedback.info{color:#f5c66b}
 @media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
 @media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo .text{display:none}.session-input{flex:1 1 145px;justify-content:space-between}.topbar>#scorePill,.topbar>#streakPill{display:none}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}.passage{padding:20px 22px;font-size:17px}.quiz-options{grid-template-columns:1fr}}
 ::selection{background:var(--accent);color:#fff}
-.stage-sub-item.active {
-  background: rgba(238,90,36,0.15) !important;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  font-weight: 800;
-  transform: translateX(4px);
-  box-shadow: -3px 0 0 var(--accent);
-}
-.stage-sub-item.done {
-  color: var(--success);
-  opacity: 0.8;
-}
 </style>
 </head>
 <body>
@@ -353,26 +341,18 @@ function initFirebase(){
         teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
         teacherMode=teacherCanEdit;
         if(teacherCanEdit){
-          // NEW: Connect to the student's session so teacher changes are saved
           const code = getSessionCode();
           if (code) {
             sessionRef = fbDb.ref('sessions/' + code);
             activityRef = sessionRef.child('history');
             commandRef = sessionRef.child('command');
             fbConnected = true;
-
-            // Load existing student progress so the teacher sees where they left off
             sessionRef.child('state').once('value').then(function(snap){
               const st = snap.val() || {};
               if (st.scores) Object.assign(state.scores, st.scores);
               if (st.done) Object.assign(state.done, st.done);
               if (st.notes) document.getElementById('notesArea').value = st.notes;
-
-              loadVocabStateCloud().then(function(){
-                renderSidebar();
-                renderStage();
-                updateHUD();
-              });
+              loadVocabStateCloud().then(function(){ renderSidebar(); renderStage(); updateHUD(); });
             });
           }
           updateSyncUI('teacher');
@@ -400,7 +380,7 @@ function initFirebase(){
 function startStudentSession(code){
   if(!code){updateSyncUI('nocode');return}
   sessionRef=fbDb.ref('sessions/'+code);
-  activityRef=sessionRef.child('history'); // Changed to history
+  activityRef=sessionRef.child('history');
   commandRef=sessionRef.child('command');
   commandRef.on('value',function(snap){const cmd=snap.val();if(!cmd)return;applyTeacherResetCommand(cmd);if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage)});
   fbConnected=true;updateSyncUI('live');pushFullState();
@@ -416,36 +396,23 @@ function getSessionCode(){
 function changeSessionCode(){const i=document.getElementById('sessionCodeInput');const c=(i.value||'').toUpperCase().trim();if(!c){localStorage.removeItem('nd_session_code');updateSyncUI('nocode');return}localStorage.setItem('nd_session_code',c);if(!fbDb){initFirebase();return}if(sessionRef)sessionRef.off();if(commandRef)commandRef.off();startStudentSession(c)}
 function updateSyncUI(s){const d=document.getElementById('syncDot');const t=document.getElementById('syncStatus');d.classList.remove('warn','off');if(s==='live')t.textContent='Live · Connected';else if(s==='teacher')t.textContent='Teacher preview';else if(s==='nocode'){d.classList.add('warn');t.textContent='Set code above'}else if(s==='error'){d.classList.add('off');t.textContent='Error'}}
 function applyTeacherResetCommand(cmd){
-  if(!cmd||!cmd.ts)return;
+  if(!cmd||cmd.action!=='reset'||!cmd.ts)return;
   const k='nd_teacher_reset_seen_'+getSessionCode()+'_'+cmd.ts;
   if(localStorage.getItem(k))return;
   try{localStorage.setItem(k,'1')}catch(e){}
   
-  if(cmd.action === 'reset'){
   if(cmd.type === 'vocab'){
-  vocabState={};
-  saveVocabState();
-  
-  // NEW: This clears the green checkmark from the sidebar
-  const key = state.currentLessonId + "_1";
-  state.done[key] = false;
-  state.scores[key] = 0;
-  saveState();
-
-  if(document.getElementById('fcModal').classList.contains('open')) closeFCModal();
-  renderStage();
-  if(typeof showToast==='function') showToast('Vocabulary progress reset');
-} else {
-  teacherReset();
-}
-  } else if(cmd.action === 'resetStage') {
-    const key = state.currentLessonId + '_' + cmd.stage;
-    state.scores[key] = 0;
+    vocabState={};
+    saveVocabState();
+    const key = state.currentLessonId + "_1";
     state.done[key] = false;
-    renderSidebar();
-    renderStage();
+    state.scores[key] = 0;
     saveState();
-    if(typeof showToast==='function') showToast('Stage ' + cmd.stage + ' reset');
+    if(document.getElementById('fcModal').classList.contains('open')) closeFCModal();
+    renderStage();
+    if(typeof showToast==='function') showToast('Vocabulary progress reset');
+  } else {
+    teacherReset();
   }
 }
 function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
@@ -878,6 +845,7 @@ function finalizeRound(){
   }
   if((s.perfectStreak||0)>=2){s.wrongCount=0}
   saveVocabState();
+  
   const learned=VOCAB.filter(function(x){return getWordStatus(x.en)==='learned'}).length;
   const key=state.currentLessonId+"_1";
   if(learned===VOCAB.length){
@@ -886,6 +854,7 @@ function finalizeRound(){
     state.done[key] = false;
     setScore(1,Math.min(10,Math.floor(learned/1.5)));
   }
+  
   broadcastAction('vocab_round_done',quizWord+' ('+getWordStatus(quizWord)+')');
 
   if(practiceMode){
@@ -1049,7 +1018,7 @@ function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').l
 function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
-/* ================== STAGE 3 — READING & QUESTIONS (combined) ================== */
+/* ================== STAGE 3 — READING & QUESTIONS ================== */
 const READING_HTML='<h1>The Great Flood of Marlowe</h1><div class="subtitle">A story about a natural disaster</div>'+
 '<p><span class="para-label">A.</span>In the spring of 2023, heavy rain fell on the town of Marlowe for three days. The river in the town centre was usually calm, but the rain was too much. The water level rose quickly. On the third day, the river overflowed. Water covered the streets and entered the ground floors of many houses.</p>'+
 '<p><span class="para-label">B.</span>When the flood started, the local council told everyone to evacuate. Rescue teams used small boats to travel through the streets. They helped elderly people and children who were trapped in their homes. The water stayed in the town for a whole week.</p>'+
@@ -1081,17 +1050,6 @@ const CONTEXT_Q=[
   {prompt:'In paragraph B, "evacuate" means...',options:['move to a safe place','stay at home','buy food'],correct:'move to a safe place',exp:'Evacuate means to leave a dangerous place.'},
   {prompt:'In paragraph C, "defences" means...',options:['things that protect you','boats','heavy rain'],correct:'things that protect you',exp:'Defences protect the town from floods.'},
   {prompt:'In paragraph B, "trapped" means...',options:['unable to leave','very happy','swimming'],correct:'unable to leave',exp:'They were trapped because of the water.'}
-];
-
-const CONTEXT_Q=[
-  {prompt:'In paragraph A, "consecutive" means...',options:['following one after another','unusually hot','far apart'],correct:'following one after another',exp:'Consecutive days = one after another.'},
-  {prompt:'In paragraph B, "intensity" means...',options:['strength or force','color','speed'],correct:'strength or force',exp:'Intensity here means the strength of the heat wave.'},
-  {prompt:'In paragraph C, "overflowed" means...',options:['spilled over the edge','dried up','froze'],correct:'spilled over the edge',exp:'Rivers spilled over their banks.'},
-  {prompt:'In paragraph D, "ecological" refers to...',options:['relating to the environment','relating to politics','relating to money'],correct:'relating to the environment',exp:'Ecological = environmental.'},
-  {prompt:'In paragraph D, "species" means...',options:['a group of similar living things','a type of disaster','a small number'],correct:'a group of similar living things',exp:'Species = kinds of plants or animals.'},
-  {prompt:'In paragraph E, "vulnerable" means...',options:['easily harmed','strong','hidden'],correct:'easily harmed',exp:'Vulnerable = easily harmed.'},
-  {prompt:'In paragraph F, "prompted" means...',options:['caused to happen','delayed','removed'],correct:'caused to happen',exp:'The events caused authorities to reconsider.'},
-  {prompt:'In paragraph F, "evacuation" means...',options:['organized removal from danger','celebration','construction'],correct:'organized removal from danger',exp:'Evacuation = getting people to safety.'}
 ];
 
 let s4Answers={};
@@ -1897,21 +1855,14 @@ let expandedYears=["2026"],expandedMonths=["October"];
 function resetStageTeacher(stageId) {
   if(!teacherCanEdit) return;
   if(!confirm('Are you sure you want to reset progress for Stage ' + stageId + '?')) return;
-
   const key = state.currentLessonId + "_" + stageId;
   state.scores[key] = 0;
   state.done[key] = false;
-
-  if (stageId === 1) {
-    vocabState = {};
-    saveVocabStateLocal();
-  }
-
+  if (stageId === 1) { vocabState = {}; saveVocabStateLocal(); }
   saveState();
   renderSidebar();
   renderStage();
   updateHUD();
-
   broadcastAction('teacher_reset_stage', 'Teacher manually reset Stage ' + stageId);
   if (typeof showToast === 'function') showToast('Stage ' + stageId + ' reset');
 }
@@ -1963,9 +1914,7 @@ function renderSidebar(){
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
             
             const row = document.createElement('div');
-            row.style.display = 'flex';
-            row.style.alignItems = 'stretch';
-            row.style.gap = '4px';
+            row.style.display = 'flex'; row.style.alignItems = 'stretch'; row.style.gap = '4px';
 
             const stEl=document.createElement('button');
             stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':'');
@@ -1981,13 +1930,9 @@ function renderSidebar(){
               resetBtn.style.cssText = 'background:var(--panel-2); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:14px; padding:0 8px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; transition:all 0.15s;';
               resetBtn.onmouseover = () => { resetBtn.style.color = 'var(--error)'; resetBtn.style.borderColor = 'var(--error)'; };
               resetBtn.onmouseout = () => { resetBtn.style.color = 'var(--ink-soft)'; resetBtn.style.borderColor = 'var(--border)'; };
-              resetBtn.onclick = function(e) {
-                e.stopPropagation();
-                resetStageTeacher(st.id);
-              };
+              resetBtn.onclick = function(e) { e.stopPropagation(); resetStageTeacher(st.id); };
               row.appendChild(resetBtn);
             }
-
             sub.appendChild(row);
           });
           list.appendChild(sub);
@@ -2037,7 +1982,7 @@ function showToast(text){
 
 /* ================== INIT ================== */
 if(!teacherPreviewRequested)loadState();
-// SMART RESUME: Find the first incomplete stage and jump there
+// SMART RESUME
 if(!teacherPreviewRequested && state.currentStage === 1){
   for(let i = 1; i <= 9; i++){
     if(!state.done[state.currentLessonId + "_" + i]){
