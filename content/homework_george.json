@@ -15,19 +15,26 @@
     ]
   },
   "vocab": [
-    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who plays sports", "ru": "спортсмен", "ex": "He is a young <b>athlete</b>." } ] },
-    { "en": "coach", "emoji": "📋", "meanings": [ { "context": "a person who trains a team", "ru": "тренер", "ex": "The <b>coach</b> is talking to the team." } ] },
-    { "en": "match", "emoji": "⚽", "meanings": [ { "context": "a sports game", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." } ] },
-    { "en": "to match", "emoji": "🔗", "meanings": [ { "context": "to be the same or go well together", "ru": "соответствовать, подходить", "ex": "These shoes <b>match</b> your shirt." } ] },
-    { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a place where people watch matches", "ru": "стадион", "ex": "The team trains at the <b>stadium</b>." } ] },
-    { "en": "to train", "emoji": "🏋️", "meanings": [ { "context": "to practice for a sport", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." } ] },
-    { "en": "to score", "emoji": "🥅", "meanings": [ { "context": "to get a goal", "ru": "забивать гол", "ex": "He is going to <b>score</b> a goal!" } ] },
-    { "en": "score", "emoji": "💯", "meanings": [ { "context": "the number of points in a game", "ru": "счет", "ex": "The final <b>score</b> was 2-1." } ] },
-    { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a big competition", "ru": "турнир", "ex": "It is the final of a big <b>tournament</b>." } ] },
-    { "en": "equipment", "emoji": "🎒", "meanings": [ { "context": "tools needed for a sport", "ru": "снаряжение, экипировка", "ex": "My sports <b>equipment</b> is in the bag." } ] },
-    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body", "ru": "здоровый", "ex": "He eats a <b>healthy</b> breakfast." } ] },
-    { "en": "to rest", "emoji": "🛌", "meanings": [ { "context": "to relax after work", "ru": "отдыхать", "ex": "He is going to <b>rest</b> after the game." } ] },
-    { "en": "rest", "emoji": "☕", "meanings": [ { "context": "a period of relaxing", "ru": "отдых", "ex": "You look tired. Take a <b>rest</b>." } ] }
+    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who plays sports (noun)", "ru": "спортсмен (человек, занимающийся спортом)", "ex": "He is a young <b>athlete</b>." } ] },
+    { "en": "coach", "emoji": "📋", "meanings": [ { "context": "a person who trains a team (noun)", "ru": "тренер (человек, который тренирует команду)", "ex": "The <b>coach</b> is talking to the team." } ] },
+    { "en": "match", "emoji": "⚽", "meanings": [
+      { "context": "a sports game (noun)", "displayEn": "match", "ru": "матч (спортивная игра)", "ex": "We have a football <b>match</b> every Saturday." },
+      { "context": "to be the same or go well together (verb)", "displayEn": "to match", "ru": "соответствовать (быть одинаковым или хорошо сочетаться)", "ex": "These shoes <b>match</b> your shirt." }
+    ] },
+    { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a place where people watch matches (noun)", "ru": "стадион (место, где люди смотрят матчи)", "ex": "The team trains at the <b>stadium</b>." } ] },
+    { "en": "to train", "emoji": "🏋️", "meanings": [ { "context": "to practice for a sport (verb)", "displayEn": "to train", "ru": "тренироваться (практиковаться в спорте)", "ex": "He <b>trains</b> every day after school." } ] },
+    { "en": "score", "emoji": "💯", "meanings": [
+      { "context": "to get a goal or point (verb)", "displayEn": "to score", "ru": "забивать гол (получать очко или гол)", "ex": "He is going to <b>score</b> a goal!" },
+      { "context": "the number of points in a game (noun)", "displayEn": "score", "ru": "счет (количество очков в игре)", "ex": "The final <b>score</b> was 2-1." }
+    ] },
+    { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a big competition (noun)", "ru": "турнир (крупное соревнование)", "ex": "It is the final of a big <b>tournament</b>." } ] },
+    { "en": "equipment", "emoji": "🎒", "meanings": [ { "context": "tools needed for a sport (noun)", "ru": "снаряжение (инструменты, необходимые для спорта)", "ex": "My sports <b>equipment</b> is in the bag." } ] },
+    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body (adjective)", "ru": "здоровый (полезный для тела)", "ex": "He eats a <b>healthy</b> breakfast." } ] },
+    { "en": "rest", "emoji": "🛌", "meanings": [
+      { "context": "a period of relaxing (noun)", "displayEn": "rest", "ru": "отдых (период расслабления)", "ex": "You look tired. Take a <b>rest</b>." },
+      { "context": "to relax and sleep (verb)", "displayEn": "to rest", "ru": "отдыхать (расслабляться и спать)", "ex": "He is going to <b>rest</b> after the game." },
+      { "context": "the remaining part (noun)", "displayEn": "the rest", "ru": "остаток (оставшаяся часть)", "ex": "I will finish the <b>rest</b> of the work tomorrow." }
+    ] }
   ],
   "questions": [
     { "type": "short", "prompt": "What time does David wake up every day?", "answers": ["6:30", "6:30 AM", "six thirty"], "exp": "He wakes up at 6:30 AM." },
