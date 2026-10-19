@@ -1,0 +1,343 @@
+{
+  "vocab": [
+    { "en": "claim", "emoji": "🗣️", "meanings": [
+      { "context": "to say something is true (verb)", "displayEn": "to claim", "ru": "утверждать (говорить, что что-то верно)", "ex": "She <b>claims</b> that this method works." },
+      { "context": "a statement that may be true (noun)", "displayEn": "claim", "ru": "утверждение (заявление)", "ex": "The writer makes a strong <b>claim</b> in the first sentence." }
+    ]},
+    { "en": "evidence", "emoji": "📊", "meanings": [
+      { "context": "facts that show something is true (noun)", "ru": "доказательство (факты, подтверждающие истину)", "ex": "There is no <b>evidence</b> to support his theory." }
+    ]},
+    { "en": "to assume", "emoji": "🤔", "meanings": [
+      { "context": "to think something is true without proof (verb)", "displayEn": "to assume", "ru": "предполагать (думать без доказательств)", "ex": "We cannot <b>assume</b> that the data is correct." },
+      { "context": "something believed without proof (noun)", "displayEn": "assumption", "ru": "предположение", "ex": "Your argument is based on a false <b>assumption</b>." }
+    ]},
+    { "en": "to justify", "emoji": "⚖️", "meanings": [
+      { "context": "to give a good reason for something (verb)", "displayEn": "to justify", "ru": "обосновывать (приводить причину)", "ex": "Can you <b>justify</b> your opinion with examples?" }
+    ]},
+    { "en": "to contradict", "emoji": "🔄", "meanings": [
+      { "context": "to say the opposite of something (verb)", "displayEn": "to contradict", "ru": "противоречить (говорить противоположное)", "ex": "The second paragraph <b>contradicts</b> the first." }
+    ]},
+    { "en": "to evaluate", "emoji": "🧪", "meanings": [
+      { "context": "to judge the quality or truth of something (verb)", "displayEn": "to evaluate", "ru": "оценивать (судить о качестве или истинности)", "ex": "Try to <b>evaluate</b> the evidence fairly." }
+    ]},
+    { "en": "to imply", "emoji": "🔍", "meanings": [
+      { "context": "to suggest without saying directly (verb)", "displayEn": "to imply", "ru": "подразумевать (намекать)", "ex": "The article <b>implies</b> that the study is unreliable." },
+      { "context": "a possible result or hidden meaning (noun)", "displayEn": "implication", "ru": "последствие / скрытый смысл", "ex": "Consider the <b>implications</b> of this result." }
+    ]},
+    { "en": "relevant", "emoji": "🎯", "meanings": [
+      { "context": "connected to the topic (adjective)", "ru": "уместный, относящийся к делу", "ex": "Please keep your answers <b>relevant</b> to the question." }
+    ]},
+    { "en": "to persuade", "emoji": "💬", "meanings": [
+      { "context": "to make someone believe or do something (verb)", "displayEn": "to persuade", "ru": "убеждать (заставить поверить)", "ex": "The speaker tried to <b>persuade</b> the audience." }
+    ]},
+    { "en": "coherent", "emoji": "📝", "meanings": [
+      { "context": "clear and logical (adjective)", "ru": "связный, логичный", "ex": "Your essay needs a <b>coherent</b> argument." }
+    ]},
+    { "en": "reliable", "emoji": "✅", "meanings": [
+      { "context": "able to be trusted (adjective)", "ru": "надёжный (заслуживающий доверия)", "ex": "Make sure your sources are <b>reliable</b>." }
+    ]},
+    { "en": "biased", "emoji": "⚡", "meanings": [
+      { "context": "unfairly favouring one side (adjective)", "ru": "предвзятый (несправедливо склонённый в одну сторону)", "ex": "The article is clearly <b>biased</b> against the new policy." }
+    ]}
+  ],
+
+  "matchData": [
+    { "word": "claim", "meaning": "to say something is true without proving it" },
+    { "word": "evidence", "meaning": "facts that show something is true" },
+    { "word": "to assume", "meaning": "to think something is true without checking" },
+    { "word": "to justify", "meaning": "to give a good reason for something" },
+    { "word": "to contradict", "meaning": "to say the opposite of something" },
+    { "word": "to evaluate", "meaning": "to judge how good or true something is" },
+    { "word": "to imply", "meaning": "to suggest without saying directly" },
+    { "word": "relevant", "meaning": "directly connected to the topic" },
+    { "word": "to persuade", "meaning": "to make someone believe or do something" },
+    { "word": "coherent", "meaning": "clear, logical and well-organised" },
+    { "word": "reliable", "meaning": "able to be trusted" },
+    { "word": "biased", "meaning": "unfairly favouring one side" }
+  ],
+
+  "readingHtml": "<h1>The Science of Critical Thinking</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/dItUGF8GdTw\" title=\"5 tips to improve your critical thinking\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch once for the general idea. Watch again with the questions on the right in mind.</div><p><span class=\"para-label\">1.</span> Every day we make hundreds of decisions. <b>Critical thinking</b> is the skill of making good ones — and it can be <b>learned</b>, not just inherited. It is a skill, like any other: it takes practice.</p><p><span class=\"para-label\">2.</span> Critical thinking is a <b>five-step</b> process. <b>Step one</b> is to <b>formulate your question</b> — ask yourself exactly what you want to know. A clear, specific question helps you find <b>relevant</b> answers, instead of collecting random facts.</p><p><span class=\"para-label\">3.</span> <b>Step two</b> is to <b>gather your information</b>. Where is it coming from? Is the source <b>reliable</b>? Is there <b>evidence</b> to support the <b>claim</b>? Be careful — many sources online are <b>biased</b>, so cross-check with at least one more.</p><p><span class=\"para-label\">4.</span> <b>Step three</b> is to <b>apply the information</b>. Look at the evidence. Does it actually support the claim, or does it <b>contradict</b> it? Do not <b>assume</b> that one example is enough — check whether the data genuinely backs up the conclusion.</p><p><span class=\"para-label\">5.</span> <b>Step four</b> is to <b>consider the implications</b>. If the claim is true, what follows from it? What would change in your own life or in the wider world? Try to <b>evaluate</b> both sides of the argument fairly, not just the side you already prefer.</p><p><span class=\"para-label\">6.</span> <b>Step five</b> is to <b>explore other points of view</b>. No one has all the answers. A <b>coherent</b> thinker listens carefully to people who disagree — and is willing to change their mind if the evidence calls for it. You do not have to <b>persuade</b> everyone; you only have to stay open.</p>",
+
+  "readingQ": [
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Critical thinking is a five-______ process.", "answers": ["step"], "exp": "The notes call it a five-step process." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step one is to formulate your ______.", "answers": ["question"], "exp": "Step one = formulate your question." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step two is to gather your ______.", "answers": ["information"], "exp": "Step two = gather your information." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step three is to ______ the information.", "answers": ["apply"], "exp": "Step three = apply the information." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] In step three, ask whether the evidence supports the ______.", "answers": ["claim"], "exp": "Step three checks whether the evidence supports the claim." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step four: consider the ______.", "answers": ["implications"], "exp": "Step four = consider the implications." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step five: explore other ______ of view.", "answers": ["points"], "exp": "Step five = explore other points of view." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Critical thinking is a skill that takes ______.", "answers": ["practice", "practise"], "exp": "The notes say it takes practice." },
+
+    { "type": "tfng", "prompt": "The video says that critical thinking takes very little effort.", "answer": "False", "exp": "The notes say it takes practice — not little effort." },
+    { "type": "tfng", "prompt": "The video recommends listening to people who disagree with you.", "answer": "True", "exp": "Step five: explore other points of view." },
+    { "type": "tfng", "prompt": "The video says that no one has all the answers.", "answer": "True", "exp": "The notes say exactly this in step five." },
+    { "type": "tfng", "prompt": "The video was produced by a university in the UK.", "answer": "Not Given", "exp": "The notes do not mention where the video was made." },
+
+    { "type": "mcq", "prompt": "What helps you find relevant answers, according to step one?", "options": ["A clear question", "A quick answer", "A long essay"], "correct": "A clear question", "exp": "A clear, specific question helps you find relevant answers." },
+    { "type": "mcq", "prompt": "Why should we be careful with online information?", "options": ["It is always false", "Many sources are biased", "It is too long to read"], "correct": "Many sources are biased", "exp": "The notes warn that many sources online are biased." },
+    { "type": "mcq", "prompt": "What does step four ask you to consider?", "options": ["How fast you can decide", "What would follow if the claim is true", "How to persuade other people"], "correct": "What would follow if the claim is true", "exp": "Step four = consider the implications — what follows from the claim." },
+    { "type": "mcq", "prompt": "What does the video say about critical thinking?", "options": ["It cannot be learned", "It is a skill you can practice", "It is the same as intelligence"], "correct": "It is a skill you can practice", "exp": "The notes say it is a skill that takes practice." },
+    { "type": "mcq", "prompt": "According to the notes, what should you do with people who disagree with you?", "options": ["Ignore them", "Listen to them carefully", "Persuade them immediately"], "correct": "Listen to them carefully", "exp": "A coherent thinker listens carefully to people who disagree." },
+
+    { "type": "long", "prompt": "In your own words, why is asking a clear question the first step of critical thinking?", "keywordGroups": [["clear", "specific", "precise"], ["relevant", "answer", "focus"], ["information", "research", "gather"], ["question", "ask"]], "minWords": 10, "minGroups": 2, "sample": "Asking a clear question helps you focus on what you actually want to know and find relevant information, instead of collecting random facts.", "exp": "Key ideas: clarity of the question, finding relevant information." },
+    { "type": "long", "prompt": "Explain what it means to \"consider the implications\" using an example from your own life.", "keywordGroups": [["consequence", "result", "effect"], ["believe", "accept", "true"], ["claim", "statement"], ["example", "personal", "life"]], "minWords": 12, "minGroups": 2, "sample": "Considering the implications means asking what would follow if a claim were true. For example, if I believe a study that says students need eight hours of sleep, the implication is that I should change my own routine.", "exp": "Key ideas: consequences, believing a claim, a personal example." },
+    { "type": "long", "prompt": "Do you agree that critical thinking is a \"skill\" rather than a \"talent\"? Why or why not?", "keywordGroups": [["practice", "skill", "learn"], ["improve", "better", "develop"], ["agree", "disagree", "opinion"], ["reason", "think", "argue"]], "minWords": 15, "minGroups": 2, "sample": "I agree that it is a skill, because even people who are not naturally talented can improve by practising, asking better questions, and checking evidence more carefully.", "exp": "Key ideas: agree/disagree, skill vs talent, practice/improvement." }
+  ],
+
+  "contextQ": [
+    { "prompt": "In the notes, \"claim\" means…", "options": ["a statement that something is true", "a physical object", "a type of question"], "correct": "a statement that something is true", "exp": "A claim is a statement presented as true." },
+    { "prompt": "\"Evidence\" is…", "options": ["facts that show something is true", "a personal opinion", "a short story"], "correct": "facts that show something is true", "exp": "Evidence supports or undermines a claim." },
+    { "prompt": "To \"assume\" means…", "options": ["to think something is true without proof", "to prove something", "to write something down"], "correct": "to think something is true without proof", "exp": "An assumption is a belief without evidence." },
+    { "prompt": "\"Relevant\" information is…", "options": ["connected to the question", "written in a formal style", "hard to understand"], "correct": "connected to the question", "exp": "Relevant information is on-topic." },
+    { "prompt": "\"Coherent\" arguments are…", "options": ["clear and logical", "short and simple", "emotional and angry"], "correct": "clear and logical", "exp": "Coherent arguments hold together logically." },
+    { "prompt": "A \"reliable\" source is…", "options": ["able to be trusted", "always recent", "very long"], "correct": "able to be trusted", "exp": "Reliable means trustworthy." },
+    { "prompt": "A \"biased\" article is…", "options": ["unfairly favouring one side", "always false", "written in another language"], "correct": "unfairly favouring one side", "exp": "Bias means unfair preference." },
+    { "prompt": "To \"imply\" means…", "options": ["to suggest without saying directly", "to prove with evidence", "to shout loudly"], "correct": "to suggest without saying directly", "exp": "To imply is to hint." }
+  ],
+
+  "g6": {
+    "pos": [
+      { "p": "I enjoy ___ (read) academic articles in the evening.", "a": "reading", "ex": "enjoy + gerund" },
+      { "p": "She decided ___ (apply) for a scholarship.", "a": "to apply", "ex": "decide + to + infinitive" },
+      { "p": "They avoided ___ (mention) the problem.", "a": "mentioning", "ex": "avoid + gerund" },
+      { "p": "We hope ___ (finish) the project by Friday.", "a": "to finish", "ex": "hope + to + infinitive" },
+      { "p": "He suggested ___ (start) with an easier question.", "a": "starting", "ex": "suggest + gerund" }
+    ],
+    "neg": [
+      { "p": "I do not mind ___ (wait) for the results.", "a": "waiting", "ex": "mind + gerund" },
+      { "p": "She refused ___ (answer) the difficult question.", "a": "to answer", "ex": "refuse + to + infinitive" },
+      { "p": "He does not want ___ (leave) early.", "a": "to leave", "ex": "want + to + infinitive" },
+      { "p": "We cannot avoid ___ (ask) difficult questions.", "a": "asking", "ex": "avoid + gerund" },
+      { "p": "They do not enjoy ___ (study) grammar rules.", "a": "studying", "ex": "enjoy + gerund" }
+    ],
+    "q": [
+      { "p": "Do you want ___ (join) us for the debate?", "a": "to join", "ex": "want + to + infinitive" },
+      { "p": "Does she mind ___ (sit) at the front?", "a": "sitting", "ex": "mind + gerund" },
+      { "p": "Have you finished ___ (read) the article?", "a": "reading", "ex": "finish + gerund" },
+      { "p": "Would you like ___ (try) again?", "a": "to try", "ex": "would like + to + infinitive" },
+      { "p": "Did you manage ___ (solve) the problem?", "a": "to solve", "ex": "manage + to + infinitive" }
+    ],
+    "shuffled": [
+      { "p": "He kept ___ (talk) for hours.", "a": "talking" },
+      { "p": "We plan ___ (visit) the library tomorrow.", "a": "to visit" },
+      { "p": "She is good at ___ (explain) complex ideas.", "a": "explaining" },
+      { "p": "They decided ___ (not / go) to the meeting.", "a": "not to go" },
+      { "p": "I am looking forward to ___ (hear) from you.", "a": "hearing" },
+      { "p": "It is important ___ (support) your claim with evidence.", "a": "to support" },
+      { "p": "The students are used to ___ (study) independently.", "a": "studying" },
+      { "p": "We agreed ___ (share) the notes.", "a": "to share" },
+      { "p": "Do you mind ___ (open) the window?", "a": "opening" },
+      { "p": "I would rather ___ (walk) than drive.", "a": "walk" },
+      { "p": "Would you mind ___ (help) me with this?", "a": "helping" },
+      { "p": "They agreed ___ (postpone) the meeting.", "a": "to postpone" },
+      { "p": "She cannot help ___ (laugh) at his jokes.", "a": "laughing" },
+      { "p": "The team hopes ___ (win) the tournament.", "a": "to win" },
+      { "p": "I suggest ___ (take) a short break before the exam.", "a": "taking" }
+    ]
+  },
+
+  "g7": {
+    "pos": [
+      { "p": "She studied all night — she ___ (must / be) exhausted.", "a": "must be", "ex": "strong present deduction" },
+      { "p": "Look at the evidence — the claim ___ (could / be) true.", "a": "could be", "ex": "possibility" },
+      { "p": "The numbers contradict each other — the data ___ (must / have) an error.", "a": "must have", "ex": "strong deduction about a past state" },
+      { "p": "He has not replied to my email — he ___ (might / be) busy.", "a": "might be", "ex": "weak possibility, present" },
+      { "p": "The researchers ___ (may / have) made a mistake.", "a": "may have", "ex": "past possibility" }
+    ],
+    "neg": [
+      { "p": "You ___ (should / not / assume) without evidence.", "a": "should not assume", "ex": "negative advice" },
+      { "p": "That ___ (cannot / be) the whole truth.", "a": "cannot be", "ex": "impossibility" },
+      { "p": "We ___ (must / not / jump) to conclusions.", "a": "must not jump", "ex": "prohibition" },
+      { "p": "He ___ (might / not / understand) the question yet.", "a": "might not understand", "ex": "negative weak possibility" },
+      { "p": "The scientist ___ (should / not / have / ignore) the data.", "a": "should not have ignored", "ex": "past criticism" }
+    ],
+    "q": [
+      { "p": "___ she ___ (be) right about the theory?", "a": "Could she be", "ex": "present speculation" },
+      { "p": "___ the results ___ (have) been different?", "a": "Could the results have been", "ex": "past speculation" },
+      { "p": "___ we ___ (assume) the claim is true?", "a": "Should we assume", "ex": "advice question" },
+      { "p": "___ they ___ (have) ignored the evidence?", "a": "Might they have ignored", "ex": "past possibility question" },
+      { "p": "___ he ___ (have) forgotten the evidence?", "a": "Might he have forgotten", "ex": "past possibility question" }
+    ],
+    "shuffled": [
+      { "p": "The evidence ___ (must / suggest) that he is right.", "a": "must suggest" },
+      { "p": "She ___ (could / have) missed the bus.", "a": "could have" },
+      { "p": "We ___ (should / check) the sources more carefully.", "a": "should check" },
+      { "p": "The claim ___ (cannot / be) false — the evidence is clear.", "a": "cannot be" },
+      { "p": "He ___ (might / have) misread the data.", "a": "might have" },
+      { "p": "The researchers ___ (must / have) worked very hard.", "a": "must have" },
+      { "p": "You ___ (ought to / read) the article before the test.", "a": "ought to read" },
+      { "p": "The results ___ (may / need) more analysis.", "a": "may need" },
+      { "p": "She ___ (should / not / ignore) the question.", "a": "should not ignore" },
+      { "p": "The data ___ (could / be) biased.", "a": "could be" },
+      { "p": "The evidence ___ (might / be) wrong.", "a": "might be" },
+      { "p": "You ___ (should / support) every claim with evidence.", "a": "should support" },
+      { "p": "The results ___ (may / have) been mistaken.", "a": "may have" },
+      { "p": "She ___ (must / have) read the article before class.", "a": "must have" },
+      { "p": "The conclusion ___ (cannot / have) been based on this data.", "a": "cannot have" }
+    ]
+  },
+
+  "sbPp": {
+    "pos": [
+      { "prompt": "Build a sentence: enjoying academic reading.", "correct": ["I","enjoy","reading","academic","articles."] },
+      { "prompt": "Build a sentence: deciding to apply.", "correct": ["She","decided","to","apply","for","the","scholarship."] },
+      { "prompt": "Build a sentence: avoiding a mistake.", "correct": ["They","avoided","making","the","same","mistake."] },
+      { "prompt": "Build a sentence: hoping to finish.", "correct": ["We","hope","to","finish","the","project","by","Friday."] },
+      { "prompt": "Build a sentence: suggesting a plan.", "correct": ["He","suggested","starting","with","an","easier","question."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative sentence: minding a wait.", "correct": ["I","do","not","mind","waiting","for","the","results."] },
+      { "prompt": "Build a sentence: refusing to answer.", "correct": ["She","refused","to","answer","the","question."] },
+      { "prompt": "Build a negative sentence: wanting to leave.", "correct": ["He","does","not","want","to","leave","early."] },
+      { "prompt": "Build a negative sentence: avoiding questions.", "correct": ["We","cannot","avoid","asking","difficult","questions."] },
+      { "prompt": "Build a negative sentence: not enjoying studying.", "correct": ["They","do","not","enjoy","studying","grammar","rules."] }
+    ],
+    "q": [
+      { "prompt": "Build a question: joining us.", "correct": ["Do","you","want","to","join","us?"] },
+      { "prompt": "Build a question: sitting at the front.", "correct": ["Does","she","mind","sitting","at","the","front?"] },
+      { "prompt": "Build a question: finishing the article.", "correct": ["Have","you","finished","reading","the","article?"] },
+      { "prompt": "Build a question: trying again.", "correct": ["Would","you","like","to","try","again?"] },
+      { "prompt": "Build a question: managing to solve.", "correct": ["Did","you","manage","to","solve","the","problem?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: He kept talking for hours.", "correct": ["He","kept","talking","for","hours."] },
+      { "prompt": "Build: We plan to visit the library tomorrow.", "correct": ["We","plan","to","visit","the","library","tomorrow."] },
+      { "prompt": "Build: She is good at explaining complex ideas.", "correct": ["She","is","good","at","explaining","complex","ideas."] },
+      { "prompt": "Build: I am looking forward to hearing from you.", "correct": ["I","am","looking","forward","to","hearing","from","you."] },
+      { "prompt": "Build: It is important to support your claim.", "correct": ["It","is","important","to","support","your","claim."] },
+      { "prompt": "Build: The students are used to studying independently.", "correct": ["The","students","are","used","to","studying","independently."] },
+      { "prompt": "Build: We agreed to share the notes.", "correct": ["We","agreed","to","share","the","notes."] },
+      { "prompt": "Build: Do you mind opening the window?", "correct": ["Do","you","mind","opening","the","window?"] },
+      { "prompt": "Build: I would rather walk than drive.", "correct": ["I","would","rather","walk","than","drive."] },
+      { "prompt": "Build: They decided not to go to the meeting.", "correct": ["They","decided","not","to","go","to","the","meeting."] },
+      { "prompt": "Build: Would you mind helping me with this?", "correct": ["Would","you","mind","helping","me","with","this?"] },
+      { "prompt": "Build: They agreed to postpone the meeting.", "correct": ["They","agreed","to","postpone","the","meeting."] },
+      { "prompt": "Build: She cannot help laughing at his jokes.", "correct": ["She","cannot","help","laughing","at","his","jokes."] },
+      { "prompt": "Build: The team hopes to win the tournament.", "correct": ["The","team","hopes","to","win","the","tournament."] },
+      { "prompt": "Build: I suggest taking a short break before the exam.", "correct": ["I","suggest","taking","a","short","break","before","the","exam."] }
+    ]
+  },
+
+  "sbPs": {
+    "pos": [
+      { "prompt": "Build a modal sentence: being exhausted.", "correct": ["She","must","be","exhausted","after","studying."] },
+      { "prompt": "Build a modal sentence: data having an error.", "correct": ["The","data","could","have","an","error."] },
+      { "prompt": "Build a modal sentence: a wrong assumption.", "correct": ["That","assumption","must","be","wrong."] },
+      { "prompt": "Build a modal sentence: being busy.", "correct": ["He","might","be","busy","today."] },
+      { "prompt": "Build a modal sentence: having made a mistake.", "correct": ["They","may","have","made","a","mistake."] }
+    ],
+    "neg": [
+      { "prompt": "Build a sentence advising against assuming.", "correct": ["You","should","not","assume","without","evidence."] },
+      { "prompt": "Build a sentence: something cannot be true.", "correct": ["That","cannot","be","the","whole","truth."] },
+      { "prompt": "Build a sentence: not jumping to conclusions.", "correct": ["We","must","not","jump","to","conclusions."] },
+      { "prompt": "Build a sentence: he might not understand.", "correct": ["He","might","not","understand","the","question."] },
+      { "prompt": "Build a sentence criticising ignoring data.", "correct": ["The","scientist","should","not","have","ignored","the","data."] }
+    ],
+    "q": [
+      { "prompt": "Build a question: being right about the theory.", "correct": ["Could","she","be","right","about","the","theory?"] },
+      { "prompt": "Build a question: results being different.", "correct": ["Could","the","results","have","been","different?"] },
+      { "prompt": "Build a question: assuming the claim.", "correct": ["Should","we","assume","the","claim","is","true?"] },
+      { "prompt": "Build a question: forgetting the evidence.", "correct": ["Might","he","have","forgotten","the","evidence?"] },
+      { "prompt": "Build a question: misreading the data.", "correct": ["Could","they","have","misread","the","data?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: The evidence must suggest that he is right.", "correct": ["The","evidence","must","suggest","that","he","is","right."] },
+      { "prompt": "Build: She could have missed the bus.", "correct": ["She","could","have","missed","the","bus."] },
+      { "prompt": "Build: We should check the sources more carefully.", "correct": ["We","should","check","the","sources","more","carefully."] },
+      { "prompt": "Build: The claim cannot be false.", "correct": ["The","claim","cannot","be","false."] },
+      { "prompt": "Build: He might have misread the data.", "correct": ["He","might","have","misread","the","data."] },
+      { "prompt": "Build: The researchers must have worked very hard.", "correct": ["The","researchers","must","have","worked","very","hard."] },
+      { "prompt": "Build: You ought to read the article.", "correct": ["You","ought","to","read","the","article."] },
+      { "prompt": "Build: The results may need more analysis.", "correct": ["The","results","may","need","more","analysis."] },
+      { "prompt": "Build: She should not ignore the question.", "correct": ["She","should","not","ignore","the","question."] },
+      { "prompt": "Build: The data could be biased.", "correct": ["The","data","could","be","biased."] },
+      { "prompt": "Build: The evidence might be wrong.", "correct": ["The","evidence","might","be","wrong."] },
+      { "prompt": "Build: You should support every claim with evidence.", "correct": ["You","should","support","every","claim","with","evidence."] },
+      { "prompt": "Build: The results may have been mistaken.", "correct": ["The","results","may","have","been","mistaken."] },
+      { "prompt": "Build: She must have read the article before class.", "correct": ["She","must","have","read","the","article","before","class."] },
+      { "prompt": "Build: The conclusion cannot have been based on this data.", "correct": ["The","conclusion","cannot","have","been","based","on","this","data."] }
+    ]
+  },
+
+  "g10": {
+    "pos": [
+      { "p": "[Gerund] I enjoy ___ (read) academic articles.", "a": "reading" },
+      { "p": "[Infinitive] She decided ___ (apply) for a scholarship.", "a": "to apply" },
+      { "p": "[Modal] The evidence ___ (must / suggest) that he is right.", "a": "must suggest" },
+      { "p": "[Present Perfect] The researchers ___ (already / publish) their findings.", "a": "have already published" },
+      { "p": "[Modal] We ___ (should / check) the sources more carefully.", "a": "should check" }
+    ],
+    "neg": [
+      { "p": "[Gerund] I do not mind ___ (wait).", "a": "waiting" },
+      { "p": "[Infinitive] She refused ___ (answer) the question.", "a": "to answer" },
+      { "p": "[Modal] You ___ (should / not / assume) without evidence.", "a": "should not assume" },
+      { "p": "[Past Simple] They ___ (not / agree) with the conclusion yesterday.", "a": "did not agree" },
+      { "p": "[Modal] The claim ___ (cannot / be) false.", "a": "cannot be" }
+    ],
+    "q": [
+      { "p": "[Gerund] Do you mind ___ (open) the window?", "a": "opening" },
+      { "p": "[Infinitive] Did you manage ___ (solve) the problem?", "a": "to solve" },
+      { "p": "[Modal] ___ she ___ (be) right about the theory?", "a": "Could she be" },
+      { "p": "[Present Perfect] ___ you ever ___ (read) a scientific article?", "a": "Have you ever read" },
+      { "p": "[Modal] ___ we ___ (assume) the claim is true?", "a": "Should we assume" }
+    ],
+    "shuffled": [
+      { "p": "[Modal] The data ___ (could / be) biased.", "a": "could be" },
+      { "p": "[Gerund] She is good at ___ (explain) complex ideas.", "a": "explaining" },
+      { "p": "[Infinitive] We plan ___ (visit) the library tomorrow.", "a": "to visit" },
+      { "p": "[Present Perfect] He ___ (already / finish) his homework.", "a": "has already finished" },
+      { "p": "[Modal] They ___ (may / have) made a mistake.", "a": "may have" },
+      { "p": "[Gerund] They do not enjoy ___ (study) grammar rules.", "a": "studying" },
+      { "p": "[Past Simple] We ___ (agree) to share the notes.", "a": "agreed" },
+      { "p": "[Modal — past] The scientist ___ (should / not / have / ignore) the data.", "a": "should not have ignored" },
+      { "p": "[Infinitive] It is important ___ (support) your claim.", "a": "to support" },
+      { "p": "[Present Perfect] The students ___ (write) three essays this term.", "a": "have written" },
+      { "p": "[Present Continuous] She ___ (work) on this project for two weeks.", "a": "has been working" },
+      { "p": "[Infinitive] Do you want ___ (join) the discussion?", "a": "to join" },
+      { "p": "[Modal] They ___ (might / have / leave) already.", "a": "might have left" },
+      { "p": "[Gerund] I enjoy ___ (solve) difficult problems.", "a": "solving" },
+      { "p": "[Modal — past] He ___ (should / have / know) the answer.", "a": "should have known" }
+    ]
+  },
+
+  "testMcq": [
+    { "q": "Which word means 'to say something is true without proof'?", "options": ["claim", "evidence", "evaluate"], "correct": "claim", "exp": "A claim asserts something is true." },
+    { "q": "Which word means 'facts that show something is true'?", "options": ["assumption", "evidence", "conclusion"], "correct": "evidence", "exp": "Evidence supports a claim." },
+    { "q": "Which word means 'to give a good reason for something'?", "options": ["justify", "assume", "imply"], "correct": "justify", "exp": "To justify is to give reasons." },
+    { "q": "Which word means 'to say the opposite of something'?", "options": ["contradict", "support", "agree"], "correct": "contradict", "exp": "To contradict is to say the opposite." },
+    { "q": "Which word means 'to judge the quality or truth of something'?", "options": ["evaluate", "assume", "persuade"], "correct": "evaluate", "exp": "To evaluate is to judge." },
+    { "q": "Which word means 'to suggest without saying directly'?", "options": ["imply", "claim", "justify"], "correct": "imply", "exp": "To imply is to hint." },
+    { "q": "Which word means 'connected to the topic'?", "options": ["relevant", "coherent", "biased"], "correct": "relevant", "exp": "Relevant = on-topic." },
+    { "q": "Which word means 'clear and logical'?", "options": ["coherent", "relevant", "confusing"], "correct": "coherent", "exp": "Coherent = clear, logical." }
+  ],
+
+  "testShort": [
+    { "q": "I enjoy ___ (read) academic articles.", "answers": ["reading"], "exp": "enjoy + gerund" },
+    { "q": "She decided ___ (apply) for a scholarship.", "answers": ["to apply"], "exp": "decide + to + infinitive" },
+    { "q": "The evidence ___ (must / suggest) that he is right.", "answers": ["must suggest"], "exp": "strong deduction" },
+    { "q": "You ___ (should / not / assume) without evidence.", "answers": ["should not assume"], "exp": "negative advice" },
+    { "q": "Do you mind ___ (open) the window?", "answers": ["opening"], "exp": "mind + gerund" },
+    { "q": "The researchers ___ (must / have / work) very hard.", "answers": ["must have worked"], "exp": "past deduction" }
+  ],
+
+  "testTfng": [
+    { "q": "We always use the infinitive after 'enjoy'.", "answer": "False", "exp": "enjoy + gerund" },
+    { "q": "We use the gerund after prepositions like 'good at'.", "answer": "True", "exp": "Preposition + gerund." },
+    { "q": "'Must' can express strong deduction (e.g., 'she must be tired').", "answer": "True", "exp": "Yes — strong deduction." },
+    { "q": "After 'should', we use the past participle for present actions.", "answer": "False", "exp": "should + bare infinitive (should do)." },
+    { "q": "Modal verbs are followed by the bare infinitive (no 'to').", "answer": "True", "exp": "He can swim. (Not 'to swim'.)" }
+  ],
+
+  "testComplete": [
+    { "p": "[Gerund] They avoid ___ (make) mistakes.", "a": "making" },
+    { "p": "[Infinitive] She hopes ___ (finish) soon.", "a": "to finish" },
+    { "p": "[Modal] The data ___ (could / be) wrong.", "a": "could be" },
+    { "p": "[Modal — past] He ___ (might / have / forget) the evidence.", "a": "might have forgotten" },
+    { "p": "[Gerund] I am looking forward to ___ (hear) from you.", "a": "hearing" },
+    { "p": "[Infinitive] It is important ___ (support) your claim.", "a": "to support" },
+    { "p": "[Modal — negative] You ___ (should / not) assume without evidence.", "a": "should not assume" },
+    { "p": "[Gerund — negative] I do not mind ___ (wait).", "a": "waiting" },
+    { "p": "[Modal] They ___ (may / have) made an error.", "a": "may have made" },
+    { "p": "[Mixed] She is good at ___ (explain) complex ideas.", "a": "explaining" }
+  ]
+}

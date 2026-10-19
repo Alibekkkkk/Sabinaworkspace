@@ -1,0 +1,72 @@
+{
+  "title": "Abay · Critical Thinking — Homework",
+  "headline": "How to Practice Effectively",
+  "intro": "Watch the TED-Ed video and answer the IELTS-style questions below. The notes under the video give you a short summary in case you need to re-read while you listen.",
+  "hero": "🎬 → 🧠 → ✅",
+  "sub": "Critical Thinking & Study Skills · Reading, Listening & Grammar",
+  "eyebrow": "Topic · Study Skills · Homework",
+
+  "reading": {
+    "title": "How to Practice Effectively",
+    "subtitle": "TED-Ed · Annie Bosler & Don Greene",
+    "video": "https://www.youtube-nocookie.com/embed/f2O6mQkFiiw",
+    "videoTitle": "How to practice effectively...for just about anything",
+    "paragraphs": [
+      { "label": "A.", "text": "Watch the video once without stopping. Then watch again and complete the questions on the right. Notice how the speaker makes a claim and supports it with evidence — the same pattern we studied in class." },
+      { "label": "B.", "text": "While you watch, pay attention to the speaker's argument. Does she justify her opinion? Does any evidence contradict what she says? This kind of coherent thinking is exactly what we practised in class." },
+      { "label": "C.", "text": "After watching, try to evaluate her argument. What does she imply by the end? Which points are relevant to your own study habits? Then answer the questions on the right." }
+    ]
+  },
+
+  "vocab": [
+    { "en": "claim", "emoji": "🗣️", "meanings": [
+      { "context": "a statement that may be true (noun)", "ru": "утверждение", "ex": "The speaker makes a strong <b>claim</b> about practice." },
+      { "context": "to say something is true (verb)", "displayEn": "to claim", "ru": "утверждать", "ex": "She <b>claims</b> that focused practice works better." }
+    ]},
+    { "en": "evidence", "emoji": "📊", "meanings": [
+      { "context": "facts that show something is true (noun)", "ru": "доказательство", "ex": "The scientist used <b>evidence</b> from brain research." }
+    ]},
+    { "en": "to justify", "emoji": "⚖️", "meanings": [
+      { "context": "to give a good reason for something (verb)", "displayEn": "to justify", "ru": "обосновывать", "ex": "Can you <b>justify</b> your opinion?" }
+    ]},
+    { "en": "to contradict", "emoji": "🔄", "meanings": [
+      { "context": "to say the opposite of something (verb)", "displayEn": "to contradict", "ru": "противоречить", "ex": "The new evidence <b>contradicts</b> his theory." }
+    ]},
+    { "en": "to evaluate", "emoji": "🧪", "meanings": [
+      { "context": "to judge the quality or truth of something (verb)", "displayEn": "to evaluate", "ru": "оценивать", "ex": "Try to <b>evaluate</b> the argument fairly." }
+    ]},
+    { "en": "to imply", "emoji": "🔍", "meanings": [
+      { "context": "to suggest without saying directly (verb)", "displayEn": "to imply", "ru": "подразумевать", "ex": "What does the video <b>imply</b> about rest?" }
+    ]},
+    { "en": "relevant", "emoji": "🎯", "meanings": [
+      { "context": "connected to the topic (adjective)", "ru": "уместный", "ex": "Keep your answer <b>relevant</b> to the question." }
+    ]},
+    { "en": "coherent", "emoji": "📝", "meanings": [
+      { "context": "clear and logical (adjective)", "ru": "связный, логичный", "ex": "Write a <b>coherent</b> paragraph with a clear argument." }
+    ]}
+  ],
+
+  "questions": [
+    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Effective practice is not just repetition; it must be ______.", "answers": ["focused", "deliberate", "focused and deliberate"] },
+    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] You should practice at the edge of your ______.", "answers": ["ability", "competence"] },
+    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Focused practice is often called ______ practice.", "answers": ["deliberate"] },
+    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] The speaker says you should take short ______ during practice.", "answers": ["breaks", "rests"] },
+    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Sleep helps the brain ______ what you have learned.", "answers": ["store", "consolidate", "save"] },
+    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Making ______ is a normal part of effective learning.", "answers": ["mistakes", "errors"] },
+
+    { "type": "mcq", "prompt": "[Part 2] According to the video, what is the most important feature of effective practice?", "options": ["Doing it for many hours", "Focusing on a specific goal", "Repeating the same thing every day"], "correct": "Focusing on a specific goal" },
+    { "type": "mcq", "prompt": "[Part 2] The speaker recommends practising…", "options": ["at a level slightly harder than you can do", "at a level much easier than you can do", "only at the level you already know"], "correct": "at a level slightly harder than you can do" },
+    { "type": "mcq", "prompt": "[Part 2] What role does sleep play in learning?", "options": ["It helps the brain store what you practised", "It replaces the need for practice", "It makes practice less important"], "correct": "It helps the brain store what you practised" },
+
+    { "type": "tfng", "prompt": "The video says that repeating the same action many times is the most effective way to improve.", "answer": "False", "exp": "The video distinguishes focused, deliberate practice from simple repetition." },
+    { "type": "tfng", "prompt": "Deliberate practice means focusing on a specific goal.", "answer": "True", "exp": "Deliberate practice is focused on a clear target." },
+
+    { "type": "short", "prompt": "Which two things does the speaker say help consolidate learning?", "answers": ["sleep and breaks", "breaks and sleep", "sleep, breaks"], "exp": "Sleep and short breaks both help memory consolidation." },
+
+    { "type": "complete", "prompt": "[Gerund] The video suggests ______ (practice) at the edge of your ability.", "answers": ["practising", "practicing"] },
+    { "type": "complete", "prompt": "[Modal] Sleep ______ (could / be) the most underrated part of learning.", "answers": ["could be"] },
+
+    { "type": "long", "prompt": "In your own words, describe ONE tip from the video you plan to use in your own study routine. Use the words 'focus', 'practice', and at least one gerund.", "keywordGroups": [["focus", "concentrate"], ["practice", "practise"], ["tip", "advice", "idea"], ["routine", "study", "habit"]], "minWords": 15, "minGroups": 2, "sample": "One tip I will use is to focus on a specific goal during practice, instead of just repeating things. I will start each study session by writing a clear question, then practice answering it in short focused bursts with breaks in between.", "exp": "Key ideas: focused practice, specific goal, personal plan." },
+    { "type": "long", "prompt": "Do you agree with the video that deliberate practice is more effective than simply repeating something many times? Why or why not?", "keywordGroups": [["agree", "disagree", "opinion"], ["deliberate", "focused", "specific"], ["repetition", "repeat", "many times"], ["because", "reason", "since"], ["effective", "improve", "better"]], "minWords": 20, "minGroups": 3, "sample": "I strongly agree that deliberate practice is more effective than simple repetition. When I repeat something without focus, I often just repeat my own mistakes. When I practice deliberately, I aim at a specific weakness, which makes the improvement much faster.", "exp": "Key ideas: opinion stated clearly, comparison of the two methods, supported with a reason." }
+  ]
+}
