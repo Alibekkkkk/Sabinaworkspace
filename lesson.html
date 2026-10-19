@@ -457,50 +457,13 @@ function isAnswerCorrect(userStr, expectedArr) {
 
 /* ================== ANNOTATION & NOTES LOGIC ================== */
 let activeNoteId = null;
-let savedRange = null; // Saves the highlighted text so it doesn't disappear when clicking the menu
+let savedRange = null; 
+let contextTargetEdit = null; // Stores the specific highlight/underline we right-clicked on
 
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('customContextMenu');
   
-  // PREVENT SELECTION LOSS: This stops the browser from clearing the highlight when clicking the menu
-  menu.addEventListener('mousedown', function(e) {
-    e.preventDefault();
-  });
-
-  document.addEventListener('contextmenu', function(e) {
-    if(!e.target.closest('#passageBody')) return;
-    
-    e.preventDefault();
-    menu.innerHTML = ''; 
-    
-    const selection = window.getSelection();
-    const targetNote = e.target.closest('.user-note');
-
-    if (targetNote) {
-      menu.innerHTML = `
-        <div class="context-item" onclick="openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
-        <div class="context-item delete" onclick="deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
-      `;
-    } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
-      // SAVE THE RANGE HERE before showing the menu
-      savedRange = selection.getRangeAt(0).cloneRange(); 
-      
-      menu.innerHTML = `
-        <div class="context-item" onclick="applyAnnotation('hl-yellow')">🖍️ Highlight Yellow</div>
-        <div class="context-item" onclick="applyAnnotation('hl-green')">🟢 Highlight Green</div>
-        <div class="context-item" onclick="applyAnnotation('hl-blue')">🔵 Highlight Blue</div>
-        <div class="context-item" onclick="applyAnnotation('underline')">U̲ Underline</div>
-        <div class="context-item" onclick="createNewNote()">💬 Add Note</div>
-      `;
-    } else {
-      return; 
-    }
-    
-    menu.style.left = e.pageX + 'px';
-    menu.style.top = e.pageY + 'px';
-    menu.classList.add('show');
-  });
-
+  // Close menu when clicking outside
   document.addEventListener('click', function(e) {
     if(!e.target.closest('.context-menu')) {
        menu.classList.remove('show');
@@ -510,7 +473,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Handle sticky note dragging
+  // The Right-Click Logic
+  document.addEventListener('contextmenu', function(e) {
+    if(!e.target.closest('#passageBody')) return;
+    
+    e.preventDefault();
+    menu.innerHTML = ''; 
+    contextTargetEdit = null;
+    
+    const selection = window.getSelection();
+    const targetNote = e.target.closest('.user-note');
+    
+    // Check if we right-clicked inside an existing highlight/underline
+    let node = e.target;
+    while (node && node !== document.body) {
+        if (node.nodeType === 1) { // If it's an element
+            if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('underline')) {
+                contextTargetEdit = node;
+                break;
+            }
+        }
+        node = node.parentNode;
+    }
+
+    if (targetNote) {
+      // Right-clicked on an existing note
+      menu.innerHTML = `
+        <div class="context-item" onmousedown="openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
+        <div class="context-item delete" onmousedown="deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
+      `;
+    } else if (contextTargetEdit) {
+      // Right-clicked on a highlight or underline
+      menu.innerHTML = `
+        <div class="context-item delete" onmousedown="removeExistingEdit()">🗑️ Remove Edit</div>
+      `;
+    } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
+      // Right-clicked on newly selected text
+      savedRange = selection.getRangeAt(0).cloneRange(); 
+      
+      menu.innerHTML = `
+        <div class="context-item" onmousedown="applyAnnotation('hl-yellow')">🖍️ Highlight Yellow</div>
+        <div class="context-item" onmousedown="applyAnnotation('hl-green')">🟢 Highlight Green</div>
+        <div class="context-item" onmousedown="applyAnnotation('hl-blue')">🔵 Highlight Blue</div>
+        <div class="context-item" onmousedown="applyAnnotation('underline')">U̲ Underline</div>
+        <div class="context-item" onmousedown="createNewNote()">💬 Add Note</div>
+      `;
+    } else {
+      return; // Nothing selected or right-clicked
+    }
+    
+    menu.style.left = e.pageX + 'px';
+    menu.style.top = e.pageY + 'px';
+    menu.classList.add('show');
+  });
+
+  // Sticky Note Dragging Logic
   const dragHandle = document.getElementById('stickyDragHandle');
   const stickyNote = document.getElementById('stickyNote');
   let isDragging = false, startX, startY, initialX, initialY;
@@ -540,7 +557,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function applyAnnotation(className) {
-  if(!savedRange) return; // Ensure we have the saved text
+  if(!savedRange) return;
+  
+  // CRITICAL FIX: Restore the selection before applying the edit
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(savedRange);
   
   const span = document.createElement('span');
   span.className = className;
@@ -549,14 +571,19 @@ function applyAnnotation(className) {
   span.appendChild(savedRange.extractContents());
   savedRange.insertNode(span);
   
-  window.getSelection().removeAllRanges(); 
-  savedRange = null; // Reset
+  selection.removeAllRanges(); 
+  savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
   saveAnnotations();
 }
 
 function createNewNote() {
   if(!savedRange) return;
+
+  // Restore selection
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(savedRange);
 
   const id = 'note_' + Date.now();
   const span = document.createElement('span');
@@ -567,11 +594,26 @@ function createNewNote() {
   span.appendChild(savedRange.extractContents());
   savedRange.insertNode(span);
   
-  window.getSelection().removeAllRanges();
-  savedRange = null; // Reset
+  selection.removeAllRanges();
+  savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
   
   openExistingNote(id);
+}
+
+function removeExistingEdit() {
+  if (!contextTargetEdit) return;
+  
+  // Unwrap the span (keeps the text, removes the highlight/underline)
+  const parent = contextTargetEdit.parentNode;
+  while (contextTargetEdit.firstChild) {
+      parent.insertBefore(contextTargetEdit.firstChild, contextTargetEdit);
+  }
+  parent.removeChild(contextTargetEdit);
+  
+  contextTargetEdit = null;
+  document.getElementById('customContextMenu').classList.remove('show');
+  saveAnnotations();
 }
 
 function openExistingNote(id) {
@@ -586,9 +628,8 @@ function openExistingNote(id) {
   
   textArea.value = span.dataset.note || "";
   
-  // Position near the text, but keep inside the viewport
   let posX = rect.right + 15;
-  if (posX + 300 > window.innerWidth) posX = rect.left - 300; // If too far right, put on left
+  if (posX + 300 > window.innerWidth) posX = rect.left - 300; 
   
   sticky.style.left = posX + 'px';
   sticky.style.top = (rect.top - 20) + 'px';
@@ -617,7 +658,6 @@ function deleteNoteById(id) {
   const span = document.querySelector(`.user-note[data-id="${id}"]`);
   if(!span) return;
   
-  // Unwrap the span (keep the text)
   const parent = span.parentNode;
   while (span.firstChild) {
     parent.insertBefore(span.firstChild, span);
