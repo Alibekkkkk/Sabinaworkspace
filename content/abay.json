@@ -1,43 +1,53 @@
 {
   "vocab": [
     { "en": "claim", "emoji": "🗣️", "meanings": [
-      { "context": "to say something is true (verb)", "displayEn": "to claim", "ru": "утверждать (говорить, что что-то верно)", "ex": "She <b>claims</b> that this method works." },
-      { "context": "a statement that may be true (noun)", "displayEn": "claim", "ru": "утверждение (заявление)", "ex": "The writer makes a strong <b>claim</b> in the first sentence." }
+      { "context": "noun: a statement that may be true", "displayEn": "claim", "ru": "утверждение", "ex": "The writer makes a strong <b>claim</b>." },
+      { "context": "verb: to say something is true", "displayEn": "to claim", "ru": "утверждать", "ex": "She <b>claims</b> that this works." }
     ]},
     { "en": "evidence", "emoji": "📊", "meanings": [
-      { "context": "facts that show something is true (noun)", "ru": "доказательство (факты, подтверждающие истину)", "ex": "There is no <b>evidence</b> to support his theory." }
+      { "context": "noun: facts that show something is true", "displayEn": "evidence", "ru": "доказательство", "ex": "There is no <b>evidence</b> to support him." }
     ]},
     { "en": "to assume", "emoji": "🤔", "meanings": [
-      { "context": "to think something is true without proof (verb)", "displayEn": "to assume", "ru": "предполагать (думать без доказательств)", "ex": "We cannot <b>assume</b> that the data is correct." },
-      { "context": "something believed without proof (noun)", "displayEn": "assumption", "ru": "предположение", "ex": "Your argument is based on a false <b>assumption</b>." }
+      { "context": "verb: to think something is true without proof", "displayEn": "to assume", "ru": "предполагать", "ex": "We cannot <b>assume</b> the data is correct." },
+      { "context": "noun: something believed without proof", "displayEn": "assumption", "ru": "предположение", "ex": "Based on a false <b>assumption</b>." }
     ]},
     { "en": "to justify", "emoji": "⚖️", "meanings": [
-      { "context": "to give a good reason for something (verb)", "displayEn": "to justify", "ru": "обосновывать (приводить причину)", "ex": "Can you <b>justify</b> your opinion with examples?" }
+      { "context": "verb: to give a good reason for something", "displayEn": "to justify", "ru": "обосновывать", "ex": "Can you <b>justify</b> your opinion?" }
     ]},
     { "en": "to contradict", "emoji": "🔄", "meanings": [
-      { "context": "to say the opposite of something (verb)", "displayEn": "to contradict", "ru": "противоречить (говорить противоположное)", "ex": "The second paragraph <b>contradicts</b> the first." }
+      { "context": "verb: to say the opposite of something", "displayEn": "to contradict", "ru": "противоречить", "ex": "The paragraph <b>contradicts</b> the first." }
     ]},
     { "en": "to evaluate", "emoji": "🧪", "meanings": [
-      { "context": "to judge the quality or truth of something (verb)", "displayEn": "to evaluate", "ru": "оценивать (судить о качестве или истинности)", "ex": "Try to <b>evaluate</b> the evidence fairly." }
+      { "context": "verb: to judge the quality or truth of something", "displayEn": "to evaluate", "ru": "оценивать", "ex": "Try to <b>evaluate</b> the evidence." }
     ]},
     { "en": "to imply", "emoji": "🔍", "meanings": [
-      { "context": "to suggest without saying directly (verb)", "displayEn": "to imply", "ru": "подразумевать (намекать)", "ex": "The article <b>implies</b> that the study is unreliable." },
-      { "context": "a possible result or hidden meaning (noun)", "displayEn": "implication", "ru": "последствие / скрытый смысл", "ex": "Consider the <b>implications</b> of this result." }
+      { "context": "verb: to suggest without saying directly", "displayEn": "to imply", "ru": "подразумевать", "ex": "The article <b>implies</b> it is unreliable." },
+      { "context": "noun: a possible result or hidden meaning", "displayEn": "implication", "ru": "последствие", "ex": "Consider the <b>implications</b> of this." }
     ]},
     { "en": "relevant", "emoji": "🎯", "meanings": [
-      { "context": "connected to the topic (adjective)", "ru": "уместный, относящийся к делу", "ex": "Please keep your answers <b>relevant</b> to the question." }
+      { "context": "adjective: connected to the topic", "displayEn": "relevant", "ru": "уместный", "ex": "Keep your answers <b>relevant</b>." }
     ]},
     { "en": "to persuade", "emoji": "💬", "meanings": [
-      { "context": "to make someone believe or do something (verb)", "displayEn": "to persuade", "ru": "убеждать (заставить поверить)", "ex": "The speaker tried to <b>persuade</b> the audience." }
+      { "context": "verb: to make someone believe or do something", "displayEn": "to persuade", "ru": "убеждать", "ex": "The speaker tried to <b>persuade</b> us." },
+      { "context": "adjective: good at persuading", "displayEn": "persuasive", "ru": "убедительный", "ex": "It was a <b>persuasive</b> argument." }
     ]},
     { "en": "coherent", "emoji": "📝", "meanings": [
-      { "context": "clear and logical (adjective)", "ru": "связный, логичный", "ex": "Your essay needs a <b>coherent</b> argument." }
+      { "context": "adjective: clear and logical", "displayEn": "coherent", "ru": "связный, логичный", "ex": "Your essay needs a <b>coherent</b> argument." },
+      { "context": "noun: the quality of being logical", "displayEn": "coherence", "ru": "связность", "ex": "The <b>coherence</b> of his speech was excellent." }
     ]},
     { "en": "reliable", "emoji": "✅", "meanings": [
-      { "context": "able to be trusted (adjective)", "ru": "надёжный (заслуживающий доверия)", "ex": "Make sure your sources are <b>reliable</b>." }
+      { "context": "adjective: able to be trusted", "displayEn": "reliable", "ru": "надёжный", "ex": "Make sure your sources are <b>reliable</b>." },
+      { "context": "noun: the quality of being trusted", "displayEn": "reliability", "ru": "надёжность", "ex": "Check the <b>reliability</b> of the website." }
     ]},
     { "en": "biased", "emoji": "⚡", "meanings": [
-      { "context": "unfairly favouring one side (adjective)", "ru": "предвзятый (несправедливо склонённый в одну сторону)", "ex": "The article is clearly <b>biased</b> against the new policy." }
+      { "context": "adjective: unfairly favouring one side", "displayEn": "biased", "ru": "предвзятый", "ex": "The article is clearly <b>biased</b>." },
+      { "context": "noun: an unfair preference", "displayEn": "bias", "ru": "предвзятость", "ex": "There is a clear <b>bias</b> in the report." }
+    ]},
+    { "en": "to formulate", "emoji": "📐", "meanings": [
+      { "context": "verb: to express an idea clearly", "displayEn": "to formulate", "ru": "формулировать", "ex": "You must <b>formulate</b> a clear question." }
+    ]},
+    { "en": "to gather", "emoji": "🤲", "meanings": [
+      { "context": "verb: to collect things together", "displayEn": "to gather", "ru": "собирать", "ex": "Step two is to <b>gather</b> information." }
     ]}
   ],
 
@@ -53,7 +63,9 @@
     { "word": "to persuade", "meaning": "to make someone believe or do something" },
     { "word": "coherent", "meaning": "clear, logical and well-organised" },
     { "word": "reliable", "meaning": "able to be trusted" },
-    { "word": "biased", "meaning": "unfairly favouring one side" }
+    { "word": "biased", "meaning": "unfairly favouring one side" },
+    { "word": "to formulate", "meaning": "to express an idea clearly" },
+    { "word": "to gather", "meaning": "to collect things together" }
   ],
 
   "readingHtml": "<h1>The Science of Critical Thinking</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/dItUGF8GdTw\" title=\"5 tips to improve your critical thinking\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch once for the general idea. Watch again with the questions on the right in mind.</div><p><span class=\"para-label\">1.</span> Every day we make hundreds of decisions. <b>Critical thinking</b> is the skill of making good ones — and it can be <b>learned</b>, not just inherited. It is a skill, like any other: it takes practice.</p><p><span class=\"para-label\">2.</span> Critical thinking is a <b>five-step</b> process. <b>Step one</b> is to <b>formulate your question</b> — ask yourself exactly what you want to know. A clear, specific question helps you find <b>relevant</b> answers, instead of collecting random facts.</p><p><span class=\"para-label\">3.</span> <b>Step two</b> is to <b>gather your information</b>. Where is it coming from? Is the source <b>reliable</b>? Is there <b>evidence</b> to support the <b>claim</b>? Be careful — many sources online are <b>biased</b>, so cross-check with at least one more.</p><p><span class=\"para-label\">4.</span> <b>Step three</b> is to <b>apply the information</b>. Look at the evidence. Does it actually support the claim, or does it <b>contradict</b> it? Do not <b>assume</b> that one example is enough — check whether the data genuinely backs up the conclusion.</p><p><span class=\"para-label\">5.</span> <b>Step four</b> is to <b>consider the implications</b>. If the claim is true, what follows from it? What would change in your own life or in the wider world? Try to <b>evaluate</b> both sides of the argument fairly, not just the side you already prefer.</p><p><span class=\"para-label\">6.</span> <b>Step five</b> is to <b>explore other points of view</b>. No one has all the answers. A <b>coherent</b> thinker listens carefully to people who disagree — and is willing to change their mind if the evidence calls for it. You do not have to <b>persuade</b> everyone; you only have to stay open.</p>",
@@ -67,18 +79,15 @@
     { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step four: consider the ______.", "answers": ["implications"], "exp": "Step four = consider the implications." },
     { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step five: explore other ______ of view.", "answers": ["points"], "exp": "Step five = explore other points of view." },
     { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Critical thinking is a skill that takes ______.", "answers": ["practice", "practise"], "exp": "The notes say it takes practice." },
-
     { "type": "tfng", "prompt": "The video says that critical thinking takes very little effort.", "answer": "False", "exp": "The notes say it takes practice — not little effort." },
     { "type": "tfng", "prompt": "The video recommends listening to people who disagree with you.", "answer": "True", "exp": "Step five: explore other points of view." },
     { "type": "tfng", "prompt": "The video says that no one has all the answers.", "answer": "True", "exp": "The notes say exactly this in step five." },
     { "type": "tfng", "prompt": "The video was produced by a university in the UK.", "answer": "Not Given", "exp": "The notes do not mention where the video was made." },
-
     { "type": "mcq", "prompt": "What helps you find relevant answers, according to step one?", "options": ["A clear question", "A quick answer", "A long essay"], "correct": "A clear question", "exp": "A clear, specific question helps you find relevant answers." },
     { "type": "mcq", "prompt": "Why should we be careful with online information?", "options": ["It is always false", "Many sources are biased", "It is too long to read"], "correct": "Many sources are biased", "exp": "The notes warn that many sources online are biased." },
     { "type": "mcq", "prompt": "What does step four ask you to consider?", "options": ["How fast you can decide", "What would follow if the claim is true", "How to persuade other people"], "correct": "What would follow if the claim is true", "exp": "Step four = consider the implications — what follows from the claim." },
     { "type": "mcq", "prompt": "What does the video say about critical thinking?", "options": ["It cannot be learned", "It is a skill you can practice", "It is the same as intelligence"], "correct": "It is a skill you can practice", "exp": "The notes say it is a skill that takes practice." },
     { "type": "mcq", "prompt": "According to the notes, what should you do with people who disagree with you?", "options": ["Ignore them", "Listen to them carefully", "Persuade them immediately"], "correct": "Listen to them carefully", "exp": "A coherent thinker listens carefully to people who disagree." },
-
     { "type": "long", "prompt": "In your own words, why is asking a clear question the first step of critical thinking?", "keywordGroups": [["clear", "specific", "precise"], ["relevant", "answer", "focus"], ["information", "research", "gather"], ["question", "ask"]], "minWords": 10, "minGroups": 2, "sample": "Asking a clear question helps you focus on what you actually want to know and find relevant information, instead of collecting random facts.", "exp": "Key ideas: clarity of the question, finding relevant information." },
     { "type": "long", "prompt": "Explain what it means to \"consider the implications\" using an example from your own life.", "keywordGroups": [["consequence", "result", "effect"], ["believe", "accept", "true"], ["claim", "statement"], ["example", "personal", "life"]], "minWords": 12, "minGroups": 2, "sample": "Considering the implications means asking what would follow if a claim were true. For example, if I believe a study that says students need eight hours of sleep, the implication is that I should change my own routine.", "exp": "Key ideas: consequences, believing a claim, a personal example." },
     { "type": "long", "prompt": "Do you agree that critical thinking is a \"skill\" rather than a \"talent\"? Why or why not?", "keywordGroups": [["practice", "skill", "learn"], ["improve", "better", "develop"], ["agree", "disagree", "opinion"], ["reason", "think", "argue"]], "minWords": 15, "minGroups": 2, "sample": "I agree that it is a skill, because even people who are not naturally talented can improve by practising, asking better questions, and checking evidence more carefully.", "exp": "Key ideas: agree/disagree, skill vs talent, practice/improvement." }
