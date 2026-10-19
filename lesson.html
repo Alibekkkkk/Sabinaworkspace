@@ -457,14 +457,17 @@ function isAnswerCorrect(userStr, expectedArr) {
 
 /* ================== ANNOTATION & NOTES LOGIC ================== */
 let activeNoteId = null;
+let savedRange = null; // Saves the highlighted text so it doesn't disappear when clicking the menu
 
-// Context Menu Logic
 document.addEventListener('DOMContentLoaded', () => {
-  const passage = document.getElementById('passageBody'); // Will be created dynamically, so we use event delegation on document
   const menu = document.getElementById('customContextMenu');
   
+  // PREVENT SELECTION LOSS: This stops the browser from clearing the highlight when clicking the menu
+  menu.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+  });
+
   document.addEventListener('contextmenu', function(e) {
-    // Only trigger inside the passage
     if(!e.target.closest('#passageBody')) return;
     
     e.preventDefault();
@@ -474,13 +477,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetNote = e.target.closest('.user-note');
 
     if (targetNote) {
-      // Right-clicked an existing note
       menu.innerHTML = `
         <div class="context-item" onclick="openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
         <div class="context-item delete" onclick="deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
       `;
     } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
-      // Right-clicked on selected text
+      // SAVE THE RANGE HERE before showing the menu
+      savedRange = selection.getRangeAt(0).cloneRange(); 
+      
       menu.innerHTML = `
         <div class="context-item" onclick="applyAnnotation('hl-yellow')">🖍️ Highlight Yellow</div>
         <div class="context-item" onclick="applyAnnotation('hl-green')">🟢 Highlight Green</div>
@@ -489,10 +493,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="context-item" onclick="createNewNote()">💬 Add Note</div>
       `;
     } else {
-      return; // Nothing to do
+      return; 
     }
     
-    // Position menu
     menu.style.left = e.pageX + 'px';
     menu.style.top = e.pageY + 'px';
     menu.classList.add('show');
@@ -502,7 +505,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!e.target.closest('.context-menu')) {
        menu.classList.remove('show');
     }
-    // Close sticky note if clicking outside
     if(!e.target.closest('.sticky-note') && !e.target.closest('.user-note')) {
        closeStickyNote();
     }
@@ -538,33 +540,37 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function applyAnnotation(className) {
-  const sel = window.getSelection();
-  if(!sel.isCollapsed && sel.rangeCount > 0) {
-    const range = sel.getRangeAt(0);
-    const span = document.createElement('span');
-    span.className = className;
-    if(className === 'underline') span.style.textDecoration = 'underline';
-    span.appendChild(range.extractContents());
-    range.insertNode(span);
-    sel.removeAllRanges();
-    saveAnnotations();
-  }
+  if(!savedRange) return; // Ensure we have the saved text
+  
+  const span = document.createElement('span');
+  span.className = className;
+  if(className === 'underline') span.style.textDecoration = 'underline';
+  
+  span.appendChild(savedRange.extractContents());
+  savedRange.insertNode(span);
+  
+  window.getSelection().removeAllRanges(); 
+  savedRange = null; // Reset
+  document.getElementById('customContextMenu').classList.remove('show');
+  saveAnnotations();
 }
 
 function createNewNote() {
-  const sel = window.getSelection();
-  if(sel.isCollapsed || sel.rangeCount === 0) return;
+  if(!savedRange) return;
 
   const id = 'note_' + Date.now();
-  const range = sel.getRangeAt(0);
   const span = document.createElement('span');
   span.className = 'user-note';
   span.dataset.id = id;
   span.dataset.note = "";
-  span.appendChild(range.extractContents());
-  range.insertNode(span);
-  sel.removeAllRanges();
-
+  
+  span.appendChild(savedRange.extractContents());
+  savedRange.insertNode(span);
+  
+  window.getSelection().removeAllRanges();
+  savedRange = null; // Reset
+  document.getElementById('customContextMenu').classList.remove('show');
+  
   openExistingNote(id);
 }
 
@@ -579,8 +585,13 @@ function openExistingNote(id) {
   const textArea = document.getElementById('stickyText');
   
   textArea.value = span.dataset.note || "";
-  sticky.style.left = (rect.right + window.scrollX + 10) + 'px';
-  sticky.style.top = (rect.top + window.scrollY - 20) + 'px';
+  
+  // Position near the text, but keep inside the viewport
+  let posX = rect.right + 15;
+  if (posX + 300 > window.innerWidth) posX = rect.left - 300; // If too far right, put on left
+  
+  sticky.style.left = posX + 'px';
+  sticky.style.top = (rect.top - 20) + 'px';
   sticky.classList.add('show');
   
   setTimeout(() => textArea.focus(), 100);
@@ -590,7 +601,6 @@ function closeStickyNote() {
   const sticky = document.getElementById('stickyNote');
   if(!sticky.classList.contains('show')) return;
   
-  // Save the text
   if (activeNoteId) {
     const span = document.querySelector(`.user-note[data-id="${activeNoteId}"]`);
     if(span) {
@@ -615,12 +625,21 @@ function deleteNoteById(id) {
   parent.removeChild(span);
   
   if(activeNoteId === id) closeStickyNote();
+  document.getElementById('customContextMenu').classList.remove('show');
   saveAnnotations();
 }
 
 function deleteCurrentNote() {
   if(activeNoteId) {
     deleteNoteById(activeNoteId);
+  }
+}
+
+function saveAnnotations() {
+  if(fbConnected && sessionRef) {
+    sessionRef.child('annotations/'+state.currentLessonId).set(document.getElementById('passageBody').innerHTML).then(()=>{
+      if(typeof showToast === 'function') showToast('Annotations saved');
+    });
   }
 }
 
