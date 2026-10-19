@@ -1,150 +1,174 @@
 {
   "vocab": [
-    { "en": "destination", "emoji": "📍", "meanings": [
-      { "context": "the place you are travelling to (noun)", "ru": "пункт назначения (место, куда направляются)", "ex": "Paris is our final <b>destination</b>." }
+    { "en": "to launch", "emoji": "🚀", "meanings": [
+      { "context": "to send a rocket into space (verb)", "displayEn": "to launch", "ru": "запускать (отправлять в космос)", "ex": "They will <b>launch</b> the rocket tomorrow." },
+      { "context": "the act of starting something (noun)", "displayEn": "launch", "ru": "запуск (начало)", "ex": "The <b>launch</b> was successful." }
     ]},
-    { "en": "to explore", "emoji": "🗺️", "meanings": [
-      { "context": "to travel around to learn about a place (verb)", "ru": "исследовать (путешествовать для изучения)", "ex": "We want to <b>explore</b> the old city." }
+    { "en": "orbit", "emoji": "🪐", "meanings": [
+      { "context": "the curved path around a planet (noun)", "displayEn": "orbit", "ru": "орбита (путь вокруг планеты)", "ex": "The space station is in <b>orbit</b>." },
+      { "context": "to move around a planet (verb)", "displayEn": "to orbit", "ru": "вращаться по орбите (обходить вокруг)", "ex": "The moon <b>orbits</b> the Earth." }
     ]},
-    { "en": "luggage", "emoji": "🧳", "meanings": [
-      { "context": "the bags you take when you travel (uncountable noun)", "ru": "багаж (сумки в путешествии)", "ex": "You must not leave your <b>luggage</b> alone." }
+    { "en": "to require", "emoji": "📋", "meanings": [
+      { "context": "to need something (verb)", "displayEn": "to require", "ru": "требовать (нуждаться в чем-то)", "ex": "Space travel <b>requires</b> a lot of training." },
+      { "context": "something that is needed (noun)", "displayEn": "requirement", "ru": "требование (необходимое условие)", "ex": "Health is a strict <b>requirement</b>." }
     ]},
-    { "en": "to book", "emoji": "🎫", "meanings": [
-      { "context": "to reserve something in advance (verb)", "displayEn": "to book", "ru": "бронировать (резервировать заранее)", "ex": "I need to <b>book</b> a hotel room." },
-      { "context": "a written work (noun)", "displayEn": "book", "ru": "книга (печатное издание)", "ex": "She is reading a very interesting <b>book</b>." }
+    { "en": "hazard", "emoji": "⚠️", "meanings": [
+      { "context": "a danger or risk (noun)", "displayEn": "hazard", "ru": "опасность (риск, угроза)", "ex": "Space debris is a major <b>hazard</b>." },
+      { "context": "dangerous (adjective)", "displayEn": "hazardous", "ru": "опасный (рискованный)", "ex": "It is a <b>hazardous</b> journey." }
     ]},
-    { "en": "opportunity", "emoji": "🚪", "meanings": [
-      { "context": "a chance to do something good (noun)", "ru": "возможность (шанс сделать что-то хорошее)", "ex": "This trip is a great <b>opportunity</b> to practice English." }
+    { "en": "to survive", "emoji": "🛡️", "meanings": [
+      { "context": "to continue to live in difficult conditions (verb)", "displayEn": "to survive", "ru": "выживать (оставаться в живых)", "ex": "Astronauts must learn how to <b>survive</b> in space." },
+      { "context": "the state of continuing to live (noun)", "displayEn": "survival", "ru": "выживание (сохранение жизни)", "ex": "Survival training is essential." }
     ]},
-    { "en": "to avoid", "emoji": "🚫", "meanings": [
-      { "context": "to stay away from something (verb)", "ru": "избегать (держаться подальше)", "ex": "We should <b>avoid</b> travelling during rush hour." }
+    { "en": "to adapt", "emoji": "🔄", "meanings": [
+      { "context": "to change to fit a new situation (verb)", "displayEn": "to adapt", "ru": "адаптироваться (приспосабливаться)", "ex": "The human body must <b>adapt</b> to zero gravity." },
+      { "context": "a change to fit a new situation (noun)", "displayEn": "adaptation", "ru": "адаптация (приспособление)", "ex": "The <b>adaptation</b> to space takes time." }
     ]},
-    { "en": "to manage", "emoji": "✅", "meanings": [
-      { "context": "to succeed in doing something difficult (verb)", "ru": "справляться, успешно выполнять (с трудом достигать)", "ex": "Did you <b>manage</b> to pack everything?" }
+    { "en": "to establish", "emoji": "🏗️", "meanings": [
+      { "context": "to start something that will last (verb)", "displayEn": "to establish", "ru": "учреждать, основывать (создавать)", "ex": "They want to <b>establish</b> a hotel in orbit." },
+      { "context": "an organization or place (noun)", "displayEn": "establishment", "ru": "учреждение (организация)", "ex": "It is a scientific <b>establishment</b>." }
     ]},
-    { "en": "to advise", "emoji": "💡", "meanings": [
-      { "context": "to tell someone what you think they should do (verb)", "ru": "советовать (рекомендовать)", "ex": "I <b>advise</b> you to buy travel insurance." }
-    ]},
-    { "en": "to be allowed to", "emoji": "🛂", "meanings": [
-      { "context": "to have permission to do something (verb)", "ru": "иметь разрешение (быть допущенным)", "ex": "You are not <b>allowed to</b> take liquids through security." }
-    ]},
-    { "en": "to have to", "emoji": "⚠️", "meanings": [
-      { "context": "used to say something is necessary (verb)", "ru": "быть должным (вынужденным)", "ex": "I <b>have to</b> renew my passport before the trip." }
+    { "en": "to isolate", "emoji": "🏝️", "meanings": [
+      { "context": "to separate someone from others (verb)", "displayEn": "to isolate", "ru": "изолировать (отделять от других)", "ex": "Astronauts can feel <b>isolated</b> in space." },
+      { "context": "the state of being alone (noun)", "displayEn": "isolation", "ru": "изоляция (одиночество)", "ex": "They must cope with <b>isolation</b>." }
     ]}
   ],
   "matchData": [
-    { "word": "destination", "meaning": "the place you are travelling to" },
-    { "word": "to explore", "meaning": "to travel around to learn about a place" },
-    { "word": "luggage", "meaning": "the bags you take when you travel" },
-    { "word": "to book", "meaning": "to reserve something in advance" },
-    { "word": "opportunity", "meaning": "a chance to do something good" },
-    { "word": "to avoid", "meaning": "to stay away from something" },
-    { "word": "to manage", "meaning": "to succeed in doing something difficult" },
-    { "word": "to advise", "meaning": "to tell someone what you think they should do" },
-    { "word": "to be allowed to", "meaning": "to have permission to do something" },
-    { "word": "to have to", "meaning": "used to say something is necessary" }
+    { "word": "to launch", "meaning": "to send a rocket into space" },
+    { "word": "orbit", "meaning": "the curved path around a planet" },
+    { "word": "to require", "meaning": "to need something" },
+    { "word": "hazard", "meaning": "a danger or risk" },
+    { "word": "to survive", "meaning": "to continue to live in difficult conditions" },
+    { "word": "to adapt", "meaning": "to change to fit a new situation" },
+    { "word": "to establish", "meaning": "to start something that will last" },
+    { "word": "to isolate", "meaning": "to separate someone from others" }
   ],
-  "readingHtml": "<h1>The Future of Travel</h1><div class=\"subtitle\">Future Tenses and Modals</div><p><span class=\"para-label\">A.</span>Next summer, Araylim <b>is going to travel</b> to London. She <b>is flying</b> there on July 15th. She is very excited because it is a great <b>opportunity</b>. Her flight <b>leaves</b> at 9 AM. While she is there, she <b>will be exploring</b> many museums.</p><p><span class=\"para-label\">B.</span>Her parents gave her some advice. \"You <b>must not</b> leave your <b>luggage</b> alone,\" her mother said. \"You <b>should</b> always keep your passport safe.\" Araylim <b>has to</b> remember to check in online. She <b>is allowed to</b> take one small bag onto the plane.</p><p><span class=\"para-label\">C.</span>By the time she returns, she <b>will have visited</b> at least five famous places. She hopes she <b>will manage</b> to speak English every day. She wants to <b>avoid</b> speaking Russian to practice more.</p>",
+  "readingHtml": "<h1>The Future of Space Tourism</h1><div class=\"subtitle\">Will you travel to space?</div><p><span class=\"para-label\">A.</span>In the future, traveling to space will not just be for astronauts. Companies are working hard to <b>establish</b> a new industry: space tourism. Next year, they <b>are going to launch</b> the first commercial flights. By 2030, ordinary people <b>will be orbiting</b> the Earth in luxury space hotels.</p><p><span class=\"para-label\">B.</span>However, this type of travel <b>requires</b> strict rules. You <b>have to</b> be in good health. You <b>must not</b> have heart problems. Space is full of <b>hazards</b>, such as space debris. While you <b>are flying</b>, you <b>must</b> wear a special suit. Passengers <b>should</b> also train for a few days before the flight.</p><p><span class=\"para-label\">C.</span>Humans <b>are not adapted</b> to zero gravity. In space, your body <b>will undergo</b> many changes. You might feel <b>isolated</b> or homesick. But most people say they <b>will manage</b> to <b>survive</b> the journey because the view of Earth is unforgettable. Would you <b>be allowed to</b> pay millions of dollars for a ticket? Only time will tell.</p>",
   "readingQ": [
-    { "type": "short", "prompt": "Where is Araylim going next summer?", "answers": ["london"], "exp": "She is going to London." },
-    { "type": "tfng", "prompt": "She is flying on July 15th.", "answer": "True", "exp": "The text says she is flying on July 15th." },
-    { "type": "mcq", "prompt": "What does she want to avoid doing?", "options": ["Speaking English", "Visiting museums", "Speaking Russian"], "correct": "Speaking Russian", "exp": "She wants to avoid speaking Russian to practice more." }
+    { "type": "short", "prompt": "What industry are companies trying to establish?", "answers": ["space tourism"], "exp": "Companies are working to establish space tourism." },
+    { "type": "tfng", "prompt": "You don't need to be in good health to travel to space.", "answer": "False", "exp": "You have to be in good health." },
+    { "type": "mcq", "prompt": "What is an example of a space hazard mentioned in the text?", "options": ["Aliens", "Space debris", "Asteroids"], "correct": "Space debris", "exp": "The text mentions space debris as a hazard." },
+    { "type": "short", "prompt": "What must you wear while flying?", "answers": ["a special suit", "special suit", "suit"], "exp": "You must wear a special suit." },
+    { "type": "tfng", "prompt": "Human bodies are perfectly adapted to zero gravity.", "answer": "False", "exp": "Humans are not adapted to zero gravity." },
+    { "type": "mcq", "prompt": "Why will people manage to survive the journey?", "options": ["Because the food is good", "Because the view of Earth is unforgettable", "Because they sleep all the time"], "correct": "Because the view of Earth is unforgettable", "exp": "The view is unforgettable." },
+    { "type": "long", "prompt": "Explain two rules that passengers must follow for space travel.", "keywordGroups": [["health","good health","heart"],["suit","wear"],["train","training"],["must","have to"]], "minWords": 10, "minGroups": 2, "sample": "Passengers must be in good health and must not have heart problems. They also have to wear a special suit and should train for a few days.", "exp": "Key ideas: health requirements, wearing a suit, training." }
   ],
   "contextQ": [
-    { "prompt": "In paragraph A, \"opportunity\" means...", "options": ["a chance to do something", "a type of airplane", "a difficult problem"], "correct": "a chance to do something", "exp": "An opportunity is a good chance." },
-    { "prompt": "In paragraph B, \"luggage\" refers to...", "options": ["the bags you take when you travel", "the food you eat", "the clothes you wear"], "correct": "the bags you take when you travel", "exp": "Luggage means travel bags." }
+    { "prompt": "In paragraph B, \"hazards\" means...", "options": ["dangers", "beautiful views", "holidays"], "correct": "dangers", "exp": "Hazards are dangers or risks." },
+    { "prompt": "In paragraph C, \"isolated\" means...", "options": ["separated from other people", "surrounded by aliens", "feeling happy"], "correct": "separated from other people", "exp": "Isolated means alone or separated." }
   ],
   "g6": {
     "pos": [
-      { "p": "Look at those clouds! It ___ (rain).", "a": "is going to rain", "ex": "Going to: prediction based on evidence." },
-      { "p": "I ___ (meet) her tomorrow at 5 PM.", "a": "am meeting", "ex": "Present Continuous for future arrangements." },
-      { "p": "The train ___ (leave) at 8 AM tomorrow.", "a": "leaves", "ex": "Present Simple for timetables." }
+      { "p": "Next year, they ___ (launch) a new rocket.", "a": "are going to launch", "ex": "Going to: future plan." },
+      { "p": "Look at those clouds! It ___ (rain).", "a": "is going to rain", "ex": "Going to: prediction." },
+      { "p": "I think humans ___ (live) on Mars one day.", "a": "will live", "ex": "Will: prediction." },
+      { "p": "The space shuttle ___ (leave) at 9 AM tomorrow.", "a": "leaves", "ex": "Present Simple: timetable." },
+      { "p": "We ___ (meet) the astronauts tomorrow.", "a": "are meeting", "ex": "Present Continuous: arrangement." }
     ],
     "neg": [
-      { "p": "I ___ (not / travel) to Paris next week.", "a": "am not going to travel", "ex": "Going to negative." }
+      { "p": "I ___ (not / travel) to space next year.", "a": "am not going to travel", "ex": "Going to negative." },
+      { "p": "They ___ (not / arrive) on time.", "a": "will not arrive", "ex": "Will negative." }
     ],
     "q": [
-      { "p": "___ you ___ (come) to the party tonight?", "a": "Are you coming", "ex": "Present Continuous for future question." }
+      { "p": "___ you ___ (come) to the space museum tomorrow?", "a": "Are you coming", "ex": "Present Continuous future question." },
+      { "p": "___ it ___ (be) cold in space?", "a": "Will it be", "ex": "Will question." }
     ],
     "shuffled": [
-      { "p": "I ___ (buy) a new phone tomorrow.", "a": "am going to buy" },
-      { "p": "Don't worry, I ___ (help) you.", "a": "will help" }
+      { "p": "I ___ (buy) a telescope next week.", "a": "am going to buy" },
+      { "p": "The train ___ (leave) at 8.", "a": "leaves" },
+      { "p": "I ___ (help) you with your project.", "a": "will help" },
+      { "p": "She ___ (have) a baby in May.", "a": "is having" }
     ]
   },
   "g7": {
     "pos": [
-      { "p": "You ___ (should) see a doctor if you feel sick.", "a": "should", "ex": "Modal verb for advice." },
-      { "p": "I ___ (must) finish my homework today.", "a": "must", "ex": "Modal verb for obligation." },
-      { "p": "She ___ (have to) wear a uniform at school.", "a": "has to", "ex": "Modal verb for external obligation." }
+      { "p": "You ___ (must) wear a helmet on the bike.", "a": "must", "ex": "Obligation." },
+      { "p": "You ___ (should) eat more vegetables.", "a": "should", "ex": "Advice." },
+      { "p": "I ___ (have to) study for the test.", "a": "have to", "ex": "Necessity." },
+      { "p": "Passengers ___ (can) buy food on the plane.", "a": "can", "ex": "Permission/ability." },
+      { "p": "It ___ (might) rain tomorrow.", "a": "might", "ex": "Possibility." }
     ],
     "neg": [
-      { "p": "You ___ (must not) smoke in the hospital.", "a": "must not", "ex": "Modal verb for prohibition." },
-      { "p": "You ___ (not / have to) come if you are busy.", "a": "do not have to", "ex": "Not necessary." }
+      { "p": "You ___ (must not) smoke here.", "a": "must not", "ex": "Prohibition." },
+      { "p": "You ___ (not / have to) come if you are tired.", "a": "do not have to", "ex": "No obligation." },
+      { "p": "You ___ (should not) drink and drive.", "a": "should not", "ex": "Negative advice." }
     ],
     "q": [
-      { "p": "___ I ___ (can) borrow your pen?", "a": "Can I borrow", "ex": "Modal verb for permission." }
+      { "p": "___ I ___ (use) your phone?", "a": "Can I use", "ex": "Permission question." },
+      { "p": "___ we ___ (have to) pay for the tickets?", "a": "Do we have to", "ex": "Necessity question." }
     ],
     "shuffled": [
-      { "p": "You ___ (should not) eat too much sugar.", "a": "should not" },
-      { "p": "They ___ (might) come to the party later.", "a": "might" }
+      { "p": "You ___ (must) be careful.", "a": "must" },
+      { "p": "We ___ (should) leave early.", "a": "should" },
+      { "p": "He ___ (can) speak three languages.", "a": "can" },
+      { "p": "They ___ (might not) come.", "a": "might not" }
     ]
   },
   "sbPp": {
     "pos": [
-      { "prompt": "Build a Future sentence with 'going to'.", "correct": ["I","am","going","to","book","a","hotel."] }
+      { "prompt": "Build a Future sentence with 'will'.", "correct": ["I","will","travel","to","space."] }
     ],
     "neg": [
-      { "prompt": "Build a negative sentence with 'will'.", "correct": ["I","will","not","forget","your","luggage."] }
+      { "prompt": "Build a negative Future sentence with 'going to'.", "correct": ["I","am","not","going","to","take","the","train."] }
     ],
     "q": [
-      { "prompt": "Build a question with 'will'.", "correct": ["Will","you","travel","to","London?"] }
+      { "prompt": "Build a Future question with 'will'.", "correct": ["Will","you","come","with","me?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: She is flying to Paris tomorrow.", "correct": ["She","is","flying","to","Paris","tomorrow."] }
+      { "prompt": "Build: They are going to launch a rocket.", "correct": ["They","are","going","to","launch","a","rocket."] }
     ]
   },
   "sbPs": {
     "pos": [
-      { "prompt": "Build a sentence with 'must'.", "correct": ["You","must","show","your","passport."] }
+      { "prompt": "Build a sentence with 'must'.", "correct": ["You","must","wear","a","seatbelt."] }
     ],
     "neg": [
-      { "prompt": "Build a sentence with 'should not'.", "correct": ["You","should","not","leave","your","bag","here."] }
+      { "prompt": "Build a sentence with 'must not'.", "correct": ["You","must","not","touch","that","button."] }
     ],
     "q": [
-      { "prompt": "Build a question with 'have to'.", "correct": ["Do","we","have","to","book","a","ticket?"] }
+      { "prompt": "Build a question with 'should'.", "correct": ["Should","we","leave","now?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: They can visit the museum for free.", "correct": ["They","can","visit","the","museum","for","free."] }
+      { "prompt": "Build: She can play the guitar.", "correct": ["She","can","play","the","guitar."] }
     ]
   },
   "g10": {
     "pos": [
-      { "p": "I ___ (see) the dentist tomorrow.", "a": "am seeing", "ex": "Future arrangement." },
-      { "p": "Look at the sky! It ___ (snow).", "a": "is going to snow", "ex": "Prediction." },
-      { "p": "I ___ (call) you when I arrive.", "a": "will call", "ex": "Promise/instant decision." }
+      { "p": "I ___ (see) the doctor tomorrow.", "a": "am seeing", "ex": "Future arrangement." },
+      { "p": "The sun ___ (rise) in the east.", "a": "rises", "ex": "General truth." },
+      { "p": "I ___ (call) you when I arrive.", "a": "will call", "ex": "Instant decision/promise." },
+      { "p": "She ___ (study) English for 5 years.", "a": "has studied", "ex": "Present Perfect." },
+      { "p": "They ___ (travel) to Paris last week.", "a": "traveled", "ex": "Past Simple." }
     ],
     "neg": [
-      { "p": "We ___ (not / have to) pay. It's free.", "a": "do not have to", "ex": "No obligation." }
+      { "p": "I ___ (not / finish) my homework yet.", "a": "have not finished", "ex": "Present Perfect negative." },
+      { "p": "We ___ (not / go) to the party tonight.", "a": "are not going", "ex": "Present Continuous future negative." }
     ],
     "q": [
-      { "p": "___ you ___ (travel) by train or by bus?", "a": "Are you going to travel", "ex": "Future plan question." }
+      { "p": "___ you ever ___ (be) to a concert?", "a": "Have you ever been", "ex": "Present Perfect question." },
+      { "p": "___ she ___ (play) tennis yesterday?", "a": "Did she play", "ex": "Past Simple question." }
     ],
     "shuffled": [
-      { "p": "You ___ (must) be careful.", "a": "must" },
-      { "p": "I ___ (might) go to the beach.", "a": "might" }
+      { "p": "I ___ (live) here since 2015.", "a": "have lived" },
+      { "p": "We ___ (watch) a movie when the power went out.", "a": "were watching" },
+      { "p": "He ___ (go) to school every day.", "a": "goes" },
+      { "p": "They ___ (just / arrive).", "a": "have just arrived" }
     ]
   },
   "testMcq": [
-    { "q": "Which word means 'the place you are travelling to'?", "options": ["destination", "luggage", "opportunity"], "correct": "destination", "exp": "Destination is the place you travel to." }
+    { "q": "Which word means 'a danger or risk'?", "options": ["hazard", "orbit", "launch"], "correct": "hazard", "exp": "Hazard means danger." },
+    { "q": "Which word means 'to change to fit a new situation'?", "options": ["to adapt", "to survive", "to isolate"], "correct": "to adapt", "exp": "Adapt means to change to fit." },
+    { "q": "Which word means 'to separate someone from others'?", "options": ["to isolate", "to establish", "to require"], "correct": "to isolate", "exp": "Isolate means to separate." }
   ],
   "testShort": [
-    { "q": "Where is Araylim going next summer?", "answers": ["london"], "exp": "To London." }
+    { "q": "What industry are companies trying to establish?", "answers": ["space tourism"], "exp": "Space tourism." }
   ],
   "testTfng": [
-    { "q": "She is allowed to take a large bag on the plane.", "answer": "False", "exp": "She is allowed to take one small bag." }
+    { "q": "You don't need to be in good health to travel to space.", "answer": "False", "exp": "You have to be in good health." },
+    { "q": "Space debris is a hazard.", "answer": "True", "exp": "It is mentioned as a hazard." }
   ],
   "testComplete": [
-    { "p": "By the time she returns, she ___ (visit) five places.", "a": "will have visited" },
-    { "p": "You ___ (should) keep your passport safe.", "a": "should" }
+    { "p": "Next year, they ___ (launch) a new rocket.", "a": "are going to launch" },
+    { "p": "You ___ (must) wear a helmet.", "a": "must" }
   ]
 }

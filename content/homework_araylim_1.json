@@ -1,32 +1,57 @@
 {
   "title": "Araylim · Revision — Homework",
-  "headline": "The Science Project",
-  "intro": "Read the story and answer the questions. Practice your present and past tenses!",
-  "hero": "🔬 → 🏆",
+  "headline": "The Octopus: An Alien on Earth",
+  "intro": "Read the fascinating science text about octopuses and answer the questions. Practice your present and past tenses!",
+  "hero": "🐙 → 🌊",
   "sub": "Revision · Reading & Grammar",
   "eyebrow": "Topic · Revision · Homework",
   "reading": {
-    "title": "The Science Project",
-    "subtitle": "A story about a challenge",
+    "title": "The Octopus: An Alien on Earth",
+    "subtitle": "A story about strange intelligence",
     "paragraphs": [
-      { "label": "A.", "text": "Last month, Araylim had a big challenge. Her science teacher asked the class to build a small robot. Araylim had never built a robot before, so she felt nervous. But she decided to try her best. She spent many hours reading books and watching videos about robots." },
-      { "label": "B.", "text": "While she was building the robot, she made a few mistakes. Once, she connected the wrong wire and the robot did not move. However, she did not give up. She asked her father for help, and he showed her how to fix it. They worked together for three days." },
-      { "label": "C.", "text": "Finally, the robot was finished. When Araylim presented it in class, the robot walked across the table! The teacher was very impressed and gave her an A. Araylim has learned that hard work and practice always lead to success." }
+      { "label": "A.", "text": "If you want to see a real alien, you don't need to look at the stars. You just need to look in the ocean. The octopus is one of the strangest animals on our planet. It has three hearts, blue blood, and nine brains. Yes, you read that right! It has one main brain in its head and a small brain in each of its eight arms." },
+      { "label": "B.", "text": "Last summer, marine biologists studied an octopus in the Pacific Ocean. While the scientists were watching, the octopus changed its color and texture to look exactly like a rock. It hid from a shark that was swimming nearby. When the shark left, the octopus quickly moved away using its arms to walk on the sea floor." },
+      { "label": "C.", "text": "Scientists have discovered that octopuses are very intelligent. They can open jars, solve puzzles, and even escape from their tanks at night. An octopus once escaped from a lab by squeezing through a tiny hole and sliding across the floor to a bucket of fish. They are truly the masters of survival." }
     ]
   },
   "vocab": [
-    { "en": "challenge", "emoji": "⛰️", "meanings": [ { "context": "a difficult task (noun)", "ru": "испытание (трудная задача)", "ex": "Building a robot was a big <b>challenge</b>." } ] },
-    { "en": "to build", "emoji": "🔨", "meanings": [ { "context": "to make something by putting parts together (verb)", "ru": "строить, собирать (создавать из частей)", "ex": "She wanted to <b>build</b> a robot." } ] },
-    { "en": "mistake", "emoji": "❌", "meanings": [ { "context": "something done wrong (noun)", "ru": "ошибка (неправильное действие)", "ex": "She made a few <b>mistakes</b>." } ] },
-    { "en": "to fix", "emoji": "🔧", "meanings": [ { "context": "to repair something (verb)", "ru": "чинить, исправлять (восстанавливать работу)", "ex": "He showed her how to <b>fix</b> the robot." } ] },
-    { "en": "success", "emoji": "🌟", "meanings": [ { "context": "achieving a goal (noun)", "ru": "успех (достижение цели)", "ex": "Hard work leads to <b>success</b>." } ] }
+    { "en": "alien", "emoji": "👽", "meanings": [
+      { "context": "a creature from another planet (noun)", "displayEn": "alien", "ru": "пришелец (существо с другой планеты)", "ex": "The octopus looks like an <b>alien</b>." },
+      { "context": "strange and unfamiliar (adjective)", "displayEn": "alien", "ru": "чужой, чуждый (странный)", "ex": "The customs were <b>alien</b> to me." }
+    ]},
+    { "en": "texture", "emoji": "🧶", "meanings": [
+      { "context": "how something feels when you touch it (noun)", "ru": "текстура (строение поверхности на ощупь)", "ex": "The octopus changed its skin <b>texture</b>." }
+    ]},
+    { "en": "to hide", "emoji": "🫣", "meanings": [
+      { "context": "to go somewhere you cannot be seen (verb)", "ru": "прятаться (скрываться)", "ex": "It tried to <b>hide</b> from the shark." }
+    ]},
+    { "en": "to escape", "emoji": "🏃‍♂️", "meanings": [
+      { "context": "to get away from a place (verb)", "displayEn": "to escape", "ru": "совершать побег (выбираться)", "ex": "The octopus managed to <b>escape</b> the tank." },
+      { "context": "the act of getting away (noun)", "displayEn": "escape", "ru": "побег (спасение)", "ex": "It was a brilliant <b>escape</b>." }
+    ]},
+    { "en": "intelligent", "emoji": "🧠", "meanings": [
+      { "context": "able to learn and understand things (adjective)", "displayEn": "intelligent", "ru": "умный, сообразительный (способный учиться)", "ex": "Octopuses are very <b>intelligent</b>." },
+      { "context": "the ability to learn (noun)", "displayEn": "intelligence", "ru": "интеллект (умственные способности)", "ex": "They have a different kind of <b>intelligence</b>." }
+    ]},
+    { "en": "marine", "emoji": "🌊", "meanings": [
+      { "context": "related to the sea (adjective)", "ru": "морской (относящийся к морю)", "ex": "<b>Marine</b> biology is the study of sea life." }
+    ]},
+    { "en": "to slide", "emoji": "🛝", "meanings": [
+      { "context": "to move smoothly over a surface (verb)", "ru": "скользить (плавно двигаться)", "ex": "It <b>slid</b> across the floor." }
+    ]},
+    { "en": "survival", "emoji": "🛡️", "meanings": [
+      { "context": "continuing to live in difficult conditions (noun)", "ru": "выживание (сохранение жизни)", "ex": "Camouflage is key for their <b>survival</b>." }
+    ]}
   ],
   "questions": [
-    { "type": "short", "prompt": "What did the teacher ask the class to build?", "answers": ["a robot", "robot", "small robot"], "exp": "The teacher asked them to build a small robot." },
-    { "type": "tfng", "prompt": "Araylim had built many robots before.", "answer": "False", "exp": "She had never built a robot before." },
-    { "type": "tfng", "prompt": "She gave up when she made a mistake.", "answer": "False", "exp": "She did not give up." },
-    { "type": "mcq", "prompt": "Who helped her fix the robot?", "options": ["Her teacher", "Her father", "Her friend"], "correct": "Her father", "exp": "She asked her father for help." },
-    { "type": "complete", "prompt": "While she ___ (build) the robot, she made a few mistakes.", "answers": ["was building"] },
-    { "type": "complete", "prompt": "Araylim ___ (learn) that hard work leads to success.", "answers": ["has learned", "has learnt"] }
+    { "type": "short", "prompt": "How many hearts does an octopus have?", "answers": ["three", "3"], "exp": "It has three hearts." },
+    { "type": "tfng", "prompt": "An octopus has only one brain in its head.", "answer": "False", "exp": "It has nine brains (one main and eight in its arms)." },
+    { "type": "mcq", "prompt": "What did the octopus do to hide from the shark?", "options": ["It swam away quickly", "It changed its color and texture", "It attacked the shark"], "correct": "It changed its color and texture", "exp": "It changed its color and texture to look like a rock." },
+    { "type": "tfng", "prompt": "Scientists found that octopuses are not very intelligent.", "answer": "False", "exp": "They are very intelligent and can open jars and solve puzzles." },
+    { "type": "short", "prompt": "How did the octopus in the lab escape?", "answers": ["squeezing through a tiny hole", "through a hole"], "exp": "By squeezing through a tiny hole." },
+    { "type": "complete", "prompt": "While the scientists ___ (watch), the octopus changed color.", "answers": ["were watching"] },
+    { "type": "complete", "prompt": "Last summer, biologists ___ (study) an octopus.", "answers": ["studied"] },
+    { "type": "complete", "prompt": "Scientists have ___ (discover) that they are very smart.", "answers": ["discovered"] },
+    { "type": "long", "prompt": "Why is the octopus described as an 'alien' in the text?", "keywordGroups": [["strange","different","alien"],["three hearts","blue blood","nine brains"],["ocean","planet","earth"]], "minWords": 10, "minGroups": 2, "sample": "The octopus is described as an alien because it looks very strange. It has three hearts, blue blood, and nine brains, which makes it look like a creature from another planet.", "exp": "Key ideas: strange appearance, unusual biology." }
   ]
 }

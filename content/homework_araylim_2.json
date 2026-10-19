@@ -1,32 +1,52 @@
 {
   "title": "Araylim · Future & Modals — Homework",
-  "headline": "A Trip to the Mountains",
-  "intro": "Read the email and answer the questions. Practice future forms and modal verbs!",
-  "hero": "🏔️ → 🎒",
+  "headline": "Living on Mars: The Ultimate Challenge",
+  "intro": "Read the science article about future life on Mars and answer the questions. Practice future forms and modals!",
+  "hero": "🔴 → 🚀",
   "sub": "Future & Modals · Reading & Grammar",
   "eyebrow": "Topic · Future & Modals · Homework",
   "reading": {
-    "title": "A Trip to the Mountains",
-    "subtitle": "An email from a friend",
+    "title": "Living on Mars",
+    "subtitle": "Will humans become a multi-planet species?",
     "paragraphs": [
-      { "label": "A.", "text": "Hi Araylim! I have great news. My family and I are going to visit the mountains next month. We are leaving on Friday afternoon. We have already booked a small cabin near a lake. You should come with us! It is a wonderful opportunity to relax." },
-      { "label": "B.", "text": "There are a few things you must know. You have to bring warm clothes because it will be cold at night. You don't have to bring food, because we will buy it there. Also, you must not forget your hiking boots. We will be walking a lot." },
-      { "label": "C.", "text": "By the time we return, we will have climbed the highest mountain in the area. I hope you can join us. Let me know if you can come by tomorrow. I will book the extra bed as soon as I hear from you." }
+      { "label": "A.", "text": "In the next few decades, humans are going to travel to Mars. NASA and private companies like SpaceX are planning to establish a permanent colony on the Red Planet. By 2050, astronauts will have built the first Martian base. But living on Mars will be incredibly difficult." },
+      { "label": "B.", "text": "First, the journey itself is a hazard. It takes about seven months to get there. Astronauts will have to survive in a tiny spaceship for a long time. They might feel isolated and lonely. When they arrive, they must adapt to a planet with almost no oxygen and freezing temperatures. They will have to wear special suits whenever they go outside." },
+      { "label": "C.", "text": "To survive, humans will need to grow their own food. Scientists have already discovered that some plants can grow in Martian soil. Colonists should also build underground homes to hide from dangerous radiation. It will be a very hard life, but it is an exciting challenge for the future of humanity." }
     ]
   },
   "vocab": [
-    { "en": "to book", "emoji": "🎫", "meanings": [ { "context": "to reserve in advance (verb)", "ru": "бронировать (резервировать заранее)", "ex": "We have <b>booked</b> a cabin." } ] },
-    { "en": "opportunity", "emoji": "🚪", "meanings": [ { "context": "a chance to do something (noun)", "ru": "возможность (шанс)", "ex": "It is a great <b>opportunity</b>." } ] },
-    { "en": "to have to", "emoji": "⚠️", "meanings": [ { "context": "necessary (verb)", "ru": "быть должным (необходимость)", "ex": "You <b>have to</b> bring warm clothes." } ] },
-    { "en": "must not", "emoji": "🚫", "meanings": [ { "context": "prohibited (verb)", "ru": "нельзя (запрещено)", "ex": "You <b>must not</b> forget your boots." } ] },
-    { "en": "to climb", "emoji": "🧗", "meanings": [ { "context": "to go up a mountain (verb)", "ru": "взбираться (подниматься вверх)", "ex": "We will <b>climb</b> the mountain." } ] }
+    { "en": "colony", "emoji": "🏙️", "meanings": [
+      { "context": "a group of people living in a new place (noun)", "displayEn": "colony", "ru": "колония (поселение в новой местности)", "ex": "They want to build a <b>colony</b> on Mars." },
+      { "context": "to live in a new place (verb)", "displayEn": "to colonize", "ru": "колонизировать (заселять)", "ex": "Humans will try to <b>colonize</b> the planet." }
+    ]},
+    { "en": "permanent", "emoji": "🏗️", "meanings": [
+      { "context": "lasting for a long time (adjective)", "ru": "постоянный (долговременный)", "ex": "They want a <b>permanent</b> base." }
+    ]},
+    { "en": "journey", "emoji": "🛣️", "meanings": [
+      { "context": "traveling from one place to another (noun)", "ru": "путешествие (поездка)", "ex": "The <b>journey</b> takes seven months." }
+    ]},
+    { "en": "oxygen", "emoji": "🫁", "meanings": [
+      { "context": "the gas we need to breathe (noun)", "ru": "кислород (газ для дыхания)", "ex": "Mars has almost no <b>oxygen</b>." }
+    ]},
+    { "en": "radiation", "emoji": "☢️", "meanings": [
+      { "context": "dangerous energy from space (noun)", "ru": "радиация (опасная энергия)", "ex": "They must hide from <b>radiation</b>." }
+    ]},
+    { "en": "to build", "emoji": "🔨", "meanings": [
+      { "context": "to make something by putting parts together (verb)", "ru": "строить (создавать)", "ex": "They will <b>build</b> underground homes." }
+    ]},
+    { "en": "dangerous", "emoji": "⚠️", "meanings": [
+      { "context": "likely to cause harm (adjective)", "ru": "опасный (могущий навредить)", "ex": "Space is a <b>dangerous</b> place." }
+    ]}
   ],
   "questions": [
-    { "type": "short", "prompt": "Where are they going next month?", "answers": ["the mountains", "mountains"], "exp": "They are going to the mountains." },
-    { "type": "tfng", "prompt": "They have not booked a cabin yet.", "answer": "False", "exp": "They have already booked a cabin." },
-    { "type": "mcq", "prompt": "Why must Araylim bring warm clothes?", "options": ["Because it will rain", "Because it will be cold at night", "Because it is fashionable"], "correct": "Because it will be cold at night", "exp": "It will be cold at night." },
-    { "type": "tfng", "prompt": "Araylim has to bring her own food.", "answer": "False", "exp": "She doesn't have to bring food." },
-    { "type": "complete", "prompt": "By the time they return, they ___ (climb) the highest mountain.", "answers": ["will have climbed"] },
-    { "type": "complete", "prompt": "You ___ (should) come with us! It's a great chance.", "answers": ["should"] }
+    { "type": "short", "prompt": "Which planet do humans want to travel to?", "answers": ["mars", "the red planet"], "exp": "Humans want to travel to Mars." },
+    { "type": "tfng", "prompt": "The journey to Mars takes about seven months.", "answer": "True", "exp": "It takes about seven months." },
+    { "type": "mcq", "prompt": "Why must astronauts wear special suits outside?", "options": ["Because it is raining", "Because there is no oxygen and it is freezing", "Because of the aliens"], "correct": "Because there is no oxygen and it is freezing", "exp": "They must adapt to a planet with almost no oxygen and freezing temperatures." },
+    { "type": "tfng", "prompt": "Scientists think plants can never grow on Mars.", "answer": "False", "exp": "Scientists have discovered some plants can grow in Martian soil." },
+    { "type": "short", "prompt": "Where should colonists build their homes to hide from radiation?", "answers": ["underground", "underground homes"], "exp": "They should build underground homes." },
+    { "type": "complete", "prompt": "By 2050, astronauts ___ (build) the first Martian base.", "answers": ["will have built"] },
+    { "type": "complete", "prompt": "They ___ (might) feel isolated and lonely.", "answers": ["might"] },
+    { "type": "complete", "prompt": "They ___ (have to) wear special suits.", "answers": ["will have to"] },
+    { "type": "long", "prompt": "What are two challenges of living on Mars mentioned in the text?", "keywordGroups": [["radiation","space","journey"],["oxygen","freezing","temperature"],["isolated","lonely"],["food","plants"]], "minWords": 10, "minGroups": 2, "sample": "Two challenges are the long journey where astronauts might feel isolated, and the environment on Mars, which has no oxygen, freezing temperatures, and dangerous radiation.", "exp": "Key ideas: isolation, lack of oxygen, freezing temps, radiation." }
   ]
 }

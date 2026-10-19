@@ -1,165 +1,204 @@
 {
   "vocab": [
-    { "en": "achieve", "emoji": "🏆", "meanings": [
-      { "context": "to succeed in doing something good (verb)", "displayEn": "to achieve", "ru": "достигать (успешно справляться с чем-то)", "ex": "She <b>achieved</b> her goal of learning English." },
-      { "context": "something done successfully (noun)", "displayEn": "achievement", "ru": "достижение (успешный результат)", "ex": "Winning the competition was a great <b>achievement</b>." }
+    { "en": "memory", "emoji": "🧠", "meanings": [
+      { "context": "the ability to remember things (noun)", "displayEn": "memory", "ru": "память (способность запоминать)", "ex": "She has an excellent <b>memory</b> for names." },
+      { "context": "to learn something by heart (verb)", "displayEn": "to memorize", "ru": "запоминать (учить наизусть)", "ex": "You need to <b>memorize</b> these grammar rules." }
     ]},
-    { "en": "challenge", "emoji": "⛰️", "meanings": [
-      { "context": "something difficult to do (noun)", "displayEn": "challenge", "ru": "испытание (трудная задача)", "ex": "Learning a new language is a big <b>challenge</b>." },
-      { "context": "to invite someone to compete (verb)", "displayEn": "to challenge", "ru": "бросать вызов (приглашать к соревнованию)", "ex": "He <b>challenged</b> me to a game of chess." }
+    { "en": "to process", "emoji": "⚙️", "meanings": [
+      { "context": "to handle information (verb)", "displayEn": "to process", "ru": "обрабатывать (воспринимать информацию)", "ex": "Our brains <b>process</b> thousands of images every day." },
+      { "context": "a series of actions (noun)", "displayEn": "process", "ru": "процесс (последовательность действий)", "ex": "Learning a language is a slow <b>process</b>." }
     ]},
-    { "en": "progress", "emoji": "📈", "meanings": [
-      { "context": "movement forward or improvement (noun)", "displayEn": "progress", "ru": "прогресс (движение вперед или улучшение)", "ex": "You are making excellent <b>progress</b> in math." },
-      { "context": "to move forward or improve (verb)", "displayEn": "to progress", "ru": "продвигаться (развиваться)", "ex": "The project is <b>progressing</b> well." }
+    { "en": "to recall", "emoji": "💭", "meanings": [
+      { "context": "to bring a memory back to your mind (verb)", "displayEn": "to recall", "ru": "вспоминать (вызывать в памяти)", "ex": "Can you <b>recall</b> what happened yesterday?" },
+      { "context": "the act of remembering (noun)", "displayEn": "recall", "ru": "воспоминание (акт припоминания)", "ex": "His <b>recall</b> of the event was perfect." }
     ]},
-    { "en": "to improve", "emoji": "✨", "meanings": [
-      { "context": "to make something better (verb)", "ru": "улучшать (делать лучше)", "ex": "I want to <b>improve</b> my speaking skills." }
+    { "en": "neuron", "emoji": "🔗", "meanings": [
+      { "context": "a nerve cell in the brain (noun)", "ru": "нейрон (клетка мозга)", "ex": "A single <b>neuron</b> can connect to thousands of others." }
     ]},
-    { "en": "to succeed", "emoji": "🎯", "meanings": [
-      { "context": "to achieve what you wanted (verb)", "ru": "добиваться успеха (достигать цели)", "ex": "If you work hard, you will <b>succeed</b>." }
+    { "en": "to connect", "emoji": "🌉", "meanings": [
+      { "context": "to join two things together (verb)", "displayEn": "to connect", "ru": "соединять (связывать)", "ex": "The brain uses electricity to <b>connect</b> cells." },
+      { "context": "a relationship or link (noun)", "displayEn": "connection", "ru": "связь (соединение, отношение)", "ex": "There is a strong <b>connection</b> between sleep and memory." }
     ]},
-    { "en": "success", "emoji": "🌟", "meanings": [
-      { "context": "the achieving of a goal (noun)", "ru": "успех (достижение цели)", "ex": "Her business is a huge <b>success</b>." }
+    { "en": "accurate", "emoji": "🎯", "meanings": [
+      { "context": "correct and exact (adjective)", "displayEn": "accurate", "ru": "точный (правильный)", "ex": "Her description of the event was very <b>accurate</b>." },
+      { "context": "the quality of being exact (noun)", "displayEn": "accuracy", "ru": "точность (степень правильности)", "ex": "He threw the ball with great <b>accuracy</b>." }
     ]},
-    { "en": "habit", "emoji": "🔄", "meanings": [
-      { "context": "something you do regularly (noun)", "ru": "привычка (регулярное действие)", "ex": "Reading before bed is a good <b>habit</b>." }
+    { "en": "to trigger", "emoji": "💥", "meanings": [
+      { "context": "to cause something to happen (verb)", "displayEn": "to trigger", "ru": "вызывать (служить причиной)", "ex": "A smell can <b>trigger</b> a happy memory." },
+      { "context": "a cause of an action (noun)", "displayEn": "trigger", "ru": "триггер (пусковой механизм)", "ex": "The loud noise was a <b>trigger</b> for his fear." }
     ]},
-    { "en": "to practice", "emoji": "🎹", "meanings": [
-      { "context": "to do something regularly to get better (verb)", "ru": "практиковаться (регулярно делать для навыка)", "ex": "You need to <b>practice</b> the piano every day." }
+    { "en": "to store", "emoji": "📦", "meanings": [
+      { "context": "to keep information for later (verb)", "displayEn": "to store", "ru": "хранить (сохранять для будущего)", "ex": "The brain can <b>store</b> a lifetime of information." },
+      { "context": "space to keep things (noun)", "displayEn": "storage", "ru": "хранилище (место для хранения)", "ex": "We need more <b>storage</b> for these files." }
     ]},
-    { "en": "experience", "emoji": "💼", "meanings": [
-      { "context": "knowledge from doing things (uncountable noun)", "displayEn": "experience", "ru": "опыт (знания от практики)", "ex": "She has a lot of <b>experience</b> in teaching." },
-      { "context": "something that happens to you (countable noun)", "displayEn": "an experience", "ru": "случай, переживание (событие)", "ex": "Living abroad was a wonderful <b>experience</b>." }
+    { "en": "to forget", "emoji": "🌫️", "meanings": [
+      { "context": "to be unable to remember (verb)", "displayEn": "to forget", "ru": "забывать (терять из памяти)", "ex": "I always <b>forget</b> where I put my keys." },
+      { "context": "the tendency to forget (noun)", "displayEn": "forgetfulness", "ru": "забывчивость (склонность забывать)", "ex": "His <b>forgetfulness</b> causes problems at work." }
     ]},
     { "en": "skill", "emoji": "🛠️", "meanings": [
-      { "context": "the ability to do something well (noun)", "ru": "навык (умение делать что-то хорошо)", "ex": "Communication is a very important <b>skill</b>." }
+      { "context": "the ability to do something well (noun)", "ru": "навык (умение делать что-то хорошо)", "ex": "Speaking English is a very useful <b>skill</b>." }
     ]}
   ],
   "matchData": [
-    { "word": "achieve", "meaning": "to succeed in doing something good" },
-    { "word": "challenge", "meaning": "something difficult to do" },
-    { "word": "progress", "meaning": "movement forward or improvement" },
-    { "word": "to improve", "meaning": "to make something better" },
-    { "word": "to succeed", "meaning": "to achieve what you wanted" },
-    { "word": "success", "meaning": "the achieving of a goal" },
-    { "word": "habit", "meaning": "something you do regularly" },
-    { "word": "to practice", "meaning": "to do something regularly to get better" },
-    { "word": "experience", "meaning": "knowledge from doing things" },
+    { "word": "memory", "meaning": "the ability to remember things" },
+    { "word": "to process", "meaning": "to handle information" },
+    { "word": "to recall", "meaning": "to bring a memory back to your mind" },
+    { "word": "neuron", "meaning": "a nerve cell in the brain" },
+    { "word": "to connect", "meaning": "to join two things together" },
+    { "word": "accurate", "meaning": "correct and exact" },
+    { "word": "to trigger", "meaning": "to cause something to happen" },
+    { "word": "to store", "meaning": "to keep information for later" },
+    { "word": "to forget", "meaning": "to be unable to remember" },
     { "word": "skill", "meaning": "the ability to do something well" }
   ],
-  "readingHtml": "<h1>Araylim's Learning Journey</h1><div class=\"subtitle\">Revision: Present and Past Tenses</div><p><span class=\"para-label\">A.</span>Araylim is 14 years old and she loves learning new things. Every day, she <b>wakes</b> up at 7 AM and <b>reads</b> a book for thirty minutes. This is a good <b>habit</b>. She has a big <b>goal</b>: she wants to <b>improve</b> her English to an advanced level. She usually <b>practices</b> speaking with her friends.</p><p><span class=\"para-label\">B.</span>Yesterday, Araylim <b>had</b> a difficult exam. While she <b>was taking</b> the test, she <b>felt</b> a bit nervous. However, she <b>remembered</b> all her vocabulary and <b>succeeded</b>. She <b>has already received</b> her results, and she got a perfect score! It was a great <b>achievement</b>.</p><p><span class=\"para-label\">C.</span>Now, she <b>is studying</b> for a new <b>challenge</b>. She <b>has been learning</b> French since January. She says that learning a new <b>skill</b> is a wonderful <b>experience</b>. Her parents are very proud of her <b>progress</b>.</p>",
+  "readingHtml": "<h1>The Science of Memory</h1><div class=\"subtitle\">How does your brain remember?</div><p><span class=\"para-label\">A.</span>Have you ever wondered how you remember your best friend's face, but <b>forget</b> where you put your phone? The human brain is the most complex machine in the known universe. It contains about 86 billion <b>neurons</b> (nerve cells). These neurons <b>connect</b> with each other to form a huge network.</p><p><span class=\"para-label\">B.</span>When you learn something new, your brain <b>processes</b> the information. For example, if you <b>memorize</b> a new English word, the neurons send electrical signals to each other. Over time, this <b>connection</b> becomes stronger. The brain then <b>stores</b> this word in your <b>memory</b>. But memories are not always <b>accurate</b>. Sometimes, a specific smell or sound can <b>trigger</b> a memory you thought you had lost.</p><p><span class=\"para-label\">C.</span>Scientists have discovered that sleep is very important. While you are sleeping, your brain organizes information. It decides what to keep and what to <b>forget</b>. So, if you want to <b>recall</b> what you studied yesterday, make sure you get enough sleep! Learning is a <b>skill</b>, and your brain is the ultimate tool.</p>",
   "readingQ": [
-    { "type": "short", "prompt": "What time does Araylim wake up every day?", "answers": ["7", "7 am", "7 am."], "exp": "She wakes up at 7 AM." },
-    { "type": "tfng", "prompt": "She failed her exam yesterday.", "answer": "False", "exp": "She succeeded and got a perfect score." },
-    { "type": "mcq", "prompt": "What is Araylim studying for currently?", "options": ["A math test", "A new challenge (French)", "A history project"], "correct": "A new challenge (French)", "exp": "She is studying for a new challenge: learning French." },
-    { "type": "short", "prompt": "Since when has she been learning French?", "answers": ["january", "since january"], "exp": "She has been learning French since January." }
+    { "type": "short", "prompt": "How many neurons are in the human brain?", "answers": ["86 billion", "86 000 000 000"], "exp": "The brain contains about 86 billion neurons." },
+    { "type": "tfng", "prompt": "Memories are always 100% accurate.", "answer": "False", "exp": "The text says memories are not always accurate." },
+    { "type": "mcq", "prompt": "What can trigger a memory?", "options": ["A specific smell or sound", "Only reading a book", "Drinking water"], "correct": "A specific smell or sound", "exp": "A specific smell or sound can trigger a memory." },
+    { "type": "short", "prompt": "What is very important for organizing information in the brain?", "answers": ["sleep", "enough sleep"], "exp": "Sleep is very important." },
+    { "type": "mcq", "prompt": "What happens to the connection between neurons when you learn something?", "options": ["It becomes weaker", "It becomes stronger", "It disappears"], "correct": "It becomes stronger", "exp": "Over time, this connection becomes stronger." },
+    { "type": "tfng", "prompt": "The brain decides what to forget while you sleep.", "answer": "True", "exp": "It decides what to keep and what to forget." },
+    { "type": "short", "prompt": "What do neurons send to each other?", "answers": ["electrical signals", "signals"], "exp": "They send electrical signals to each other." },
+    { "type": "long", "prompt": "Explain in your own words why sleep is important for students.", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["recall","remember"]], "minWords": 10, "minGroups": 2, "sample": "Sleep is important because the brain organizes information and decides what to keep or forget, which helps students recall what they studied.", "exp": "Key ideas: organizing info, deciding what to keep, helping recall." }
   ],
   "contextQ": [
-    { "prompt": "In paragraph A, \"habit\" means...", "options": ["something you do regularly", "a difficult exam", "a type of book"], "correct": "something you do regularly", "exp": "A habit is a regular action." },
-    { "prompt": "In paragraph B, \"achievement\" is...", "options": ["a failure", "something done successfully", "a difficult question"], "correct": "something done successfully", "exp": "An achievement is a successful result." },
-    { "prompt": "In paragraph C, \"experience\" refers to...", "options": ["knowledge from doing things", "a type of exam", "a mistake"], "correct": "knowledge from doing things", "exp": "Experience is what you gain by doing things." }
+    { "prompt": "In paragraph B, \"trigger\" means...", "options": ["to cause something to happen", "to destroy something", "to write something down"], "correct": "to cause something to happen", "exp": "Trigger means to cause an event or memory to happen." },
+    { "prompt": "In paragraph A, \"complex\" is similar in meaning to...", "options": ["very simple", "difficult to understand", "very small"], "correct": "difficult to understand", "exp": "Complex means not simple; difficult to understand." },
+    { "prompt": "In paragraph B, \"processes\" means...", "options": ["handles and uses information", "eats food", "goes to sleep"], "correct": "handles and uses information", "exp": "In this context, the brain processes (handles) information." }
   ],
   "g6": {
     "pos": [
-      { "p": "She usually ___ (read) a book before bed.", "a": "reads", "ex": "Present Simple: habit." },
-      { "p": "Look! She ___ (practice) the piano right now.", "a": "is practicing", "ex": "Present Continuous: happening now." },
-      { "p": "He ___ (have) a lot of experience in teaching.", "a": "has", "ex": "Present Simple: state/fact." }
+      { "p": "The brain ___ (process) information very quickly.", "a": "processes", "ex": "Present Simple: fact." },
+      { "p": "She ___ (memorize) new words right now.", "a": "is memorizing", "ex": "Present Continuous: happening now." },
+      { "p": "Neurons ___ (connect) with each other constantly.", "a": "connect", "ex": "Present Simple: plural subject." },
+      { "p": "I usually ___ (forget) my dreams.", "a": "forget", "ex": "Present Simple: habit." },
+      { "p": "Look! He ___ (sleep) on the sofa.", "a": "is sleeping", "ex": "Present Continuous." },
+      { "p": "Water ___ (boil) at 100 degrees.", "a": "boils", "ex": "Present Simple: general truth." }
     ],
     "neg": [
-      { "p": "I ___ (not / understand) this grammar rule yet.", "a": "do not understand", "ex": "Present Simple negative." },
-      { "p": "They ___ (not / study) at the moment.", "a": "are not studying", "ex": "Present Continuous negative." }
+      { "p": "The brain ___ (not / store) every single detail.", "a": "does not store", "ex": "Present Simple negative." },
+      { "p": "I ___ (not / recall) his name at the moment.", "a": "am not recalling", "ex": "Present Continuous negative." },
+      { "p": "They ___ (not / understand) the science yet.", "a": "do not understand", "ex": "Present Simple negative." }
     ],
     "q": [
-      { "p": "___ she ___ (want) to improve her English?", "a": "Does she want", "ex": "Present Simple question." },
-      { "p": "___ you ___ (listen) to me right now?", "a": "Are you listening", "ex": "Present Continuous question." }
+      { "p": "___ the brain ___ (need) sleep?", "a": "Does the brain need", "ex": "Present Simple question." },
+      { "p": "___ you ___ (listen) to me right now?", "a": "Are you listening", "ex": "Present Continuous question." },
+      { "p": "___ she ___ (remember) the password?", "a": "Does she remember", "ex": "Present Simple question." }
     ],
     "shuffled": [
-      { "p": "Water ___ (boil) at 100 degrees.", "a": "boils" },
-      { "p": "I ___ (not / believe) his story.", "a": "do not believe" },
-      { "p": "They ___ (play) football in the park now.", "a": "are playing" }
+      { "p": "Scientists ___ (study) memory for decades.", "a": "have studied" },
+      { "p": "I ___ (always / forget) my keys.", "a": "always forget" },
+      { "p": "He ___ (not / memorize) the poem yet.", "a": "has not memorized" },
+      { "p": "The baby ___ (sleep) right now.", "a": "is sleeping" },
+      { "p": "We ___ (go) to the museum every month.", "a": "go" }
     ]
   },
   "g7": {
     "pos": [
-      { "p": "She ___ (pass) her exam yesterday.", "a": "passed", "ex": "Past Simple: finished time." },
-      { "p": "While she ___ (take) the test, she felt nervous.", "a": "was taking", "ex": "Past Continuous: interrupted action." },
-      { "p": "They ___ (visit) Paris last summer.", "a": "visited", "ex": "Past Simple: completed action." }
+      { "p": "He ___ (memorize) the speech yesterday.", "a": "memorized", "ex": "Past Simple: finished action." },
+      { "p": "While I ___ (sleep), the phone rang.", "a": "was sleeping", "ex": "Past Continuous: interrupted action." },
+      { "p": "They ___ (study) all night for the exam.", "a": "studied", "ex": "Past Simple." },
+      { "p": "She ___ (process) the data when the computer crashed.", "a": "was processing", "ex": "Past Continuous." },
+      { "p": "I ___ (see) a great documentary last night.", "a": "saw", "ex": "Past Simple: irregular verb." }
     ],
     "neg": [
-      { "p": "I ___ (not / sleep) well last night.", "a": "did not sleep", "ex": "Past Simple negative." },
-      { "p": "He ___ (not / study) when I called him.", "a": "was not studying", "ex": "Past Continuous negative." }
+      { "p": "I ___ (not / recall) the answer during the test.", "a": "did not recall", "ex": "Past Simple negative." },
+      { "p": "He ___ (not / listen) when the teacher explained.", "a": "was not listening", "ex": "Past Continuous negative." },
+      { "p": "We ___ (not / forget) your birthday last year.", "a": "did not forget", "ex": "Past Simple negative." }
     ],
     "q": [
-      { "p": "___ you ___ (watch) the movie yesterday?", "a": "Did you watch", "ex": "Past Simple question." },
-      { "p": "___ they ___ (play) tennis at 5 PM?", "a": "Were they playing", "ex": "Past Continuous question." }
+      { "p": "___ you ___ (remember) to lock the door?", "a": "Did you remember", "ex": "Past Simple question." },
+      { "p": "___ they ___ (play) football at 5 PM yesterday?", "a": "Were they playing", "ex": "Past Continuous question." },
+      { "p": "___ she ___ (pass) the exam?", "a": "Did she pass", "ex": "Past Simple question." }
     ],
     "shuffled": [
-      { "p": "I ___ (see) a great film last week.", "a": "saw" },
-      { "p": "She ___ (not / hear) the phone ring.", "a": "did not hear" },
-      { "p": "We ___ (walk) home when it started to rain.", "a": "were walking" }
+      { "p": "I ___ (walk) home when it started to rain.", "a": "was walking" },
+      { "p": "They ___ (build) a new school last year.", "a": "built" },
+      { "p": "She ___ (not / hear) the alarm.", "a": "did not hear" },
+      { "p": "We ___ (watch) TV when the lights went out.", "a": "were watching" },
+      { "p": "He ___ (go) to London in 2022.", "a": "went" }
     ]
   },
   "sbPp": {
     "pos": [
-      { "prompt": "Build a Present Perfect sentence about her success.", "correct": ["She","has","achieved","her","goal."] },
-      { "prompt": "Build a Present Perfect sentence about learning.", "correct": ["I","have","learned","a","lot","this","year."] }
+      { "prompt": "Build a Present Perfect sentence about sleep.", "correct": ["I","have","slept","for","eight","hours."] },
+      { "prompt": "Build a Present Perfect sentence about memory.", "correct": ["She","has","memorized","the","whole","poem."] },
+      { "prompt": "Build a Present Perfect sentence about a neuron.", "correct": ["The","neuron","has","made","a","new","connection."] }
     ],
     "neg": [
-      { "prompt": "Build a negative Present Perfect sentence about the test.", "correct": ["He","has","not","finished","the","test","yet."] }
+      { "prompt": "Build a negative Present Perfect sentence about the test.", "correct": ["He","has","not","finished","the","test","yet."] },
+      { "prompt": "Build a negative Present Perfect sentence about forgetting.", "correct": ["I","have","never","forgotten","your","name."] }
     ],
     "q": [
-      { "prompt": "Build a Present Perfect question about experience.", "correct": ["Have","you","ever","been","to","London?"] }
+      { "prompt": "Build a Present Perfect question about experience.", "correct": ["Have","you","ever","forgotten","your","keys?"] },
+      { "prompt": "Build a Present Perfect question about studying.", "correct": ["Has","she","studied","for","the","exam?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: They have made great progress.", "correct": ["They","have","made","great","progress."] },
-      { "prompt": "Build: I have never seen this movie.", "correct": ["I","have","never","seen","this","movie."] }
+      { "prompt": "Build: The brain has processed the information.", "correct": ["The","brain","has","processed","the","information."] },
+      { "prompt": "Build: We have known each other for years.", "correct": ["We","have","known","each","other","for","years."] },
+      { "prompt": "Build: They have just arrived.", "correct": ["They","have","just","arrived."] }
     ]
   },
   "sbPs": {
     "pos": [
-      { "prompt": "Build a Past Simple sentence about the exam.", "correct": ["She","passed","the","exam","yesterday."] }
+      { "prompt": "Build a Past Simple sentence about the brain.", "correct": ["The","brain","stored","the","memory","yesterday."] },
+      { "prompt": "Build a Past Simple sentence about the scientists.", "correct": ["Scientists","discovered","a","new","neuron."] }
     ],
     "neg": [
-      { "prompt": "Build a negative Past Simple sentence about the movie.", "correct": ["I","did","not","like","the","movie."] }
+      { "prompt": "Build a negative Past Simple sentence.", "correct": ["I","did","not","recall","the","answer."] }
     ],
     "q": [
-      { "prompt": "Build a Past Simple question about the weekend.", "correct": ["Did","you","have","a","good","weekend?"] }
+      { "prompt": "Build a Past Simple question.", "correct": ["Did","you","sleep","well","last","night?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: We visited our grandparents last week.", "correct": ["We","visited","our","grandparents","last","week."] }
+      { "prompt": "Build: She forgot her phone at home.", "correct": ["She","forgot","her","phone","at","home."] },
+      { "prompt": "Build: We were studying when he called.", "correct": ["We","were","studying","when","he","called."] }
     ]
   },
   "g10": {
     "pos": [
-      { "p": "She ___ (read) a book every night.", "a": "reads", "ex": "Present Simple habit." },
-      { "p": "She ___ (read) a book when I walked in.", "a": "was reading", "ex": "Past Continuous." },
-      { "p": "She ___ (already / read) three chapters today.", "a": "has already read", "ex": "Present Perfect." }
+      { "p": "I ___ (study) English for three years.", "a": "have studied", "ex": "Present Perfect: continuing action." },
+      { "p": "She ___ (read) a book when I arrived.", "a": "was reading", "ex": "Past Continuous." },
+      { "p": "The train ___ (leave) at 8 AM tomorrow.", "a": "leaves", "ex": "Present Simple: timetable." },
+      { "p": "Look! It ___ (rain).", "a": "is raining", "ex": "Present Continuous." },
+      { "p": "We ___ (visit) Paris last summer.", "a": "visited", "ex": "Past Simple." }
     ],
     "neg": [
-      { "p": "He ___ (not / finish) his homework yet.", "a": "has not finished", "ex": "Present Perfect negative." },
-      { "p": "They ___ (not / come) to the party last night.", "a": "did not come", "ex": "Past Simple negative." }
+      { "p": "I ___ (not / see) that movie yet.", "a": "have not seen", "ex": "Present Perfect negative." },
+      { "p": "They ___ (not / come) to the party last night.", "a": "did not come", "ex": "Past Simple negative." },
+      { "p": "He ___ (not / understand) the question right now.", "a": "is not understanding", "ex": "Present Continuous negative (rare state verb)." }
     ],
     "q": [
-      { "p": "___ you ___ (ever / try) Japanese food?", "a": "Have you ever tried", "ex": "Present Perfect experience." },
-      { "p": "___ she ___ (call) you yesterday?", "a": "Did she call", "ex": "Past Simple question." }
+      { "p": "___ you ever ___ (be) to London?", "a": "Have you ever been", "ex": "Present Perfect question." },
+      { "p": "___ she ___ (call) you yesterday?", "a": "Did she call", "ex": "Past Simple question." },
+      { "p": "___ they ___ (play) football at the moment?", "a": "Are they playing", "ex": "Present Continuous question." }
     ],
     "shuffled": [
       { "p": "I ___ (live) here since 2018.", "a": "have lived" },
-      { "p": "The train ___ (leave) at 8 AM yesterday.", "a": "left" },
-      { "p": "Look! It ___ (snow).", "a": "is snowing" }
+      { "p": "The bus ___ (leave) at 7 AM yesterday.", "a": "left" },
+      { "p": "She ___ (always / forget) her keys.", "a": "always forgets" },
+      { "p": "We ___ (wait) for the bus when it started to rain.", "a": "were waiting" },
+      { "p": "He ___ (just / finish) his homework.", "a": "has just finished" }
     ]
   },
   "testMcq": [
-    { "q": "Which word means 'to make something better'?", "options": ["to improve", "to achieve", "to practice"], "correct": "to improve", "exp": "To improve means to make better." }
+    { "q": "Which word means 'the ability to remember things'?", "options": ["memory", "neuron", "skill"], "correct": "memory", "exp": "Memory is the ability to remember." },
+    { "q": "Which word means 'to bring a memory back to your mind'?", "options": ["to recall", "to forget", "to process"], "correct": "to recall", "exp": "Recall means to remember." },
+    { "q": "Which word means 'correct and exact'?", "options": ["accurate", "complex", "trigger"], "correct": "accurate", "exp": "Accurate means correct." },
+    { "q": "Which word means 'a nerve cell in the brain'?", "options": ["neuron", "connection", "storage"], "correct": "neuron", "exp": "A neuron is a nerve cell." }
   ],
   "testShort": [
-    { "q": "What time does Araylim wake up?", "answers": ["7", "7 am"], "exp": "She wakes up at 7 AM." }
+    { "q": "How many neurons are in the human brain?", "answers": ["86 billion", "86 000 000 000"], "exp": "86 billion." },
+    { "q": "What is very important for organizing information?", "answers": ["sleep"], "exp": "Sleep." }
   ],
   "testTfng": [
-    { "q": "Araylim failed her exam.", "answer": "False", "exp": "She succeeded and got a perfect score." }
+    { "q": "Memories are always 100% accurate.", "answer": "False", "exp": "Not always accurate." },
+    { "q": "The brain decides what to forget while you sleep.", "answer": "True", "exp": "It organizes information during sleep." }
   ],
   "testComplete": [
-    { "p": "She ___ (study) French since January.", "a": "has been studying" },
-    { "p": "While she ___ (take) the test, she felt nervous.", "a": "was taking" }
+    { "p": "She ___ (memorize) the poem yesterday.", "a": "memorized" },
+    { "p": "I ___ (study) English for three years.", "a": "have studied" },
+    { "p": "While I ___ (sleep), the phone rang.", "a": "was sleeping" }
   ]
 }
