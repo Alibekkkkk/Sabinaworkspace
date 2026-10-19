@@ -9,6 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
+  // Apply theme immediately to avoid flash
   try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
@@ -304,12 +305,14 @@ html.dark .q-feedback.info{color:#f5c66b}
 </div>
 
 <script>
+/* ================== FIREBASE ================== */
 const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
 const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
+/* ================== CURRICULUM (Loaded from Firebase) ================== */
 let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
 const DEFAULT_STAGES = [
   {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
@@ -323,6 +326,7 @@ const DEFAULT_STAGES = [
   {id:9,label:'Test Your Knowledge',sub:'Timed test',icon:'⚡'}
 ];
 
+/* ================== STATE ================== */
 const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
 
 function getCurrentLesson(){
@@ -338,6 +342,7 @@ function totalScore(){
   return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)
 }
 
+/* ================== CONTENT PLACEHOLDERS (Loaded via JSON) ================== */
 let activeContentName = 'sabina';
 let VOCAB = [];
 let MATCH_DATA = [];
@@ -354,6 +359,7 @@ let TEST_SHORT = [];
 let TEST_TFNG = [];
 let TEST_COMPLETE = [];
 
+/* ================== FIREBASE INIT ================== */
 function initFirebase(){
   try{
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
@@ -486,6 +492,7 @@ function applyTeacherResetCommand(cmd){
 }
 function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
 
+/* ================== AUDIO + TTS ================== */
 let audioCtx=null,soundOn=true;
 function playTone(f,d,t,v){if(!soundOn)return;t=t||'sine';v=v||.12;try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
 function sCorrect(){playTone(660,.12);setTimeout(function(){playTone(880,.18)},100)}
@@ -563,6 +570,7 @@ function updateTTSButtons(){
   setVis(s,ttsState!=='idle');
 }
 
+/* ================== SYNC ================== */
 const CHANNEL='nd_lesson_live_v4_sabina';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){
   if(teacherMode && !sessionRef)return; 
@@ -585,11 +593,13 @@ function saveState(){
 function loadState(){try{const raw=localStorage.getItem('nd_state_sabina_v6');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
 let customImages={};
 
+/* ================== HELPERS ================== */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
 function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
 
+/* ================== TEACHER REVIEW QUEUE ================== */
 function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   if(teacherMode)return;
   if(!fbConnected||!sessionRef){alert('Cannot send to teacher — no session connected.');return}
@@ -600,6 +610,7 @@ function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   }).catch(function(e){alert('Failed to send: '+e.message)});
 }
 
+/* ================== STAGE 1 — ADAPTIVE VOCABULARY QUIZ ================== */
 let s1Filter='learning';
 let vocabState={};
 let vocabCloudLoaded=false;
@@ -650,9 +661,10 @@ function shouldShowPractice(){
 }
 
 function renderStage1(){
-  loadVocabStateLocal();
   const main=document.getElementById('main');
   if(!main)return;
+  main.innerHTML=''; // FIX: Clear the main container before appending
+  loadVocabStateLocal();
   const v=document.createElement('div');v.className='stage-view active';
   const counts=getVocabCounts();
   const showPractice=shouldShowPractice();
@@ -668,7 +680,7 @@ function renderStage1(){
   renderFlashcards();
   if(fbConnected&&!vocabCloudLoaded){vocabCloudLoaded=true;loadVocabStateCloud().then(function(){renderStage()})}
 }
-function setFilter(f){s1Filter=f;renderStage1()}
+function setFilter(f){s1Filter=f;renderStage()}
 
 function renderFlashcards(){
   const grid=document.getElementById('flashGrid');if(!grid)return;grid.innerHTML='';
@@ -685,7 +697,6 @@ function renderFlashcards(){
     if(status==='learned')card.classList.add('known');
     if(status==='practice')card.classList.add('needs-practice');
     
-    // Use displayEn of first meaning as img key, fallback to w.en
     const firstMeaning = w.meanings[0];
     const imgKey = (firstMeaning && firstMeaning.displayEn) ? firstMeaning.displayEn : w.en;
     const img=customImages[imgKey] || customImages[w.en];
@@ -762,7 +773,6 @@ function renderQuizModal(){
   const meaning=w.meanings[quizCurrentIdx];
   const displayWord=meaning.displayEn||w.en;
   
-  // Use displayWord as image key to allow separate images for different meanings
   const imgKey = displayWord; 
   const img = customImages[imgKey] || customImages[w.en];
 
@@ -953,7 +963,6 @@ function editFlashcardImage(){
   if(!quizWord)return;
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
   
-  // Use displayEn as the key for separate images per meaning
   const meaning=w.meanings[quizCurrentIdx];
   const displayWord = meaning.displayEn || w.en;
   
@@ -977,8 +986,11 @@ function fcReveal(){}
 function fcMarkKnow(){}
 function fcMarkAgain(){}
 
+/* ================== STAGE 2 — WORD MATCH ================== */
 function renderStage2(){
   const main=document.getElementById('main');
+  if(!main)return;
+  main.innerHTML=''; // FIX
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">Stage 2 — Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
   '<div class="lead">Drag each English word onto its meaning.<span class="ru">Перетащите слово к его значению.</span></div>'+
@@ -1017,9 +1029,12 @@ function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').l
 function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
 
+/* ================== STAGE 3 — READING & QUESTIONS ================== */
 let s4Answers={};
 function renderStage3(){
   const main=document.getElementById('main');
+  if(!main)return;
+  main.innerHTML=''; // FIX
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">Stage 3 — Reading & Questions</div><h2>📖 Read the Article & Answer</h2>'+
   '<div class="lead">Read the article on the left. Answer every question on the right — the article stays visible so you can look back. If you think an answer is correct but the auto-check says no, use <b>🚩 Flag for teacher review</b>.<span class="ru">Читайте текст слева, отвечайте на вопросы справа.</span></div>'+
@@ -1172,8 +1187,11 @@ function checkS4(){
 }
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
+/* ================== STAGES 4/5 — COMPLETING SENTENCE ================== */
 function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
+  if(!main)return;
+  main.innerHTML=''; // FIX
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
@@ -1227,14 +1245,14 @@ function resetGrammarStage(id){setScore(id,0);state.done[state.currentLessonId+"
 function renderStage4(){
     let title = '⏳ Completing Sentence — Present Perfect';
     let formula = 'Subject + have/has + past participle (V3)';
-    let listHTML = '<li>Use <b>have</b> with I, you, we, they (and plural nouns).</li><li>Use <b>has</b> with he, she, it (and singular nouns like "council", "region").</li><li>Negative: <b>have/has not + V3</b>. Question: <b>Have/Has + subject + V3?</b></li>';
-    let lead = 'Complete each sentence. Part 1 has positives, Part 2 has negatives, Part 3 has questions, then a large mixed set.<span class="ru">Дополните предложения. Секции: утверждения → отрицания → вопросы → микс.</span>';
+    let listHTML = '<li>Use <b>have</b> with I, you, we, they.</li><li>Use <b>has</b> with he, she, it.</li>';
+    let lead = 'Complete each sentence.';
     
-    if (activeContentName === 'george') {
+    if (activeContentName === 'george' || activeContentName === 'araylim') {
         title = '⏳ Completing Sentence — Present Tenses';
-        formula = 'Subject + V1 / am/is/are + V-ing';
-        listHTML = '<li>Present Simple: habits, routines, facts.</li><li>Present Continuous: happening right now.</li><li>Look for time words: usually, every day, right now, Look!</li>';
-        lead = 'Complete each sentence using Present Simple or Present Continuous.<span class="ru">Дополните предложения, используя Present Simple или Present Continuous.</span>';
+        formula = 'Present Simple vs Present Continuous';
+        listHTML = '<li>Present Simple: facts and routines.</li><li>Present Continuous: happening right now.</li>';
+        lead = 'Complete each sentence using the correct present tense.';
     }
     renderCompletingSentence(G6,4,3,5,title,'Stage 4 — Grammar',formula,listHTML,lead);
 }
@@ -1242,22 +1260,25 @@ function renderStage4(){
 function renderStage5(){
     let title = '🛡️ Completing Sentence — Passive Voice';
     let formula = 'Subject + was/were + past participle (V3)';
-    let listHTML = '<li>Past passive: <b>was</b> + V3 (singular), <b>were</b> + V3 (plural).</li><li>Use passive when the action matters more than the doer: The town <b>was destroyed</b>.</li><li>Negative: <b>was/were not + V3</b>. Question: <b>Was/Were + subject + V3?</b></li>';
-    let lead = 'Complete each sentence using the passive voice. Same structure as Stage 4.<span class="ru">Дополните предложения в пассивном залоге.</span>';
+    let listHTML = '<li>Past passive.</li>';
+    let lead = 'Complete each sentence using the passive voice.';
     
-    if (activeContentName === 'george') {
-        title = '⏳ Completing Sentence — Past Simple';
-        formula = 'Subject + V2 (or did not + V1)';
-        listHTML = '<li>Finished actions in the past.</li><li>Look for time words: yesterday, last week, in 2022, ago.</li><li>Negative: <b>did not + V1</b>. Question: <b>Did + subject + V1?</b></li>';
-        lead = 'Complete each sentence using Past Simple.<span class="ru">Дополните предложения в Past Simple.</span>';
+    if (activeContentName === 'george' || activeContentName === 'araylim') {
+        title = '⏳ Completing Sentence — Past Tenses';
+        formula = 'Past Simple vs Past Continuous';
+        listHTML = '<li>Past Simple: finished actions.</li><li>Past Continuous: actions in progress in the past.</li>';
+        lead = 'Complete each sentence using the correct past tense.';
     }
     renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
 }
 
+/* ================== STAGES 6/7 — SENTENCE BUILDER ================== */
 const SB_STATE={};
 const SB_DATA={};
 function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
+  if(!main)return;
+  main.innerHTML=''; // FIX
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
@@ -1347,14 +1368,14 @@ function checkSBItem(stageId,idx){
 function renderStage6(){
     let title = '🧩 Sentence Builder — Present Perfect';
     let formula = 'have/has + past participle (V3)';
-    let listHTML = '<li>Build sentences word by word.</li><li>Part 1: positives, Part 2: negatives, Part 3: questions, then a big mixed set.</li>';
-    let lead = 'Build each sentence. Same order as the completing-sentence stages.<span class="ru">Соберите предложения по частям.</span>';
+    let listHTML = '<li>Build sentences word by word.</li>';
+    let lead = 'Build each sentence.';
     
-    if (activeContentName === 'george') {
+    if (activeContentName === 'george' || activeContentName === 'araylim') {
         title = '🧩 Sentence Builder — Present Tenses';
         formula = 'Subject + V1 / am/is/are + V-ing';
         listHTML = '<li>Build sentences about routines and actions happening now.</li>';
-        lead = 'Build each sentence.<span class="ru">Соберите предложения.</span>';
+        lead = 'Build each sentence.';
     }
     renderSentenceBuilder(SB_PP,6,5,7,title,'Stage 6 — Grammar',formula,listHTML,lead);
 }
@@ -1362,33 +1383,35 @@ function renderStage6(){
 function renderStage7(){
     let title = '🧱 Sentence Builder — Passive Voice';
     let formula = 'was/were + past participle (V3)';
-    let listHTML = '<li>Build past passive sentences word by word.</li><li>Same 5+5+5 structure.</li>';
-    let lead = 'Build each sentence.<span class="ru">Соберите предложения.</span>';
+    let listHTML = '<li>Build past passive sentences word by word.</li>';
+    let lead = 'Build each sentence.';
     
-    if (activeContentName === 'george') {
+    if (activeContentName === 'george' || activeContentName === 'araylim') {
         title = '🧱 Sentence Builder — Past Simple';
         formula = 'Subject + V2 (or did not + V1)';
         listHTML = '<li>Build past simple sentences.</li>';
-        lead = 'Build each sentence.<span class="ru">Соберите предложения.</span>';
+        lead = 'Build each sentence.';
     }
     renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
 }
 
+/* ================== STAGE 8 — CHOOSE THE TENSE ================== */
 function renderStage8(){
     let title = '🧭 Completing Sentence — Choose the Tense';
     let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
-    let listHTML = '<li>Use past simple with finished times: yesterday, in 2020, last week, ago.</li><li>Use present perfect with: since, for, yet, ever, never, just, already, so far, recently.</li>';
-    let lead = 'Choose the correct tense for each sentence.<span class="ru">Выберите правильное время.</span>';
+    let listHTML = '<li>Use past simple with finished times.</li><li>Use present perfect with: since, for, yet, ever.</li>';
+    let lead = 'Choose the correct tense for each sentence.';
     
-    if (activeContentName === 'george') {
+    if (activeContentName === 'george' || activeContentName === 'araylim') {
         title = '🧭 Completing Sentence — Mixed Tenses';
-        formula = 'Present Simple/Continuous · Past Simple · Future (going to)';
+        formula = 'Present Simple/Continuous · Past Simple · Present Perfect';
         listHTML = '<li>Look at the time words to identify the correct tense.</li>';
-        lead = 'Choose the correct tense for each sentence.<span class="ru">Выберите правильное время.</span>';
+        lead = 'Choose the correct tense for each sentence.';
     }
     renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
 }
 
+/* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 let TEST_TIME_LIMIT = 0; 
 
@@ -1403,6 +1426,8 @@ function buildTestQuestions(){
 
 function renderStage9(){
   const main=document.getElementById('main');
+  if(!main)return;
+  main.innerHTML=''; // FIX
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
   '<div class="lead">This is a strict, timed test. Answer each question to unlock the next one. You have <b>15 minutes</b> in total. When time runs out, the test closes automatically.<span class="ru">Строгий тест на время: 15 минут, вопросы по одному.</span></div>'+
@@ -1562,6 +1587,7 @@ function endTest(timedOut,customReason){
   broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
+/* ================== HUD ================== */
 function updateHUD(){
   const el=document.getElementById('scoreDisplay');
   if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}
@@ -1585,6 +1611,7 @@ function setScore(stageId,amount){
   updateHUD();saveState();
 }
 
+/* ================== SIDEBAR ================== */
 let expandedYears=["2026"],expandedMonths=["October"];
 function resetStageTeacher(stageId) {
   if(!teacherCanEdit) return;
@@ -1778,6 +1805,7 @@ function showToast(text){
   window.__toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2200);
 }
 
+/* ================== CONTENT LOADER ================== */
 async function loadContent() {
   activeContentName = new URLSearchParams(location.search).get('content') || 'sabina';
   const res = await fetch('content/' + activeContentName + '.json', { cache: 'no-store' });
@@ -1799,6 +1827,7 @@ async function loadContent() {
   TEST_COMPLETE = c.testComplete;
 }
 
+/* ================== INIT ================== */
 (async function boot() {
   try {
     await loadContent();
