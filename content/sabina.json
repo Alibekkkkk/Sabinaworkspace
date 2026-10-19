@@ -9,7 +9,7 @@
       { "context": "a serious shortage", "ru": "нехватка, дефицит", "ex": "The country suffered a <b>drought</b> of investment." }
     ]},
     { "en": "earthquake", "emoji": "🏚️", "meanings": [
-      { "context": "a sudden shaking of the ground", "ru": "землетрясение", "ex": "An <b>earthquake</b> happens when the Earth\u2019s crust moves suddenly." }
+      { "context": "a sudden shaking of the ground", "ru": "землетрясение", "ex": "An <b>earthquake</b> happens when the Earth’s crust moves suddenly." }
     ]},
     { "en": "flood", "emoji": "🌊", "meanings": [
       { "context": "water covering dry land", "ru": "наводнение, паводок", "ex": "A <b>flood</b> happens when water covers land that is usually dry." },
@@ -50,7 +50,7 @@
       { "context": "a small shaking", "ru": "толчок, дрожь", "ex": "The earthquake was minor, with only a few small <b>tremors</b>." }
     ]},
     { "en": "crust", "emoji": "🪨", "meanings": [
-      { "context": "Earth\u2019s outer layer", "ru": "земная кора", "ex": "An earthquake happens when the Earth\u2019s <b>crust</b> moves suddenly." }
+      { "context": "Earth’s outer layer", "ru": "земная кора", "ex": "An earthquake happens when the Earth’s <b>crust</b> moves suddenly." }
     ]},
     { "en": "humid", "emoji": "💧", "meanings": [
       { "context": "warm and wet in the air", "ru": "влажный", "ex": "Warm, <b>humid</b> air rises quickly into the sky." }
@@ -65,7 +65,6 @@
       { "context": "organized removal from danger", "ru": "эвакуация", "ex": "The <b>evacuation</b> of the coastal town began at dawn." }
     ]}
   ],
-
   "matchData": [
     { "word": "blizzard", "meaning": "a long snowstorm with strong winds" },
     { "word": "drought", "meaning": "a long period with very little rain" },
@@ -78,37 +77,25 @@
     { "word": "landslide", "meaning": "rocks sliding down a slope" },
     { "word": "volcano", "meaning": "a mountain that can erupt" }
   ],
-
   "readingHtml": "<h1>The Great Flood of Marlowe</h1><div class=\"subtitle\">A story about a natural disaster</div><p><span class=\"para-label\">A.</span>In the spring of 2023, heavy rain fell on the town of Marlowe for three days. The river in the town centre was usually calm, but the rain was too much. The water level rose quickly. On the third day, the river overflowed. Water covered the streets and entered the ground floors of many houses.</p><p><span class=\"para-label\">B.</span>When the flood started, the local council told everyone to evacuate. Rescue teams used small boats to travel through the streets. They helped elderly people and children who were trapped in their homes. The water stayed in the town for a whole week.</p><p><span class=\"para-label\">C.</span>After the water went down, the people of Marlowe began to clean up. The council provided free food and water. Now, the town is making a plan. They want to build new defences to protect the town from future floods.</p>",
-
   "readingQ": [
-    { "type": "short", "prompt": "How many days did the heavy rain fall?", "answers": ["3", "three"], "exp": "The text says heavy rain fell for three days." },
-    { "type": "short", "prompt": "What is the name of the town in the story?", "answers": ["marlowe"], "exp": "The town is called Marlowe." },
-    { "type": "tfng", "prompt": "The river was usually calm before the rain.", "answer": "True", "exp": "The text says the river was usually calm." },
-    { "type": "tfng", "prompt": "Rescue teams used helicopters to save people.", "answer": "False", "exp": "The text says they used small boats." },
-    { "type": "tfng", "prompt": "The water stayed in the town for one month.", "answer": "False", "exp": "The water stayed for a whole week." },
-    { "type": "long", "prompt": "In your own words, explain how the rescue teams helped people during the flood.",
-      "keywordGroups": [["boat","boats"],["help","save","rescue"],["elderly","old"],["children","kids"],["trapped","stuck","home"]],
-      "minWords": 8, "minGroups": 2,
-      "sample": "The rescue teams used small boats to help elderly people and children who were trapped in their homes.",
-      "exp": "Key ideas: using boats, helping elderly/children, trapped people." },
-    { "type": "long", "prompt": "What is the town planning to do to protect itself in the future?",
-      "keywordGroups": [["build","construct","make"],["defences","defense","protection"],["future","next","flood"]],
-      "minWords": 6, "minGroups": 2,
-      "sample": "The town is planning to build new defences to protect the town from future floods.",
-      "exp": "Key ideas: building defences, protecting the town." },
-    { "type": "mcq", "prompt": "Why did the river overflow?", "options": ["Because of heavy rain","Because of a heat wave","Because of an earthquake"], "correct": "Because of heavy rain", "exp": "Heavy rain caused the river to overflow." },
-    { "type": "mcq", "prompt": "What is the town planning to build?", "options": ["New defences","A new hospital","A new school"], "correct": "New defences", "exp": "The town wants to build new defences." },
-    { "type": "short", "prompt": "Complete: The council provided free ______ and water.", "answers": ["food"], "exp": "The council provided free food." }
+    { "type": "short", "prompt": "How many days did the heavy rain fall?", "ru": "Сколько дней шёл сильный дождь?", "answers": ["3", "three"], "exp": "The text says heavy rain fell for three days." },
+    { "type": "short", "prompt": "What is the name of the town in the story?", "ru": "Как называется город в этой истории?", "answers": ["marlowe"], "exp": "The town is called Marlowe." },
+    { "type": "tfng", "prompt": "The river was usually calm before the rain.", "ru": "Река обычно была спокойной до дождя.", "answer": "True", "exp": "The text says the river was usually calm." },
+    { "type": "tfng", "prompt": "Rescue teams used helicopters to save people.", "ru": "Спасательные команды использовали вертолеты для спасения людей.", "answer": "False", "exp": "The text says they used small boats." },
+    { "type": "tfng", "prompt": "The water stayed in the town for one month.", "ru": "Вода оставалась в городе в течение одного месяца.", "answer": "False", "exp": "The water stayed for a whole week." },
+    { "type": "long", "prompt": "In your own words, explain how the rescue teams helped people during the flood.", "ru": "Своими словами объясните, как спасательные команды помогали людям во время наводнения.", "keywordGroups": [["boat","boats"],["help","save","rescue"],["elderly","old"],["children","kids"],["trapped","stuck","home"]], "minWords": 8, "minGroups": 2, "sample": "The rescue teams used small boats to help elderly people and children who were trapped in their homes.", "exp": "Key ideas: using boats, helping elderly/children, trapped people." },
+    { "type": "long", "prompt": "What is the town planning to do to protect itself in the future?", "ru": "Что город планирует сделать, чтобы защитить себя в будущем?", "keywordGroups": [["build","construct","make"],["defences","defense","protection"],["future","next","flood"]], "minWords": 6, "minGroups": 2, "sample": "The town is planning to build new defences to protect the town from future floods.", "exp": "Key ideas: building defences, protecting the town." },
+    { "type": "mcq", "prompt": "Why did the river overflow?", "ru": "Почему река вышла из берегов?", "options": ["Because of heavy rain","Because of a heat wave","Because of an earthquake"], "correct": "Because of heavy rain", "exp": "Heavy rain caused the river to overflow." },
+    { "type": "mcq", "prompt": "What is the town planning to build?", "ru": "Что город планирует построить?", "options": ["New defences","A new hospital","A new school"], "correct": "New defences", "exp": "The town wants to build new defences." },
+    { "type": "short", "prompt": "Complete: The council provided free ______ and water.", "ru": "Дополните: Совет предоставил бесплатную ______ и воду.", "answers": ["food"], "exp": "The council provided free food." }
   ],
-
   "contextQ": [
-    { "prompt": "In paragraph A, \"overflowed\" means...", "options": ["spilled over the edge","dried up","froze"], "correct": "spilled over the edge", "exp": "The river spilled over its banks." },
-    { "prompt": "In paragraph B, \"evacuate\" means...", "options": ["move to a safe place","stay at home","buy food"], "correct": "move to a safe place", "exp": "Evacuate means to leave a dangerous place." },
-    { "prompt": "In paragraph C, \"defences\" means...", "options": ["things that protect you","boats","heavy rain"], "correct": "things that protect you", "exp": "Defences protect the town from floods." },
-    { "prompt": "In paragraph B, \"trapped\" means...", "options": ["unable to leave","very happy","swimming"], "correct": "unable to leave", "exp": "They were trapped because of the water." }
+    { "prompt": "In paragraph A, \"overflowed\" means...", "ru": "В параграфе A слово \"overflowed\" означает...", "options": ["spilled over the edge","dried up","froze"], "correct": "spilled over the edge", "exp": "The river spilled over its banks." },
+    { "prompt": "In paragraph B, \"evacuate\" means...", "ru": "В параграфе B слово \"evacuate\" означает...", "options": ["move to a safe place","stay at home","buy food"], "correct": "move to a safe place", "exp": "Evacuate means to leave a dangerous place." },
+    { "prompt": "In paragraph C, \"defences\" means...", "ru": "В параграфе C слово \"defences\" означает...", "options": ["things that protect you","boats","heavy rain"], "correct": "things that protect you", "exp": "Defences protect the town from floods." },
+    { "prompt": "In paragraph B, \"trapped\" means...", "ru": "В параграфе B слово \"trapped\" означает...", "options": ["unable to leave","very happy","swimming"], "correct": "unable to leave", "exp": "They were trapped because of the water." }
   ],
-
   "g6": {
     "pos": [
       { "p": "The region ___ (experience) three disasters in six weeks.", "a": "has experienced", "ex": "Present perfect: result matters now." },
@@ -164,7 +151,6 @@
       { "p": "The council ___ (not / decide) on new rules yet.", "a": "has not decided" }
     ]
   },
-
   "g7": {
     "pos": [
       { "p": "The town ___ (destroy) by the flood in 2023.", "a": "was destroyed", "ex": "Past passive: was + V3." },
@@ -220,7 +206,6 @@
       { "p": "The lessons ___ (learn) the hard way.", "a": "were learned" }
     ]
   },
-
   "sbPp": {
     "pos": [
       { "prompt": "Build a present perfect sentence about the heat wave.", "correct": ["The","heat","has","dried","the","vegetation."] },
@@ -276,7 +261,6 @@
       { "prompt": "Build: The heat has affected many residents.", "correct": ["The","heat","has","affected","many","residents."] }
     ]
   },
-
   "sbPs": {
     "pos": [
       { "prompt": "Build a past passive sentence about the flood.", "correct": ["The","town","was","destroyed","by","the","flood."] },
@@ -332,7 +316,6 @@
       { "prompt": "Build: The lessons were learned.", "correct": ["The","lessons","were","learned."] }
     ]
   },
-
   "g10": {
     "pos": [
       { "p": "The wildfire ___ (destroy) 400 hectares last August.", "a": "destroyed", "ex": "Finished time → past simple." },
@@ -353,7 +336,7 @@
       { "p": "___ the council ___ (provide) clear warnings so far?", "a": "Has the council provided", "ex": "\"So far\" → present perfect." },
       { "p": "___ they ___ (install) the new lights in 2020?", "a": "Did they install", "ex": "Finished year → past simple." },
       { "p": "___ you ever ___ (experience) a heat wave?", "a": "Have you ever experienced", "ex": "\"Ever\" → present perfect." },
-      { "p": "___ the mayor ___ (speak) at yesterday\u2019s meeting?", "a": "Did the mayor speak", "ex": "\"Yesterday\" → past simple." }
+      { "p": "___ the mayor ___ (speak) at yesterday’s meeting?", "a": "Did the mayor speak", "ex": "\"Yesterday\" → past simple." }
     ],
     "shuffled": [
       { "p": "The council ___ (add) the cycle lane in 2020.", "a": "added" },
@@ -388,7 +371,6 @@
       { "p": "We ___ (know) each other since primary school.", "a": "have known" }
     ]
   },
-
   "testMcq": [
     { "q": "Which word means \"a sudden shaking of the ground\"?", "options": ["earthquake","drought","blizzard"], "correct": "earthquake", "exp": "An earthquake shakes the ground." },
     { "q": "Which word means \"a long period with very little rain\"?", "options": ["drought","flood","tornado"], "correct": "drought", "exp": "A drought = too little rain." },
@@ -399,7 +381,6 @@
     { "q": "Which word means \"a small shaking\"?", "options": ["tremor","crust","magnitude"], "correct": "tremor", "exp": "A tremor is a small shake." },
     { "q": "Which word means \"warm and wet in the air\"?", "options": ["humid","vulnerable","ecological"], "correct": "humid", "exp": "Humid air feels warm and wet." }
   ],
-
   "testShort": [
     { "q": "How many consecutive days did temperatures rise above 42°C?", "answers": ["10","ten"], "exp": "Ten consecutive days." },
     { "q": "How many millimetres of rain fell in two days?", "answers": ["200","more than 200","200 mm"], "exp": "More than 200 mm." },
@@ -408,15 +389,13 @@
     { "q": "Name the town worst affected by the floods.", "answers": ["marlowe"], "exp": "Marlowe." },
     { "q": "At what temperature will cooling centres open automatically?", "answers": ["38","38°c","38 c","38 degrees"], "exp": "Above 38°C." }
   ],
-
   "testTfng": [
     { "q": "The three disasters took place within six weeks.", "answer": "True", "exp": "Within six weeks." },
     { "q": "Lives were lost in the wildfire.", "answer": "False", "exp": "No lives were lost." },
     { "q": "The council had planned for this intensity.", "answer": "Not Given", "exp": "Never stated." },
     { "q": "The wildfire happened before the floods.", "answer": "False", "exp": "It happened after the floods." },
-    { "q": "Paris is mentioned in the article.", "answer": "Not Given", "exp": "Paris isn\u2019t mentioned." }
+    { "q": "Paris is mentioned in the article.", "answer": "Not Given", "exp": "Paris isn’t mentioned." }
   ],
-
   "testComplete": [
     { "p": "The region ___ (experience) three disasters since June.", "a": "has experienced" },
     { "p": "The wildfire ___ (destroy) 400 hectares last August.", "a": "destroyed" },
