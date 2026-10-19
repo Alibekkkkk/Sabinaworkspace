@@ -156,25 +156,47 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .dd-slot .dropped-word.ok{background:var(--success)}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.85;color:var(--ink);box-shadow:var(--shadow-sm);font-family:'EB Garamond','Times New Roman',serif}
+.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.85;color:var(--ink);box-shadow:var(--shadow-sm);font-family:'EB Garamond','Times New Roman',serif;user-select:text;}
 .passage h1{font-size:26px;color:var(--accent);margin-bottom:8px;font-weight:800;line-height:1.2}
 .passage .subtitle{font-size:15px;color:var(--ink-soft);font-style:italic;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:12px}
 .passage p{margin-bottom:16px;text-align:justify}
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
-.annotation-toolbar{display:flex;gap:6px;padding:8px 12px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;box-shadow:var(--shadow-sm);position:sticky;top:0;z-index:10}
-.annotation-toolbar button{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink);transition:all .15s}
-.annotation-toolbar button:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-.hl-yellow{background-color:#fce883;color:#000}
-.hl-green{background-color:#b5e8c5;color:#000}
-.hl-blue{background-color:#c5e1f5;color:#000}
-.user-note{background-color:#fef08a;border-bottom:2px dashed #eab308;cursor:pointer;padding:0 2px;border-radius:2px;}
+
+/* HIGHLIGHTS & NOTES - LIGHT THEME */
+.hl-yellow{background-color:#fce883;color:#000;}
+.hl-green{background-color:#b5e8c5;color:#000;}
+.hl-blue{background-color:#c5e1f5;color:#000;}
+.user-note{background-color:#fef08a;border-bottom:2px dashed #eab308;cursor:pointer;padding:0 2px;border-radius:2px;color:#000;transition:background .2s;}
 .user-note:hover{background-color:#fde047;}
 
-/* Draggable Sticky Note */
-.sticky-note-popup{position:absolute;background:#fef08a;border:1px solid #eab308;border-radius:8px;padding:12px 14px;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:10000;max-width:250px;font-family:'EB Garamond',serif;color:#422006;display:none;cursor:move;font-size:15px;line-height:1.4;}
-.sticky-note-popup.show{display:block;}
-.sticky-note-popup .close-note{position:absolute;top:4px;right:8px;font-size:14px;cursor:pointer;color:#854d0e;font-weight:bold;}
-.sticky-note-popup .sticky-text{padding-top:6px;}
+/* HIGHLIGHTS & NOTES - DARK THEME FIXES */
+html.dark .hl-yellow{background-color:rgba(250, 204, 21, 0.3);color:#fff;border-bottom:2px solid rgba(250, 204, 21, 0.6);}
+html.dark .hl-green{background-color:rgba(74, 222, 128, 0.3);color:#fff;border-bottom:2px solid rgba(74, 222, 128, 0.6);}
+html.dark .hl-blue{background-color:rgba(96, 165, 250, 0.3);color:#fff;border-bottom:2px solid rgba(96, 165, 250, 0.6);}
+html.dark .user-note{background-color:rgba(253, 224, 71, 0.3);border-bottom:2px dashed rgba(250, 204, 21, 0.8);color:#fff;}
+html.dark .user-note:hover{background-color:rgba(253, 224, 71, 0.5);}
+
+/* CUSTOM CONTEXT MENU */
+.context-menu{position:absolute;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;padding:4px;z-index:10000;min-width:150px;}
+.context-menu.show{display:flex;}
+.context-item{padding:8px 12px;font-size:14px;cursor:pointer;border-radius:6px;color:var(--ink);display:flex;align-items:center;gap:8px;font-weight:600;}
+.context-item:hover{background:var(--bg);color:var(--accent);}
+.context-item.delete{color:var(--error);}
+.context-item.delete:hover{background:var(--error-soft);}
+
+/* STICKY NOTE POPUP */
+.sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;display:none;flex-direction:column;z-index:10001;cursor:default;font-family:'EB Garamond',serif;}
+.sticky-note.show{display:flex;}
+.sticky-header{background:#facc15;padding:6px 10px;border-radius:7px 7px 0 0;display:flex;justify-content:space-between;align-items:center;cursor:grab;}
+.sticky-header:active{cursor:grabbing;}
+.sticky-title{font-size:12px;font-weight:800;color:#422006;text-transform:uppercase;letter-spacing:1px;}
+.sticky-actions{display:flex;gap:6px;}
+.sticky-btn{background:transparent;border:none;cursor:pointer;font-size:14px;color:#422006;padding:2px;transition:transform .1s;}
+.sticky-btn:hover{transform:scale(1.2);}
+.sticky-btn.delete:hover{color:#b91c1c;}
+.sticky-body{padding:10px;}
+.sticky-text{width:100%;min-height:80px;background:transparent;border:none;resize:vertical;outline:none;font-family:'EB Garamond',serif;font-size:16px;line-height:1.4;color:#422006;font-weight:500;}
+.sticky-text::placeholder{color:rgba(66,32,6,0.5);font-style:italic;}
 
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
@@ -295,6 +317,23 @@ html.dark .q-feedback.info{color:#f5c66b}
   <textarea id="notesArea" placeholder="Type your notes here..."></textarea>
 </aside>
 
+<!-- CUSTOM CONTEXT MENU -->
+<div id="customContextMenu" class="context-menu"></div>
+
+<!-- DRAGGABLE STICKY NOTE -->
+<div id="stickyNote" class="sticky-note">
+  <div class="sticky-header" id="stickyDragHandle">
+    <span class="sticky-title">📝 My Note</span>
+    <div class="sticky-actions">
+      <button class="sticky-btn delete" onclick="deleteCurrentNote()" title="Delete Note">🗑️</button>
+      <button class="sticky-btn" onclick="closeStickyNote()" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="sticky-body">
+    <textarea class="sticky-text" id="stickyText" placeholder="Type your note here..."></textarea>
+  </div>
+</div>
+
 <div class="fc-modal-backdrop" id="fcModal" onclick="if(event.target===this)closeFCModal()">
   <div class="fc-modal">
     <button class="fc-modal-close" onclick="closeFCModal()">×</button>
@@ -403,17 +442,11 @@ function isAnswerCorrect(userStr, expectedArr) {
   for (let exp of expectedArr) {
     let target = normalizeString(exp);
     if (user === target) return true;
-    
-    // Check if student typed the full sentence
     if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
-
-    // Check for morphological variations (sleep vs sleeping)
     if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
        const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
        if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
     }
-
-    // Levenshtein distance for typos
     if (target.length > 4) {
        const maxAllowedDist = target.length > 8 ? 2 : 1;
        if (levenshtein(user, target) <= maxAllowedDist) return true;
@@ -422,55 +455,182 @@ function isAnswerCorrect(userStr, expectedArr) {
   return false;
 }
 
-/* ================== STICKY NOTES SETUP ================== */
-let isDragging = false;
-let dragOffsetX = 0, dragOffsetY = 0;
-let currentEditingSpan = null;
+/* ================== ANNOTATION & NOTES LOGIC ================== */
+let activeNoteId = null;
 
-function initStickyNote() {
-  const popup = document.createElement('div');
-  popup.className = 'sticky-note-popup';
-  popup.id = 'stickyNote';
-  popup.innerHTML = '<span class="close-note" onclick="document.getElementById(\'stickyNote\').classList.remove(\'show\')">✕</span><div class="sticky-text" contenteditable="true"></div>';
-  document.body.appendChild(popup);
-
-  popup.addEventListener('mousedown', function(e) {
-    if(e.target.classList.contains('close-note')) return;
-    isDragging = true;
-    const rect = popup.getBoundingClientRect();
-    dragOffsetX = e.clientX - rect.left;
-    dragOffsetY = e.clientY - rect.top;
-  });
-  document.addEventListener('mousemove', function(e) {
-    if(!isDragging) return;
-    popup.style.left = (e.clientX - dragOffsetX) + 'px';
-    popup.style.top = (e.clientY - dragOffsetY) + 'px';
-  });
-  document.addEventListener('mouseup', function() {
-    if(isDragging && currentEditingSpan) {
-       // Save back to the span
-       const newText = popup.querySelector('.sticky-text').innerText;
-       if(newText.trim()) {
-          currentEditingSpan.dataset.note = newText;
-          saveAnnotations();
-       }
-    }
-    isDragging = false;
-  });
-}
-
-function openStickyNote(text, x, y, spanEl) {
-  const popup = document.getElementById('stickyNote');
-  popup.querySelector('.sticky-text').innerText = text;
-  popup.style.left = (x + 15) + 'px';
-  popup.style.top = (y - 15) + 'px';
-  popup.classList.add('show');
-  currentEditingSpan = spanEl;
-}
-
+// Context Menu Logic
 document.addEventListener('DOMContentLoaded', () => {
-  initStickyNote();
+  const passage = document.getElementById('passageBody'); // Will be created dynamically, so we use event delegation on document
+  const menu = document.getElementById('customContextMenu');
+  
+  document.addEventListener('contextmenu', function(e) {
+    // Only trigger inside the passage
+    if(!e.target.closest('#passageBody')) return;
+    
+    e.preventDefault();
+    menu.innerHTML = ''; 
+    
+    const selection = window.getSelection();
+    const targetNote = e.target.closest('.user-note');
+
+    if (targetNote) {
+      // Right-clicked an existing note
+      menu.innerHTML = `
+        <div class="context-item" onclick="openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
+        <div class="context-item delete" onclick="deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
+      `;
+    } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
+      // Right-clicked on selected text
+      menu.innerHTML = `
+        <div class="context-item" onclick="applyAnnotation('hl-yellow')">🖍️ Highlight Yellow</div>
+        <div class="context-item" onclick="applyAnnotation('hl-green')">🟢 Highlight Green</div>
+        <div class="context-item" onclick="applyAnnotation('hl-blue')">🔵 Highlight Blue</div>
+        <div class="context-item" onclick="applyAnnotation('underline')">U̲ Underline</div>
+        <div class="context-item" onclick="createNewNote()">💬 Add Note</div>
+      `;
+    } else {
+      return; // Nothing to do
+    }
+    
+    // Position menu
+    menu.style.left = e.pageX + 'px';
+    menu.style.top = e.pageY + 'px';
+    menu.classList.add('show');
+  });
+
+  document.addEventListener('click', function(e) {
+    if(!e.target.closest('.context-menu')) {
+       menu.classList.remove('show');
+    }
+    // Close sticky note if clicking outside
+    if(!e.target.closest('.sticky-note') && !e.target.closest('.user-note')) {
+       closeStickyNote();
+    }
+  });
+
+  // Handle sticky note dragging
+  const dragHandle = document.getElementById('stickyDragHandle');
+  const stickyNote = document.getElementById('stickyNote');
+  let isDragging = false, startX, startY, initialX, initialY;
+
+  dragHandle.addEventListener('mousedown', function(e) {
+    if(e.target.tagName === 'BUTTON') return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initialX = stickyNote.offsetLeft;
+    initialY = stickyNote.offsetTop;
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    stickyNote.style.left = (initialX + dx) + 'px';
+    stickyNote.style.top = (initialY + dy) + 'px';
+  });
+
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+    document.body.style.userSelect = '';
+  });
 });
+
+function applyAnnotation(className) {
+  const sel = window.getSelection();
+  if(!sel.isCollapsed && sel.rangeCount > 0) {
+    const range = sel.getRangeAt(0);
+    const span = document.createElement('span');
+    span.className = className;
+    if(className === 'underline') span.style.textDecoration = 'underline';
+    span.appendChild(range.extractContents());
+    range.insertNode(span);
+    sel.removeAllRanges();
+    saveAnnotations();
+  }
+}
+
+function createNewNote() {
+  const sel = window.getSelection();
+  if(sel.isCollapsed || sel.rangeCount === 0) return;
+
+  const id = 'note_' + Date.now();
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span');
+  span.className = 'user-note';
+  span.dataset.id = id;
+  span.dataset.note = "";
+  span.appendChild(range.extractContents());
+  range.insertNode(span);
+  sel.removeAllRanges();
+
+  openExistingNote(id);
+}
+
+function openExistingNote(id) {
+  const span = document.querySelector(`.user-note[data-id="${id}"]`);
+  if(!span) return;
+
+  activeNoteId = id;
+  const rect = span.getBoundingClientRect();
+  
+  const sticky = document.getElementById('stickyNote');
+  const textArea = document.getElementById('stickyText');
+  
+  textArea.value = span.dataset.note || "";
+  sticky.style.left = (rect.right + window.scrollX + 10) + 'px';
+  sticky.style.top = (rect.top + window.scrollY - 20) + 'px';
+  sticky.classList.add('show');
+  
+  setTimeout(() => textArea.focus(), 100);
+}
+
+function closeStickyNote() {
+  const sticky = document.getElementById('stickyNote');
+  if(!sticky.classList.contains('show')) return;
+  
+  // Save the text
+  if (activeNoteId) {
+    const span = document.querySelector(`.user-note[data-id="${activeNoteId}"]`);
+    if(span) {
+      span.dataset.note = document.getElementById('stickyText').value;
+      saveAnnotations();
+    }
+  }
+  
+  sticky.classList.remove('show');
+  activeNoteId = null;
+}
+
+function deleteNoteById(id) {
+  const span = document.querySelector(`.user-note[data-id="${id}"]`);
+  if(!span) return;
+  
+  // Unwrap the span (keep the text)
+  const parent = span.parentNode;
+  while (span.firstChild) {
+    parent.insertBefore(span.firstChild, span);
+  }
+  parent.removeChild(span);
+  
+  if(activeNoteId === id) closeStickyNote();
+  saveAnnotations();
+}
+
+function deleteCurrentNote() {
+  if(activeNoteId) {
+    deleteNoteById(activeNoteId);
+  }
+}
+
+function saveAnnotations() {
+  if(fbConnected && sessionRef) {
+    sessionRef.child('annotations/'+state.currentLessonId).set(document.getElementById('passageBody').innerHTML).then(()=>{
+      if(typeof showToast === 'function') showToast('Annotations saved');
+    });
+  }
+}
 
 /* ================== FIREBASE INIT ================== */
 function initFirebase(){
@@ -485,13 +645,7 @@ function initFirebase(){
           fbDb.ref('sessions/'+c+'/annotations/'+lessonId).on('value', function(s){
              if(s.exists() && !teacherPreviewRequested) {
                 const body = document.getElementById('passageBody');
-                if(body && state.currentStage===3) {
-                    body.innerHTML = s.val();
-                    // Re-attach click listeners for notes
-                    body.querySelectorAll('.user-note').forEach(el => {
-                        el.title = "Click to view note";
-                    });
-                }
+                if(body && state.currentStage===3) body.innerHTML = s.val();
              }
           });
        }
@@ -1177,15 +1331,6 @@ function renderStage3(){
         '<button class="btn small" id="ttsResume" style="display:none" onclick="resumeTTS()">▶️ Resume</button>'+
         '<button class="btn ghost small" id="ttsStop" style="display:none" onclick="stopTTS()">⏹ Stop</button>'+
       '</div>'+
-      '<div class="annotation-toolbar">'+
-        '<span style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-right:8px">Select text then:</span>'+
-        '<button onclick="applyAnnotation(\'hl-yellow\')">🖍️ Yellow</button>'+
-        '<button onclick="applyAnnotation(\'hl-green\')">🟢 Green</button>'+
-        '<button onclick="applyAnnotation(\'hl-blue\')">🔵 Blue</button>'+
-        '<button onclick="applyAnnotation(\'underline\')">U̲ Underline</button>'+
-        '<button onclick="addComment()">💬 Add Note</button>'+
-        '<button onclick="saveAnnotations()" style="background:var(--success);color:#fff;border:none">💾 Save</button>'+
-      '</div>'+
       '<div class="passage" id="passageBody">'+READING_HTML+'</div>'+
     '</section>'+
     '<section class="reading-questions">'+
@@ -1208,66 +1353,11 @@ function renderStage3(){
      sessionRef.child('annotations/'+state.currentLessonId).once('value').then(snap => {
          if(snap.exists()) {
              document.getElementById('passageBody').innerHTML = snap.val();
-             document.querySelectorAll('.user-note').forEach(el => {
-                 el.title = "Click to view note";
-             });
          }
      });
   }
-  
-  // Re-bind note clicks
-  document.getElementById('passageBody').addEventListener('click', function(e) {
-      if(e.target.classList.contains('user-note')) {
-         const noteText = e.target.dataset.note;
-         if(noteText) {
-            openStickyNote(noteText, e.clientX, e.clientY, e.target);
-         }
-      }
-  });
 }
 function updateS3Progress(){const el=document.getElementById('s3Progress');if(el)el.textContent=Object.keys(s4Answers).length}
-
-/* Annotation Functions */
-function applyAnnotation(className) {
-  const sel = window.getSelection();
-  if(!sel.isCollapsed && sel.rangeCount > 0) {
-    const range = sel.getRangeAt(0);
-    const span = document.createElement('span');
-    span.className = className;
-    if(className === 'underline') span.style.textDecoration = 'underline';
-    span.appendChild(range.extractContents());
-    range.insertNode(span);
-    sel.removeAllRanges();
-  }
-}
-function addComment() {
-  const sel = window.getSelection();
-  if(!sel.isCollapsed && sel.rangeCount > 0) {
-    const note = prompt('Enter your note for this text:');
-    if(note) {
-      const range = sel.getRangeAt(0);
-      const span = document.createElement('span');
-      span.className = 'user-note';
-      span.dataset.note = note;
-      span.title = "Click to view note";
-      span.appendChild(range.extractContents());
-      range.insertNode(span);
-      sel.removeAllRanges();
-      saveAnnotations();
-    }
-  } else {
-    alert('Please highlight some text first to attach a note.');
-  }
-}
-function saveAnnotations() {
-  if(fbConnected && sessionRef) {
-    sessionRef.child('annotations/'+state.currentLessonId).set(document.getElementById('passageBody').innerHTML).then(()=>{
-      showToast('Annotations saved permanently!');
-    });
-  } else {
-    showToast('Cannot save: Not connected to Firebase.');
-  }
-}
 
 function renderReadingQuestions(){
   const body=document.getElementById('readingQ');if(!body)return;body.innerHTML='';
@@ -1851,7 +1941,6 @@ function endTest(timedOut,customReason){
   const total=testState.total||1;
   const score=Math.round((testState.correct/total)*10);
   
-  // Force save to Firebase before any UI animations that might crash
   try {
       state.done[state.currentLessonId+"_9"] = true;
       setScore(9, score); 
