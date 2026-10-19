@@ -1639,23 +1639,36 @@ function resetGrammarStage(id){setScore(id,0);state.done[state.currentLessonId+"
 function renderStage4(){
     let title = '⏳ Completing Sentence — Present Perfect';
     let formula = 'Subject + have/has + past participle (V3)';
-    let listHTML = '<li>Use <b>have</b> with I, you, we, they.</li><li>Use <b>has</b> with he, she, it.</li>';
+    let listHTML = '<li><b>Experiences:</b> Use for life experiences when the exact time is not important (e.g., <i>I have visited London.</i>). Often used with <i>ever, never, before</i>.</li>' +
+                   '<li><b>Unfinished time:</b> Use for time periods that are not finished yet (e.g., <i>today, this week, this year</i>).</li>' +
+                   '<li><b>Recent news:</b> Use with <i>just, already, yet</i> (e.g., <i>He has just left.</i>).</li>' +
+                   '<li><b>Duration:</b> Use <i>for</i> with a length of time (for 3 years) and <i>since</i> with a starting point (since 2010).</li>' +
+                   '<li><b>Key difference:</b> Present perfect connects the past to the present. Do not use it with finished time words like <i>yesterday, last week, in 1999</i> (use Past Simple for those).</li>';
     let lead = 'Complete each sentence.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '⏳ Completing Sentence — Simple Present';
         formula = 'Subject + V1 (or V-s / V-es for he, she, it)';
-        listHTML = '<li>Use for facts, habits, and routines.</li><li>Add -s or -es for he/she/it.</li>';
+        listHTML = '<li><b>Facts and General Truths:</b> (e.g., <i>Water boils at 100 degrees.</i>)</li>' +
+                   '<li><b>Habits and Routines:</b> (e.g., <i>She usually walks to school.</i>) Often used with <i>always, usually, often, sometimes, never, every day</i>.</li>' +
+                   '<li><b>Timetables:</b> Fixed schedules (e.g., <i>The train leaves at 8 AM.</i>).</li>' +
+                   '<li><b>Spelling rules:</b> Add -s for most verbs (work -> works). Add -es for verbs ending in -o, -ch, -sh, -ss, -x (go -> goes). If a consonant + y, change to -ies (study -> studies).</li>';
         lead = 'Complete each sentence using the Simple Present.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Present Tenses';
         formula = 'Present Simple vs Present Continuous';
-        listHTML = '<li>Present Simple: facts and routines.</li><li>Present Continuous: happening right now.</li>';
+        listHTML = '<li><b>Present Simple:</b> Facts, routines, and habits (e.g., <i>He plays football every day.</i>).</li>' +
+                   '<li><b>Present Continuous:</b> Actions happening exactly right now, temporary situations, or future arrangements (e.g., <i>He is playing football right now.</i>).</li>' +
+                   '<li><b>Stative Verbs:</b> Verbs expressing states (know, like, want, believe) are usually NOT used in the continuous form. (e.g., <i>I am knowing</i> is incorrect; use <i>I know</i>).</li>';
         lead = 'Complete each sentence using the correct present tense.';
     } else if (activeContentName === 'abay') {
         title = '⏳ Completing Sentence — Gerunds & Infinitives';
         formula = 'enjoy / avoid / suggest / mind + V-ing · decide / hope / plan / refuse + to + V1';
-        listHTML = '<li><b>-ing form</b> after: enjoy, avoid, mind, finish, suggest, keep, be used to</li><li><b>to + infinitive</b> after: decide, hope, want, plan, refuse, agree, manage, would like</li><li>Prepositions (<i>good at, interested in, look forward to</i>) always take <b>-ing</b>.</li>';
+        listHTML = '<li><b>Gerund (-ing):</b> Acts as a noun. Used as a subject (e.g., <i>Swimming is fun</i>). Used after prepositions (e.g., <i>good at drawing</i>).</li>' +
+                   '<li><b>Verbs followed by Gerund:</b> enjoy, avoid, mind, finish, suggest, keep, practice, recommend, consider.</li>' +
+                   '<li><b>Verbs followed by Infinitive (to + V1):</b> decide, hope, want, plan, refuse, agree, manage, offer, promise.</li>' +
+                   '<li><b>Change in meaning:</b> "Stop doing" (quit an action) vs "Stop to do" (pause an action to do something else). "Remember doing" (recall a past memory) vs "Remember to do" (not forget a future duty).</li>' +
+                   '<li><b>Bare Infinitive:</b> After modal verbs (must, can, should) and "let/make" (e.g., <i>Let me go. I must study.</i>).</li>';
         lead = 'Complete each sentence using the gerund or the infinitive form.';
     }
     renderCompletingSentence(G6,4,3,5,title,'Stage 4 — Grammar',formula,listHTML,lead);
@@ -1664,23 +1677,34 @@ function renderStage4(){
 function renderStage5(){
     let title = '🛡️ Completing Sentence — Passive Voice';
     let formula = 'Subject + was/were + past participle (V3)';
-    let listHTML = '<li>Past passive.</li>';
+    let listHTML = '<li><b>Focus:</b> Use passive when the action or the receiver of the action is more important than the doer (e.g., <i>The window was broken.</i>).</li>' +
+                   '<li><b>Agent:</b> Use "by + doer" only if the doer is important or surprising (e.g., <i>The novel was written by Orwell.</i>). Otherwise, omit it.</li>' +
+                   '<li><b>Tenses in Passive:</b> Present: <i>is/are + V3</i>. Past: <i>was/were + V3</i>. Perfect: <i>has/have been + V3</i>. Future: <i>will be + V3</i>.</li>' +
+                   '<li><b>Transitive verbs only:</b> Only verbs that take an object can be passive (e.g., <i>He slept</i> cannot be passive because there is no object).</li>';
     let lead = 'Complete each sentence using the passive voice.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '⏳ Completing Sentence — Present Continuous';
         formula = 'Subject + am/is/are + V-ing';
-        listHTML = '<li>Use for actions happening right now.</li><li>Use for temporary situations.</li>';
+        listHTML = '<li><b>Actions happening now:</b> (e.g., <i>Look! It is raining.</i>)</li>' +
+                   '<li><b>Temporary situations:</b> (e.g., <i>I am living in London for a month.</i>)</li>' +
+                   '<li><b>Trends and changes:</b> (e.g., <i>The climate is getting warmer.</i>)</li>' +
+                   '<li><b>Spelling rules:</b> Double the final consonant for short vowel sounds (run -> running). Drop the final -e (make -> making). Change -ie to -y (lie -> lying).</li>';
         lead = 'Complete each sentence using the Present Continuous.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Past Tenses';
         formula = 'Past Simple vs Past Continuous';
-        listHTML = '<li>Past Simple: finished actions.</li><li>Past Continuous: actions in progress in the past.</li>';
+        listHTML = '<li><b>Past Simple:</b> Finished actions at a specific time in the past (e.g., <i>He played football yesterday.</i>). Often used with <i>yesterday, last week, in 2010</i>.</li>' +
+                   '<li><b>Past Continuous:</b> Actions in progress at a specific time in the past (e.g., <i>He was playing at 5 PM.</i>).</li>' +
+                   '<li><b>Combined:</b> Use Past Continuous for the background action and Past Simple for the interrupting action (e.g., <i>I was sleeping when the phone rang.</i>)</li>';
         lead = 'Complete each sentence using the correct past tense.';
     } else if (activeContentName === 'abay') {
         title = '🛡️ Completing Sentence — Modals of Deduction';
         formula = 'must / might / could / can\'t + bare infinitive (present) · must / might / could have + V3 (past)';
-        listHTML = '<li><b>must</b> = strong deduction (&ldquo;she must be tired&rdquo;)</li><li><b>might / could</b> = possibility (&ldquo;he might be busy&rdquo;)</li><li><b>can\'t</b> = impossibility (&ldquo;that can\'t be true&rdquo;)</li><li>For the past: modal + <b>have</b> + V3 (&ldquo;she must have left&rdquo;)</li>';
+        listHTML = '<li><b>Present Deduction:</b> Use <i>must</i> (90% certainty, e.g., <i>She must be tired</i>), <i>might/may/could</i> (50% possibility, e.g., <i>He might be busy</i>), or <i>can\'t</i> (0% impossibility, e.g., <i>That can\'t be true</i>).</li>' +
+                   '<li><b>Past Deduction:</b> modal + have + V3 (e.g., <i>She must have left already.</i> / <i>He might have forgotten.</i> / <i>They can\'t have arrived this early.</i>).</li>' +
+                   '<li><b>Advice and Obligation:</b> <i>Should / ought to</i> for advice (e.g., <i>You should check</i>). <i>Must / have to</i> for strong obligation.</li>' +
+                   '<li><b>Prohibition vs No obligation:</b> <i>Must not</i> means it is forbidden. <i>Do not have to</i> means it is not necessary.</li>';
         lead = 'Complete each sentence using the correct modal verb.';
     }
     renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
@@ -1788,17 +1812,22 @@ function renderStage6(){
     if (activeContentName.includes('araylim_1')) {
         title = '🧩 Sentence Builder — Simple Past';
         formula = 'Subject + V2 (or did not + V1)';
-        listHTML = '<li>Use for finished actions in the past.</li><li>Remember irregular verbs (e.g., go → went).</li>';
+        listHTML = '<li><b>Regular verbs:</b> Add -ed (play -> played).</li>' +
+                   '<li><b>Irregular verbs:</b> Must be memorized (go -> went, buy -> bought, see -> saw).</li>' +
+                   '<li><b>Questions and Negatives:</b> Use the auxiliary "did" + base verb (e.g., <i>Did you go? I did not go.</i>).</li>';
         lead = 'Build each sentence using the Simple Past.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧩 Sentence Builder — Present Tenses';
         formula = 'Subject + V1 / am/is/are + V-ing';
-        listHTML = '<li>Build sentences about routines and actions happening now.</li>';
+        listHTML = '<li>Build sentences about routines (Present Simple) and actions happening now (Present Continuous).</li>' +
+                   '<li>Remember to include the helping verb (am/is/are) in the continuous form.</li>';
         lead = 'Build each sentence.';
     } else if (activeContentName === 'abay') {
         title = '🧩 Sentence Builder — Gerunds & Infinitives';
         formula = 'verb + V-ing OR verb + to + V1 — the verb decides';
-        listHTML = '<li>Check the verb before the gap. If it is <i>enjoy/avoid/mind/suggest</i>, use <b>-ing</b>.</li><li>If it is <i>decide/hope/plan/agree</i>, use <b>to + V1</b>.</li>';
+        listHTML = '<li>Check the verb before the gap. If it is <i>enjoy, avoid, mind, suggest, finish</i>, use <b>-ing</b>.</li>' +
+                   '<li>If it is <i>decide, hope, plan, agree, want, refuse</i>, use <b>to + V1</b>.</li>' +
+                   '<li>If the phrase includes a preposition (good at, interested in), use <b>-ing</b>.</li>';
         lead = 'Build each sentence using the correct verb form.';
     }
     renderSentenceBuilder(SB_PP,6,5,7,title,'Stage 6 — Grammar',formula,listHTML,lead);
@@ -1807,23 +1836,27 @@ function renderStage6(){
 function renderStage7(){
     let title = '🧱 Sentence Builder — Passive Voice';
     let formula = 'was/were + past participle (V3)';
-    let listHTML = '<li>Build past passive sentences word by word.</li>';
+    let listHTML = '<li>Build past passive sentences word by word. Start with the object that receives the action.</li>' +
+                   '<li>Remember to include the "be" verb (was/were) before the V3.</li>';
     let lead = 'Build each sentence.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '🧱 Sentence Builder — Past Continuous';
         formula = 'Subject + was/were + V-ing';
-        listHTML = '<li>Use for actions in progress in the past.</li><li>Often used with "when" or "while".</li>';
+        listHTML = '<li>Use for actions in progress in the past.</li>' +
+                   '<li>Often used with "when" (interruption) or "while" (background action).</li>';
         lead = 'Build each sentence using the Past Continuous.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧱 Sentence Builder — Past Simple';
         formula = 'Subject + V2 (or did not + V1)';
-        listHTML = '<li>Build past simple sentences.</li>';
+        listHTML = '<li>Build past simple sentences. Watch out for irregular verbs.</li>';
         lead = 'Build each sentence.';
     } else if (activeContentName === 'abay') {
         title = '🧱 Sentence Builder — Modals of Deduction';
         formula = 'subject + modal + bare infinitive (present) · modal + have + V3 (past)';
-        listHTML = '<li>No <b>to</b> after must / might / could / can\'t / should.</li><li>Past deduction: modal + <b>have</b> + V3 (&ldquo;must have gone&rdquo;).</li>';
+        listHTML = '<li>No <b>to</b> after must / might / could / can\'t / should.</li>' +
+                   '<li>For past deduction, remember the structure: modal + <b>have</b> + V3 (e.g., <i>must have gone</i>).</li>' +
+                   '<li>For impossibility in the past, use <i>cannot have + V3</i>.</li>';
         lead = 'Build each sentence using the correct modal form.';
     }
     renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
@@ -1833,23 +1866,29 @@ function renderStage7(){
 function renderStage8(){
     let title = '🧭 Completing Sentence — Choose the Tense';
     let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
-    let listHTML = '<li>Use past simple with finished times.</li><li>Use present perfect with: since, for, yet, ever.</li>';
+    let listHTML = '<li><b>Past Simple:</b> Use with finished time expressions (yesterday, last year, in 2010).</li>' +
+                   '<li><b>Present Perfect:</b> Use with unfinished time (today, this week), or time expressions like <i>since, for, yet, ever, just, already</i>.</li>' +
+                   '<li><b>Past Passive:</b> Use when the subject receives the action (e.g., <i>The house was built in 1990.</i>).</li>';
     let lead = 'Choose the correct tense for each sentence.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '🧭 Completing Sentence — Present Perfect';
         formula = 'Subject + have/has + past participle (V3)';
-        listHTML = '<li>Use for experiences (ever/never).</li><li>Use with "since", "for", "yet", "already", "just".</li>';
+        listHTML = '<li>Use for experiences (ever/never).</li>' +
+                   '<li>Use with "since" (point in time) and "for" (duration).</li>' +
+                   '<li>Use with "yet" (questions/negatives) and "already/just" (positives).</li>';
         lead = 'Complete each sentence using the Present Perfect.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧭 Completing Sentence — Mixed Tenses';
         formula = 'Present Simple/Continuous · Past Simple · Present Perfect';
-        listHTML = '<li>Look at the time words to identify the correct tense.</li>';
+        listHTML = '<li>Look at the time words to identify the correct tense (e.g., <i>every day</i> = Present Simple; <i>right now</i> = Present Continuous; <i>yesterday</i> = Past Simple).</li>';
         lead = 'Choose the correct tense for each sentence.';
     } else if (activeContentName === 'abay') {
         title = '🧭 Completing Sentence — Choose the Form';
         formula = 'gerund · infinitive · modal (+have) · present perfect';
-        listHTML = '<li>Look at the verb before the gap and the time clue after it.</li><li>For past deduction use <b>modal + have + V3</b>.</li>';
+        listHTML = '<li>Look at the verb before the gap and the time clue after it.</li>' +
+                   '<li>For past deduction use <b>modal + have + V3</b> (e.g., <i>must have left</i>).</li>' +
+                   '<li>For experiences use <b>Present Perfect</b>. For habits use <b>Present Simple</b>.</li>';
         lead = 'Choose the correct form for each sentence.';
     }
     renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
@@ -1859,8 +1898,16 @@ function renderStage8(){
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 
 function getTestTimeLimit() {
-   const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length;
-   return Math.max(300, totalQuestions * 30); 
+   // Advanced algorithm: calculates time based on question difficulty
+   const mcqTime = (TEST_MCQ ? TEST_MCQ.length : 0) * 25;       // 25s per MCQ
+   const shortTime = (TEST_SHORT ? TEST_SHORT.length : 0) * 40; // 40s per short answer
+   const tfngTime = (TEST_TFNG ? TEST_TFNG.length : 0) * 20;    // 20s per TFNG
+   const completeTime = (TEST_COMPLETE ? TEST_COMPLETE.length : 0) * 35; // 35s per complete
+   
+   const baseTime = 60; // Base time for reading instructions
+   const totalTime = baseTime + mcqTime + shortTime + tfngTime + completeTime;
+   
+   return Math.max(300, totalTime); // Minimum 5 minutes just in case
 }
 
 function buildTestQuestions(){
