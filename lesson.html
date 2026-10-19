@@ -203,8 +203,8 @@ html.dark .underline:hover {
 .context-item.delete{color:var(--error);}
 .context-item.delete:hover{background:var(--error-soft);}
 
-/* STICKY NOTE POPUP */
-.sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;display:none;flex-direction:column;z-index:10001;cursor:default;font-family:'EB Garamond',serif;}
+/* STICKY NOTE POPUP (Resizable) */
+.sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;height:200px;display:none;flex-direction:column;z-index:10001;font-family:'EB Garamond',serif;resize:both;overflow:hidden;min-width:200px;min-height:150px;}
 .sticky-note.show{display:flex;}
 .sticky-header{background:#facc15;padding:6px 10px;border-radius:7px 7px 0 0;display:flex;justify-content:space-between;align-items:center;cursor:grab;}
 .sticky-header:active{cursor:grabbing;}
@@ -213,8 +213,8 @@ html.dark .underline:hover {
 .sticky-btn{background:transparent;border:none;cursor:pointer;font-size:14px;color:#422006;padding:2px;transition:transform .1s;}
 .sticky-btn:hover{transform:scale(1.2);}
 .sticky-btn.delete:hover{color:#b91c1c;}
-.sticky-body{padding:10px;}
-.sticky-text{width:100%;min-height:80px;background:transparent;border:none;resize:vertical;outline:none;font-family:'EB Garamond',serif;font-size:16px;line-height:1.4;color:#422006;font-weight:500;}
+.sticky-body{padding:10px;flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.sticky-text{width:100%;height:100%;background:transparent;border:none;resize:none;outline:none;font-family:'EB Garamond',serif;font-size:16px;line-height:1.4;color:#422006;font-weight:500;}
 .sticky-text::placeholder{color:rgba(66,32,6,0.5);font-style:italic;}
 
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
@@ -482,20 +482,21 @@ let contextTargetEdit = null;
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('customContextMenu');
   
-  // Global Mouse Down listener (fires before click). This safely dismisses menus.
-  document.addEventListener('mousedown', function(e) {
-    // If clicking inside the context menu or sticky note, do nothing
-    if(e.target.closest('.context-menu') || e.target.closest('.sticky-note')) return;
-
+  document.addEventListener('click', function(e) {
+    if(e.target.closest('.context-menu')) return;
     menu.classList.remove('show');
-    
-    // Close sticky note if clicking outside of it and outside a highlight
-    if(!e.target.closest('.user-note')) {
+
+    if(!e.target.closest('.sticky-note') && !e.target.closest('.user-note')) {
        closeStickyNote();
+    }
+
+    const targetNote = e.target.closest('.user-note');
+    if (targetNote) {
+        if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
+        openExistingNote(targetNote.dataset.id);
     }
   });
 
-  // The Right-Click Logic
   document.addEventListener('contextmenu', function(e) {
     if(!e.target.closest('#passageBody')) return;
     
@@ -506,7 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const selection = window.getSelection();
     const targetNote = e.target.closest('.user-note');
     
-    // Check if right-clicked inside an existing highlight/underline
     let node = e.target;
     while (node && node !== document.body) {
         if (node.nodeType === 1) { 
@@ -518,11 +518,10 @@ document.addEventListener('DOMContentLoaded', () => {
         node = node.parentNode;
     }
 
-    // Stop propagation is crucial here so the note doesn't instantly close
     const safeClick = "event.preventDefault(); event.stopPropagation();";
 
     if (targetNote) {
-      if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); // Fix legacy notes
+      if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
       menu.innerHTML = `
         <div class="context-item" onmousedown="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
         <div class="context-item delete" onmousedown="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
@@ -555,7 +554,6 @@ document.addEventListener('DOMContentLoaded', () => {
     menu.classList.add('show');
   });
 
-  // Sticky Note Dragging Logic
   const dragHandle = document.getElementById('stickyDragHandle');
   const stickyNote = document.getElementById('stickyNote');
   let isDragging = false, startX, startY, initialX, initialY;
@@ -628,7 +626,6 @@ function createNewNote() {
   savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
   
-  // Open instantly now that race conditions are fixed
   openExistingNote(id);
 }
 
