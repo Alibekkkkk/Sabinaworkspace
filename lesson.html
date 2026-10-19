@@ -204,7 +204,7 @@ html.dark .underline:hover {
 .context-item.delete:hover{background:var(--error-soft);}
 
 /* STICKY NOTE POPUP (Resizable) */
-.sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;height:200px;display:none;flex-direction:column;z-index:10001;font-family:'EB Garamond',serif;resize:both;overflow:hidden;min-width:200px;min-height:150px;}
+.sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;height:200px;display:none;flex-direction:column;z-index:10001;font-family:'EB Garamond',serif;resize:both;overflow:auto;min-width:200px;min-height:150px;}
 .sticky-note.show{display:flex;}
 .sticky-header{background:#facc15;padding:6px 10px;border-radius:7px 7px 0 0;display:flex;justify-content:space-between;align-items:center;cursor:grab;}
 .sticky-header:active{cursor:grabbing;}
@@ -483,18 +483,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('customContextMenu');
   
   document.addEventListener('click', function(e) {
+    // If clicking inside the context menu, do nothing (let the menu item's click handler run)
     if(e.target.closest('.context-menu')) return;
+    
+    // Hide the menu if we clicked outside
     menu.classList.remove('show');
 
-    if(!e.target.closest('.sticky-note') && !e.target.closest('.user-note')) {
-       closeStickyNote();
-    }
+    // If clicking inside the sticky note, do not close it
+    if(e.target.closest('.sticky-note')) return;
 
+    // If clicking on a user-note, open it
     const targetNote = e.target.closest('.user-note');
     if (targetNote) {
         if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
         openExistingNote(targetNote.dataset.id);
+        return; // Stop here, don't close the sticky note
     }
+
+    // Otherwise, close the sticky note
+    closeStickyNote();
   });
 
   document.addEventListener('contextmenu', function(e) {
@@ -518,27 +525,28 @@ document.addEventListener('DOMContentLoaded', () => {
         node = node.parentNode;
     }
 
+    // Use onclick instead of onmousedown to allow the click to finish completely before running the function
     const safeClick = "event.preventDefault(); event.stopPropagation();";
 
     if (targetNote) {
       if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
       menu.innerHTML = `
-        <div class="context-item" onmousedown="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
-        <div class="context-item delete" onmousedown="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
+        <div class="context-item" onclick="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
+        <div class="context-item delete" onclick="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
       `;
     } else if (contextTargetEdit) {
       menu.innerHTML = `
-        <div class="context-item delete" onmousedown="${safeClick} removeExistingEdit()">🗑️ Remove Edit</div>
+        <div class="context-item delete" onclick="${safeClick} removeExistingEdit()">🗑️ Remove Edit</div>
       `;
     } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
       
       menu.innerHTML = `
-        <div class="context-item" onmousedown="${safeClick} applyAnnotation('hl-yellow')">🖍️ Highlight Yellow</div>
-        <div class="context-item" onmousedown="${safeClick} applyAnnotation('hl-green')">🟢 Highlight Green</div>
-        <div class="context-item" onmousedown="${safeClick} applyAnnotation('hl-blue')">🔵 Highlight Blue</div>
-        <div class="context-item" onmousedown="${safeClick} applyAnnotation('underline')">U̲ Underline</div>
-        <div class="context-item" onmousedown="${safeClick} createNewNote()">💬 Add Note</div>
+        <div class="context-item" onclick="${safeClick} applyAnnotation('hl-yellow')">🖍️ Highlight Yellow</div>
+        <div class="context-item" onclick="${safeClick} applyAnnotation('hl-green')">🟢 Highlight Green</div>
+        <div class="context-item" onclick="${safeClick} applyAnnotation('hl-blue')">🔵 Highlight Blue</div>
+        <div class="context-item" onclick="${safeClick} applyAnnotation('underline')">U̲ Underline</div>
+        <div class="context-item" onclick="${safeClick} createNewNote()">💬 Add Note</div>
       `;
     } else {
       return; 
@@ -1433,7 +1441,6 @@ function renderStage3(){
      sessionRef.child('annotations/'+state.currentLessonId).once('value').then(snap => {
          if(snap.exists()) {
              document.getElementById('passageBody').innerHTML = snap.val();
-             // Fix legacy notes by giving them IDs if they don't have them
              document.querySelectorAll('.user-note').forEach((note, i) => {
                  if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i;
              });
