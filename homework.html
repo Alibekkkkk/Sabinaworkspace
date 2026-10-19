@@ -104,6 +104,9 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <div class="sub" id="hwSub">Topic · Homework</div>
   </div>
   <div class="spacer"></div>
+  <div id="teacherResetArea" style="display:none; margin-right:10px;">
+    <button onclick="resetHomeworkTeacher()" style="background:var(--error); color:#fff; border:none; box-shadow:0 2px 0 #a71d2a;">🔄 Reset Homework</button>
+  </div>
   <button onclick="toggleTheme()" id="themeButton">🌙 Theme</button>
   <a href="portal.html">← Classwork</a>
 </div>
@@ -489,18 +492,27 @@ async function loadHomeworkContent() {
   } else if (code) {
      fileName = 'homework_' + code.toLowerCase(); 
   } else {
-     throw new Error("No variant or code specified in the URL.");
+     fileName = 'homework_sabina'; 
   }
   
   const res = await fetch('content/' + fileName + '.json', { cache: 'no-store' });
   if (!res.ok) {
-      // Fallback attempt
       const fallback = await fetch('content/homework_sabina.json', { cache: 'no-store' });
       if(!fallback.ok) throw new Error('content/' + fileName + '.json not found and fallback failed.');
       lesson = await fallback.json();
       return;
   }
   lesson = await res.json();
+}
+
+function resetHomeworkTeacher() {
+  if(!confirm('Are you sure you want to reset this homework for the student? They will be able to take it again.')) return;
+  if(sessionRef) {
+     sessionRef.child('homework/'+homeworkId).remove().then(() => {
+         alert('Homework reset successfully. The student can now retake it.');
+         location.reload();
+     }).catch(e => alert('Reset failed: ' + e.message));
+  }
 }
 
 function initFirebase(){
@@ -521,7 +533,10 @@ function initFirebase(){
       fbAuth.onAuthStateChanged(function(user){
         teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
         teacherMode=teacherCanEdit;
-        if(teacherCanEdit){renderPassage();renderQuestions()}
+        if(teacherCanEdit){
+          document.getElementById('teacherResetArea').style.display='block';
+          renderPassage();renderQuestions();
+        }
         else{document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Teacher sign-in required</h2></div>'}
       });
       return;

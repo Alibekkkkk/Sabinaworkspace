@@ -1272,14 +1272,19 @@ function openHomework(id) {
   document.getElementById('homeworkPlaceholder').style.display = 'none';
   const frame = document.getElementById('homeworkFrame');
   
-  const contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
+  // Fallback logic to infer file if it's missing
+  let contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   if(!contentFile) {
-      alert("This homework assignment does not have a 'Content file' specified. Please click Edit info and set it to the correct JSON file (e.g., homework_george).");
-      document.getElementById('homeworkBar').style.display = 'none';
-      frame.style.display = 'none';
-      frame.src = 'about:blank';
-      document.getElementById('homeworkPlaceholder').style.display = 'grid';
-      return;
+      if (l.assignedTo && l.assignedTo.length > 0) {
+          const code = l.assignedTo[0];
+          const sName = (studentsMap[code] && studentsMap[code].name) ? studentsMap[code].name : code;
+          contentFile = 'homework_' + sName.toLowerCase().replace(/\s+/g, '');
+      } else if (activeCode) {
+          const sName = (studentsMap[activeCode] && studentsMap[activeCode].name) ? studentsMap[activeCode].name : activeCode;
+          contentFile = 'homework_' + sName.toLowerCase().replace(/\s+/g, '');
+      } else {
+          contentFile = 'homework_sabina'; // Default fallback
+      }
   }
   
   frame.style.display = 'block';
@@ -1297,10 +1302,19 @@ function openCurrentHomeworkInTab() {
   if (!currentHomeworkId) return;
   const l = curriculum[currentHomeworkId] || {};
   
-  const contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
+  // Fallback logic to infer file if it's missing
+  let contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   if(!contentFile) {
-      alert("This homework assignment does not have a 'Content file' specified. Please click Edit info and set it.");
-      return;
+      if (l.assignedTo && l.assignedTo.length > 0) {
+          const code = l.assignedTo[0];
+          const sName = (studentsMap[code] && studentsMap[code].name) ? studentsMap[code].name : code;
+          contentFile = 'homework_' + sName.toLowerCase().replace(/\s+/g, '');
+      } else if (activeCode) {
+          const sName = (studentsMap[activeCode] && studentsMap[activeCode].name) ? studentsMap[activeCode].name : activeCode;
+          contentFile = 'homework_' + sName.toLowerCase().replace(/\s+/g, '');
+      } else {
+          contentFile = 'homework_sabina';
+      }
   }
   
   const url = new URL('homework.html', window.location.href);

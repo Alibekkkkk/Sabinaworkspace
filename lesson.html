@@ -167,7 +167,15 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .hl-yellow{background-color:#fce883;color:#000}
 .hl-green{background-color:#b5e8c5;color:#000}
 .hl-blue{background-color:#c5e1f5;color:#000}
-.user-note{background-color:#ffe8d6;border-bottom:2px dashed var(--accent);position:relative;cursor:help}
+.user-note{background-color:#fef08a;border-bottom:2px dashed #eab308;cursor:pointer;padding:0 2px;border-radius:2px;}
+.user-note:hover{background-color:#fde047;}
+
+/* Draggable Sticky Note */
+.sticky-note-popup{position:absolute;background:#fef08a;border:1px solid #eab308;border-radius:8px;padding:12px 14px;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:10000;max-width:250px;font-family:'EB Garamond',serif;color:#422006;display:none;cursor:move;font-size:15px;line-height:1.4;}
+.sticky-note-popup.show{display:block;}
+.sticky-note-popup .close-note{position:absolute;top:4px;right:8px;font-size:14px;cursor:pointer;color:#854d0e;font-weight:bold;}
+.sticky-note-popup .sticky-text{padding-top:6px;}
+
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
 .q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
@@ -414,6 +422,56 @@ function isAnswerCorrect(userStr, expectedArr) {
   return false;
 }
 
+/* ================== STICKY NOTES SETUP ================== */
+let isDragging = false;
+let dragOffsetX = 0, dragOffsetY = 0;
+let currentEditingSpan = null;
+
+function initStickyNote() {
+  const popup = document.createElement('div');
+  popup.className = 'sticky-note-popup';
+  popup.id = 'stickyNote';
+  popup.innerHTML = '<span class="close-note" onclick="document.getElementById(\'stickyNote\').classList.remove(\'show\')">✕</span><div class="sticky-text" contenteditable="true"></div>';
+  document.body.appendChild(popup);
+
+  popup.addEventListener('mousedown', function(e) {
+    if(e.target.classList.contains('close-note')) return;
+    isDragging = true;
+    const rect = popup.getBoundingClientRect();
+    dragOffsetX = e.clientX - rect.left;
+    dragOffsetY = e.clientY - rect.top;
+  });
+  document.addEventListener('mousemove', function(e) {
+    if(!isDragging) return;
+    popup.style.left = (e.clientX - dragOffsetX) + 'px';
+    popup.style.top = (e.clientY - dragOffsetY) + 'px';
+  });
+  document.addEventListener('mouseup', function() {
+    if(isDragging && currentEditingSpan) {
+       // Save back to the span
+       const newText = popup.querySelector('.sticky-text').innerText;
+       if(newText.trim()) {
+          currentEditingSpan.dataset.note = newText;
+          saveAnnotations();
+       }
+    }
+    isDragging = false;
+  });
+}
+
+function openStickyNote(text, x, y, spanEl) {
+  const popup = document.getElementById('stickyNote');
+  popup.querySelector('.sticky-text').innerText = text;
+  popup.style.left = (x + 15) + 'px';
+  popup.style.top = (y - 15) + 'px';
+  popup.classList.add('show');
+  currentEditingSpan = spanEl;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initStickyNote();
+});
+
 /* ================== FIREBASE INIT ================== */
 function initFirebase(){
   try{
@@ -427,7 +485,13 @@ function initFirebase(){
           fbDb.ref('sessions/'+c+'/annotations/'+lessonId).on('value', function(s){
              if(s.exists() && !teacherPreviewRequested) {
                 const body = document.getElementById('passageBody');
-                if(body && state.currentStage===3) body.innerHTML = s.val();
+                if(body && state.currentStage===3) {
+                    body.innerHTML = s.val();
+                    // Re-attach click listeners for notes
+                    body.querySelectorAll('.user-note').forEach(el => {
+                        el.title = "Click to view note";
+                    });
+                }
              }
           });
        }
@@ -1145,11 +1209,21 @@ function renderStage3(){
          if(snap.exists()) {
              document.getElementById('passageBody').innerHTML = snap.val();
              document.querySelectorAll('.user-note').forEach(el => {
-                 el.title = el.dataset.note || 'My Note';
+                 el.title = "Click to view note";
              });
          }
      });
   }
+  
+  // Re-bind note clicks
+  document.getElementById('passageBody').addEventListener('click', function(e) {
+      if(e.target.classList.contains('user-note')) {
+         const noteText = e.target.dataset.note;
+         if(noteText) {
+            openStickyNote(noteText, e.clientX, e.clientY, e.target);
+         }
+      }
+  });
 }
 function updateS3Progress(){const el=document.getElementById('s3Progress');if(el)el.textContent=Object.keys(s4Answers).length}
 
@@ -1175,10 +1249,11 @@ function addComment() {
       const span = document.createElement('span');
       span.className = 'user-note';
       span.dataset.note = note;
-      span.title = note;
+      span.title = "Click to view note";
       span.appendChild(range.extractContents());
       range.insertNode(span);
       sel.removeAllRanges();
+      saveAnnotations();
     }
   } else {
     alert('Please highlight some text first to attach a note.');
@@ -1589,7 +1664,6 @@ let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,time
 
 function getTestTimeLimit() {
    const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length;
-   // 30 seconds per question, minimum 5 minutes
    return Math.max(300, totalQuestions * 30); 
 }
 
@@ -1613,7 +1687,18 @@ function renderStage9(){
   v.innerHTML='<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
   '<div class="lead">This is a strict, timed test. You have <b>'+limitMins+' minutes</b> in total. You can only take this test <b>once</b>. After time runs out, the test closes automatically.<span class="ru">Строгий тест на время: '+limitMins+' минут, одна попытка.</span></div>'+
   '<div id="testRoot"></div>';
-  main.appendChild(v);main.appendChild(stageFooter(8,null));
+  main.appendChild(v);
+  
+  if (teacherCanEdit) {
+      const resetBtn = document.createElement('button');
+      resetBtn.className = 'btn danger small';
+      resetBtn.style.marginBottom = '15px';
+      resetBtn.textContent = '🔄 Give Second Chance (Reset Test)';
+      resetBtn.onclick = function() { resetStageTeacher(9); };
+      v.insertBefore(resetBtn, document.getElementById('testRoot'));
+  }
+  
+  main.appendChild(stageFooter(8,null));
   
   if(state.done[state.currentLessonId+"_9"]) {
       const score = state.scores[state.currentLessonId+"_9"] || 0;
@@ -1765,11 +1850,14 @@ function endTest(timedOut,customReason){
   if(testState.timer){clearInterval(testState.timer);testState.timer=null}
   const total=testState.total||1;
   const score=Math.round((testState.correct/total)*10);
-  setScore(9,score);
   
-  state.done[state.currentLessonId+"_9"] = true;
-  markDone(9);
-  
+  // Force save to Firebase before any UI animations that might crash
+  try {
+      state.done[state.currentLessonId+"_9"] = true;
+      setScore(9, score); 
+      saveState();
+  } catch(e) { console.error("State save failed", e); }
+
   const elapsed=getTestTimeLimit()-testState.timeLeft;
   const mins=Math.floor(elapsed/60),secs=elapsed%60;
   const root=document.getElementById('testRoot');if(!root)return;
