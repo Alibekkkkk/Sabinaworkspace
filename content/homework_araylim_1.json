@@ -1,9 +1,9 @@
 {
   "title": "Araylim · Revision — Homework",
   "headline": "The Octopus: An Alien on Earth",
-  "intro": "Read the fascinating science text about octopuses and answer the questions. Practice your present and past tenses!",
+  "intro": "Read the text about octopuses, then answer the questions. This homework revises Simple Present, Present Continuous, Simple Past, Past Continuous, and Present Perfect.",
   "hero": "🐙 → 🌊",
-  "sub": "Revision · Reading & Grammar",
+  "sub": "Revision · Reading & 5 Core Tenses",
   "eyebrow": "Topic · Revision · Homework",
   "reading": {
     "title": "The Octopus: An Alien on Earth",
@@ -45,16 +45,27 @@
   ],
   "questions": [
     { "type": "short", "prompt": "How many hearts does an octopus have?", "answers": ["three", "3"], "exp": "It has three hearts." },
-    { "type": "tfng", "prompt": "An octopus has only one brain in its head.", "answer": "False", "exp": "It has nine brains (one main and eight in its arms)." },
-    { "type": "mcq", "prompt": "What did the octopus do to hide from the shark?", "options": ["It swam away quickly", "It changed its color and texture", "It attacked the shark"], "correct": "It changed its color and texture", "exp": "It changed its color and texture to look like a rock." },
-    { "type": "tfng", "prompt": "Scientists found that octopuses are not very intelligent.", "answer": "False", "exp": "They are very intelligent and can open jars and solve puzzles." },
+    { "type": "short", "prompt": "How many brains does an octopus have?", "answers": ["nine", "9"], "exp": "One main brain + eight small brains in its arms = nine." },
+    { "type": "short", "prompt": "What color is an octopus's blood?", "answers": ["blue"], "exp": "The text says the octopus has blue blood." },
     { "type": "short", "prompt": "How did the octopus in the lab escape?", "answers": ["squeezing through a tiny hole", "through a hole"], "exp": "By squeezing through a tiny hole." },
-    { "type": "complete", "prompt": "While the scientists ___ (watch), the octopus changed color.", "answers": ["were watching"] },
-    { "type": "complete", "prompt": "Last summer, biologists ___ (study) an octopus.", "answers": ["studied"] },
-    { "type": "complete", "prompt": "Scientists have ___ (discover) that they are very smart.", "answers": ["discovered"] },
-    { "type": "long", "prompt": "Why is the octopus described as an 'alien' in the text?", "keywordGroups": [["strange","different","alien"],["three hearts","blue blood","nine brains"],["ocean","planet","earth"]], "minWords": 10, "minGroups": 2, "sample": "The octopus is described as an alien because it looks very strange. It has three hearts, blue blood, and nine brains, which makes it look like a creature from another planet.", "exp": "Key ideas: strange appearance, unusual biology." },
     { "type": "short", "prompt": "Where does the octopus live?", "answers": ["ocean", "sea", "pacific ocean"], "exp": "In the ocean." },
+    { "type": "tfng", "prompt": "An octopus has only one brain in its head.", "answer": "False", "exp": "It has nine brains (one main and eight in its arms)." },
+    { "type": "tfng", "prompt": "Scientists found that octopuses are not very intelligent.", "answer": "False", "exp": "They are very intelligent and can open jars and solve puzzles." },
     { "type": "tfng", "prompt": "The octopus walked on the sea floor using its arms.", "answer": "True", "exp": "It used its arms to walk on the sea floor." },
-    { "type": "complete", "prompt": "It ___ (hide) from a shark last summer.", "answers": ["hid"] }
+    { "type": "mcq", "prompt": "What did the octopus do to hide from the shark?", "options": ["It swam away quickly", "It changed its color and texture", "It attacked the shark"], "correct": "It changed its color and texture", "exp": "It changed its color and texture to look like a rock." },
+    { "type": "mcq", "prompt": "What is the octopus compared to in the text?", "options": ["An alien", "A fish", "A rock"], "correct": "An alien", "exp": "The text opens by comparing the octopus to an alien." },
+    { "type": "mcq", "prompt": "What can octopuses do that shows intelligence?", "options": ["Sing songs", "Open jars and solve puzzles", "Fly"], "correct": "Open jars and solve puzzles", "exp": "The text lists opening jars and solving puzzles." },
+    { "type": "complete", "prompt": "[Simple Present] An octopus ___ (have) three hearts.", "answers": ["has"] },
+    { "type": "complete", "prompt": "[Present Continuous] Look! The octopus ___ (change) color.", "answers": ["is changing"] },
+    { "type": "complete", "prompt": "[Simple Past] Last summer, biologists ___ (study) an octopus.", "answers": ["studied"] },
+    { "type": "complete", "prompt": "[Past Continuous] While the scientists ___ (watch), the octopus hid.", "answers": ["were watching"] },
+    { "type": "complete", "prompt": "[Present Perfect] Scientists ___ (discover) that octopuses are intelligent.", "answers": ["have discovered"] },
+    { "type": "complete", "prompt": "[Simple Present — negative] Octopuses ___ (not / live) on land.", "answers": ["do not live"] },
+    { "type": "complete", "prompt": "[Present Continuous — negative] The octopus ___ (not / swim) right now; it is hiding.", "answers": ["is not swimming"] },
+    { "type": "complete", "prompt": "[Simple Past — negative] The octopus ___ (not / escape) from the tank yesterday.", "answers": ["did not escape"] },
+    { "type": "complete", "prompt": "[Past Continuous — question] What ___ the octopus ___ (do) when the shark arrived?", "answers": ["was the octopus doing"] },
+    { "type": "complete", "prompt": "[Present Perfect — question] ___ scientists ___ (study) octopus intelligence before?", "answers": ["have scientists studied"] },
+    { "type": "long", "prompt": "Why is the octopus described as an 'alien' in the text?", "keywordGroups": [["strange","different","alien"],["three hearts","blue blood","nine brains"],["ocean","planet","earth"]], "minWords": 10, "minGroups": 2, "sample": "The octopus is described as an alien because it looks very strange. It has three hearts, blue blood, and nine brains, which makes it look like a creature from another planet.", "exp": "Key ideas: strange appearance, unusual biology." },
+    { "type": "long", "prompt": "In your own words, explain how the octopus escaped from the lab.", "keywordGroups": [["squeeze","tiny","hole"],["slide","floor"],["bucket","fish"],["escape","lab"]], "minWords": 10, "minGroups": 2, "sample": "The octopus squeezed through a tiny hole and slid across the floor to a bucket of fish.", "exp": "Key ideas: squeezing through a hole, sliding, reaching the bucket." }
   ]
 }
