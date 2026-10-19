@@ -1,53 +1,62 @@
 {
   "vocab": [
     { "en": "claim", "emoji": "🗣️", "meanings": [
-      { "context": "noun: a statement that may be true", "displayEn": "claim", "ru": "утверждение", "ex": "The writer makes a strong <b>claim</b>." },
-      { "context": "verb: to say something is true", "displayEn": "to claim", "ru": "утверждать", "ex": "She <b>claims</b> that this works." }
+      { "context": "noun: a statement that something is true", "displayEn": "claim", "ru": "утверждение (заявление, претендующее на истину)", "ex": "The writer makes a strong <b>claim</b>." },
+      { "context": "verb: to say something is true", "displayEn": "to claim", "ru": "утверждать (заявлять о чем-либо)", "ex": "She <b>claims</b> that this works." }
     ]},
     { "en": "evidence", "emoji": "📊", "meanings": [
-      { "context": "noun: facts that show something is true", "displayEn": "evidence", "ru": "доказательство", "ex": "There is no <b>evidence</b> to support him." }
+      { "context": "noun: facts that show something is true", "displayEn": "evidence", "ru": "доказательство (факты, подтверждающие истину)", "ex": "There is no <b>evidence</b> to support him." },
+      { "context": "adjective: clear and obvious", "displayEn": "evident", "ru": "очевидный (ясно видимый или понятный)", "ex": "It is <b>evident</b> that he is lying." }
     ]},
     { "en": "to assume", "emoji": "🤔", "meanings": [
-      { "context": "verb: to think something is true without proof", "displayEn": "to assume", "ru": "предполагать", "ex": "We cannot <b>assume</b> the data is correct." },
-      { "context": "noun: something believed without proof", "displayEn": "assumption", "ru": "предположение", "ex": "Based on a false <b>assumption</b>." }
+      { "context": "verb: to think something is true without proof", "displayEn": "to assume", "ru": "предполагать (считать верным без доказательств)", "ex": "We cannot <b>assume</b> the data is correct." },
+      { "context": "noun: a belief without proof", "displayEn": "assumption", "ru": "предположение (допущение, принятое без доказательств)", "ex": "Based on a false <b>assumption</b>." }
     ]},
     { "en": "to justify", "emoji": "⚖️", "meanings": [
-      { "context": "verb: to give a good reason for something", "displayEn": "to justify", "ru": "обосновывать", "ex": "Can you <b>justify</b> your opinion?" }
+      { "context": "verb: to give a good reason for something", "displayEn": "to justify", "ru": "обосновывать (приводить причины или оправдания)", "ex": "Can you <b>justify</b> your opinion?" },
+      { "context": "noun: a good reason or explanation", "displayEn": "justification", "ru": "обоснование (причина или оправдание)", "ex": "There is no <b>justification</b> for this behavior." }
     ]},
     { "en": "to contradict", "emoji": "🔄", "meanings": [
-      { "context": "verb: to say the opposite of something", "displayEn": "to contradict", "ru": "противоречить", "ex": "The paragraph <b>contradicts</b> the first." }
+      { "context": "verb: to say the opposite of something", "displayEn": "to contradict", "ru": "противоречить (говорить обратное)", "ex": "The paragraph <b>contradicts</b> the first." },
+      { "context": "noun: a state of being opposite", "displayEn": "contradiction", "ru": "противоречие (утверждение, противоположное другому)", "ex": "It is a direct <b>contradiction</b> of the rules." },
+      { "context": "adjective: mutually opposed", "displayEn": "contradictory", "ru": "противоречивый (взаимоисключающий)", "ex": "The two statements are <b>contradictory</b>." }
     ]},
     { "en": "to evaluate", "emoji": "🧪", "meanings": [
-      { "context": "verb: to judge the quality or truth of something", "displayEn": "to evaluate", "ru": "оценивать", "ex": "Try to <b>evaluate</b> the evidence." }
+      { "context": "verb: to judge the quality or truth of something", "displayEn": "to evaluate", "ru": "оценивать (судить о качестве или ценности)", "ex": "Try to <b>evaluate</b> the evidence." },
+      { "context": "noun: the act of judging", "displayEn": "evaluation", "ru": "оценка (процесс суждения)", "ex": "The <b>evaluation</b> of the data took weeks." }
     ]},
     { "en": "to imply", "emoji": "🔍", "meanings": [
-      { "context": "verb: to suggest without saying directly", "displayEn": "to imply", "ru": "подразумевать", "ex": "The article <b>implies</b> it is unreliable." },
-      { "context": "noun: a possible result or hidden meaning", "displayEn": "implication", "ru": "последствие", "ex": "Consider the <b>implications</b> of this." }
+      { "context": "verb: to suggest without saying directly", "displayEn": "to imply", "ru": "подразумевать (намекать, не говоря прямо)", "ex": "The article <b>implies</b> it is unreliable." },
+      { "context": "noun: a possible result or hidden meaning", "displayEn": "implication", "ru": "последствие / скрытый смысл (то, что подразумевается)", "ex": "Consider the <b>implications</b> of this." }
     ]},
     { "en": "relevant", "emoji": "🎯", "meanings": [
-      { "context": "adjective: connected to the topic", "displayEn": "relevant", "ru": "уместный", "ex": "Keep your answers <b>relevant</b>." }
+      { "context": "adjective: connected to the topic", "displayEn": "relevant", "ru": "уместный (относящийся к делу)", "ex": "Keep your answers <b>relevant</b>." },
+      { "context": "noun: the state of being connected", "displayEn": "relevance", "ru": "актуальность (уместность)", "ex": "I question the <b>relevance</b> of this question." }
     ]},
     { "en": "to persuade", "emoji": "💬", "meanings": [
-      { "context": "verb: to make someone believe or do something", "displayEn": "to persuade", "ru": "убеждать", "ex": "The speaker tried to <b>persuade</b> us." },
-      { "context": "adjective: good at persuading", "displayEn": "persuasive", "ru": "убедительный", "ex": "It was a <b>persuasive</b> argument." }
+      { "context": "verb: to make someone believe or do something", "displayEn": "to persuade", "ru": "убеждать (склонять к вере или действию)", "ex": "The speaker tried to <b>persuade</b> us." },
+      { "context": "noun: the act of convincing", "displayEn": "persuasion", "ru": "убеждение (акт убеждения)", "ex": "He used <b>persuasion</b> to change their minds." },
+      { "context": "adjective: good at persuading", "displayEn": "persuasive", "ru": "убедительный (умеющий убеждать)", "ex": "It was a <b>persuasive</b> argument." }
     ]},
     { "en": "coherent", "emoji": "📝", "meanings": [
-      { "context": "adjective: clear and logical", "displayEn": "coherent", "ru": "связный, логичный", "ex": "Your essay needs a <b>coherent</b> argument." },
-      { "context": "noun: the quality of being logical", "displayEn": "coherence", "ru": "связность", "ex": "The <b>coherence</b> of his speech was excellent." }
+      { "context": "adjective: clear and logical", "displayEn": "coherent", "ru": "связный (логичный и понятный)", "ex": "Your essay needs a <b>coherent</b> argument." },
+      { "context": "noun: the quality of being logical", "displayEn": "coherence", "ru": "связность (логичность)", "ex": "The <b>coherence</b> of his speech was excellent." }
     ]},
     { "en": "reliable", "emoji": "✅", "meanings": [
-      { "context": "adjective: able to be trusted", "displayEn": "reliable", "ru": "надёжный", "ex": "Make sure your sources are <b>reliable</b>." },
-      { "context": "noun: the quality of being trusted", "displayEn": "reliability", "ru": "надёжность", "ex": "Check the <b>reliability</b> of the website." }
+      { "context": "adjective: able to be trusted", "displayEn": "reliable", "ru": "надёжный (заслуживающий доверия)", "ex": "Make sure your sources are <b>reliable</b>." },
+      { "context": "noun: the quality of being trusted", "displayEn": "reliability", "ru": "надёжность (качество быть надежным)", "ex": "Check the <b>reliability</b> of the website." }
     ]},
     { "en": "biased", "emoji": "⚡", "meanings": [
-      { "context": "adjective: unfairly favouring one side", "displayEn": "biased", "ru": "предвзятый", "ex": "The article is clearly <b>biased</b>." },
-      { "context": "noun: an unfair preference", "displayEn": "bias", "ru": "предвзятость", "ex": "There is a clear <b>bias</b> in the report." }
+      { "context": "adjective: unfairly favouring one side", "displayEn": "biased", "ru": "предвзятый (несправедливо склонный к одной стороне)", "ex": "The article is clearly <b>biased</b>." },
+      { "context": "noun: an unfair preference", "displayEn": "bias", "ru": "предвзятость (предубеждение)", "ex": "There is a clear <b>bias</b> in the report." }
     ]},
     { "en": "to formulate", "emoji": "📐", "meanings": [
-      { "context": "verb: to express an idea clearly", "displayEn": "to formulate", "ru": "формулировать", "ex": "You must <b>formulate</b> a clear question." }
+      { "context": "verb: to express an idea clearly", "displayEn": "to formulate", "ru": "формулировать (ясно выражать)", "ex": "You must <b>formulate</b> a clear question." },
+      { "context": "noun: the act of expressing clearly", "displayEn": "formulation", "ru": "формулировка (процесс или результат выражения)", "ex": "The <b>formulation</b> of the theory took years." }
     ]},
     { "en": "to gather", "emoji": "🤲", "meanings": [
-      { "context": "verb: to collect things together", "displayEn": "to gather", "ru": "собирать", "ex": "Step two is to <b>gather</b> information." }
+      { "context": "verb: to collect things together", "displayEn": "to gather", "ru": "собирать (собирать вместе)", "ex": "Step two is to <b>gather</b> information." },
+      { "context": "noun: a meeting or collection", "displayEn": "gathering", "ru": "собрание (встреча или сбор)", "ex": "It was a family <b>gathering</b>." }
     ]}
   ],
 
