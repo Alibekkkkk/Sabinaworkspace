@@ -9,7 +9,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script>
-  // Apply theme immediately to avoid flash
   try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
@@ -162,10 +161,18 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .passage .subtitle{font-size:15px;color:var(--ink-soft);font-style:italic;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:12px}
 .passage p{margin-bottom:16px;text-align:justify}
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
+.annotation-toolbar{display:flex;gap:6px;padding:8px 12px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center;box-shadow:var(--shadow-sm);position:sticky;top:0;z-index:10}
+.annotation-toolbar button{padding:5px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:12px;font-weight:700;cursor:pointer;color:var(--ink);transition:all .15s}
+.annotation-toolbar button:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hl-yellow{background-color:#fce883;color:#000}
+.hl-green{background-color:#b5e8c5;color:#000}
+.hl-blue{background-color:#c5e1f5;color:#000}
+.user-note{background-color:#ffe8d6;border-bottom:2px dashed var(--accent);position:relative;cursor:help}
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
 .q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
 .q-prompt{font-size:18px;line-height:1.6;color:var(--ink);font-weight:600;margin-bottom:14px}
+.q-prompt .ru-prompt{display:block;font-size:15px;color:var(--ink-soft);font-weight:500;font-style:italic;margin-top:6px}
 .q-opts{display:flex;gap:10px;flex-wrap:wrap}
 .q-opt{padding:11px 20px;background:var(--bg);border:2px solid var(--border);border-radius:10px;font-family:inherit;font-size:16px;font-weight:700;color:var(--ink);cursor:pointer}
 .q-opt:hover:not(:disabled){border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
@@ -312,7 +319,7 @@ const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
-/* ================== CURRICULUM (Loaded from Firebase) ================== */
+/* ================== CURRICULUM ================== */
 let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
 const DEFAULT_STAGES = [
   {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
@@ -326,7 +333,6 @@ const DEFAULT_STAGES = [
   {id:9,label:'Test Your Knowledge',sub:'Timed test',icon:'⚡'}
 ];
 
-/* ================== STATE ================== */
 const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
 
 function getCurrentLesson(){
@@ -342,7 +348,6 @@ function totalScore(){
   return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)
 }
 
-/* ================== CONTENT PLACEHOLDERS (Loaded via JSON) ================== */
 let activeContentName = 'sabina';
 let VOCAB = [];
 let MATCH_DATA = [];
@@ -359,13 +364,75 @@ let TEST_SHORT = [];
 let TEST_TFNG = [];
 let TEST_COMPLETE = [];
 
+/* ================== SMART ANSWER MATCHER ================== */
+function expandContractions(str) {
+  return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would');
+}
+function normalizeString(str) {
+  let s = String(str).toLowerCase().trim();
+  s = expandContractions(s);
+  s = s.replace(/[.,!?;:'"()\[\]{}]/g, '');
+  s = s.replace(/\s+/g, ' ');
+  return s;
+}
+function levenshtein(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1];
+      else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1));
+    }
+  }
+  return matrix[b.length][a.length];
+}
+function isAnswerCorrect(userStr, expectedArr) {
+  if(!userStr) return false;
+  let user = normalizeString(userStr);
+  if(!user) return false;
+
+  for (let exp of expectedArr) {
+    let target = normalizeString(exp);
+    if (user === target) return true;
+    
+    // Check if student typed the full sentence
+    if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
+
+    // Check for morphological variations (sleep vs sleeping)
+    if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
+       const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
+       if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
+    }
+
+    // Levenshtein distance for typos
+    if (target.length > 4) {
+       const maxAllowedDist = target.length > 8 ? 2 : 1;
+       if (levenshtein(user, target) <= maxAllowedDist) return true;
+    }
+  }
+  return false;
+}
+
 /* ================== FIREBASE INIT ================== */
 function initFirebase(){
   try{
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
     const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
-    if(lessonId)fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
+    
+    if(lessonId) {
+       const c = getSessionCode();
+       if(c) {
+          fbDb.ref('sessions/'+c+'/annotations/'+lessonId).on('value', function(s){
+             if(s.exists() && !teacherPreviewRequested) {
+                const body = document.getElementById('passageBody');
+                if(body && state.currentStage===3) body.innerHTML = s.val();
+             }
+          });
+       }
+       fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
+    }
     
     fbDb.ref('curriculum').on('value',function(s){
       curriculumCache=s.val()||{};
@@ -663,7 +730,7 @@ function shouldShowPractice(){
 function renderStage1(){
   const main=document.getElementById('main');
   if(!main)return;
-  main.innerHTML=''; // FIX: Clear the main container before appending
+  main.innerHTML='';
   loadVocabStateLocal();
   const v=document.createElement('div');v.className='stage-view active';
   const counts=getVocabCounts();
@@ -990,7 +1057,7 @@ function fcMarkAgain(){}
 function renderStage2(){
   const main=document.getElementById('main');
   if(!main)return;
-  main.innerHTML=''; // FIX
+  main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">Stage 2 — Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
   '<div class="lead">Drag each English word onto its meaning.<span class="ru">Перетащите слово к его значению.</span></div>'+
@@ -1034,10 +1101,10 @@ let s4Answers={};
 function renderStage3(){
   const main=document.getElementById('main');
   if(!main)return;
-  main.innerHTML=''; // FIX
+  main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">Stage 3 — Reading & Questions</div><h2>📖 Read the Article & Answer</h2>'+
-  '<div class="lead">Read the article on the left. Answer every question on the right — the article stays visible so you can look back. If you think an answer is correct but the auto-check says no, use <b>🚩 Flag for teacher review</b>.<span class="ru">Читайте текст слева, отвечайте на вопросы справа.</span></div>'+
+  '<div class="lead">Read the article on the left. Highlight text to save notes. Answer every question on the right — the article stays visible so you can look back.<span class="ru">Читайте текст слева, выделяйте важное, отвечайте на вопросы справа.</span></div>'+
   '<div class="reading-split">'+
     '<section class="reading-pane">'+
       '<div class="card" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">'+
@@ -1045,6 +1112,15 @@ function renderStage3(){
         '<button class="btn small" id="ttsPause" style="display:none" onclick="pauseTTS()">⏸ Pause</button>'+
         '<button class="btn small" id="ttsResume" style="display:none" onclick="resumeTTS()">▶️ Resume</button>'+
         '<button class="btn ghost small" id="ttsStop" style="display:none" onclick="stopTTS()">⏹ Stop</button>'+
+      '</div>'+
+      '<div class="annotation-toolbar">'+
+        '<span style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-right:8px">Select text then:</span>'+
+        '<button onclick="applyAnnotation(\'hl-yellow\')">🖍️ Yellow</button>'+
+        '<button onclick="applyAnnotation(\'hl-green\')">🟢 Green</button>'+
+        '<button onclick="applyAnnotation(\'hl-blue\')">🔵 Blue</button>'+
+        '<button onclick="applyAnnotation(\'underline\')">U̲ Underline</button>'+
+        '<button onclick="addComment()">💬 Add Note</button>'+
+        '<button onclick="saveAnnotations()" style="background:var(--success);color:#fff;border:none">💾 Save</button>'+
       '</div>'+
       '<div class="passage" id="passageBody">'+READING_HTML+'</div>'+
     '</section>'+
@@ -1063,31 +1139,99 @@ function renderStage3(){
   renderReadingQuestions();
   renderContextQ();
   updateS3Progress();
+  
+  if(fbConnected && sessionRef) {
+     sessionRef.child('annotations/'+state.currentLessonId).once('value').then(snap => {
+         if(snap.exists()) {
+             document.getElementById('passageBody').innerHTML = snap.val();
+             document.querySelectorAll('.user-note').forEach(el => {
+                 el.title = el.dataset.note || 'My Note';
+             });
+         }
+     });
+  }
 }
 function updateS3Progress(){const el=document.getElementById('s3Progress');if(el)el.textContent=Object.keys(s4Answers).length}
+
+/* Annotation Functions */
+function applyAnnotation(className) {
+  const sel = window.getSelection();
+  if(!sel.isCollapsed && sel.rangeCount > 0) {
+    const range = sel.getRangeAt(0);
+    const span = document.createElement('span');
+    span.className = className;
+    if(className === 'underline') span.style.textDecoration = 'underline';
+    span.appendChild(range.extractContents());
+    range.insertNode(span);
+    sel.removeAllRanges();
+  }
+}
+function addComment() {
+  const sel = window.getSelection();
+  if(!sel.isCollapsed && sel.rangeCount > 0) {
+    const note = prompt('Enter your note for this text:');
+    if(note) {
+      const range = sel.getRangeAt(0);
+      const span = document.createElement('span');
+      span.className = 'user-note';
+      span.dataset.note = note;
+      span.title = note;
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      sel.removeAllRanges();
+    }
+  } else {
+    alert('Please highlight some text first to attach a note.');
+  }
+}
+function saveAnnotations() {
+  if(fbConnected && sessionRef) {
+    sessionRef.child('annotations/'+state.currentLessonId).set(document.getElementById('passageBody').innerHTML).then(()=>{
+      showToast('Annotations saved permanently!');
+    });
+  } else {
+    showToast('Cannot save: Not connected to Firebase.');
+  }
+}
 
 function renderReadingQuestions(){
   const body=document.getElementById('readingQ');if(!body)return;body.innerHTML='';
   READING_Q.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
     const typeLabel={short:'Short answer',tfng:'True / False / Not Given',long:'Long answer',mcq:'Multiple choice'}[item.type];
-    card.innerHTML='<div class="q-num">Question '+(i+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>';
+    
+    const ruHtml = item.ru ? '<span class="ru-prompt">'+escapeHtml(item.ru)+'</span>' : '';
+
+    card.innerHTML='<div class="q-num">Question '+(i+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>';
+    
     if(item.type==='short'){
       const row=document.createElement('div');row.className='q-input-row';
       const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
       const fb=document.createElement('div');fb.className='q-feedback';
       let done=false;
+      let flagAdded=false;
+      
       function submit(){
         if(done)return;
-        const v=norm(inp.value);
-        const ok=item.answers.some(function(a){return norm(a)===v});
-        if(ok){inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';sCorrect();s4Answers['r'+i]=true;checkS4()}
-        else{inp.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again — check the passage.';setTimeout(function(){inp.classList.remove('wrong')},600)}
+        const ok=isAnswerCorrect(inp.value, item.answers);
+        if(ok){
+          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;
+          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
+          sCorrect();s4Answers['r'+i]=true;checkS4();
+        } else {
+          inp.classList.add('wrong');sWrong();
+          fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again — check the passage.';
+          setTimeout(function(){inp.classList.remove('wrong')},600);
+          
+          if(!flagAdded) {
+             card.appendChild(buildFlagRow('r'+i,item.prompt,inp.value,'wrong'));
+             flagAdded = true;
+          }
+        }
       }
       btn.onclick=submit;
       inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
-      inp.addEventListener('input',function(){broadcastAction('typing',item.prompt.substring(0,30)+' | "'+inp.value+'"')});
       row.appendChild(inp);row.appendChild(btn);card.appendChild(row);card.appendChild(fb);
     }else if(item.type==='tfng'){
       const opts=document.createElement('div');opts.className='tfng-opts';
@@ -1111,16 +1255,21 @@ function renderReadingQuestions(){
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer';
       const fb=document.createElement('div');fb.className='q-feedback';
       let done=false;
+      let flagAdded=false;
+      
       function submit(){
         if(done)return;
         const txt=ta.value.trim();
         const res=checkLongAnswer(txt,item.keywordGroups,item.minWords,item.minGroups);
         if(res.pass){ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>';sCorrect();s4Answers['r'+i]=true;checkS4()}
         else{ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'}
-        ta.insertAdjacentHTML('afterend',buildFlagRow('r'+i,item.prompt,txt,res.pass?'correct':'wrong'));
+        
+        if(!flagAdded) {
+            ta.insertAdjacentHTML('afterend',buildFlagRow('r'+i,item.prompt,txt,res.pass?'correct':'wrong'));
+            flagAdded = true;
+        }
       }
       btn.onclick=submit;
-      ta.addEventListener('input',function(){broadcastAction('typing','long: "'+ta.value.substring(0,60)+'"')});
       row.appendChild(btn);card.appendChild(ta);card.appendChild(row);card.appendChild(fb);
     }else if(item.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
@@ -1147,7 +1296,8 @@ function renderContextQ(){
   const body=document.getElementById('contextQ');if(!body)return;body.innerHTML='';
   CONTEXT_Q.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
-    card.innerHTML='<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>';
+    const ruHtml = item.ru ? '<span class="ru-prompt">'+escapeHtml(item.ru)+'</span>' : '';
+    card.innerHTML='<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>';
     const opts=document.createElement('div');opts.className='q-opts';
     shuffle(item.options).forEach(function(o){
       const b=document.createElement('button');b.className='q-opt';b.textContent=o;
@@ -1191,7 +1341,7 @@ function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[k
 function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
   if(!main)return;
-  main.innerHTML=''; // FIX
+  main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
@@ -1212,9 +1362,8 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
       let answered=false;
       function submit(){
         if(answered)return;
-        const val=norm(inp.value);
-        const ans=norm(item.a);
-        if(val===ans){
+        const ok = isAnswerCorrect(inp.value, [item.a]);
+        if(ok){
           inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true;
           fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+item.ex+'</span>':'');
           sCorrect();score++;document.getElementById('p'+stageId+'live').textContent=score;
@@ -1230,7 +1379,6 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
       }
       btn.onclick=submit;
       inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
-      inp.addEventListener('input',function(){broadcastAction('typing',item.p.substring(0,30)+' | "'+inp.value+'"')});
       row.appendChild(inp);row.appendChild(btn);
       card.appendChild(row);card.appendChild(fb);body.appendChild(card);
     });
@@ -1288,7 +1436,7 @@ const SB_DATA={};
 function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main');
   if(!main)return;
-  main.innerHTML=''; // FIX
+  main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
   v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
@@ -1438,7 +1586,12 @@ function renderStage8(){
 
 /* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
-let TEST_TIME_LIMIT = 0; 
+
+function getTestTimeLimit() {
+   const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length;
+   // 30 seconds per question, minimum 5 minutes
+   return Math.max(300, totalQuestions * 30); 
+}
 
 function buildTestQuestions(){
   const qs=[];
@@ -1452,32 +1605,50 @@ function buildTestQuestions(){
 function renderStage9(){
   const main=document.getElementById('main');
   if(!main)return;
-  main.innerHTML=''; // FIX
+  main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
+  
+  const limitMins = Math.floor(getTestTimeLimit() / 60);
+  
   v.innerHTML='<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
-  '<div class="lead">This is a strict, timed test. Answer each question to unlock the next one. You have <b>15 minutes</b> in total. When time runs out, the test closes automatically.<span class="ru">Строгий тест на время: 15 минут, вопросы по одному.</span></div>'+
+  '<div class="lead">This is a strict, timed test. You have <b>'+limitMins+' minutes</b> in total. You can only take this test <b>once</b>. After time runs out, the test closes automatically.<span class="ru">Строгий тест на время: '+limitMins+' минут, одна попытка.</span></div>'+
   '<div id="testRoot"></div>';
   main.appendChild(v);main.appendChild(stageFooter(8,null));
-  renderTestIntro();
+  
+  if(state.done[state.currentLessonId+"_9"]) {
+      const score = state.scores[state.currentLessonId+"_9"] || 0;
+      document.getElementById('testRoot').innerHTML = '<div class="complete-banner"><div class="trophy">🏁</div><h3>Test already completed</h3>'+
+      '<p>You have already finished this test. Your score was: <b>' + score + ' / 10</b>.</p>'+
+      '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot retake the test, but you can review the grammar stages or practice vocabulary.</p>'+
+      '<div style="margin-top:20px"><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
+  } else {
+      renderTestIntro();
+  }
 }
 function renderTestIntro(){
   const r=document.getElementById('testRoot');if(!r)return;
   if(testState.timer){clearInterval(testState.timer);testState.timer=null}
   testState.active=false;
   const preview=buildTestQuestions().length;
+  const limitMins = Math.floor(getTestTimeLimit() / 60);
+  
   r.innerHTML='<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+
-  '<p>'+preview+' questions · 15 minutes · one question at a time</p>'+
+  '<p>'+preview+' questions · '+limitMins+' minutes · one attempt only</p>'+
   '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+
   '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" onclick="startTest()">▶ Start the test</button></div></div>';
 }
 function startTest(){
   testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:0,timer:null};
   testState.total=testState.questions.length;
-  TEST_TIME_LIMIT = Math.max(300, testState.total * 30); 
-  testState.timeLeft = TEST_TIME_LIMIT;
+  testState.timeLeft = getTestTimeLimit();
+  
+  const limitMins = Math.floor(testState.timeLeft / 60);
+  const limitSecs = testState.timeLeft % 60;
+  const formattedTime = String(limitMins).padStart(2, '0') + ':' + String(limitSecs).padStart(2, '0');
+  
   const r=document.getElementById('testRoot');if(!r)return;
   r.innerHTML='<div class="test-hud">'+
-  '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">15:00</span></div>'+
+  '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">'+formattedTime+'</span></div>'+
   '<div class="tcell"><span class="lbl">Question</span><span class="val" id="testQNum">1 / '+testState.total+'</span></div>'+
   '<div class="tcell"><span class="lbl">Correct</span><span class="val" id="testCorrect">0</span></div>'+
   '</div>'+
@@ -1562,8 +1733,7 @@ function answerTestTFNG(btn){
 function answerTestShort(){
   const q=testState.questions[testState.idx];if(!q)return;
   const inp=document.getElementById('testInput');if(!inp)return;
-  const val=norm(inp.value);
-  const ok=q.answers.some(function(a){return norm(a)===val});
+  const ok=isAnswerCorrect(inp.value, q.answers);
   if(ok)testState.correct++;
   inp.disabled=true;
   if(ok)inp.classList.add('correct');else inp.classList.add('wrong');
@@ -1575,7 +1745,7 @@ function answerTestShort(){
 function answerTestComplete(){
   const q=testState.questions[testState.idx];if(!q)return;
   const inp=document.getElementById('testInput');if(!inp)return;
-  const ok=norm(inp.value)===norm(q.answer);
+  const ok=isAnswerCorrect(inp.value, [q.answer]);
   if(ok)testState.correct++;
   inp.disabled=true;
   if(ok)inp.classList.add('correct');else inp.classList.add('wrong');
@@ -1596,8 +1766,11 @@ function endTest(timedOut,customReason){
   const total=testState.total||1;
   const score=Math.round((testState.correct/total)*10);
   setScore(9,score);
-  if(score>=6)markDone(9);
-  const elapsed=TEST_TIME_LIMIT-testState.timeLeft;
+  
+  state.done[state.currentLessonId+"_9"] = true;
+  markDone(9);
+  
+  const elapsed=getTestTimeLimit()-testState.timeLeft;
   const mins=Math.floor(elapsed/60),secs=elapsed%60;
   const root=document.getElementById('testRoot');if(!root)return;
   const msg=customReason?customReason:(timedOut?'You ran out of time.':'Test complete!');
@@ -1607,7 +1780,8 @@ function endTest(timedOut,customReason){
   '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+
   '<div class="big">'+testState.correct+' / '+total+'</div>'+
   '<p>'+msg+' You answered <b>'+testState.correct+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+
-  '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn" onclick="renderTestIntro()">↻ Try again</button><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
+  '<p style="color:var(--accent);font-weight:700;margin-top:10px">This test can only be taken once. You cannot retake it.</p>'+
+  '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px"><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
   if(!timedOut&&!customReason){sWin();confetti();}
   broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
@@ -1655,7 +1829,6 @@ function resetStageTeacher(stageId) {
 function renderSidebar(){
   const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
   
-  // Custom labels for Araylim Lesson 1
   const isAraylim1 = activeContentName.includes('araylim_1');
   const customLabels = isAraylim1 ? [
       'Vocabulary', 

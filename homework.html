@@ -153,7 +153,7 @@ const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomai
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
 
 const params=new URLSearchParams(location.search);
-const variant=params.get('variant')||'gaziz';
+const variant=params.get('variant')||'';
 const code=(params.get('code')||'').toUpperCase();
 const homeworkId=params.get('lesson')||('homework_'+variant);
 const homeworkVersion=6;
@@ -165,7 +165,49 @@ let lesson = null;
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
-function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
+
+// Smart Matcher
+function expandContractions(str) {
+  return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would');
+}
+function normalizeString(str) {
+  let s = String(str).toLowerCase().trim();
+  s = expandContractions(s);
+  s = s.replace(/[.,!?;:'"()\[\]{}]/g, '');
+  s = s.replace(/\s+/g, ' ');
+  return s;
+}
+function levenshtein(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1];
+      else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1));
+    }
+  }
+  return matrix[b.length][a.length];
+}
+function isAnswerCorrect(userStr, expectedArr) {
+  if(!userStr) return false;
+  let user = normalizeString(userStr);
+  if(!user) return false;
+  for (let exp of expectedArr) {
+    let target = normalizeString(exp);
+    if (user === target) return true;
+    if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
+    if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
+       const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
+       if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
+    }
+    if (target.length > 4) {
+       const maxAllowedDist = target.length > 8 ? 2 : 1;
+       if (levenshtein(user, target) <= maxAllowedDist) return true;
+    }
+  }
+  return false;
+}
 
 function toggleTheme(){
   document.documentElement.classList.toggle('dark');
@@ -177,7 +219,6 @@ document.getElementById('themeButton').textContent=document.documentElement.clas
 
 let answers={};
 let submitted=false;
-let reviewFlags={};
 let saveTimeout;
 
 function debouncedSave(){
@@ -204,7 +245,6 @@ function renderPassage(){
     vocabWords.forEach(function(w){
       let matchStr = w;
       if (w.startsWith('to ')) matchStr = w.substring(3);
-      
       const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
       const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi');
       text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>');
@@ -258,11 +298,11 @@ function updateProgress(){
 }
 
 function checkLongAnswer(text,keywordGroups,minWords,minGroups){
-  const t=norm(text);
+  const t=normalizeString(text);
   const words=t.split(/\s+/).filter(function(w){return w.length>0});
   if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0};
   let matched=0;
-  keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(norm(k))!==-1}))matched++});
+  keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(normalizeString(k))!==-1}))matched++});
   if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length};
   return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched};
 }
@@ -279,7 +319,7 @@ function renderQuestions(){
     
     if(q.type==='short'||q.type==='complete'){
       const row=document.createElement('div');row.className='q-input-row';
-      const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';inp.dataset.answerIdx=idx;
+      const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';
       if(submitted){inp.value=answers[idx]||'';inp.disabled=true}
       else {
         inp.value=answers[idx]||'';
@@ -293,13 +333,11 @@ function renderQuestions(){
       row.appendChild(inp);body.appendChild(row);
       
       if(submitted){
-        const val=norm(inp.value);
-        const accepted=q.answers || [];
-        const ok=accepted.some(function(a){return norm(a)===val});
+        const ok = isAnswerCorrect(inp.value, q.answers || [q.answer]);
         if(ok)inp.classList.add('correct'); else inp.classList.add('wrong');
         const fb=document.createElement('div');
         fb.className='q-feedback ' + (ok ? 'correct' : 'wrong');
-        fb.innerHTML=(ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
+        fb.innerHTML=(ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
         fb.style.display='block';
         body.appendChild(fb);
       }
@@ -359,7 +397,7 @@ function renderQuestions(){
       }
       
     }else if(q.type==='long'){
-      const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';ta.dataset.answerIdx=idx;
+      const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
       if(submitted){ta.value=answers[idx]||'';ta.disabled=true}
       else {
         ta.value=answers[idx]||'';
@@ -396,7 +434,7 @@ function submitAll(){
     const a=answers[idx];
     if(a===undefined)return;
     if(q.type==='short'||q.type==='complete'){
-      if(q.answers.some(function(x){return norm(x)===norm(a)}))score++;
+      if(isAnswerCorrect(a, q.answers || [q.answer])) score++;
     }else if(q.type==='tfng'){
       if(a===q.answer)score++;
     }else if(q.type==='mcq'){
@@ -423,7 +461,8 @@ function submitAll(){
   const banner=document.createElement('div');banner.className='result-banner';
   banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+
     '<div class="big">'+score+' / '+total+'</div>'+
-    '<p>Your answers have been sent to your teacher. You can review your results below.</p>';
+    '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+
+    '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>';
   host.insertBefore(banner,host.firstChild);
   window.scrollTo({top:0,behavior:'smooth'});
   if(typeof confetti==='function')confetti();
@@ -444,10 +483,23 @@ function confetti(){
 }
 
 async function loadHomeworkContent() {
-  if (!variant) throw new Error("No 'variant' parameter specified in the URL.");
-  const fileName = variant.startsWith('homework_') ? variant : 'homework_' + variant;
+  let fileName = '';
+  if (variant) {
+     fileName = variant.startsWith('homework_') ? variant : 'homework_' + variant;
+  } else if (code) {
+     fileName = 'homework_' + code.toLowerCase(); 
+  } else {
+     throw new Error("No variant or code specified in the URL.");
+  }
+  
   const res = await fetch('content/' + fileName + '.json', { cache: 'no-store' });
-  if (!res.ok) throw new Error('content/' + fileName + '.json not found');
+  if (!res.ok) {
+      // Fallback attempt
+      const fallback = await fetch('content/homework_sabina.json', { cache: 'no-store' });
+      if(!fallback.ok) throw new Error('content/' + fileName + '.json not found and fallback failed.');
+      lesson = await fallback.json();
+      return;
+  }
   lesson = await res.json();
 }
 
@@ -463,7 +515,7 @@ function initFirebase(){
     document.getElementById('heroEyebrow').textContent=lesson.eyebrow;
     document.getElementById('heroHeadline').textContent=lesson.headline;
     document.getElementById('heroIntro').innerHTML=escapeHtml(lesson.intro)+
-      '<span class="ru">Это одностраничная домашка: прочитайте текст и ответьте на все вопросы. Отправить работу можно только после ответа на все вопросы.</span>';
+      '<span class="ru">Это одностраничная домашка: прочитайте текст и ответьте на все вопросы. Отправить работу можно только один раз.</span>';
 
     if(teacherPreviewRequested){
       fbAuth.onAuthStateChanged(function(user){
