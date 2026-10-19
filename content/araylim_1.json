@@ -9,8 +9,7 @@
       { "context": "a series of actions (noun)", "displayEn": "process", "ru": "процесс (последовательность действий)", "ex": "Learning a language is a slow <b>process</b>." }
     ]},
     { "en": "to recall", "emoji": "💭", "meanings": [
-      { "context": "to bring a memory back to your mind (verb)", "displayEn": "to recall", "ru": "вспоминать (вызывать в памяти)", "ex": "Can you <b>recall</b> what happened yesterday?" },
-      { "context": "the act of remembering (noun)", "displayEn": "recall", "ru": "воспоминание (акт припоминания)", "ex": "His <b>recall</b> of the event was perfect." }
+      { "context": "to bring a memory back to your mind (verb)", "displayEn": "to recall", "ru": "вспоминать (вызывать в памяти)", "ex": "Can you <b>recall</b> what happened yesterday?" }
     ]},
     { "en": "neuron", "emoji": "🔗", "meanings": [
       { "context": "a nerve cell in the brain (noun)", "ru": "нейрон (клетка мозга)", "ex": "A single <b>neuron</b> can connect to thousands of others." }
@@ -24,16 +23,13 @@
       { "context": "the quality of being exact (noun)", "displayEn": "accuracy", "ru": "точность (степень правильности)", "ex": "He threw the ball with great <b>accuracy</b>." }
     ]},
     { "en": "to trigger", "emoji": "💥", "meanings": [
-      { "context": "to cause something to happen (verb)", "displayEn": "to trigger", "ru": "вызывать (служить причиной)", "ex": "A smell can <b>trigger</b> a happy memory." },
-      { "context": "a cause of an action (noun)", "displayEn": "trigger", "ru": "триггер (пусковой механизм)", "ex": "The loud noise was a <b>trigger</b> for his fear." }
+      { "context": "to cause something to happen (verb)", "displayEn": "to trigger", "ru": "вызывать (служить причиной)", "ex": "A smell can <b>trigger</b> a happy memory." }
     ]},
     { "en": "to store", "emoji": "📦", "meanings": [
-      { "context": "to keep information for later (verb)", "displayEn": "to store", "ru": "хранить (сохранять для будущего)", "ex": "The brain can <b>store</b> a lifetime of information." },
-      { "context": "space to keep things (noun)", "displayEn": "storage", "ru": "хранилище (место для хранения)", "ex": "We need more <b>storage</b> for these files." }
+      { "context": "to keep information for later (verb)", "displayEn": "to store", "ru": "хранить (сохранять для будущего)", "ex": "The brain can <b>store</b> a lifetime of information." }
     ]},
     { "en": "to forget", "emoji": "🌫️", "meanings": [
-      { "context": "to be unable to remember (verb)", "displayEn": "to forget", "ru": "забывать (терять из памяти)", "ex": "I always <b>forget</b> where I put my keys." },
-      { "context": "the tendency to forget (noun)", "displayEn": "forgetfulness", "ru": "забывчивость (склонность забывать)", "ex": "His <b>forgetfulness</b> causes problems at work." }
+      { "context": "to be unable to remember (verb)", "displayEn": "to forget", "ru": "забывать (терять из памяти)", "ex": "I always <b>forget</b> where I put my keys." }
     ]},
     { "en": "skill", "emoji": "🛠️", "meanings": [
       { "context": "the ability to do something well (noun)", "ru": "навык (умение делать что-то хорошо)", "ex": "Speaking English is a very useful <b>skill</b>." }
@@ -60,145 +56,250 @@
     { "type": "mcq", "prompt": "What happens to the connection between neurons when you learn something?", "options": ["It becomes weaker", "It becomes stronger", "It disappears"], "correct": "It becomes stronger", "exp": "Over time, this connection becomes stronger." },
     { "type": "tfng", "prompt": "The brain decides what to forget while you sleep.", "answer": "True", "exp": "It decides what to keep and what to forget." },
     { "type": "short", "prompt": "What do neurons send to each other?", "answers": ["electrical signals", "signals"], "exp": "They send electrical signals to each other." },
-    { "type": "long", "prompt": "Explain in your own words why sleep is important for students.", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["recall","remember"]], "minWords": 10, "minGroups": 2, "sample": "Sleep is important because the brain organizes information and decides what to keep or forget, which helps students recall what they studied.", "exp": "Key ideas: organizing info, deciding what to keep, helping recall." }
+    { "type": "long", "prompt": "Explain in your own words why sleep is important for students.", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["recall","remember"]], "minWords": 10, "minGroups": 2, "sample": "Sleep is important because the brain organizes information and decides what to keep or forget, which helps students recall what they studied.", "exp": "Key ideas: organizing info, deciding what to keep, helping recall." },
+    { "type": "tfng", "prompt": "The human brain is a simple machine.", "answer": "False", "exp": "It is the most complex machine in the known universe." },
+    { "type": "mcq", "prompt": "How many main brains does a human have?", "options": ["1", "3", "8"], "correct": "1", "exp": "Humans have one main brain." },
+    { "type": "short", "prompt": "What becomes stronger over time when you learn?", "answers": ["connection", "the connection"], "exp": "The connection between neurons becomes stronger." },
+    { "type": "long", "prompt": "What happens to the brain while you are sleeping?", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["decide"]], "minWords": 8, "minGroups": 2, "sample": "While sleeping, the brain organizes information and decides what to keep and what to forget.", "exp": "Key ideas: organizes information, decides what to keep/forget." }
   ],
   "contextQ": [
     { "prompt": "In paragraph B, \"trigger\" means...", "options": ["to cause something to happen", "to destroy something", "to write something down"], "correct": "to cause something to happen", "exp": "Trigger means to cause an event or memory to happen." },
     { "prompt": "In paragraph A, \"complex\" is similar in meaning to...", "options": ["very simple", "difficult to understand", "very small"], "correct": "difficult to understand", "exp": "Complex means not simple; difficult to understand." },
-    { "prompt": "In paragraph B, \"processes\" means...", "options": ["handles and uses information", "eats food", "goes to sleep"], "correct": "handles and uses information", "exp": "In this context, the brain processes (handles) information." }
+    { "prompt": "In paragraph B, \"processes\" means...", "options": ["handles and uses information", "eats food", "goes to sleep"], "correct": "handles and uses information", "exp": "In this context, the brain processes (handles) information." },
+    { "prompt": "In paragraph C, \"recall\" means...", "options": ["to forget", "to remember", "to sleep"], "correct": "to remember", "exp": "To recall means to bring back to mind." },
+    { "prompt": "In paragraph A, \"network\" means...", "options": ["a group of connected things", "a single cell", "a television channel"], "correct": "a group of connected things", "exp": "A network is an interconnected system." }
   ],
   "g6": {
     "pos": [
-      { "p": "The brain ___ (process) information very quickly.", "a": "processes", "ex": "Present Simple: fact." },
-      { "p": "She ___ (memorize) new words right now.", "a": "is memorizing", "ex": "Present Continuous: happening now." },
-      { "p": "Neurons ___ (connect) with each other constantly.", "a": "connect", "ex": "Present Simple: plural subject." },
-      { "p": "I usually ___ (forget) my dreams.", "a": "forget", "ex": "Present Simple: habit." },
-      { "p": "Look! He ___ (sleep) on the sofa.", "a": "is sleeping", "ex": "Present Continuous." },
-      { "p": "Water ___ (boil) at 100 degrees.", "a": "boils", "ex": "Present Simple: general truth." }
+      { "p": "The brain ___ (process) information very quickly.", "a": "processes" },
+      { "p": "She ___ (memorize) new words right now.", "a": "is memorizing" },
+      { "p": "Neurons ___ (connect) with each other constantly.", "a": "connect" },
+      { "p": "I usually ___ (forget) my dreams.", "a": "forget" },
+      { "p": "Look! He ___ (sleep) on the sofa.", "a": "is sleeping" },
+      { "p": "Water ___ (boil) at 100 degrees.", "a": "boils" },
+      { "p": "They ___ (study) for the test at the moment.", "a": "are studying" },
+      { "p": "She always ___ (remember) to bring her keys.", "a": "remembers" },
+      { "p": "We ___ (listen) to a podcast right now.", "a": "are listening" },
+      { "p": "The bus ___ (leave) at 8 AM every day.", "a": "leaves" }
     ],
     "neg": [
-      { "p": "The brain ___ (not / store) every single detail.", "a": "does not store", "ex": "Present Simple negative." },
-      { "p": "I ___ (not / recall) his name at the moment.", "a": "am not recalling", "ex": "Present Continuous negative." },
-      { "p": "They ___ (not / understand) the science yet.", "a": "do not understand", "ex": "Present Simple negative." }
+      { "p": "The brain ___ (not / store) every single detail.", "a": "does not store" },
+      { "p": "I ___ (not / recall) his name at the moment.", "a": "am not recalling" },
+      { "p": "They ___ (not / understand) the science yet.", "a": "do not understand" },
+      { "p": "He ___ (not / listen) to the teacher right now.", "a": "is not listening" },
+      { "p": "We ___ (not / memorize) poems in this class.", "a": "do not memorize" },
+      { "p": "The computer ___ (not / work) today.", "a": "is not working" }
     ],
     "q": [
-      { "p": "___ the brain ___ (need) sleep?", "a": "Does the brain need", "ex": "Present Simple question." },
-      { "p": "___ you ___ (listen) to me right now?", "a": "Are you listening", "ex": "Present Continuous question." },
-      { "p": "___ she ___ (remember) the password?", "a": "Does she remember", "ex": "Present Simple question." }
+      { "p": "___ the brain ___ (need) sleep?", "a": "Does the brain need" },
+      { "p": "___ you ___ (listen) to me right now?", "a": "Are you listening" },
+      { "p": "___ she ___ (remember) the password?", "a": "Does she remember" },
+      { "p": "Why ___ he ___ (cry)?", "a": "is he crying" },
+      { "p": "___ they ___ (study) English every day?", "a": "Do they study" },
+      { "p": "___ you ___ (understand) the question?", "a": "Do you understand" }
     ],
     "shuffled": [
       { "p": "Scientists ___ (study) memory for decades.", "a": "have studied" },
       { "p": "I ___ (always / forget) my keys.", "a": "always forget" },
       { "p": "He ___ (not / memorize) the poem yet.", "a": "has not memorized" },
       { "p": "The baby ___ (sleep) right now.", "a": "is sleeping" },
-      { "p": "We ___ (go) to the museum every month.", "a": "go" }
+      { "p": "We ___ (go) to the museum every month.", "a": "go" },
+      { "p": "Look! It ___ (snow).", "a": "is snowing" },
+      { "p": "She ___ (never / eat) sushi before.", "a": "has never eaten" },
+      { "p": "I ___ (not / watch) TV right now.", "a": "am not watching" },
+      { "p": "They usually ___ (play) football on Sundays.", "a": "play" },
+      { "p": "He ___ (just / finish) his homework.", "a": "has just finished" },
+      { "p": "The cat ___ (not / like) water.", "a": "does not like" },
+      { "p": "Why ___ you ___ (look) at me like that?", "a": "are you looking" },
+      { "p": "We ___ (know) each other since 2018.", "a": "have known" },
+      { "p": "The sun ___ (rise) in the east.", "a": "rises" },
+      { "p": "I ___ (not / hear) you. Speak louder!", "a": "am not hearing" },
+      { "p": "She ___ (work) here for five years.", "a": "has worked" },
+      { "p": "They ___ (not / come) to the party tonight.", "a": "are not coming" },
+      { "p": "My brother ___ (always / wear) a hat.", "a": "always wears" },
+      { "p": "___ you ___ (see) my phone?", "a": "Have you seen" },
+      { "p": "Water ___ (freeze) at 0 degrees.", "a": "freezes" }
     ]
   },
   "g7": {
     "pos": [
-      { "p": "He ___ (memorize) the speech yesterday.", "a": "memorized", "ex": "Past Simple: finished action." },
-      { "p": "While I ___ (sleep), the phone rang.", "a": "was sleeping", "ex": "Past Continuous: interrupted action." },
-      { "p": "They ___ (study) all night for the exam.", "a": "studied", "ex": "Past Simple." },
-      { "p": "She ___ (process) the data when the computer crashed.", "a": "was processing", "ex": "Past Continuous." },
-      { "p": "I ___ (see) a great documentary last night.", "a": "saw", "ex": "Past Simple: irregular verb." }
+      { "p": "He ___ (memorize) the speech yesterday.", "a": "memorized" },
+      { "p": "While I ___ (sleep), the phone rang.", "a": "was sleeping" },
+      { "p": "They ___ (study) all night for the exam.", "a": "studied" },
+      { "p": "She ___ (process) the data when the computer crashed.", "a": "was processing" },
+      { "p": "I ___ (see) a great documentary last night.", "a": "saw" },
+      { "p": "We ___ (walk) home when it started to rain.", "a": "were walking" },
+      { "p": "He ___ (build) a new robot last week.", "a": "built" },
+      { "p": "The teacher ___ (explain) the rule yesterday.", "a": "explained" },
+      { "p": "They ___ (play) tennis at 5 PM yesterday.", "a": "were playing" },
+      { "p": "I ___ (forget) to bring my book.", "a": "forgot" }
     ],
     "neg": [
-      { "p": "I ___ (not / recall) the answer during the test.", "a": "did not recall", "ex": "Past Simple negative." },
-      { "p": "He ___ (not / listen) when the teacher explained.", "a": "was not listening", "ex": "Past Continuous negative." },
-      { "p": "We ___ (not / forget) your birthday last year.", "a": "did not forget", "ex": "Past Simple negative." }
+      { "p": "I ___ (not / recall) the answer during the test.", "a": "did not recall" },
+      { "p": "He ___ (not / listen) when the teacher explained.", "a": "was not listening" },
+      { "p": "We ___ (not / forget) your birthday last year.", "a": "did not forget" },
+      { "p": "They ___ (not / arrive) on time yesterday.", "a": "did not arrive" },
+      { "p": "She ___ (not / study) when I called her.", "a": "was not studying" },
+      { "p": "I ___ (not / see) the movie.", "a": "did not see" }
     ],
     "q": [
-      { "p": "___ you ___ (remember) to lock the door?", "a": "Did you remember", "ex": "Past Simple question." },
-      { "p": "___ they ___ (play) football at 5 PM yesterday?", "a": "Were they playing", "ex": "Past Continuous question." },
-      { "p": "___ she ___ (pass) the exam?", "a": "Did she pass", "ex": "Past Simple question." }
+      { "p": "___ you ___ (remember) to lock the door?", "a": "Did you remember" },
+      { "p": "___ they ___ (play) football at 5 PM yesterday?", "a": "Were they playing" },
+      { "p": "___ she ___ (pass) the exam?", "a": "Did she pass" },
+      { "p": "What ___ you ___ (do) at 8 PM last night?", "a": "were you doing" },
+      { "p": "___ he ___ (finish) his homework?", "a": "Did he finish" },
+      { "p": "Why ___ she ___ (cry) yesterday?", "a": "was she crying" }
     ],
     "shuffled": [
       { "p": "I ___ (walk) home when it started to rain.", "a": "was walking" },
       { "p": "They ___ (build) a new school last year.", "a": "built" },
       { "p": "She ___ (not / hear) the alarm.", "a": "did not hear" },
       { "p": "We ___ (watch) TV when the lights went out.", "a": "were watching" },
-      { "p": "He ___ (go) to London in 2022.", "a": "went" }
+      { "p": "He ___ (go) to London in 2022.", "a": "went" },
+      { "p": "I ___ (not / understand) the question yesterday.", "a": "did not understand" },
+      { "p": "While she ___ (read), the phone rang.", "a": "was reading" },
+      { "p": "They ___ (eat) pizza for dinner last night.", "a": "ate" },
+      { "p": "What ___ you ___ (do) at 10 AM?", "a": "were you doing" },
+      { "p": "The train ___ (leave) at 8 AM yesterday.", "a": "left" },
+      { "p": "We ___ (not / see) him at the party.", "a": "did not see" },
+      { "p": "She ___ (run) very fast yesterday.", "a": "ran" },
+      { "p": "I ___ (sleep) when you called.", "a": "was sleeping" },
+      { "p": "He ___ (not / come) to the meeting.", "a": "did not come" },
+      { "p": "The dog ___ (bark) all night.", "a": "barked" },
+      { "p": "They ___ (play) chess when I arrived.", "a": "were playing" },
+      { "p": "I ___ (buy) a new phone last week.", "a": "bought" },
+      { "p": "She ___ (not / like) the food.", "a": "did not like" },
+      { "p": "We ___ (swim) in the lake last summer.", "a": "swam" },
+      { "p": "The sun ___ (shine) when we woke up.", "a": "was shining" }
     ]
   },
   "sbPp": {
     "pos": [
       { "prompt": "Build a Present Perfect sentence about sleep.", "correct": ["I","have","slept","for","eight","hours."] },
       { "prompt": "Build a Present Perfect sentence about memory.", "correct": ["She","has","memorized","the","whole","poem."] },
-      { "prompt": "Build a Present Perfect sentence about a neuron.", "correct": ["The","neuron","has","made","a","new","connection."] }
+      { "prompt": "Build a Present Perfect sentence about a neuron.", "correct": ["The","neuron","has","made","a","new","connection."] },
+      { "prompt": "Build a Present Perfect sentence about the test.", "correct": ["They","have","passed","the","test."] },
+      { "prompt": "Build a Present Perfect sentence about a book.", "correct": ["He","has","read","that","book","twice."] }
     ],
     "neg": [
       { "prompt": "Build a negative Present Perfect sentence about the test.", "correct": ["He","has","not","finished","the","test","yet."] },
-      { "prompt": "Build a negative Present Perfect sentence about forgetting.", "correct": ["I","have","never","forgotten","your","name."] }
+      { "prompt": "Build a negative Present Perfect sentence about forgetting.", "correct": ["I","have","never","forgotten","your","name."] },
+      { "prompt": "Build a negative Present Perfect sentence about arriving.", "correct": ["They","have","not","arrived","yet."] },
+      { "prompt": "Build a negative Present Perfect sentence about eating.", "correct": ["She","has","not","eaten","anything","today."] }
     ],
     "q": [
       { "prompt": "Build a Present Perfect question about experience.", "correct": ["Have","you","ever","forgotten","your","keys?"] },
-      { "prompt": "Build a Present Perfect question about studying.", "correct": ["Has","she","studied","for","the","exam?"] }
+      { "prompt": "Build a Present Perfect question about studying.", "correct": ["Has","she","studied","for","the","exam?"] },
+      { "prompt": "Build a Present Perfect question about the movie.", "correct": ["Have","they","seen","this","movie?"] },
+      { "prompt": "Build a Present Perfect question about the project.", "correct": ["Have","you","finished","the","project?"] }
     ],
     "shuffled": [
       { "prompt": "Build: The brain has processed the information.", "correct": ["The","brain","has","processed","the","information."] },
       { "prompt": "Build: We have known each other for years.", "correct": ["We","have","known","each","other","for","years."] },
-      { "prompt": "Build: They have just arrived.", "correct": ["They","have","just","arrived."] }
+      { "prompt": "Build: They have just arrived.", "correct": ["They","have","just","arrived."] },
+      { "prompt": "Build: I have never been to London.", "correct": ["I","have","never","been","to","London."] },
+      { "prompt": "Build: She has already finished her work.", "correct": ["She","has","already","finished","her","work."] },
+      { "prompt": "Build: He has lived here since 2010.", "correct": ["He","has","lived","here","since","2010."] },
+      { "prompt": "Build: The train has left the station.", "correct": ["The","train","has","left","the","station."] },
+      { "prompt": "Build: We have not seen that film yet.", "correct": ["We","have","not","seen","that","film","yet."] },
+      { "prompt": "Build: Has he called you back?", "correct": ["Has","he","called","you","back?"] },
+      { "prompt": "Build: I have lost my phone.", "correct": ["I","have","lost","my","phone."] }
     ]
   },
   "sbPs": {
     "pos": [
       { "prompt": "Build a Past Simple sentence about the brain.", "correct": ["The","brain","stored","the","memory","yesterday."] },
-      { "prompt": "Build a Past Simple sentence about the scientists.", "correct": ["Scientists","discovered","a","new","neuron."] }
+      { "prompt": "Build a Past Simple sentence about the scientists.", "correct": ["Scientists","discovered","a","new","neuron."] },
+      { "prompt": "Build a Past Simple sentence about the weekend.", "correct": ["We","visited","our","grandparents","last","weekend."] },
+      { "prompt": "Build a Past Simple sentence about the exam.", "correct": ["She","passed","the","exam","easily."] }
     ],
     "neg": [
-      { "prompt": "Build a negative Past Simple sentence.", "correct": ["I","did","not","recall","the","answer."] }
+      { "prompt": "Build a negative Past Simple sentence.", "correct": ["I","did","not","recall","the","answer."] },
+      { "prompt": "Build a negative Past Simple sentence about the movie.", "correct": ["We","did","not","watch","the","movie."] },
+      { "prompt": "Build a negative Past Simple sentence about the test.", "correct": ["He","did","not","study","for","the","test."] }
     ],
     "q": [
-      { "prompt": "Build a Past Simple question.", "correct": ["Did","you","sleep","well","last","night?"] }
+      { "prompt": "Build a Past Simple question.", "correct": ["Did","you","sleep","well","last","night?"] },
+      { "prompt": "Build a Past Simple question about the book.", "correct": ["Did","she","read","the","book?"] },
+      { "prompt": "Build a Past Simple question about the party.", "correct": ["Did","they","enjoy","the","party?"] }
     ],
     "shuffled": [
       { "prompt": "Build: She forgot her phone at home.", "correct": ["She","forgot","her","phone","at","home."] },
-      { "prompt": "Build: We were studying when he called.", "correct": ["We","were","studying","when","he","called."] }
+      { "prompt": "Build: We were studying when he called.", "correct": ["We","were","studying","when","he","called."] },
+      { "prompt": "Build: I went to the park yesterday.", "correct": ["I","went","to","the","park","yesterday."] },
+      { "prompt": "Build: They did not come to the meeting.", "correct": ["They","did","not","come","to","the","meeting."] },
+      { "prompt": "Build: He bought a new car last month.", "correct": ["He","bought","a","new","car","last","month."] },
+      { "prompt": "Build: Did you see the news?", "correct": ["Did","you","see","the","news?"] },
+      { "prompt": "Build: The children played in the garden.", "correct": ["The","children","played","in","the","garden."] },
+      { "prompt": "Build: I was not listening.", "correct": ["I","was","not","listening."] },
+      { "prompt": "Build: She cooked dinner for us.", "correct": ["She","cooked","dinner","for","us."] },
+      { "prompt": "Build: Where did you go?", "correct": ["Where","did","you","go?"] }
     ]
   },
   "g10": {
     "pos": [
-      { "p": "I ___ (study) English for three years.", "a": "have studied", "ex": "Present Perfect: continuing action." },
-      { "p": "She ___ (read) a book when I arrived.", "a": "was reading", "ex": "Past Continuous." },
-      { "p": "The train ___ (leave) at 8 AM tomorrow.", "a": "leaves", "ex": "Present Simple: timetable." },
-      { "p": "Look! It ___ (rain).", "a": "is raining", "ex": "Present Continuous." },
-      { "p": "We ___ (visit) Paris last summer.", "a": "visited", "ex": "Past Simple." }
+      { "p": "I ___ (study) English for three years.", "a": "have studied" },
+      { "p": "She ___ (read) a book when I arrived.", "a": "was reading" },
+      { "p": "The train ___ (leave) at 8 AM tomorrow.", "a": "leaves" },
+      { "p": "Look! It ___ (rain).", "a": "is raining" },
+      { "p": "We ___ (visit) Paris last summer.", "a": "visited" },
+      { "p": "He ___ (just / finish) his homework.", "a": "has just finished" },
+      { "p": "They ___ (play) football right now.", "a": "are playing" },
+      { "p": "I ___ (see) that movie yesterday.", "a": "saw" },
+      { "p": "She ___ (live) here since 2018.", "a": "has lived" },
+      { "p": "The sun ___ (rise) in the east.", "a": "rises" }
     ],
     "neg": [
-      { "p": "I ___ (not / see) that movie yet.", "a": "have not seen", "ex": "Present Perfect negative." },
-      { "p": "They ___ (not / come) to the party last night.", "a": "did not come", "ex": "Past Simple negative." },
-      { "p": "He ___ (not / understand) the question right now.", "a": "is not understanding", "ex": "Present Continuous negative (rare state verb)." }
+      { "p": "I ___ (not / see) that movie yet.", "a": "have not seen" },
+      { "p": "They ___ (not / come) to the party last night.", "a": "did not come" },
+      { "p": "He ___ (not / understand) the question right now.", "a": "is not understanding" },
+      { "p": "We ___ (not / go) to the beach tomorrow.", "a": "are not going" },
+      { "p": "She ___ (not / eat) sushi before.", "a": "has not eaten" }
     ],
     "q": [
-      { "p": "___ you ever ___ (be) to London?", "a": "Have you ever been", "ex": "Present Perfect question." },
-      { "p": "___ she ___ (call) you yesterday?", "a": "Did she call", "ex": "Past Simple question." },
-      { "p": "___ they ___ (play) football at the moment?", "a": "Are they playing", "ex": "Present Continuous question." }
+      { "p": "___ you ever ___ (be) to London?", "a": "Have you ever been" },
+      { "p": "___ she ___ (call) you yesterday?", "a": "Did she call" },
+      { "p": "___ they ___ (play) football at the moment?", "a": "Are they playing" },
+      { "p": "What ___ you ___ (do) last weekend?", "a": "did you do" },
+      { "p": "How long ___ you ___ (live) here?", "a": "have you lived" }
     ],
     "shuffled": [
       { "p": "I ___ (live) here since 2018.", "a": "have lived" },
       { "p": "The bus ___ (leave) at 7 AM yesterday.", "a": "left" },
       { "p": "She ___ (always / forget) her keys.", "a": "always forgets" },
       { "p": "We ___ (wait) for the bus when it started to rain.", "a": "were waiting" },
-      { "p": "He ___ (just / finish) his homework.", "a": "has just finished" }
+      { "p": "He ___ (just / finish) his homework.", "a": "has just finished" },
+      { "p": "They ___ (not / arrive) yet.", "a": "have not arrived" },
+      { "p": "I ___ (watch) TV when the phone rang.", "a": "was watching" },
+      { "p": "She ___ (never / try) sushi.", "a": "has never tried" },
+      { "p": "The Earth ___ (go) around the sun.", "a": "goes" },
+      { "p": "We ___ (go) to the cinema last night.", "a": "went" },
+      { "p": "He ___ (not / listen) to me right now.", "a": "is not listening" },
+      { "p": "I ___ (already / read) that book.", "a": "have already read" }
     ]
   },
   "testMcq": [
     { "q": "Which word means 'the ability to remember things'?", "options": ["memory", "neuron", "skill"], "correct": "memory", "exp": "Memory is the ability to remember." },
     { "q": "Which word means 'to bring a memory back to your mind'?", "options": ["to recall", "to forget", "to process"], "correct": "to recall", "exp": "Recall means to remember." },
     { "q": "Which word means 'correct and exact'?", "options": ["accurate", "complex", "trigger"], "correct": "accurate", "exp": "Accurate means correct." },
-    { "q": "Which word means 'a nerve cell in the brain'?", "options": ["neuron", "connection", "storage"], "correct": "neuron", "exp": "A neuron is a nerve cell." }
+    { "q": "Which word means 'a nerve cell in the brain'?", "options": ["neuron", "connection", "storage"], "correct": "neuron", "exp": "A neuron is a nerve cell." },
+    { "q": "Which word means 'to cause something to happen'?", "options": ["to trigger", "to store", "to connect"], "correct": "to trigger", "exp": "To trigger means to cause." }
   ],
   "testShort": [
     { "q": "How many neurons are in the human brain?", "answers": ["86 billion", "86 000 000 000"], "exp": "86 billion." },
-    { "q": "What is very important for organizing information?", "answers": ["sleep"], "exp": "Sleep." }
+    { "q": "What is very important for organizing information?", "answers": ["sleep"], "exp": "Sleep." },
+    { "q": "What do neurons send to each other?", "answers": ["electrical signals", "signals"], "exp": "Electrical signals." }
   ],
   "testTfng": [
     { "q": "Memories are always 100% accurate.", "answer": "False", "exp": "Not always accurate." },
-    { "q": "The brain decides what to forget while you sleep.", "answer": "True", "exp": "It organizes information during sleep." }
+    { "q": "The brain decides what to forget while you sleep.", "answer": "True", "exp": "It organizes information during sleep." },
+    { "q": "The human brain is the most complex machine in the universe.", "answer": "True", "exp": "The text states this." }
   ],
   "testComplete": [
     { "p": "She ___ (memorize) the poem yesterday.", "a": "memorized" },
     { "p": "I ___ (study) English for three years.", "a": "have studied" },
-    { "p": "While I ___ (sleep), the phone rang.", "a": "was sleeping" }
+    { "p": "While I ___ (sleep), the phone rang.", "a": "was sleeping" },
+    { "p": "He ___ (not / recall) the answer.", "a": "did not recall" },
+    { "p": "Look! It ___ (snow).", "a": "is snowing" }
   ]
 }

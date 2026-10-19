@@ -52,6 +52,9 @@
     { "type": "complete", "prompt": "While the scientists ___ (watch), the octopus changed color.", "answers": ["were watching"] },
     { "type": "complete", "prompt": "Last summer, biologists ___ (study) an octopus.", "answers": ["studied"] },
     { "type": "complete", "prompt": "Scientists have ___ (discover) that they are very smart.", "answers": ["discovered"] },
-    { "type": "long", "prompt": "Why is the octopus described as an 'alien' in the text?", "keywordGroups": [["strange","different","alien"],["three hearts","blue blood","nine brains"],["ocean","planet","earth"]], "minWords": 10, "minGroups": 2, "sample": "The octopus is described as an alien because it looks very strange. It has three hearts, blue blood, and nine brains, which makes it look like a creature from another planet.", "exp": "Key ideas: strange appearance, unusual biology." }
+    { "type": "long", "prompt": "Why is the octopus described as an 'alien' in the text?", "keywordGroups": [["strange","different","alien"],["three hearts","blue blood","nine brains"],["ocean","planet","earth"]], "minWords": 10, "minGroups": 2, "sample": "The octopus is described as an alien because it looks very strange. It has three hearts, blue blood, and nine brains, which makes it look like a creature from another planet.", "exp": "Key ideas: strange appearance, unusual biology." },
+    { "type": "short", "prompt": "Where does the octopus live?", "answers": ["ocean", "sea", "pacific ocean"], "exp": "In the ocean." },
+    { "type": "tfng", "prompt": "The octopus walked on the sea floor using its arms.", "answer": "True", "exp": "It used its arms to walk on the sea floor." },
+    { "type": "complete", "prompt": "It ___ (hide) from a shark last summer.", "answers": ["hid"] }
   ]
 }
