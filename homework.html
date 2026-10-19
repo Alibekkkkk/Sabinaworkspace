@@ -242,6 +242,13 @@ function renderPassage(){
   const body=document.getElementById('passageBody');
   if(!body)return;
   let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>';
+  
+  if (p.video) {
+    html += '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)">'
+         + '<iframe src="'+escapeHtml(p.video)+'" title="'+escapeHtml(p.videoTitle||p.title)+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%"></iframe>'
+         + '</div>';
+  }
+
   const vocabWords=lesson.vocab.map(v=>v.en);
   p.paragraphs.forEach(function(par){
     let text=escapeHtml(par.text);

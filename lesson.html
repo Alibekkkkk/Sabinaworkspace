@@ -483,24 +483,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('customContextMenu');
   
   document.addEventListener('click', function(e) {
-    // If clicking inside the context menu, do nothing (let the menu item's click handler run)
     if(e.target.closest('.context-menu')) return;
-    
-    // Hide the menu if we clicked outside
     menu.classList.remove('show');
-
-    // If clicking inside the sticky note, do not close it
     if(e.target.closest('.sticky-note')) return;
-
-    // If clicking on a user-note, open it
     const targetNote = e.target.closest('.user-note');
     if (targetNote) {
         if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
         openExistingNote(targetNote.dataset.id);
-        return; // Stop here, don't close the sticky note
+        return; 
     }
-
-    // Otherwise, close the sticky note
     closeStickyNote();
   });
 
@@ -525,7 +516,6 @@ document.addEventListener('DOMContentLoaded', () => {
         node = node.parentNode;
     }
 
-    // Use onclick instead of onmousedown to allow the click to finish completely before running the function
     const safeClick = "event.preventDefault(); event.stopPropagation();";
 
     if (targetNote) {
@@ -1249,13 +1239,13 @@ function finalizeRound(){
   if(practiceMode){
     practiceIdx++;
     if(practiceIdx<practiceQueue.length){
-      setTimeout(function(){openQuizWord(practiceQueue[practiceIdx].en)},400);
+      openQuizWord(practiceQueue[practiceIdx].en);
       return;
     }
-    setTimeout(continuePracticeQueue,400);
+    continuePracticeQueue();
     return;
   }
-  setTimeout(advanceToNextCard,400);
+  advanceToNextCard();
 }
 
 function advanceToNextCard(){
@@ -1340,7 +1330,7 @@ function editFlashcardImage(){
   const displayWord = meaning.displayEn || w.en;
   
   const current = customImages[displayWord] || customImages[w.en] || '';
-  const url=prompt('Paste an image URL for "'+displayWord+'". Leave blank to remove the custom image.',current);
+  const url=prompt('Paste an image URL for "'+displayWord+'" ('+meaning.context+'). Leave blank to remove.',current);
   if(url===null)return;
   const trimmed=url.trim();
   if(trimmed&&!/^https?:\/\//i.test(trimmed)){alert('URL must start with http:// or https://');return}
@@ -1662,6 +1652,11 @@ function renderStage4(){
         formula = 'Present Simple vs Present Continuous';
         listHTML = '<li>Present Simple: facts and routines.</li><li>Present Continuous: happening right now.</li>';
         lead = 'Complete each sentence using the correct present tense.';
+    } else if (activeContentName === 'abay') {
+        title = '⏳ Completing Sentence — Gerunds & Infinitives';
+        formula = 'enjoy / avoid / suggest / mind + V-ing · decide / hope / plan / refuse + to + V1';
+        listHTML = '<li><b>-ing form</b> after: enjoy, avoid, mind, finish, suggest, keep, be used to</li><li><b>to + infinitive</b> after: decide, hope, want, plan, refuse, agree, manage, would like</li><li>Prepositions (<i>good at, interested in, look forward to</i>) always take <b>-ing</b>.</li>';
+        lead = 'Complete each sentence using the gerund or the infinitive form.';
     }
     renderCompletingSentence(G6,4,3,5,title,'Stage 4 — Grammar',formula,listHTML,lead);
 }
@@ -1682,6 +1677,11 @@ function renderStage5(){
         formula = 'Past Simple vs Past Continuous';
         listHTML = '<li>Past Simple: finished actions.</li><li>Past Continuous: actions in progress in the past.</li>';
         lead = 'Complete each sentence using the correct past tense.';
+    } else if (activeContentName === 'abay') {
+        title = '🛡️ Completing Sentence — Modals of Deduction';
+        formula = 'must / might / could / can\'t + bare infinitive (present) · must / might / could have + V3 (past)';
+        listHTML = '<li><b>must</b> = strong deduction (&ldquo;she must be tired&rdquo;)</li><li><b>might / could</b> = possibility (&ldquo;he might be busy&rdquo;)</li><li><b>can\'t</b> = impossibility (&ldquo;that can\'t be true&rdquo;)</li><li>For the past: modal + <b>have</b> + V3 (&ldquo;she must have left&rdquo;)</li>';
+        lead = 'Complete each sentence using the correct modal verb.';
     }
     renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
 }
@@ -1795,6 +1795,11 @@ function renderStage6(){
         formula = 'Subject + V1 / am/is/are + V-ing';
         listHTML = '<li>Build sentences about routines and actions happening now.</li>';
         lead = 'Build each sentence.';
+    } else if (activeContentName === 'abay') {
+        title = '🧩 Sentence Builder — Gerunds & Infinitives';
+        formula = 'verb + V-ing OR verb + to + V1 — the verb decides';
+        listHTML = '<li>Check the verb before the gap. If it is <i>enjoy/avoid/mind/suggest</i>, use <b>-ing</b>.</li><li>If it is <i>decide/hope/plan/agree</i>, use <b>to + V1</b>.</li>';
+        lead = 'Build each sentence using the correct verb form.';
     }
     renderSentenceBuilder(SB_PP,6,5,7,title,'Stage 6 — Grammar',formula,listHTML,lead);
 }
@@ -1815,6 +1820,11 @@ function renderStage7(){
         formula = 'Subject + V2 (or did not + V1)';
         listHTML = '<li>Build past simple sentences.</li>';
         lead = 'Build each sentence.';
+    } else if (activeContentName === 'abay') {
+        title = '🧱 Sentence Builder — Modals of Deduction';
+        formula = 'subject + modal + bare infinitive (present) · modal + have + V3 (past)';
+        listHTML = '<li>No <b>to</b> after must / might / could / can\'t / should.</li><li>Past deduction: modal + <b>have</b> + V3 (&ldquo;must have gone&rdquo;).</li>';
+        lead = 'Build each sentence using the correct modal form.';
     }
     renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
 }
@@ -1836,6 +1846,11 @@ function renderStage8(){
         formula = 'Present Simple/Continuous · Past Simple · Present Perfect';
         listHTML = '<li>Look at the time words to identify the correct tense.</li>';
         lead = 'Choose the correct tense for each sentence.';
+    } else if (activeContentName === 'abay') {
+        title = '🧭 Completing Sentence — Choose the Form';
+        formula = 'gerund · infinitive · modal (+have) · present perfect';
+        listHTML = '<li>Look at the verb before the gap and the time clue after it.</li><li>For past deduction use <b>modal + have + V3</b>.</li>';
+        lead = 'Choose the correct form for each sentence.';
     }
     renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
 }
@@ -2098,16 +2113,16 @@ function renderSidebar(){
   const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
   
   const isAraylim1 = activeContentName.includes('araylim_1');
+  const isAbay = activeContentName === 'abay';
   const customLabels = isAraylim1 ? [
-      'Vocabulary', 
-      'Word Match', 
-      'Reading & Questions', 
-      'Simple Present', 
-      'Present Continuous', 
-      'Simple Past', 
-      'Past Continuous', 
-      'Present Perfect', 
-      'Test Your Knowledge'
+      'Vocabulary', 'Word Match', 'Reading & Questions',
+      'Simple Present', 'Present Continuous', 'Simple Past',
+      'Past Continuous', 'Present Perfect', 'Test Your Knowledge'
+  ] : isAbay ? [
+      'Vocabulary', 'Word Match', 'Reading & Video',
+      'Gerunds vs Infinitives', 'Modals of Deduction',
+      'Sentence Builder — Gerunds', 'Sentence Builder — Modals',
+      'Choose the Form', 'Test Your Knowledge'
   ] : null;
 
   CURRICULUM.forEach(function(yearObj){
