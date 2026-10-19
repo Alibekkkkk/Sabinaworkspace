@@ -500,7 +500,7 @@ function sWrong(){playTone(180,.25,'sawtooth',.08)}
 function sWin(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){playTone(f,.2)},i*110)})}
 function sFlip(){playTone(500,.08,'sine',.06)}
 function sPop(){playTone(700,.06,'sine',.05)}
-function confetti(){const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];for(let i=0;i<70;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.top='-20px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*.5+'s';c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';if(Math.random()>.5)c.style.borderRadius='50%';document.body.appendChild(c);setTimeout(function(){c.remove()},3600)}}
+function confetti(){const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];for(let i=0;i<70;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.top='-20px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*.5+'s';c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';if(Math.random()>.5)c.style.borderRadius='50%';document.body.appendChild(c);setTimeout(function(){c.remove()},3600)}};
 
 let ukVoice=null;
 function pickUKVoice(){if(!('speechSynthesis' in window))return null;const v=window.speechSynthesis.getVoices();return v.find(function(x){return x.lang==='en-GB'})||v.find(function(x){return x.lang&&x.lang.toLowerCase().startsWith('en-gb')})||v.find(function(x){return x.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(x.name)})||null}
@@ -1248,7 +1248,12 @@ function renderStage4(){
     let listHTML = '<li>Use <b>have</b> with I, you, we, they.</li><li>Use <b>has</b> with he, she, it.</li>';
     let lead = 'Complete each sentence.';
     
-    if (activeContentName === 'george' || activeContentName === 'araylim') {
+    if (activeContentName.includes('araylim_1')) {
+        title = '⏳ Completing Sentence — Simple Present';
+        formula = 'Subject + V1 (or V-s / V-es for he, she, it)';
+        listHTML = '<li>Use for facts, habits, and routines.</li><li>Add -s or -es for he/she/it.</li>';
+        lead = 'Complete each sentence using the Simple Present.';
+    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Present Tenses';
         formula = 'Present Simple vs Present Continuous';
         listHTML = '<li>Present Simple: facts and routines.</li><li>Present Continuous: happening right now.</li>';
@@ -1263,7 +1268,12 @@ function renderStage5(){
     let listHTML = '<li>Past passive.</li>';
     let lead = 'Complete each sentence using the passive voice.';
     
-    if (activeContentName === 'george' || activeContentName === 'araylim') {
+    if (activeContentName.includes('araylim_1')) {
+        title = '⏳ Completing Sentence — Present Continuous';
+        formula = 'Subject + am/is/are + V-ing';
+        listHTML = '<li>Use for actions happening right now.</li><li>Use for temporary situations.</li>';
+        lead = 'Complete each sentence using the Present Continuous.';
+    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Past Tenses';
         formula = 'Past Simple vs Past Continuous';
         listHTML = '<li>Past Simple: finished actions.</li><li>Past Continuous: actions in progress in the past.</li>';
@@ -1371,7 +1381,12 @@ function renderStage6(){
     let listHTML = '<li>Build sentences word by word.</li>';
     let lead = 'Build each sentence.';
     
-    if (activeContentName === 'george' || activeContentName === 'araylim') {
+    if (activeContentName.includes('araylim_1')) {
+        title = '🧩 Sentence Builder — Simple Past';
+        formula = 'Subject + V2 (or did not + V1)';
+        listHTML = '<li>Use for finished actions in the past.</li><li>Remember irregular verbs (e.g., go → went).</li>';
+        lead = 'Build each sentence using the Simple Past.';
+    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧩 Sentence Builder — Present Tenses';
         formula = 'Subject + V1 / am/is/are + V-ing';
         listHTML = '<li>Build sentences about routines and actions happening now.</li>';
@@ -1386,7 +1401,12 @@ function renderStage7(){
     let listHTML = '<li>Build past passive sentences word by word.</li>';
     let lead = 'Build each sentence.';
     
-    if (activeContentName === 'george' || activeContentName === 'araylim') {
+    if (activeContentName.includes('araylim_1')) {
+        title = '🧱 Sentence Builder — Past Continuous';
+        formula = 'Subject + was/were + V-ing';
+        listHTML = '<li>Use for actions in progress in the past.</li><li>Often used with "when" or "while".</li>';
+        lead = 'Build each sentence using the Past Continuous.';
+    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧱 Sentence Builder — Past Simple';
         formula = 'Subject + V2 (or did not + V1)';
         listHTML = '<li>Build past simple sentences.</li>';
@@ -1402,7 +1422,12 @@ function renderStage8(){
     let listHTML = '<li>Use past simple with finished times.</li><li>Use present perfect with: since, for, yet, ever.</li>';
     let lead = 'Choose the correct tense for each sentence.';
     
-    if (activeContentName === 'george' || activeContentName === 'araylim') {
+    if (activeContentName.includes('araylim_1')) {
+        title = '🧭 Completing Sentence — Present Perfect';
+        formula = 'Subject + have/has + past participle (V3)';
+        listHTML = '<li>Use for experiences (ever/never).</li><li>Use with "since", "for", "yet", "already", "just".</li>';
+        lead = 'Complete each sentence using the Present Perfect.';
+    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧭 Completing Sentence — Mixed Tenses';
         formula = 'Present Simple/Continuous · Past Simple · Present Perfect';
         listHTML = '<li>Look at the time words to identify the correct tense.</li>';
@@ -1629,6 +1654,21 @@ function resetStageTeacher(stageId) {
 }
 function renderSidebar(){
   const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
+  
+  // Custom labels for Araylim Lesson 1
+  const isAraylim1 = activeContentName.includes('araylim_1');
+  const customLabels = isAraylim1 ? [
+      'Vocabulary', 
+      'Word Match', 
+      'Reading & Questions', 
+      'Simple Present', 
+      'Present Continuous', 
+      'Simple Past', 
+      'Past Continuous', 
+      'Present Perfect', 
+      'Test Your Knowledge'
+  ] : null;
+
   CURRICULUM.forEach(function(yearObj){
     const isY=expandedYears.includes(yearObj.year);
     const yearEl=document.createElement('div');yearEl.className='year-item'+(isY?' open':'');
@@ -1698,7 +1738,10 @@ function renderSidebar(){
             const stEl=document.createElement('button');
             stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':'');
             stEl.style.flex = '1';
-            stEl.innerHTML='<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+st.label+'</span>';
+            
+            const displayLabel = customLabels ? customLabels[st.id - 1] : st.label;
+            stEl.innerHTML='<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+displayLabel+'</span>';
+            
             stEl.onclick=function(){goToStage(st.id)};
             row.appendChild(stEl);
 
