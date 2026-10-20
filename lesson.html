@@ -12,6 +12,7 @@
   try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
+/* ... KEEP ALL EXISTING STYLES EXACTLY AS THEY ARE ... */
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -162,8 +163,6 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .passage .subtitle{font-size:15px;color:var(--ink-soft);font-style:italic;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:12px}
 .passage p{margin-bottom:16px;text-align:justify}
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
-
-/* HIGHLIGHTS & NOTES - LIGHT THEME */
 .hl-yellow{background-color:#fce883;color:#000;}
 .hl-green{background-color:#b5e8c5;color:#000;}
 .hl-blue{background-color:#c5e1f5;color:#000;}
@@ -171,8 +170,6 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .hl-pink{background-color:#fbcfe8;color:#000;}
 .user-note{background-color:#fef08a;border-bottom:2px dashed #eab308;cursor:pointer;padding:0 2px;border-radius:2px;color:#000;transition:background .2s;}
 .user-note:hover{background-color:#fde047;}
-
-/* HIGHLIGHTS & NOTES - DARK THEME */
 html.dark .hl-yellow{background-color:rgba(250, 204, 21, 0.3);color:#fff;border-bottom:2px solid rgba(250, 204, 21, 0.6);}
 html.dark .hl-green{background-color:rgba(74, 222, 128, 0.3);color:#fff;border-bottom:2px solid rgba(74, 222, 128, 0.6);}
 html.dark .hl-blue{background-color:rgba(96, 165, 250, 0.3);color:#fff;border-bottom:2px solid rgba(96, 165, 250, 0.6);}
@@ -180,14 +177,10 @@ html.dark .hl-purple{background-color:rgba(192, 132, 252, 0.3);color:#fff;border
 html.dark .hl-pink{background-color:rgba(244, 114, 182, 0.3);color:#fff;border-bottom:2px solid rgba(244, 114, 182, 0.6);}
 html.dark .user-note{background-color:rgba(253, 224, 71, 0.3);border-bottom:2px dashed rgba(250, 204, 21, 0.8);color:#fff;}
 html.dark .user-note:hover{background-color:rgba(253, 224, 71, 0.5);}
-
-/* HOVER EFFECTS */
 .hl-yellow:hover, .hl-green:hover, .hl-blue:hover, .hl-purple:hover, .hl-pink:hover { outline: 2px solid var(--ink-soft); outline-offset: 2px; border-radius: 4px; cursor: pointer; }
 .underline:hover { background-color: rgba(0, 0, 0, 0.08); border-radius: 4px; cursor: pointer; }
 html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 .user-note:hover { box-shadow: 0 0 0 2px var(--warn); }
-
-/* CUSTOM CONTEXT MENU */
 .context-menu{position:absolute;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;padding:4px;z-index:10000;min-width:160px;}
 .context-menu.show{display:flex;}
 .context-item{padding:8px 12px;font-size:14px;cursor:pointer;border-radius:6px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-weight:600;position:relative;}
@@ -199,8 +192,6 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 .submenu-item { padding: 6px 12px; font-size: 13px; cursor: pointer; border-radius: 4px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
 .submenu-item:hover { background: var(--bg); }
 .color-swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-
-/* STICKY NOTE POPUP */
 .sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;height:200px;display:none;flex-direction:column;z-index:10001;font-family:'EB Garamond',serif;resize:both;overflow:auto;min-width:200px;min-height:150px;}
 .sticky-note.show{display:flex;}
 .sticky-header{background:#facc15;padding:6px 10px;border-radius:7px 7px 0 0;display:flex;justify-content:space-between;align-items:center;cursor:grab;}
@@ -213,8 +204,6 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 .sticky-body{padding:10px;flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .sticky-text{width:100%;height:100%;background:transparent;border:none;resize:none;outline:none;font-family:'EB Garamond',serif;font-size:16px;line-height:1.4;color:#422006;font-weight:500;}
 .sticky-text::placeholder{color:rgba(66,32,6,0.5);font-style:italic;}
-
-/* IMAGE SETTING MODAL */
 #imageUrlModal{position:fixed;inset:0;background:rgba(20,25,40,.85);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;}
 #imageUrlModal.open{display:flex;}
 .image-modal-content{background:var(--panel);border-radius:16px;padding:24px;width:100%;max-width:450px;box-shadow:var(--shadow-lg);text-align:center;}
@@ -222,7 +211,6 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 .image-modal-content input{width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;margin-bottom:16px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px;outline:none;}
 .image-modal-content input:focus{border-color:var(--accent);}
 .image-modal-content .actions{display:flex;gap:10px;justify-content:flex-end;}
-
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
 .q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
@@ -310,6 +298,8 @@ html.dark .q-feedback.info{color:#f5c66b}
 </head>
 <body>
 
+<!-- ... KEEP THE EXACT SAME HTML BODY ... -->
+
 <div class="topbar">
   <div class="logo"><div class="mark">🌪️</div><span class="text" id="workspaceName">Workspace</span></div>
   <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
@@ -342,10 +332,8 @@ html.dark .q-feedback.info{color:#f5c66b}
   <textarea id="notesArea" placeholder="Type your notes here..."></textarea>
 </aside>
 
-<!-- CUSTOM CONTEXT MENU -->
 <div id="customContextMenu" class="context-menu"></div>
 
-<!-- DRAGGABLE STICKY NOTE -->
 <div id="stickyNote" class="sticky-note">
   <div class="sticky-header" id="stickyDragHandle">
     <span class="sticky-title">📝 My Note</span>
@@ -359,7 +347,6 @@ html.dark .q-feedback.info{color:#f5c66b}
   </div>
 </div>
 
-<!-- IMAGE SETTING MODAL -->
 <div id="imageUrlModal" onclick="if(event.target===this)closeImageModal()">
   <div class="image-modal-content">
     <h3>Set Custom Image</h3>
@@ -519,29 +506,32 @@ let draftAnswers = {};
 let draftSaveTimeout = null;
 
 function debouncedSaveDraft() {
-  if (teacherMode) return;
   clearTimeout(draftSaveTimeout);
   draftSaveTimeout = setTimeout(() => {
     try { localStorage.setItem('nd_draft_'+state.currentLessonId, JSON.stringify(draftAnswers)); } catch(e) {}
     if (fbConnected && sessionRef) {
       sessionRef.child('draft/'+state.currentLessonId).set(draftAnswers).catch(console.error);
     }
-  }, 400); // Save 400ms after user stops typing
+  }, 400);
 }
 
 function loadDraft() {
+  let local = {};
   try {
-    const local = localStorage.getItem('nd_draft_'+state.currentLessonId);
-    if (local) draftAnswers = JSON.parse(local) || {};
+    const l = localStorage.getItem('nd_draft_'+state.currentLessonId);
+    if (l) local = JSON.parse(l) || {};
   } catch(e) {}
+  draftAnswers = local;
+  
   if (fbConnected && sessionRef) {
-    sessionRef.child('draft/'+state.currentLessonId).once('value').then(snap => {
-      if (snap.exists()) {
-        draftAnswers = Object.assign({}, draftAnswers, snap.val());
-        // Re-render current stage to apply drafts
-        renderStage();
-      }
+    return sessionRef.child('draft/'+state.currentLessonId).once('value').then(snap => {
+      const cloud = snap.val() || {};
+      draftAnswers = Object.assign(draftAnswers, cloud);
+      if (state.currentStage === 3) renderStage(); 
     });
+  } else {
+    if (state.currentStage === 3) renderStage();
+    return Promise.resolve();
   }
 }
 
@@ -858,7 +848,13 @@ function initFirebase(){
               if (st.scores) Object.assign(state.scores, st.scores);
               if (st.done) Object.assign(state.done, st.done);
               if (st.notes) document.getElementById('notesArea').value = st.notes;
-              loadVocabStateCloud().then(function(){ renderSidebar(); renderStage(); updateHUD(); });
+              loadVocabStateCloud().then(function(){ 
+                loadDraft().then(() => {
+                  renderSidebar(); 
+                  if (state.currentStage !== 3) renderStage();
+                  updateHUD(); 
+                });
+              });
             });
             fbDb.ref('students/' + code).once('value').then(snap => {
                const name = snap.val() ? snap.val().name : 'Student';
@@ -897,7 +893,7 @@ function startStudentSession(code){
   commandRef=sessionRef.child('command');
   commandRef.on('value',function(snap){const cmd=snap.val();if(!cmd)return;applyTeacherResetCommand(cmd);if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage)});
   fbConnected=true;updateSyncUI('live');pushFullState();
-  loadDraft(); // Load drafts when student session starts
+  loadDraft(); 
 }
 function getSessionCode(){
   const u=new URLSearchParams(window.location.search).get('code');
@@ -1529,10 +1525,15 @@ function renderStage3(){
     '</section>'+
   '</div>';
   main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" onclick="completeReading()">✓ Mark reading stage complete</button>'));
+  
   s4Answers={};
+  READING_Q.forEach(function(_,i){ if(draftAnswers['r'+i+'_ok'] === true) s4Answers['r'+i]=true; });
+  CONTEXT_Q.forEach(function(_,i){ if(draftAnswers['c'+i+'_ok'] === true) s4Answers['c'+i]=true; });
+  
   renderReadingQuestions();
   renderContextQ();
   updateS3Progress();
+  checkS4(true); 
   
   if(fbConnected && sessionRef) {
      sessionRef.child('annotations/'+state.currentLessonId).once('value').then(snap => {
@@ -1545,6 +1546,7 @@ function renderStage3(){
      });
   }
 }
+
 function updateS3Progress(){const el=document.getElementById('s3Progress');if(el)el.textContent=Object.keys(s4Answers).length}
 
 function renderReadingQuestions(){
@@ -1558,14 +1560,20 @@ function renderReadingQuestions(){
     if(item.type==='short'){
       const row=document.createElement('div');row.className='q-input-row';
       const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';
-      // DRAFT RESTORE
-      if(draftAnswers['r'+i+'_draft']) inp.value = draftAnswers['r'+i+'_draft'];
+      const val = draftAnswers['r'+i+'_draft'] || '';
+      const isOk = draftAnswers['r'+i+'_ok'] === true;
+      if(val) inp.value = val;
       
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
       const fb=document.createElement('div');fb.className='q-feedback';
-      let done=false;
+      let done=isOk;
       let flagAdded=false;
       
+      if(isOk){
+        inp.classList.add('correct');inp.disabled=true;btn.disabled=true;
+        fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
+      }
+
       function submit(){
         if(done)return;
         const ok=isAnswerCorrect(inp.value, item.answers);
@@ -1573,11 +1581,15 @@ function renderReadingQuestions(){
           inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;
           fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
           sCorrect();s4Answers['r'+i]=true;checkS4();
-          delete draftAnswers['r'+i+'_draft']; debouncedSaveDraft(); // Remove draft on success
+          draftAnswers['r'+i+'_draft'] = inp.value;
+          draftAnswers['r'+i+'_ok'] = true;
+          debouncedSaveDraft();
         } else {
           inp.classList.add('wrong');sWrong();
           fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again — check the passage.';
           setTimeout(function(){inp.classList.remove('wrong')},600);
+          draftAnswers['r'+i+'_draft'] = inp.value;
+          debouncedSaveDraft();
           
           if(!flagAdded) {
              card.appendChild(buildFlagRow('r'+i,item.prompt,inp.value,'wrong'));
@@ -1587,7 +1599,6 @@ function renderReadingQuestions(){
       }
       btn.onclick=submit;
       inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
-      // DRAFT SAVE
       inp.addEventListener('input', function() {
           draftAnswers['r'+i+'_draft'] = inp.value;
           debouncedSaveDraft();
@@ -1595,36 +1606,57 @@ function renderReadingQuestions(){
       row.appendChild(inp);row.appendChild(btn);card.appendChild(row);card.appendChild(fb);
     }else if(item.type==='tfng'){
       const opts=document.createElement('div');opts.className='tfng-opts';
-      const draftVal = draftAnswers['r'+i+'_draft'];
+      const chosen = draftAnswers['r'+i+'_draft'];
+      const isOk = draftAnswers['r'+i+'_ok'] === true;
+      let flagAdded = false;
+      
       shuffle(['True','False','Not Given']).forEach(function(o){
         const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-        if (draftVal === o) b.style.background = 'var(--bg)'; // Visual hint for drafted selection
-        b.onclick=function(){
-          if(b.disabled)return;
-          // SAVE DRAFT ON CLICK
-          draftAnswers['r'+i+'_draft'] = o;
-          debouncedSaveDraft();
-          
-          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
-          const fb=card.querySelector('.q-feedback');
-          if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
-          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.answer)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
-          checkS4();
-        };
+        if(chosen){
+          b.disabled=true;
+          if(o===item.answer)b.classList.add('correct');
+          if(o===chosen && o!==item.answer)b.classList.add('wrong');
+        } else {
+          b.onclick=function(){
+            if(b.disabled)return;
+            draftAnswers['r'+i+'_draft'] = o;
+            draftAnswers['r'+i+'_ok'] = (o === item.answer);
+            debouncedSaveDraft();
+            
+            opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+            const fb=card.querySelector('.q-feedback');
+            if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
+            else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.answer)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+            checkS4();
+          };
+        }
         opts.appendChild(b);
       });
       card.appendChild(opts);
-      const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
+      const fb=document.createElement('div');fb.className='q-feedback';
+      if(chosen){
+        if(isOk){fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+        else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+      }
+      card.appendChild(fb);
     }else if(item.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
-      if(draftAnswers['r'+i+'_draft']) ta.value = draftAnswers['r'+i+'_draft'];
+      const val = draftAnswers['r'+i+'_draft'] || '';
+      const isOk = draftAnswers['r'+i+'_ok'] === true;
+      if(val) ta.value = val;
       
       const row=document.createElement('div');row.className='q-input-row';row.style.marginTop='10px';
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer';
       const fb=document.createElement('div');fb.className='q-feedback';
-      let done=false;
+      let done=isOk;
       let flagAdded=false;
       
+      if(isOk){
+        ta.classList.add('correct');ta.disabled=true;btn.disabled=true;
+        const res=checkLongAnswer(ta.value,item.keywordGroups,item.minWords,item.minGroups);
+        fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>';
+      }
+
       function submit(){
         if(done)return;
         const txt=ta.value.trim();
@@ -1633,12 +1665,17 @@ function renderReadingQuestions(){
             ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;
             fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>';
             sCorrect();s4Answers['r'+i]=true;checkS4();
-            delete draftAnswers['r'+i+'_draft']; debouncedSaveDraft();
+            draftAnswers['r'+i+'_draft'] = txt;
+            draftAnswers['r'+i+'_ok'] = true;
+            debouncedSaveDraft();
         }
-        else{ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'}
-        
+        else{
+          ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>';
+          draftAnswers['r'+i+'_draft'] = txt;
+          debouncedSaveDraft();
+        }
         if(!flagAdded) {
-            ta.insertAdjacentHTML('afterend',buildFlagRow('r'+i,item.prompt,txt,res.pass?'correct':'wrong'));
+            ta.insertAdjacentHTML('afterend',buildFlagRow('s3_r'+i,item.prompt,txt,res.pass?'correct':'wrong'));
             flagAdded = true;
         }
       }
@@ -1650,25 +1687,37 @@ function renderReadingQuestions(){
       row.appendChild(btn);card.appendChild(ta);card.appendChild(row);card.appendChild(fb);
     }else if(item.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
-      const draftVal = draftAnswers['r'+i+'_draft'];
+      const chosen = draftAnswers['r'+i+'_draft'];
+      const isOk = draftAnswers['r'+i+'_ok'] === true;
       shuffle(item.options).forEach(function(o){
         const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-        if (draftVal === o) b.style.background = 'var(--bg)';
-        b.onclick=function(){
-          if(b.disabled)return;
-          draftAnswers['r'+i+'_draft'] = o;
-          debouncedSaveDraft();
-          
-          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
-          const fb=card.querySelector('.q-feedback');
-          if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
-          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
-          checkS4();
-        };
+        if(chosen){
+          b.disabled=true;
+          if(o===item.correct)b.classList.add('correct');
+          if(o===chosen && o!==item.correct)b.classList.add('wrong');
+        } else {
+          b.onclick=function(){
+            if(b.disabled)return;
+            draftAnswers['r'+i+'_draft'] = o;
+            draftAnswers['r'+i+'_ok'] = (o === item.correct);
+            debouncedSaveDraft();
+            
+            opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+            const fb=card.querySelector('.q-feedback');
+            if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
+            else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+            checkS4();
+          };
+        }
         opts.appendChild(b);
       });
       card.appendChild(opts);
-      const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
+      const fb=document.createElement('div');fb.className='q-feedback';
+      if(chosen){
+        if(isOk){fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+        else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+      }
+      card.appendChild(fb);
     }
     body.appendChild(card);
   });
@@ -1681,25 +1730,38 @@ function renderContextQ(){
     const ruHtml = item.ru ? '<span class="ru-prompt">'+escapeHtml(item.ru)+'</span>' : '';
     card.innerHTML='<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>';
     const opts=document.createElement('div');opts.className='q-opts';
-    const draftVal = draftAnswers['c'+i+'_draft'];
+    const chosen = draftAnswers['c'+i+'_draft'];
+    const isOk = draftAnswers['c'+i+'_ok'] === true;
+    
     shuffle(item.options).forEach(function(o){
       const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-      if (draftVal === o) b.style.background = 'var(--bg)';
-      b.onclick=function(){
-        if(b.disabled)return;
-        draftAnswers['c'+i+'_draft'] = o;
-        debouncedSaveDraft();
-        
-        opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
-        const fb=card.querySelector('.q-feedback');
-        if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['c'+i]=true}
-        else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
-        checkS4();
-      };
+      if(chosen){
+        b.disabled=true;
+        if(o===item.correct)b.classList.add('correct');
+        if(o===chosen && o!==item.correct)b.classList.add('wrong');
+      } else {
+        b.onclick=function(){
+          if(b.disabled)return;
+          draftAnswers['c'+i+'_draft'] = o;
+          draftAnswers['c'+i+'_ok'] = (o === item.correct);
+          debouncedSaveDraft();
+          
+          opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
+          const fb=card.querySelector('.q-feedback');
+          if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['c'+i]=true}
+          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+          checkS4();
+        };
+      }
       opts.appendChild(b);
     });
     card.appendChild(opts);
-    const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
+    const fb=document.createElement('div');fb.className='q-feedback';
+    if(chosen){
+      if(isOk){fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+      else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+    }
+    card.appendChild(fb);
     body.appendChild(card);
   });
 }
@@ -1716,11 +1778,17 @@ function checkLongAnswer(text,keywordGroups,minWords,minGroups){
   if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length};
   return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched};
 }
-function checkS4(){
+function checkS4(silent){
   const total=READING_Q.length+CONTEXT_Q.length;
   const c=Object.keys(s4Answers).length;
   updateS3Progress();
-  if(c===total){setScore(3,25);markDone(3)}else{setScore(3,Math.floor(c*25/total))}
+  if(c===total){
+    setScore(3,25);
+    if(!silent) markDone(3);
+    else { state.done[state.currentLessonId+"_3"] = true; renderSidebar(); }
+  }else{
+    setScore(3,Math.floor(c*25/total));
+  }
 }
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
@@ -1856,7 +1924,7 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
       const scrambled=shuffle(item.correct.map(function(w,ii){return{w:w,i:ii}}));
       
       const draftKey = 'sb'+stageId+'_'+idx+'_draft';
-      const draftOrder = draftAnswers[draftKey] || []; // Array of original indices
+      const draftOrder = draftAnswers[draftKey] || []; 
       
       scrambled.forEach(function(entry){
         const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=entry.w;chip.dataset.origIndex=entry.i;
@@ -1865,7 +1933,6 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
       });
       SB_STATE[stageId+'_'+idx]=[];
       
-      // Restore drafted order
       if (draftOrder.length > 0) {
          const area = document.getElementById('sbArea'+stageId+'_'+idx);
          if(area.querySelector('.placeholder')) area.querySelector('.placeholder').remove();
