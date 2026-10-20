@@ -12,6 +12,7 @@
   try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
+/* ... KEEP ALL EXISTING STYLES EXACTLY AS THEY ARE ... */
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -242,10 +243,10 @@ html.dark .q-feedback.info{color:#f5c66b}
 .review-btn-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .review-btn-row .hint{font-size:13px;color:var(--ink-soft);font-style:italic}
 .g-box{background:linear-gradient(135deg,rgba(46,158,91,.08),rgba(46,158,91,.03));border:1px solid rgba(46,158,91,.35);border-radius:14px;padding:20px 24px;margin-bottom:22px}
-.g-box h3{color:var(--success);font-size:20px;margin-bottom:12px;font-weight:800}
-.g-formula{background:var(--panel);padding:14px 18px;border-radius:10px;margin:10px 0;font-family:'Fira Code',monospace;font-size:15px;font-weight:700;color:var(--success);border-left:4px solid var(--success);text-align:center;}
-.g-box ul{margin-left:22px;margin-top:8px;list-style-type:none;}
-.g-box li{font-size:16px;line-height:1.7;margin-bottom:8px;color:var(--ink)}
+.g-box h3{color:var(--success);font-size:22px;margin-bottom:12px;font-weight:800}
+.g-formula{background:var(--panel);padding:18px;border-radius:10px;margin:10px 0 20px;font-family:'Fira Code',monospace;font-size:20px;font-weight:700;color:var(--success);border-left:4px solid var(--success);text-align:center;}
+.g-box ul{margin-left:0;margin-top:8px;list-style-type:none;}
+.g-box li{font-size:18px;line-height:1.8;margin-bottom:12px;color:var(--ink)}
 .sb-chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:var(--bg);border-radius:10px;margin-bottom:12px;min-height:60px}
 .sb-chip{padding:9px 16px;background:var(--panel);border:2px solid var(--border);border-radius:8px;font-weight:700;font-size:16px;color:var(--ink);cursor:pointer;user-select:none}
 .sb-chip:hover:not(.used){border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
@@ -1343,17 +1344,23 @@ function renderStage4(){
     
     if (activeContentName === 'abay') {
         title = '🎯 Completing Sentence — Gerunds vs. Infinitives';
-        formula = '<span style="color:#e74c3c; font-weight:800; font-size:18px;">Verb + [V-ing]</span> <span style="color:#aaa; margin:0 10px">OR</span> <span style="color:#2980b9; font-weight:800; font-size:18px;">Verb + [to + V1]</span>';
+        formula = '<span style="color:#e74c3c; font-weight:800; font-size:22px;">Verb + [V-ing]</span> <span style="color:#aaa; margin:0 15px; font-size:20px;">OR</span> <span style="color:#2980b9; font-weight:800; font-size:22px;">Verb + [to + V1]</span>';
         listHTML = `
-            <li style="margin-bottom:10px; padding:14px; background:rgba(231,76,60,0.1); border-left:4px solid #e74c3c; border-radius:6px;">
-                <span style="color:#e74c3c; font-weight:900; font-size:18px;">Gerund (V-ing)</span><br>
-                Used after verbs like: <b>enjoy, avoid, suggest, mind, finish, keep</b>.<br>
-                <i>Example: I enjoy <b>reading</b>. / They avoided <b>making</b> a mistake.</i>
+            <li style="margin-bottom:18px; padding:18px; background:rgba(231,76,60,0.1); border-left:6px solid #e74c3c; border-radius:8px;">
+                <span style="color:#e74c3c; font-weight:900; font-size:22px;">1. Gerund (V-ing)</span><br>
+                <span style="font-size:18px;">A gerund is a verb acting like a noun. We use it after specific verbs and prepositions.</span><br>
+                <b style="font-size:18px;">Verbs that take Gerunds:</b> <span style="font-size:18px;">enjoy, avoid, suggest, mind, finish, keep, practice, recommend.</span><br>
+                <b style="font-size:18px;">Prepositions:</b> <span style="font-size:18px;">good at, interested in, looking forward to, used to.</span><br>
+                <i style="font-size:18px; color:#555;">Example 1: I enjoy <b>reading</b> books. (NOT: to read)</i><br>
+                <i style="font-size:18px; color:#555;">Example 2: They avoided <b>making</b> a mistake.</i>
             </li>
-            <li style="padding:14px; background:rgba(41,128,185,0.1); border-left:4px solid #2980b9; border-radius:6px;">
-                <span style="color:#2980b9; font-weight:900; font-size:18px;">Infinitive (to + V1)</span><br>
-                Used after verbs like: <b>decide, hope, want, refuse, plan, manage, agree</b>.<br>
-                <i>Example: She decided <b>to apply</b>. / We hope <b>to finish</b>.</i>
+            <li style="padding:18px; background:rgba(41,128,185,0.1); border-left:6px solid #2980b9; border-radius:8px;">
+                <span style="color:#2980b9; font-weight:900; font-size:22px;">2. Infinitive (to + V1)</span><br>
+                <span style="font-size:18px;">An infinitive is the base form of a verb with "to". We use it after specific verbs, adjectives, and to show purpose.</span><br>
+                <b style="font-size:18px;">Verbs that take Infinitives:</b> <span style="font-size:18px;">decide, hope, want, refuse, plan, manage, agree, promise.</span><br>
+                <b style="font-size:18px;">Adjectives:</b> <span style="font-size:18px;">important, happy, difficult, easy.</span><br>
+                <i style="font-size:18px; color:#555;">Example 1: She decided <b>to apply</b> for the job. (NOT: applying)</i><br>
+                <i style="font-size:18px; color:#555;">Example 2: We hope <b>to finish</b> the project.</i>
             </li>
         `;
         lead = 'Read the sentence carefully. Look at the verb BEFORE the gap. If it is a Gerund verb, use V-ing. If it is an Infinitive verb, use "to + V1".';
@@ -1381,20 +1388,23 @@ function renderStage5(){
         title = '🕵️ Completing Sentence — Modals of Deduction';
         formula = 'Subject + Modal + [be / have + V3]';
         listHTML = `
-            <li style="margin-bottom:8px; padding:14px; background:rgba(39,174,96,0.1); border-left:4px solid #27ae60; border-radius:6px;">
-                <span style="color:#27ae60; font-weight:900; font-size:18px;">Strong deduction (Sure)</span><br>
-                <b>must</b> (present state) / <b>must have + V3</b> (past action).<br>
-                <i>Example: She <b>must be</b> exhausted. / He <b>must have</b> forgotten.</i>
+            <li style="margin-bottom:18px; padding:18px; background:rgba(39,174,96,0.1); border-left:6px solid #27ae60; border-radius:8px;">
+                <span style="color:#27ae60; font-weight:900; font-size:22px;">1. Strong Deduction (Sure)</span><br>
+                <span style="font-size:18px;">When you are almost 100% certain about something.</span><br>
+                <b style="font-size:18px;">Present:</b> <span style="font-size:18px;">must be (She is not answering. She <b>must be</b> asleep.)</span><br>
+                <b style="font-size:18px;">Past:</b> <span style="font-size:18px;">must have + V3 (He <b>must have</b> missed the train.)</span>
             </li>
-            <li style="margin-bottom:8px; padding:14px; background:rgba(243,156,18,0.1); border-left:4px solid #f39c12; border-radius:6px;">
-                <span style="color:#f39c12; font-weight:900; font-size:18px;">Possibility (Maybe)</span><br>
-                <b>might / may / could</b> (present) / <b>might have / may have / could have</b> (past).<br>
-                <i>Example: He <b>might be</b> busy. / They <b>may have</b> made a mistake.</i>
+            <li style="margin-bottom:18px; padding:18px; background:rgba(243,156,18,0.1); border-left:6px solid #f39c12; border-radius:8px;">
+                <span style="color:#f39c12; font-weight:900; font-size:22px;">2. Possibility (Maybe)</span><br>
+                <span style="font-size:18px;">When you think something is possible, but you are not sure.</span><br>
+                <b style="font-size:18px;">Present:</b> <span style="font-size:18px;">might / may / could be (He <b>might be</b> busy right now.)</span><br>
+                <b style="font-size:18px;">Past:</b> <span style="font-size:18px;">might / may / could have + V3 (They <b>may have</b> made a mistake.)</span>
             </li>
-            <li style="padding:14px; background:rgba(192,57,43,0.1); border-left:4px solid #c0392b; border-radius:6px;">
-                <span style="color:#c0392b; font-weight:900; font-size:18px;">Impossibility (No way)</span><br>
-                <b>cannot</b> (present) / <b>cannot have + V3</b> (past).<br>
-                <i>Example: That <b>cannot be</b> the truth. / He <b>cannot have</b> done it.</i>
+            <li style="padding:18px; background:rgba(192,57,43,0.1); border-left:6px solid #c0392b; border-radius:8px;">
+                <span style="color:#c0392b; font-weight:900; font-size:22px;">3. Impossibility (No way)</span><br>
+                <span style="font-size:18px;">When you are certain something is NOT true.</span><br>
+                <b style="font-size:18px;">Present:</b> <span style="font-size:18px;">cannot be (That <b>cannot be</b> the truth.)</span><br>
+                <b style="font-size:18px;">Past:</b> <span style="font-size:18px;">cannot have + V3 (He <b>cannot have</b> done it. He was with me.)</span>
             </li>
         `;
         lead = 'Look at the context and evidence. How certain is the speaker? Choose must, might/may/could, or cannot. Remember to use "have + V3" for past actions.';
@@ -1506,17 +1516,23 @@ function renderStage6(){
     
     if (activeContentName === 'abay') {
         title = '🧩 Sentence Builder — Gerunds vs. Infinitives';
-        formula = '<span style="color:#e74c3c; font-weight:800; font-size:18px;">Verb + [V-ing]</span> <span style="color:#aaa; margin:0 10px">OR</span> <span style="color:#2980b9; font-weight:800; font-size:18px;">Verb + [to + V1]</span>';
+        formula = '<span style="color:#e74c3c; font-weight:800; font-size:22px;">Verb + [V-ing]</span> <span style="color:#aaa; margin:0 15px; font-size:20px;">OR</span> <span style="color:#2980b9; font-weight:800; font-size:22px;">Verb + [to + V1]</span>';
         listHTML = `
-            <li style="margin-bottom:10px; padding:14px; background:rgba(231,76,60,0.1); border-left:4px solid #e74c3c; border-radius:6px;">
-                <span style="color:#e74c3c; font-weight:900; font-size:18px;">Gerund (V-ing)</span><br>
-                Used after verbs like: <b>enjoy, avoid, suggest, mind, finish, keep</b>.<br>
-                <i>Example: I enjoy <b>reading</b>. / They avoided <b>making</b> a mistake.</i>
+            <li style="margin-bottom:18px; padding:18px; background:rgba(231,76,60,0.1); border-left:6px solid #e74c3c; border-radius:8px;">
+                <span style="color:#e74c3c; font-weight:900; font-size:22px;">1. Gerund (V-ing)</span><br>
+                <span style="font-size:18px;">A gerund is a verb acting like a noun. We use it after specific verbs and prepositions.</span><br>
+                <b style="font-size:18px;">Verbs that take Gerunds:</b> <span style="font-size:18px;">enjoy, avoid, suggest, mind, finish, keep, practice, recommend.</span><br>
+                <b style="font-size:18px;">Prepositions:</b> <span style="font-size:18px;">good at, interested in, looking forward to, used to.</span><br>
+                <i style="font-size:18px; color:#555;">Example 1: I enjoy <b>reading</b> books. (NOT: to read)</i><br>
+                <i style="font-size:18px; color:#555;">Example 2: They avoided <b>making</b> a mistake.</i>
             </li>
-            <li style="padding:14px; background:rgba(41,128,185,0.1); border-left:4px solid #2980b9; border-radius:6px;">
-                <span style="color:#2980b9; font-weight:900; font-size:18px;">Infinitive (to + V1)</span><br>
-                Used after verbs like: <b>decide, hope, want, refuse, plan, manage, agree</b>.<br>
-                <i>Example: She decided <b>to apply</b>. / We hope <b>to finish</b>.</i>
+            <li style="padding:18px; background:rgba(41,128,185,0.1); border-left:6px solid #2980b9; border-radius:8px;">
+                <span style="color:#2980b9; font-weight:900; font-size:22px;">2. Infinitive (to + V1)</span><br>
+                <span style="font-size:18px;">An infinitive is the base form of a verb with "to". We use it after specific verbs, adjectives, and to show purpose.</span><br>
+                <b style="font-size:18px;">Verbs that take Infinitives:</b> <span style="font-size:18px;">decide, hope, want, refuse, plan, manage, agree, promise.</span><br>
+                <b style="font-size:18px;">Adjectives:</b> <span style="font-size:18px;">important, happy, difficult, easy.</span><br>
+                <i style="font-size:18px; color:#555;">Example 1: She decided <b>to apply</b> for the job. (NOT: applying)</i><br>
+                <i style="font-size:18px; color:#555;">Example 2: We hope <b>to finish</b> the project.</i>
             </li>
         `;
         lead = 'Read the instruction in color above each question. Then click the words in the correct order to build the sentence.';
@@ -1543,20 +1559,23 @@ function renderStage7(){
         title = '🧱 Sentence Builder — Modals of Deduction';
         formula = 'Subject + Modal + [be / have + V3]';
         listHTML = `
-            <li style="margin-bottom:8px; padding:14px; background:rgba(39,174,96,0.1); border-left:4px solid #27ae60; border-radius:6px;">
-                <span style="color:#27ae60; font-weight:900; font-size:18px;">Strong deduction (Sure)</span><br>
-                <b>must</b> (present state) / <b>must have + V3</b> (past action).<br>
-                <i>Example: She <b>must be</b> exhausted. / He <b>must have</b> forgotten.</i>
+            <li style="margin-bottom:18px; padding:18px; background:rgba(39,174,96,0.1); border-left:6px solid #27ae60; border-radius:8px;">
+                <span style="color:#27ae60; font-weight:900; font-size:22px;">1. Strong Deduction (Sure)</span><br>
+                <span style="font-size:18px;">When you are almost 100% certain about something.</span><br>
+                <b style="font-size:18px;">Present:</b> <span style="font-size:18px;">must be (She is not answering. She <b>must be</b> asleep.)</span><br>
+                <b style="font-size:18px;">Past:</b> <span style="font-size:18px;">must have + V3 (He <b>must have</b> missed the train.)</span>
             </li>
-            <li style="margin-bottom:8px; padding:14px; background:rgba(243,156,18,0.1); border-left:4px solid #f39c12; border-radius:6px;">
-                <span style="color:#f39c12; font-weight:900; font-size:18px;">Possibility (Maybe)</span><br>
-                <b>might / may / could</b> (present) / <b>might have / may have / could have</b> (past).<br>
-                <i>Example: He <b>might be</b> busy. / They <b>may have</b> made a mistake.</i>
+            <li style="margin-bottom:18px; padding:18px; background:rgba(243,156,18,0.1); border-left:6px solid #f39c12; border-radius:8px;">
+                <span style="color:#f39c12; font-weight:900; font-size:22px;">2. Possibility (Maybe)</span><br>
+                <span style="font-size:18px;">When you think something is possible, but you are not sure.</span><br>
+                <b style="font-size:18px;">Present:</b> <span style="font-size:18px;">might / may / could be (He <b>might be</b> busy right now.)</span><br>
+                <b style="font-size:18px;">Past:</b> <span style="font-size:18px;">might / may / could have + V3 (They <b>may have</b> made a mistake.)</span>
             </li>
-            <li style="padding:14px; background:rgba(192,57,43,0.1); border-left:4px solid #c0392b; border-radius:6px;">
-                <span style="color:#c0392b; font-weight:900; font-size:18px;">Impossibility (No way)</span><br>
-                <b>cannot</b> (present) / <b>cannot have + V3</b> (past).<br>
-                <i>Example: That <b>cannot be</b> the truth. / He <b>cannot have</b> done it.</i>
+            <li style="padding:18px; background:rgba(192,57,43,0.1); border-left:6px solid #c0392b; border-radius:8px;">
+                <span style="color:#c0392b; font-weight:900; font-size:22px;">3. Impossibility (No way)</span><br>
+                <span style="font-size:18px;">When you are certain something is NOT true.</span><br>
+                <b style="font-size:18px;">Present:</b> <span style="font-size:18px;">cannot be (That <b>cannot be</b> the truth.)</span><br>
+                <b style="font-size:18px;">Past:</b> <span style="font-size:18px;">cannot have + V3 (He <b>cannot have</b> done it. He was with me.)</span>
             </li>
         `;
         lead = 'Read the colored instruction above each question. Decide how certain the speaker is, then build the sentence.';
