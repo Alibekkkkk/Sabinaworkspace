@@ -69,7 +69,7 @@
     { "word": "virtual", "meaning": "created by computer technology" },
     { "word": "benefit", "meaning": "a good or helpful result" }
   ],
-  "readingHtml": "<h1>The Science of Gaming & Esports</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/4p2g2b4QxWQ\" title=\"How gaming affects your brain\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch once for the general idea. Watch again with the questions on the right in mind.</div><p><span class=\"para-label\">1.</span> For many adults, video games are seen as just a <b>distraction</b> from schoolwork. They worry that staring at a screen is bad for teenagers. However, recent scientific studies have discovered that playing certain types of games can actually <b>stimulate</b> the brain in surprisingly positive ways.</p><p><span class=\"para-label\">2.</span> Modern video games require a good <b>strategy</b>. They ask players to <b>simulate</b> real-world problems, which improves <b>cognitive</b> abilities like memory and problem-solving. The <b>immersive</b> worlds of these games keep players highly engaged, forcing them to think quickly and adapt to new situations.</p><p><span class=\"para-label\">3.</span> In multiplayer games and <b>esports</b>, players must <b>collaborate</b> with their teammates to win. They need to <b>focus</b> intensely on the screen, <b>optimize</b> their <b>reaction</b> times, and communicate clearly. This teaches valuable skills like <b>teamwork</b> and quick decision-making under pressure.</p><p><span class=\"para-label\">4.</span> While <b>virtual</b> environments offer many <b>benefits</b>, scientists warn that games can be highly <b>addictive</b>. Too much screen time can reduce our ability to focus on real-life tasks. Therefore, it is important to find a healthy <b>balance</b> between gaming and other activities.</p>",
+  "readingHtml": "<h1>The Science of Gaming & Esports</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/4p2g2b4QxWQ\" title=\"How gaming affects your brain\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch the video to see how games affect the brain. Then read the notes below to help you answer the questions.</div><p><span class=\"para-label\">1.</span> Many adults think video games are just a <b>distraction</b>. However, as the video explains, recent scientific studies show that playing certain games can actually <b>stimulate</b> the brain in positive ways. They can improve our <b>cognitive</b> abilities, like memory and problem-solving.</p><p><span class=\"para-label\">2.</span> Modern video games require a good <b>strategy</b>. They ask players to <b>simulate</b> real-world problems. The <b>immersive</b> worlds of these games keep players highly engaged, forcing them to think quickly and adapt to new situations.</p><p><span class=\"para-label\">3.</span> In multiplayer games and <b>esports</b>, players must <b>collaborate</b> with their teammates. They need to <b>focus</b> intensely on the screen and <b>optimize</b> their <b>reaction</b> times. This teaches valuable skills like <b>teamwork</b> and quick decision-making under pressure.</p><p><span class=\"para-label\">4.</span> While <b>virtual</b> environments offer many <b>benefits</b>, scientists warn that games can be highly <b>addictive</b>. Too much screen time can reduce our ability to focus on real-life tasks. Therefore, it is important to find a healthy <b>balance</b> between gaming and studying.</p>",
   "readingQ": [
     { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Video games can actually ______ the brain.", "answers": ["stimulate"], "exp": "Paragraph 1 says gaming can stimulate the brain." },
     { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Modern games require a good ______.", "answers": ["strategy"], "exp": "Paragraph 2 says modern games require a good strategy." },
@@ -184,82 +184,82 @@
   },
   "sbPp": {
     "pos": [
-      { "prompt": "Build a sentence: enjoying academic reading.", "correct": ["I","enjoy","reading","academic","articles."] },
-      { "prompt": "Build a sentence: deciding to apply.", "correct": ["She","decided","to","apply","for","the","scholarship."] },
-      { "prompt": "Build a sentence: avoiding a mistake.", "correct": ["They","avoided","making","the","same","mistake."] },
-      { "prompt": "Build a sentence: hoping to finish.", "correct": ["We","hope","to","finish","the","project","by","Friday."] },
-      { "prompt": "Build a sentence: suggesting a plan.", "correct": ["He","suggested","starting","with","an","easier","question."] }
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'enjoy'.<br>Build: enjoying academic reading.", "correct": ["I","enjoy","reading","academic","articles."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'decide'.<br>Build: deciding to apply.", "correct": ["She","decided","to","apply","for","the","scholarship."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'avoid'.<br>Build: avoiding a mistake.", "correct": ["They","avoided","making","the","same","mistake."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'hope'.<br>Build: hoping to finish.", "correct": ["We","hope","to","finish","the","project","by","Friday."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'suggest'.<br>Build: suggesting a plan.", "correct": ["He","suggested","starting","with","an","easier","question."] }
     ],
     "neg": [
-      { "prompt": "Build a negative sentence: minding a wait.", "correct": ["I","do","not","mind","waiting","for","the","results."] },
-      { "prompt": "Build a sentence: refusing to answer.", "correct": ["She","refused","to","answer","the","question."] },
-      { "prompt": "Build a negative sentence: wanting to leave.", "correct": ["He","does","not","want","to","leave","early."] },
-      { "prompt": "Build a negative sentence: avoiding questions.", "correct": ["We","cannot","avoid","asking","difficult","questions."] },
-      { "prompt": "Build a negative sentence: not enjoying studying.", "correct": ["They","do","not","enjoy","studying","grammar","rules."] }
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'mind'.<br>Build: minding a wait.", "correct": ["I","do","not","mind","waiting","for","the","results."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'refuse'.<br>Build: refusing to answer.", "correct": ["She","refused","to","answer","the","question."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'want' (negative).<br>Build: wanting to leave.", "correct": ["He","does","not","want","to","leave","early."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'avoid' (negative).<br>Build: avoiding questions.", "correct": ["We","cannot","avoid","asking","difficult","questions."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'enjoy' (negative).<br>Build: not enjoying studying.", "correct": ["They","do","not","enjoy","studying","grammar","rules."] }
     ],
     "q": [
-      { "prompt": "Build a question: joining us.", "correct": ["Do","you","want","to","join","us?"] },
-      { "prompt": "Build a question: sitting at the front.", "correct": ["Does","she","mind","sitting","at","the","front?"] },
-      { "prompt": "Build a question: finishing the article.", "correct": ["Have","you","finished","reading","the","article?"] },
-      { "prompt": "Build a question: trying again.", "correct": ["Would","you","like","to","try","again?"] },
-      { "prompt": "Build a question: managing to solve.", "correct": ["Did","you","manage","to","solve","the","problem?"] }
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'want'.<br>Build a question: joining us.", "correct": ["Do","you","want","to","join","us?"] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'mind'.<br>Build a question: sitting at the front.", "correct": ["Does","she","mind","sitting","at","the","front?"] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'finish'.<br>Build a question: finishing the article.", "correct": ["Have","you","finished","reading","the","article?"] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'would like'.<br>Build a question: trying again.", "correct": ["Would","you","like","to","try","again?"] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'manage'.<br>Build a question: managing to solve.", "correct": ["Did","you","manage","to","solve","the","problem?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: He kept talking for hours.", "correct": ["He","kept","talking","for","hours."] },
-      { "prompt": "Build: We plan to visit the library tomorrow.", "correct": ["We","plan","to","visit","the","library","tomorrow."] },
-      { "prompt": "Build: She is good at explaining complex ideas.", "correct": ["She","is","good","at","explaining","complex","ideas."] },
-      { "prompt": "Build: I am looking forward to hearing from you.", "correct": ["I","am","looking","forward","to","hearing","from","you."] },
-      { "prompt": "Build: It is important to support your claim.", "correct": ["It","is","important","to","support","your","claim."] },
-      { "prompt": "Build: The students are used to studying independently.", "correct": ["The","students","are","used","to","studying","independently."] },
-      { "prompt": "Build: We agreed to share the notes.", "correct": ["We","agreed","to","share","the","notes."] },
-      { "prompt": "Build: Do you mind opening the window?", "correct": ["Do","you","mind","opening","the","window?"] },
-      { "prompt": "Build: I would rather walk than drive.", "correct": ["I","would","rather","walk","than","drive."] },
-      { "prompt": "Build: They decided not to go to the meeting.", "correct": ["They","decided","not","to","go","to","the","meeting."] },
-      { "prompt": "Build: Would you mind helping me with this?", "correct": ["Would","you","mind","helping","me","with","this?"] },
-      { "prompt": "Build: They agreed to postpone the meeting.", "correct": ["They","agreed","to","postpone","the","meeting."] },
-      { "prompt": "Build: She cannot help laughing at his jokes.", "correct": ["She","cannot","help","laughing","at","his","jokes."] },
-      { "prompt": "Build: The team hopes to win the tournament.", "correct": ["The","team","hopes","to","win","the","tournament."] },
-      { "prompt": "Build: I suggest taking a short break before the exam.", "correct": ["I","suggest","taking","a","short","break","before","the","exam."] }
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'keep'.", "correct": ["He","kept","talking","for","hours."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'plan'.", "correct": ["We","plan","to","visit","the","library","tomorrow."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after preposition 'good at'.", "correct": ["She","is","good","at","explaining","complex","ideas."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> negative after 'decide'.", "correct": ["They","decided","not","to","go","to","the","meeting."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after preposition 'looking forward to'.", "correct": ["I","am","looking","forward","to","hearing","from","you."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'important' (adjective).", "correct": ["It","is","important","to","support","your","claim."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'used to' (accustomed to).", "correct": ["The","students","are","used","to","studying","independently."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'agree'.", "correct": ["We","agreed","to","share","the","notes."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'mind'.", "correct": ["Do","you","mind","opening","the","window?"] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Bare Infinitive:</span> after 'would rather'.", "correct": ["I","would","rather","walk","than","drive."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'mind'.", "correct": ["Would","you","mind","helping","me","with","this?"] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'agree'.", "correct": ["They","agreed","to","postpone","the","meeting."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'cannot help'.", "correct": ["She","cannot","help","laughing","at","his","jokes."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'hope'.", "correct": ["The","team","hopes","to","win","the","tournament."] },
+      { "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'suggest'.", "correct": ["I","suggest","taking","a","short","break","before","the","exam."] }
     ]
   },
   "sbPs": {
     "pos": [
-      { "prompt": "Build a modal sentence: being exhausted.", "correct": ["She","must","be","exhausted","after","studying."] },
-      { "prompt": "Build a modal sentence: data having an error.", "correct": ["The","data","could","have","an","error."] },
-      { "prompt": "Build a modal sentence: a wrong assumption.", "correct": ["That","assumption","must","be","wrong."] },
-      { "prompt": "Build a modal sentence: being busy.", "correct": ["He","might","be","busy","today."] },
-      { "prompt": "Build a modal sentence: having made a mistake.", "correct": ["They","may","have","made","a","mistake."] }
+      { "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong deduction (Sure):</span> 'must be' for present state.<br>Build a modal sentence: being exhausted.", "correct": ["She","must","be","exhausted","after","studying."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility (Maybe):</span> 'could have' for past state.<br>Build a modal sentence: data having an error.", "correct": ["The","data","could","have","an","error."] },
+      { "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong deduction (Sure):</span> 'must be' for present state.<br>Build a modal sentence: a wrong assumption.", "correct": ["That","assumption","must","be","wrong."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility (Maybe):</span> 'might be' for present state.<br>Build a modal sentence: being busy.", "correct": ["He","might","be","busy","today."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility (Maybe):</span> 'may have' for past action.<br>Build a modal sentence: having made a mistake.", "correct": ["They","may","have","made","a","mistake."] }
     ],
     "neg": [
-      { "prompt": "Build a sentence advising against assuming.", "correct": ["You","should","not","assume","without","evidence."] },
-      { "prompt": "Build a sentence: something cannot be true.", "correct": ["That","cannot","be","the","whole","truth."] },
-      { "prompt": "Build a sentence: not jumping to conclusions.", "correct": ["We","must","not","jump","to","conclusions."] },
-      { "prompt": "Build a sentence: he might not understand.", "correct": ["He","might","not","understand","the","question."] },
-      { "prompt": "Build a sentence criticising ignoring data.", "correct": ["The","scientist","should","not","have","ignored","the","data."] }
+      { "prompt": "<span style='color:#c0392b; font-weight:bold;'>Negative Advice:</span> 'should not assume'.<br>Build a sentence advising against assuming.", "correct": ["You","should","not","assume","without","evidence."] },
+      { "prompt": "<span style='color:#c0392b; font-weight:bold;'>Impossibility (No way):</span> 'cannot be'.<br>Build a sentence: something cannot be true.", "correct": ["That","cannot","be","the","whole","truth."] },
+      { "prompt": "<span style='color:#c0392b; font-weight:bold;'>Prohibition:</span> 'must not'.<br>Build a sentence: not jumping to conclusions.", "correct": ["We","must","not","jump","to","conclusions."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Weak possibility (negative):</span> 'might not'.<br>Build a sentence: he might not understand.", "correct": ["He","might","not","understand","the","question."] },
+      { "prompt": "<span style='color:#c0392b; font-weight:bold;'>Past criticism:</span> 'should not have + V3'.<br>Build a sentence criticising ignoring data.", "correct": ["The","scientist","should","not","have","ignored","the","data."] }
     ],
     "q": [
-      { "prompt": "Build a question: being right about the theory.", "correct": ["Could","she","be","right","about","the","theory?"] },
-      { "prompt": "Build a question: results being different.", "correct": ["Could","the","results","have","been","different?"] },
-      { "prompt": "Build a question: assuming the claim.", "correct": ["Should","we","assume","the","claim","is","true?"] },
-      { "prompt": "Build a question: forgetting the evidence.", "correct": ["Might","he","have","forgotten","the","evidence?"] },
-      { "prompt": "Build a question: misreading the data.", "correct": ["Could","they","have","misread","the","data?"] }
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility Question:</span> 'Could she be'.<br>Build a question: being right about the theory.", "correct": ["Could","she","be","right","about","the","theory?"] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past Possibility Question:</span> 'Could have been'.<br>Build a question: results being different.", "correct": ["Could","the","results","have","been","different?"] },
+      { "prompt": "<span style='color:#27ae60; font-weight:bold;'>Advice Question:</span> 'Should we assume'.<br>Build a question: assuming the claim.", "correct": ["Should","we","assume","the","claim","is","true?"] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past Possibility Question:</span> 'Might he have forgotten'.<br>Build a question: forgetting the evidence.", "correct": ["Might","he","have","forgotten","the","evidence?"] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past Possibility Question:</span> 'Could they have misread'.<br>Build a question: misreading the data.", "correct": ["Could","they","have","misread","the","data?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: The evidence must suggest that he is right.", "correct": ["The","evidence","must","suggest","that","he","is","right."] },
-      { "prompt": "Build: She could have missed the bus.", "correct": ["She","could","have","missed","the","bus."] },
-      { "prompt": "Build: We should check the sources more carefully.", "correct": ["We","should","check","the","sources","more","carefully."] },
-      { "prompt": "Build: The claim cannot be false.", "correct": ["The","claim","cannot","be","false."] },
-      { "prompt": "Build: He might have misread the data.", "correct": ["He","might","have","misread","the","data."] },
-      { "prompt": "Build: The researchers must have worked very hard.", "correct": ["The","researchers","must","have","worked","very","hard."] },
-      { "prompt": "Build: You ought to read the article.", "correct": ["You","ought","to","read","the","article."] },
-      { "prompt": "Build: The results may need more analysis.", "correct": ["The","results","may","need","more","analysis."] },
-      { "prompt": "Build: She should not ignore the question.", "correct": ["She","should","not","ignore","the","question."] },
-      { "prompt": "Build: The data could be biased.", "correct": ["The","data","could","be","biased."] },
-      { "prompt": "Build: The evidence might be wrong.", "correct": ["The","evidence","might","be","wrong."] },
-      { "prompt": "Build: You should support every claim with evidence.", "correct": ["You","should","support","every","claim","with","evidence."] },
-      { "prompt": "Build: The results may have been mistaken.", "correct": ["The","results","may","have","been","mistaken."] },
-      { "prompt": "Build: She must have read the article before class.", "correct": ["She","must","have","read","the","article","before","class."] },
-      { "prompt": "Build: The conclusion cannot have been based on this data.", "correct": ["The","conclusion","cannot","have","been","based","on","this","data."] }
+      { "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong deduction:</span> 'must suggest'.", "correct": ["The","evidence","must","suggest","that","he","is","right."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past possibility:</span> 'could have'.", "correct": ["She","could","have","missed","the","bus."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Advice:</span> 'should check'.", "correct": ["We","should","check","the","sources","more","carefully."] },
+      { "prompt": "<span style='color:#c0392b; font-weight:bold;'>Impossibility:</span> 'cannot be'.", "correct": ["The","claim","cannot","be","false","—","the","evidence","is","clear."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past possibility:</span> 'might have'.", "correct": ["He","might","have","misread","the","data."] },
+      { "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong past deduction:</span> 'must have'.", "correct": ["The","researchers","must","have","worked","very","hard."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Obligation:</span> 'ought to'.", "correct": ["You","ought","to","read","the","article","before","the","test."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility:</span> 'may need'.", "correct": ["The","results","may","need","more","analysis."] },
+      { "prompt": "<span style='color:#c0392b; font-weight:bold;'>Negative advice:</span> 'should not ignore'.", "correct": ["She","should","not","ignore","the","question."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility:</span> 'could be'.", "correct": ["The","data","could","be","biased."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility:</span> 'might be'.", "correct": ["The","evidence","might","be","wrong."] },
+      { "prompt": "<span style='color:#2980b9; font-weight:bold;'>Advice:</span> 'should support'.", "correct": ["You","should","support","every","claim","with","evidence."] },
+      { "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past possibility:</span> 'may have'.", "correct": ["The","results","may","have","been","mistaken."] },
+      { "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong past deduction:</span> 'must have'.", "correct": ["She","must","have","read","the","article","before","class."] },
+      { "prompt": "<span style='color:#c0392b; font-weight:bold;'>Impossibility (past):</span> 'cannot have'.", "correct": ["The","conclusion","cannot","have","been","based","on","this","data."] }
     ]
   },
   "g10": {
