@@ -1,65 +1,64 @@
 {
   "vocab": [
     { "en": "claim", "emoji": "🗣️", "meanings": [
-      { "context": "noun: a statement that something is true", "displayEn": "claim", "ru": "утверждение (заявление, претендующее на истину)", "ex": "The writer makes a strong <b>claim</b>." },
-      { "context": "verb: to say something is true", "displayEn": "to claim", "ru": "утверждать (заявлять о чем-либо)", "ex": "She <b>claims</b> that this works." }
+      { "context": "noun: a statement that something is true", "pos": "noun", "displayEn": "claim", "ru": "утверждение", "ex": "The writer makes a strong <b>claim</b>." },
+      { "context": "verb: to say something is true", "pos": "verb", "displayEn": "to claim", "ru": "утверждать", "ex": "She <b>claims</b> that this works." }
     ]},
     { "en": "evidence", "emoji": "📊", "meanings": [
-      { "context": "noun: facts that show something is true", "displayEn": "evidence", "ru": "доказательство (факты, подтверждающие истину)", "ex": "There is no <b>evidence</b> to support him." },
-      { "context": "adjective: clear and obvious", "displayEn": "evident", "ru": "очевидный (ясно видимый или понятный)", "ex": "It is <b>evident</b> that he is lying." }
+      { "context": "noun: facts that show something is true", "pos": "noun", "displayEn": "evidence", "ru": "доказательство", "ex": "There is no <b>evidence</b> to support him." },
+      { "context": "adjective: clear and obvious", "pos": "adjective", "displayEn": "evident", "ru": "очевидный", "ex": "It is <b>evident</b> that he is lying." }
     ]},
     { "en": "to assume", "emoji": "🤔", "meanings": [
-      { "context": "verb: to think something is true without proof", "displayEn": "to assume", "ru": "предполагать (считать верным без доказательств)", "ex": "We cannot <b>assume</b> the data is correct." },
-      { "context": "noun: a belief without proof", "displayEn": "assumption", "ru": "предположение (допущение, принятое без доказательств)", "ex": "Based on a false <b>assumption</b>." }
+      { "context": "verb: to think something is true without proof", "pos": "verb", "displayEn": "to assume", "ru": "предполагать", "ex": "We cannot <b>assume</b> the data is correct." },
+      { "context": "noun: a belief without proof", "pos": "noun", "displayEn": "assumption", "ru": "предположение", "ex": "Based on a false <b>assumption</b>." }
     ]},
     { "en": "to justify", "emoji": "⚖️", "meanings": [
-      { "context": "verb: to give a good reason for something", "displayEn": "to justify", "ru": "обосновывать (приводить причины или оправдания)", "ex": "Can you <b>justify</b> your opinion?" },
-      { "context": "noun: a good reason or explanation", "displayEn": "justification", "ru": "обоснование (причина или оправдание)", "ex": "There is no <b>justification</b> for this behavior." }
+      { "context": "verb: to give a good reason for something", "pos": "verb", "displayEn": "to justify", "ru": "обосновывать", "ex": "Can you <b>justify</b> your opinion?" },
+      { "context": "noun: a good reason or explanation", "pos": "noun", "displayEn": "justification", "ru": "обоснование", "ex": "There is no <b>justification</b> for this behavior." }
     ]},
     { "en": "to contradict", "emoji": "🔄", "meanings": [
-      { "context": "verb: to say the opposite of something", "displayEn": "to contradict", "ru": "противоречить (говорить обратное)", "ex": "The paragraph <b>contradicts</b> the first." },
-      { "context": "noun: a state of being opposite", "displayEn": "contradiction", "ru": "противоречие (утверждение, противоположное другому)", "ex": "It is a direct <b>contradiction</b> of the rules." },
-      { "context": "adjective: mutually opposed", "displayEn": "contradictory", "ru": "противоречивый (взаимоисключающий)", "ex": "The two statements are <b>contradictory</b>." }
+      { "context": "verb: to say the opposite of something", "pos": "verb", "displayEn": "to contradict", "ru": "противоречить", "ex": "The paragraph <b>contradicts</b> the first." },
+      { "context": "noun: a state of being opposite", "pos": "noun", "displayEn": "contradiction", "ru": "противоречие", "ex": "It is a direct <b>contradiction</b> of the rules." },
+      { "context": "adjective: mutually opposed", "pos": "adjective", "displayEn": "contradictory", "ru": "противоречивый", "ex": "The two statements are <b>contradictory</b>." }
     ]},
     { "en": "to evaluate", "emoji": "🧪", "meanings": [
-      { "context": "verb: to judge the quality or truth of something", "displayEn": "to evaluate", "ru": "оценивать (судить о качестве или ценности)", "ex": "Try to <b>evaluate</b> the evidence." },
-      { "context": "noun: the act of judging", "displayEn": "evaluation", "ru": "оценка (процесс суждения)", "ex": "The <b>evaluation</b> of the data took weeks." }
+      { "context": "verb: to judge the quality or truth of something", "pos": "verb", "displayEn": "to evaluate", "ru": "оценивать", "ex": "Try to <b>evaluate</b> the evidence." },
+      { "context": "noun: the act of judging", "pos": "noun", "displayEn": "evaluation", "ru": "оценка", "ex": "The <b>evaluation</b> of the data took weeks." }
     ]},
     { "en": "to imply", "emoji": "🔍", "meanings": [
-      { "context": "verb: to suggest without saying directly", "displayEn": "to imply", "ru": "подразумевать (намекать, не говоря прямо)", "ex": "The article <b>implies</b> it is unreliable." },
-      { "context": "noun: a possible result or hidden meaning", "displayEn": "implication", "ru": "последствие / скрытый смысл (то, что подразумевается)", "ex": "Consider the <b>implications</b> of this." }
+      { "context": "verb: to suggest without saying directly", "pos": "verb", "displayEn": "to imply", "ru": "подразумевать", "ex": "The article <b>implies</b> it is unreliable." },
+      { "context": "noun: a possible result or hidden meaning", "pos": "noun", "displayEn": "implication", "ru": "последствие / скрытый смысл", "ex": "Consider the <b>implications</b> of this." }
     ]},
     { "en": "relevant", "emoji": "🎯", "meanings": [
-      { "context": "adjective: connected to the topic", "displayEn": "relevant", "ru": "уместный (относящийся к делу)", "ex": "Keep your answers <b>relevant</b>." },
-      { "context": "noun: the state of being connected", "displayEn": "relevance", "ru": "актуальность (уместность)", "ex": "I question the <b>relevance</b> of this question." }
+      { "context": "adjective: connected to the topic", "pos": "adjective", "displayEn": "relevant", "ru": "уместный", "ex": "Keep your answers <b>relevant</b>." },
+      { "context": "noun: the state of being connected", "pos": "noun", "displayEn": "relevance", "ru": "актуальность", "ex": "I question the <b>relevance</b> of this question." }
     ]},
     { "en": "to persuade", "emoji": "💬", "meanings": [
-      { "context": "verb: to make someone believe or do something", "displayEn": "to persuade", "ru": "убеждать (склонять к вере или действию)", "ex": "The speaker tried to <b>persuade</b> us." },
-      { "context": "noun: the act of convincing", "displayEn": "persuasion", "ru": "убеждение (акт убеждения)", "ex": "He used <b>persuasion</b> to change their minds." },
-      { "context": "adjective: good at persuading", "displayEn": "persuasive", "ru": "убедительный (умеющий убеждать)", "ex": "It was a <b>persuasive</b> argument." }
+      { "context": "verb: to make someone believe or do something", "pos": "verb", "displayEn": "to persuade", "ru": "убеждать", "ex": "The speaker tried to <b>persuade</b> us." },
+      { "context": "noun: the act of convincing", "pos": "noun", "displayEn": "persuasion", "ru": "убеждение", "ex": "He used <b>persuasion</b> to change their minds." },
+      { "context": "adjective: good at persuading", "pos": "adjective", "displayEn": "persuasive", "ru": "убедительный", "ex": "It was a <b>persuasive</b> argument." }
     ]},
     { "en": "coherent", "emoji": "📝", "meanings": [
-      { "context": "adjective: clear and logical", "displayEn": "coherent", "ru": "связный (логичный и понятный)", "ex": "Your essay needs a <b>coherent</b> argument." },
-      { "context": "noun: the quality of being logical", "displayEn": "coherence", "ru": "связность (логичность)", "ex": "The <b>coherence</b> of his speech was excellent." }
+      { "context": "adjective: clear and logical", "pos": "adjective", "displayEn": "coherent", "ru": "связный", "ex": "Your essay needs a <b>coherent</b> argument." },
+      { "context": "noun: the quality of being logical", "pos": "noun", "displayEn": "coherence", "ru": "связность", "ex": "The <b>coherence</b> of his speech was excellent." }
     ]},
     { "en": "reliable", "emoji": "✅", "meanings": [
-      { "context": "adjective: able to be trusted", "displayEn": "reliable", "ru": "надёжный (заслуживающий доверия)", "ex": "Make sure your sources are <b>reliable</b>." },
-      { "context": "noun: the quality of being trusted", "displayEn": "reliability", "ru": "надёжность (качество быть надежным)", "ex": "Check the <b>reliability</b> of the website." }
+      { "context": "adjective: able to be trusted", "pos": "adjective", "displayEn": "reliable", "ru": "надёжный", "ex": "Make sure your sources are <b>reliable</b>." },
+      { "context": "noun: the quality of being trusted", "pos": "noun", "displayEn": "reliability", "ru": "надёжность", "ex": "Check the <b>reliability</b> of the website." }
     ]},
     { "en": "biased", "emoji": "⚡", "meanings": [
-      { "context": "adjective: unfairly favouring one side", "displayEn": "biased", "ru": "предвзятый (несправедливо склонный к одной стороне)", "ex": "The article is clearly <b>biased</b>." },
-      { "context": "noun: an unfair preference", "displayEn": "bias", "ru": "предвзятость (предубеждение)", "ex": "There is a clear <b>bias</b> in the report." }
+      { "context": "adjective: unfairly favouring one side", "pos": "adjective", "displayEn": "biased", "ru": "предвзятый", "ex": "The article is clearly <b>biased</b>." },
+      { "context": "noun: an unfair preference", "pos": "noun", "displayEn": "bias", "ru": "предвзятость", "ex": "There is a clear <b>bias</b> in the report." }
     ]},
     { "en": "to formulate", "emoji": "📐", "meanings": [
-      { "context": "verb: to express an idea clearly", "displayEn": "to formulate", "ru": "формулировать (ясно выражать)", "ex": "You must <b>formulate</b> a clear question." },
-      { "context": "noun: the act of expressing clearly", "displayEn": "formulation", "ru": "формулировка (процесс или результат выражения)", "ex": "The <b>formulation</b> of the theory took years." }
+      { "context": "verb: to express an idea clearly", "pos": "verb", "displayEn": "to formulate", "ru": "формулировать", "ex": "You must <b>formulate</b> a clear question." },
+      { "context": "noun: the act of expressing clearly", "pos": "noun", "displayEn": "formulation", "ru": "формулировка", "ex": "The <b>formulation</b> of the theory took years." }
     ]},
     { "en": "to gather", "emoji": "🤲", "meanings": [
-      { "context": "verb: to collect things together", "displayEn": "to gather", "ru": "собирать (собирать вместе)", "ex": "Step two is to <b>gather</b> information." },
-      { "context": "noun: a meeting or collection", "displayEn": "gathering", "ru": "собрание (встреча или сбор)", "ex": "It was a family <b>gathering</b>." }
+      { "context": "verb: to collect things together", "pos": "verb", "displayEn": "to gather", "ru": "собирать", "ex": "Step two is to <b>gather</b> information." },
+      { "context": "noun: a meeting or collection", "pos": "noun", "displayEn": "gathering", "ru": "собрание", "ex": "It was a family <b>gathering</b>." }
     ]}
   ],
-
   "matchData": [
     { "word": "claim", "meaning": "to say something is true without proving it" },
     { "word": "evidence", "meaning": "facts that show something is true" },
@@ -76,9 +75,7 @@
     { "word": "to formulate", "meaning": "to express an idea clearly" },
     { "word": "to gather", "meaning": "to collect things together" }
   ],
-
   "readingHtml": "<h1>The Science of Critical Thinking</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/dItUGF8GdTw\" title=\"5 tips to improve your critical thinking\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch once for the general idea. Watch again with the questions on the right in mind.</div><p><span class=\"para-label\">1.</span> Every day we make hundreds of decisions. <b>Critical thinking</b> is the skill of making good ones — and it can be <b>learned</b>, not just inherited. It is a skill, like any other: it takes practice.</p><p><span class=\"para-label\">2.</span> Critical thinking is a <b>five-step</b> process. <b>Step one</b> is to <b>formulate your question</b> — ask yourself exactly what you want to know. A clear, specific question helps you find <b>relevant</b> answers, instead of collecting random facts.</p><p><span class=\"para-label\">3.</span> <b>Step two</b> is to <b>gather your information</b>. Where is it coming from? Is the source <b>reliable</b>? Is there <b>evidence</b> to support the <b>claim</b>? Be careful — many sources online are <b>biased</b>, so cross-check with at least one more.</p><p><span class=\"para-label\">4.</span> <b>Step three</b> is to <b>apply the information</b>. Look at the evidence. Does it actually support the claim, or does it <b>contradict</b> it? Do not <b>assume</b> that one example is enough — check whether the data genuinely backs up the conclusion.</p><p><span class=\"para-label\">5.</span> <b>Step four</b> is to <b>consider the implications</b>. If the claim is true, what follows from it? What would change in your own life or in the wider world? Try to <b>evaluate</b> both sides of the argument fairly, not just the side you already prefer.</p><p><span class=\"para-label\">6.</span> <b>Step five</b> is to <b>explore other points of view</b>. No one has all the answers. A <b>coherent</b> thinker listens carefully to people who disagree — and is willing to change their mind if the evidence calls for it. You do not have to <b>persuade</b> everyone; you only have to stay open.</p>",
-
   "readingQ": [
     { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Critical thinking is a five-______ process.", "answers": ["step"], "exp": "The notes call it a five-step process." },
     { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step one is to formulate your ______.", "answers": ["question"], "exp": "Step one = formulate your question." },
@@ -101,7 +98,6 @@
     { "type": "long", "prompt": "Explain what it means to \"consider the implications\" using an example from your own life.", "keywordGroups": [["consequence", "result", "effect"], ["believe", "accept", "true"], ["claim", "statement"], ["example", "personal", "life"]], "minWords": 12, "minGroups": 2, "sample": "Considering the implications means asking what would follow if a claim were true. For example, if I believe a study that says students need eight hours of sleep, the implication is that I should change my own routine.", "exp": "Key ideas: consequences, believing a claim, a personal example." },
     { "type": "long", "prompt": "Do you agree that critical thinking is a \"skill\" rather than a \"talent\"? Why or why not?", "keywordGroups": [["practice", "skill", "learn"], ["improve", "better", "develop"], ["agree", "disagree", "opinion"], ["reason", "think", "argue"]], "minWords": 15, "minGroups": 2, "sample": "I agree that it is a skill, because even people who are not naturally talented can improve by practising, asking better questions, and checking evidence more carefully.", "exp": "Key ideas: agree/disagree, skill vs talent, practice/improvement." }
   ],
-
   "contextQ": [
     { "prompt": "In the notes, \"claim\" means…", "options": ["a statement that something is true", "a physical object", "a type of question"], "correct": "a statement that something is true", "exp": "A claim is a statement presented as true." },
     { "prompt": "\"Evidence\" is…", "options": ["facts that show something is true", "a personal opinion", "a short story"], "correct": "facts that show something is true", "exp": "Evidence supports or undermines a claim." },
@@ -112,7 +108,6 @@
     { "prompt": "A \"biased\" article is…", "options": ["unfairly favouring one side", "always false", "written in another language"], "correct": "unfairly favouring one side", "exp": "Bias means unfair preference." },
     { "prompt": "To \"imply\" means…", "options": ["to suggest without saying directly", "to prove with evidence", "to shout loudly"], "correct": "to suggest without saying directly", "exp": "To imply is to hint." }
   ],
-
   "g6": {
     "pos": [
       { "p": "I enjoy ___ (read) academic articles in the evening.", "a": "reading", "ex": "enjoy + gerund" },
@@ -153,7 +148,6 @@
       { "p": "I suggest ___ (take) a short break before the exam.", "a": "taking" }
     ]
   },
-
   "g7": {
     "pos": [
       { "p": "She studied all night — she ___ (must / be) exhausted.", "a": "must be", "ex": "strong present deduction" },
@@ -194,7 +188,6 @@
       { "p": "The conclusion ___ (cannot / have) been based on this data.", "a": "cannot have" }
     ]
   },
-
   "sbPp": {
     "pos": [
       { "prompt": "Build a sentence: enjoying academic reading.", "correct": ["I","enjoy","reading","academic","articles."] },
@@ -235,7 +228,6 @@
       { "prompt": "Build: I suggest taking a short break before the exam.", "correct": ["I","suggest","taking","a","short","break","before","the","exam."] }
     ]
   },
-
   "sbPs": {
     "pos": [
       { "prompt": "Build a modal sentence: being exhausted.", "correct": ["She","must","be","exhausted","after","studying."] },
@@ -276,7 +268,6 @@
       { "prompt": "Build: The conclusion cannot have been based on this data.", "correct": ["The","conclusion","cannot","have","been","based","on","this","data."] }
     ]
   },
-
   "g10": {
     "pos": [
       { "p": "[Gerund] I enjoy ___ (read) academic articles.", "a": "reading" },
@@ -317,7 +308,6 @@
       { "p": "[Modal — past] He ___ (should / have / know) the answer.", "a": "should have known" }
     ]
   },
-
   "testMcq": [
     { "q": "Which word means 'to say something is true without proof'?", "options": ["claim", "evidence", "evaluate"], "correct": "claim", "exp": "A claim asserts something is true." },
     { "q": "Which word means 'facts that show something is true'?", "options": ["assumption", "evidence", "conclusion"], "correct": "evidence", "exp": "Evidence supports a claim." },
@@ -328,7 +318,6 @@
     { "q": "Which word means 'connected to the topic'?", "options": ["relevant", "coherent", "biased"], "correct": "relevant", "exp": "Relevant = on-topic." },
     { "q": "Which word means 'clear and logical'?", "options": ["coherent", "relevant", "confusing"], "correct": "coherent", "exp": "Coherent = clear, logical." }
   ],
-
   "testShort": [
     { "q": "I enjoy ___ (read) academic articles.", "answers": ["reading"], "exp": "enjoy + gerund" },
     { "q": "She decided ___ (apply) for a scholarship.", "answers": ["to apply"], "exp": "decide + to + infinitive" },
@@ -337,7 +326,6 @@
     { "q": "Do you mind ___ (open) the window?", "answers": ["opening"], "exp": "mind + gerund" },
     { "q": "The researchers ___ (must / have / work) very hard.", "answers": ["must have worked"], "exp": "past deduction" }
   ],
-
   "testTfng": [
     { "q": "We always use the infinitive after 'enjoy'.", "answer": "False", "exp": "enjoy + gerund" },
     { "q": "We use the gerund after prepositions like 'good at'.", "answer": "True", "exp": "Preposition + gerund." },
@@ -345,7 +333,6 @@
     { "q": "After 'should', we use the past participle for present actions.", "answer": "False", "exp": "should + bare infinitive (should do)." },
     { "q": "Modal verbs are followed by the bare infinitive (no 'to').", "answer": "True", "exp": "He can swim. (Not 'to swim'.)" }
   ],
-
   "testComplete": [
     { "p": "[Gerund] They avoid ___ (make) mistakes.", "a": "making" },
     { "p": "[Infinitive] She hopes ___ (finish) soon.", "a": "to finish" },

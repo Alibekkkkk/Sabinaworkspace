@@ -1,38 +1,43 @@
 {
   "vocab": [
     { "en": "memory", "emoji": "🧠", "meanings": [
-      { "context": "the ability to remember things (noun)", "displayEn": "memory", "ru": "память (способность запоминать)", "ex": "She has an excellent <b>memory</b> for names." },
-      { "context": "to learn something by heart (verb)", "displayEn": "to memorize", "ru": "запоминать (учить наизусть)", "ex": "You need to <b>memorize</b> these grammar rules." }
+      { "context": "the ability to remember things", "pos": "noun", "displayEn": "memory", "ru": "память", "ex": "She has an excellent <b>memory</b> for names." },
+      { "context": "to learn something by heart", "pos": "verb", "displayEn": "to memorize", "ru": "запоминать", "ex": "You need to <b>memorize</b> these grammar rules." }
     ]},
     { "en": "to process", "emoji": "⚙️", "meanings": [
-      { "context": "to handle information (verb)", "displayEn": "to process", "ru": "обрабатывать (воспринимать информацию)", "ex": "Our brains <b>process</b> thousands of images every day." },
-      { "context": "a series of actions (noun)", "displayEn": "process", "ru": "процесс (последовательность действий)", "ex": "Learning a language is a slow <b>process</b>." }
+      { "context": "to handle information", "pos": "verb", "displayEn": "to process", "ru": "обрабатывать", "ex": "Our brains <b>process</b> thousands of images every day." },
+      { "context": "a series of actions", "pos": "noun", "displayEn": "process", "ru": "процесс", "ex": "Learning a language is a slow <b>process</b>." }
     ]},
     { "en": "to recall", "emoji": "💭", "meanings": [
-      { "context": "to bring a memory back to your mind (verb)", "displayEn": "to recall", "ru": "вспоминать (вызывать в памяти)", "ex": "Can you <b>recall</b> what happened yesterday?" }
+      { "context": "to bring a memory back", "pos": "verb", "displayEn": "to recall", "ru": "вспоминать", "ex": "Can you <b>recall</b> what happened yesterday?" },
+      { "context": "the ability to remember", "pos": "noun", "displayEn": "recall", "ru": "способность вспоминать", "ex": "His <b>recall</b> of the event was perfect." }
     ]},
     { "en": "neuron", "emoji": "🔗", "meanings": [
-      { "context": "a nerve cell in the brain (noun)", "ru": "нейрон (клетка мозга)", "ex": "A single <b>neuron</b> can connect to thousands of others." }
+      { "context": "a nerve cell in the brain", "pos": "noun", "displayEn": "neuron", "ru": "нейрон", "ex": "A single <b>neuron</b> can connect to thousands of others." }
     ]},
     { "en": "to connect", "emoji": "🌉", "meanings": [
-      { "context": "to join two things together (verb)", "displayEn": "to connect", "ru": "соединять (связывать)", "ex": "The brain uses electricity to <b>connect</b> cells." },
-      { "context": "a relationship or link (noun)", "displayEn": "connection", "ru": "связь (соединение, отношение)", "ex": "There is a strong <b>connection</b> between sleep and memory." }
+      { "context": "to join two things together", "pos": "verb", "displayEn": "to connect", "ru": "соединять", "ex": "The brain uses electricity to <b>connect</b> cells." },
+      { "context": "a relationship or link", "pos": "noun", "displayEn": "connection", "ru": "связь", "ex": "There is a strong <b>connection</b> between sleep and memory." }
     ]},
     { "en": "accurate", "emoji": "🎯", "meanings": [
-      { "context": "correct and exact (adjective)", "displayEn": "accurate", "ru": "точный (правильный)", "ex": "Her description of the event was very <b>accurate</b>." },
-      { "context": "the quality of being exact (noun)", "displayEn": "accuracy", "ru": "точность (степень правильности)", "ex": "He threw the ball with great <b>accuracy</b>." }
+      { "context": "correct and exact", "pos": "adjective", "displayEn": "accurate", "ru": "точный", "ex": "Her description of the event was very <b>accurate</b>." },
+      { "context": "the quality of being exact", "pos": "noun", "displayEn": "accuracy", "ru": "точность", "ex": "He threw the ball with great <b>accuracy</b>." }
     ]},
     { "en": "to trigger", "emoji": "💥", "meanings": [
-      { "context": "to cause something to happen (verb)", "displayEn": "to trigger", "ru": "вызывать (служить причиной)", "ex": "A smell can <b>trigger</b> a happy memory." }
+      { "context": "to cause something to happen", "pos": "verb", "displayEn": "to trigger", "ru": "вызывать", "ex": "A smell can <b>trigger</b> a happy memory." },
+      { "context": "a cause or stimulus", "pos": "noun", "displayEn": "trigger", "ru": "триггер, причина", "ex": "Loud noises are a <b>trigger</b> for his anxiety." }
     ]},
     { "en": "to store", "emoji": "📦", "meanings": [
-      { "context": "to keep information for later (verb)", "displayEn": "to store", "ru": "хранить (сохранять для будущего)", "ex": "The brain can <b>store</b> a lifetime of information." }
+      { "context": "to keep information for later", "pos": "verb", "displayEn": "to store", "ru": "хранить", "ex": "The brain can <b>store</b> a lifetime of information." },
+      { "context": "the act of keeping safe", "pos": "noun", "displayEn": "storage", "ru": "хранение", "ex": "The <b>storage</b> of memories takes place in the brain." }
     ]},
     { "en": "to forget", "emoji": "🌫️", "meanings": [
-      { "context": "to be unable to remember (verb)", "displayEn": "to forget", "ru": "забывать (терять из памяти)", "ex": "I always <b>forget</b> where I put my keys." }
+      { "context": "to be unable to remember", "pos": "verb", "displayEn": "to forget", "ru": "забывать", "ex": "I always <b>forget</b> where I put my keys." },
+      { "context": "the tendency to forget", "pos": "noun", "displayEn": "forgetfulness", "ru": "забывчивость", "ex": "His <b>forgetfulness</b> often gets him into trouble." }
     ]},
     { "en": "skill", "emoji": "🛠️", "meanings": [
-      { "context": "the ability to do something well (noun)", "ru": "навык (умение делать что-то хорошо)", "ex": "Speaking English is a very useful <b>skill</b>." }
+      { "context": "the ability to do something well", "pos": "noun", "displayEn": "skill", "ru": "навык", "ex": "Speaking English is a very useful <b>skill</b>." },
+      { "context": "having great ability", "pos": "adjective", "displayEn": "skillful", "ru": "умелый", "ex": "She is a highly <b>skillful</b> musician." }
     ]}
   ],
   "matchData": [

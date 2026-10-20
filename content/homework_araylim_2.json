@@ -16,26 +16,29 @@
   },
   "vocab": [
     { "en": "colony", "emoji": "🏙️", "meanings": [
-      { "context": "a group of people living in a new place (noun)", "displayEn": "colony", "ru": "колония (поселение в новой местности)", "ex": "They want to build a <b>colony</b> on Mars." },
-      { "context": "to live in a new place (verb)", "displayEn": "to colonize", "ru": "колонизировать (заселять)", "ex": "Humans will try to <b>colonize</b> the planet." }
+      { "context": "a group of people living in a new place", "pos": "noun", "displayEn": "colony", "ru": "колония", "ex": "They want to build a <b>colony</b> on Mars." },
+      { "context": "to live in a new place", "pos": "verb", "displayEn": "to colonize", "ru": "колонизировать", "ex": "Humans will try to <b>colonize</b> the planet." }
     ]},
     { "en": "permanent", "emoji": "🏗️", "meanings": [
-      { "context": "lasting for a long time (adjective)", "ru": "постоянный (долговременный)", "ex": "They want a <b>permanent</b> base." }
+      { "context": "lasting for a long time", "pos": "adjective", "displayEn": "permanent", "ru": "постоянный", "ex": "They want a <b>permanent</b> base." }
     ]},
     { "en": "journey", "emoji": "🛣️", "meanings": [
-      { "context": "traveling from one place to another (noun)", "ru": "путешествие (поездка)", "ex": "The <b>journey</b> takes seven months." }
+      { "context": "traveling from one place to another", "pos": "noun", "displayEn": "journey", "ru": "путешествие", "ex": "The <b>journey</b> takes seven months." }
     ]},
     { "en": "oxygen", "emoji": "🫁", "meanings": [
-      { "context": "the gas we need to breathe (noun)", "ru": "кислород (газ для дыхания)", "ex": "Mars has almost no <b>oxygen</b>." }
+      { "context": "the gas we need to breathe", "pos": "noun", "displayEn": "oxygen", "ru": "кислород", "ex": "Mars has almost no <b>oxygen</b>." }
     ]},
     { "en": "radiation", "emoji": "☢️", "meanings": [
-      { "context": "dangerous energy from space (noun)", "ru": "радиация (опасная энергия)", "ex": "They must hide from <b>radiation</b>." }
+      { "context": "dangerous energy from space", "pos": "noun", "displayEn": "radiation", "ru": "радиация", "ex": "They must hide from <b>radiation</b>." },
+      { "context": "to send out energy", "pos": "verb", "displayEn": "to radiate", "ru": "излучать", "ex": "The sun <b>radiates</b> heat." }
     ]},
     { "en": "to build", "emoji": "🔨", "meanings": [
-      { "context": "to make something by putting parts together (verb)", "ru": "строить (создавать)", "ex": "They will <b>build</b> underground homes." }
+      { "context": "to make something by putting parts together", "pos": "verb", "displayEn": "to build", "ru": "строить", "ex": "They will <b>build</b> underground homes." },
+      { "context": "a structure", "pos": "noun", "displayEn": "building", "ru": "здание", "ex": "The <b>building</b> is very tall." }
     ]},
     { "en": "dangerous", "emoji": "⚠️", "meanings": [
-      { "context": "likely to cause harm (adjective)", "ru": "опасный (могущий навредить)", "ex": "Space is a <b>dangerous</b> place." }
+      { "context": "likely to cause harm", "pos": "adjective", "displayEn": "dangerous", "ru": "опасный", "ex": "Space is a <b>dangerous</b> place." },
+      { "context": "a risk", "pos": "noun", "displayEn": "danger", "ru": "опасность", "ex": "There is great <b>danger</b> in space." }
     ]}
   ],
   "questions": [

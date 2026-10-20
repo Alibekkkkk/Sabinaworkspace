@@ -18,16 +18,42 @@
     ]
   },
   "vocab": [
-    { "en": "consecutive", "emoji": "🔢", "meanings": [ { "context": "following one after another", "ru": "последовательные", "ex": "Temperatures rose above 42°C for ten <b>consecutive</b> days." } ] },
-    { "en": "overflow", "emoji": "🌊", "meanings": [ { "context": "spill over the edge", "ru": "выходить из берегов", "ex": "Rivers <b>overflowed</b> their banks after the heavy rain." }, { "context": "be too full for capacity", "ru": "переполняться", "ex": "The stadium <b>overflowed</b> with fans." } ] },
-    { "en": "intensity", "emoji": "🔥", "meanings": [ { "context": "strength or force", "ru": "интенсивность", "ex": "Few expected a heat wave of this <b>intensity</b>." } ] },
-    { "en": "vegetation", "emoji": "🌿", "meanings": [ { "context": "plants, trees, and grass in an area", "ru": "растительность", "ex": "The heat dried out the soil and <b>vegetation</b>." } ] },
-    { "en": "rescue", "emoji": "🚁", "meanings": [ { "context": "saving from danger", "ru": "спасение", "ex": "<b>Rescue</b> teams used boats to reach trapped residents." }, { "context": "to save someone", "ru": "спасать", "ex": "They <b>rescued</b> three families from the roof." } ] },
-    { "en": "ecological", "emoji": "🌍", "meanings": [ { "context": "relating to the environment", "ru": "экологический", "ex": "The <b>ecological</b> damage was severe." } ] },
-    { "en": "species", "emoji": "🦌", "meanings": [ { "context": "a group of similar living things", "ru": "вид (биология)", "ex": "Many <b>species</b> of plants were affected." } ] },
-    { "en": "vulnerable", "emoji": "⚠️", "meanings": [ { "context": "easily harmed", "ru": "уязвимый", "ex": "Floods made some areas more <b>vulnerable</b>." } ] },
-    { "en": "evacuation", "emoji": "🚨", "meanings": [ { "context": "organized removal from a place", "ru": "эвакуация", "ex": "Residents were trained in <b>evacuation</b> procedures." } ] },
-    { "en": "prompt", "emoji": "💡", "meanings": [ { "context": "to cause something to happen", "ru": "побуждать, вызывать", "ex": "The events have <b>prompted</b> local authorities to rethink their planning." } ] }
+    { "en": "consecutive", "emoji": "🔢", "meanings": [ 
+      { "context": "following one after another", "pos": "adjective", "ru": "последовательные", "ex": "Temperatures rose above 42°C for ten <b>consecutive</b> days." } 
+    ] },
+    { "en": "overflow", "emoji": "🌊", "meanings": [ 
+      { "context": "spill over the edge", "pos": "verb", "ru": "выходить из берегов", "ex": "Rivers <b>overflowed</b> their banks after the heavy rain." }, 
+      { "context": "be too full for capacity", "pos": "verb", "ru": "переполняться", "ex": "The stadium <b>overflowed</b> with fans." } 
+    ] },
+    { "en": "intensity", "emoji": "🔥", "meanings": [ 
+      { "context": "strength or force", "pos": "noun", "ru": "интенсивность", "ex": "Few expected a heat wave of this <b>intensity</b>." },
+      { "context": "very strong", "pos": "adjective", "displayEn": "intense", "ru": "интенсивный", "ex": "The heat was <b>intense</b>." }
+    ] },
+    { "en": "vegetation", "emoji": "🌿", "meanings": [ 
+      { "context": "plants, trees, and grass", "pos": "noun", "ru": "растительность", "ex": "The heat dried out the soil and <b>vegetation</b>." } 
+    ] },
+    { "en": "rescue", "emoji": "🚁", "meanings": [ 
+      { "context": "saving from danger", "pos": "noun", "ru": "спасение", "ex": "<b>Rescue</b> teams used boats to reach trapped residents." }, 
+      { "context": "to save someone", "pos": "verb", "ru": "спасать", "ex": "They <b>rescued</b> three families from the roof." } 
+    ] },
+    { "en": "ecological", "emoji": "🌍", "meanings": [ 
+      { "context": "relating to the environment", "pos": "adjective", "ru": "экологический", "ex": "The <b>ecological</b> damage was severe." },
+      { "context": "the study of environment", "pos": "noun", "displayEn": "ecology", "ru": "экология", "ex": "She studies <b>ecology</b>." }
+    ] },
+    { "en": "species", "emoji": "🦌", "meanings": [ 
+      { "context": "a group of similar living things", "pos": "noun", "ru": "вид (биология)", "ex": "Many <b>species</b> of plants were affected." } 
+    ] },
+    { "en": "vulnerable", "emoji": "⚠️", "meanings": [ 
+      { "context": "easily harmed", "pos": "adjective", "ru": "уязвимый", "ex": "Floods made some areas more <b>vulnerable</b>." },
+      { "context": "the state of being vulnerable", "pos": "noun", "displayEn": "vulnerability", "ru": "уязвимость", "ex": "The <b>vulnerability</b> of the coast is a concern." }
+    ] },
+    { "en": "evacuation", "emoji": "🚨", "meanings": [ 
+      { "context": "organized removal from a place", "pos": "noun", "ru": "эвакуация", "ex": "Residents were trained in <b>evacuation</b> procedures." },
+      { "context": "to remove from danger", "pos": "verb", "displayEn": "to evacuate", "ru": "эвакуировать", "ex": "They had to <b>evacuate</b> the town." }
+    ] },
+    { "en": "prompt", "emoji": "💡", "meanings": [ 
+      { "context": "to cause something to happen", "pos": "verb", "ru": "побуждать, вызывать", "ex": "The events have <b>prompted</b> local authorities to rethink their planning." } 
+    ] }
   ],
   "questions": [
     { "type": "short", "prompt": "How many consecutive days did temperatures rise above 42°C?", "answers": ["10","ten"], "exp": "Temperatures rose above 42°C for ten consecutive days." },
@@ -36,7 +62,7 @@
     { "type": "short", "prompt": "How many days did firefighters work to control the wildfire?", "answers": ["11","eleven"], "exp": "Firefighters worked for eleven days." },
     { "type": "tfng", "prompt": "The events took place over six weeks.", "answer": "True", "exp": "The article says three disasters in six weeks." },
     { "type": "tfng", "prompt": "Lives were lost in the wildfire.", "answer": "False", "exp": "The article says no lives were lost." },
-    { "type": "tfng", "prompt": "The local council had planned for events of this intensity.", "answer": "Not Given", "exp": "The article doesn\u2019t say whether they had planned for this." },
+    { "type": "tfng", "prompt": "The local council had planned for events of this intensity.", "answer": "Not Given", "exp": "The article doesn't say whether they had planned for this." },
     { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["Three disasters were connected by climate conditions","Coastal towns are always in danger","Wildfires are the worst type of disaster"], "correct": "Three disasters were connected by climate conditions", "exp": "The article emphasises that the three disasters were linked." },
     { "type": "mcq", "prompt": "Which of these is NOT stated as a consequence of the events?", "options": ["New early-warning systems","Automatic cooling centres","A ban on coastal construction"], "correct": "A ban on coastal construction", "exp": "A construction ban is not mentioned." },
     { "type": "mcq", "prompt": "How did the heat wave contribute to the wildfire?", "options": ["It dried out the vegetation","It caused strong winds","It attracted firefighters away"], "correct": "It dried out the vegetation", "exp": "Heat dried the vegetation, making the wildfire more likely." },

@@ -15,25 +15,43 @@
     ]
   },
   "vocab": [
-    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ { "context": "a person who plays sports (noun)", "ru": "спортсмен (человек, занимающийся спортом)", "ex": "He is a young <b>athlete</b>." } ] },
-    { "en": "coach", "emoji": "📋", "meanings": [ { "context": "a person who trains a team (noun)", "ru": "тренер (человек, который тренирует команду)", "ex": "The <b>coach</b> is talking to the team." } ] },
+    { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ 
+      { "context": "a person who plays sports", "pos": "noun", "ru": "спортсмен", "ex": "He is a young <b>athlete</b>." },
+      { "context": "related to sports", "pos": "adjective", "displayEn": "athletic", "ru": "спортивный", "ex": "He is very <b>athletic</b>." }
+    ] },
+    { "en": "coach", "emoji": "📋", "meanings": [ 
+      { "context": "a person who trains a team", "pos": "noun", "ru": "тренер", "ex": "The <b>coach</b> is talking to the team." },
+      { "context": "to train a team", "pos": "verb", "displayEn": "to coach", "ru": "тренировать", "ex": "He <b>coaches</b> the local team." }
+    ] },
     { "en": "match", "emoji": "⚽", "meanings": [
-      { "context": "a sports game (noun)", "displayEn": "match", "ru": "матч (спортивная игра)", "ex": "We have a football <b>match</b> every Saturday." },
-      { "context": "to be the same or go well together (verb)", "displayEn": "to match", "ru": "соответствовать (быть одинаковым или хорошо сочетаться)", "ex": "These shoes <b>match</b> your shirt." }
+      { "context": "a sports game", "pos": "noun", "ru": "матч", "ex": "We have a football <b>match</b> every Saturday." },
+      { "context": "to go well together", "pos": "verb", "displayEn": "to match", "ru": "соответствовать", "ex": "These shoes <b>match</b> your shirt." }
     ] },
-    { "en": "stadium", "emoji": "🏟️", "meanings": [ { "context": "a place where people watch matches (noun)", "ru": "стадион (место, где люди смотрят матчи)", "ex": "The team trains at the <b>stadium</b>." } ] },
-    { "en": "to train", "emoji": "🏋️", "meanings": [ { "context": "to practice for a sport (verb)", "displayEn": "to train", "ru": "тренироваться (практиковаться в спорте)", "ex": "He <b>trains</b> every day after school." } ] },
+    { "en": "stadium", "emoji": "🏟️", "meanings": [ 
+      { "context": "a place where people watch matches", "pos": "noun", "ru": "стадион", "ex": "The team trains at the <b>stadium</b>." } 
+    ] },
+    { "en": "to train", "emoji": "🏋️", "meanings": [ 
+      { "context": "to practice for a sport", "pos": "verb", "ru": "тренироваться", "ex": "He <b>trains</b> every day after school." },
+      { "context": "the act of practicing", "pos": "noun", "displayEn": "training", "ru": "тренировка", "ex": "The <b>training</b> was very hard." }
+    ] },
     { "en": "score", "emoji": "💯", "meanings": [
-      { "context": "to get a goal or point (verb)", "displayEn": "to score", "ru": "забивать гол (получать очко или гол)", "ex": "He is going to <b>score</b> a goal!" },
-      { "context": "the number of points in a game (noun)", "displayEn": "score", "ru": "счет (количество очков в игре)", "ex": "The final <b>score</b> was 2-1." }
+      { "context": "to get a goal or point", "pos": "verb", "ru": "забивать гол", "ex": "He is going to <b>score</b> a goal!" },
+      { "context": "the number of points", "pos": "noun", "ru": "счет", "ex": "The final <b>score</b> was 2-1." }
     ] },
-    { "en": "tournament", "emoji": "🏆", "meanings": [ { "context": "a big competition (noun)", "ru": "турнир (крупное соревнование)", "ex": "It is the final of a big <b>tournament</b>." } ] },
-    { "en": "equipment", "emoji": "🎒", "meanings": [ { "context": "tools needed for a sport (noun)", "ru": "снаряжение (инструменты, необходимые для спорта)", "ex": "My sports <b>equipment</b> is in the bag." } ] },
-    { "en": "healthy", "emoji": "🍎", "meanings": [ { "context": "good for your body (adjective)", "ru": "здоровый (полезный для тела)", "ex": "He eats a <b>healthy</b> breakfast." } ] },
+    { "en": "tournament", "emoji": "🏆", "meanings": [ 
+      { "context": "a big competition", "pos": "noun", "ru": "турнир", "ex": "It is the final of a big <b>tournament</b>." } 
+    ] },
+    { "en": "equipment", "emoji": "🎒", "meanings": [ 
+      { "context": "tools needed for a sport", "pos": "noun", "ru": "снаряжение", "ex": "My sports <b>equipment</b> is in the bag." },
+      { "context": "to supply with tools", "pos": "verb", "displayEn": "to equip", "ru": "оснащать", "ex": "The team is <b>equipped</b> with new gear." }
+    ] },
+    { "en": "healthy", "emoji": "🍎", "meanings": [ 
+      { "context": "good for your body", "pos": "adjective", "ru": "здоровый", "ex": "He eats a <b>healthy</b> breakfast." },
+      { "context": "the state of being well", "pos": "noun", "displayEn": "health", "ru": "здоровье", "ex": "Exercise is good for your <b>health</b>." }
+    ] },
     { "en": "rest", "emoji": "🛌", "meanings": [
-      { "context": "a period of relaxing (noun)", "displayEn": "rest", "ru": "отдых (период расслабления)", "ex": "You look tired. Take a <b>rest</b>." },
-      { "context": "to relax and sleep (verb)", "displayEn": "to rest", "ru": "отдыхать (расслабляться и спать)", "ex": "He is going to <b>rest</b> after the game." },
-      { "context": "the remaining part (noun)", "displayEn": "the rest", "ru": "остаток (оставшаяся часть)", "ex": "I will finish the <b>rest</b> of the work tomorrow." }
+      { "context": "a period of relaxing", "pos": "noun", "ru": "отдых", "ex": "You look tired. Take a <b>rest</b>." },
+      { "context": "to relax and sleep", "pos": "verb", "ru": "отдыхать", "ex": "He is going to <b>rest</b> after the game." }
     ] }
   ],
   "questions": [

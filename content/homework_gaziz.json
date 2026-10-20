@@ -18,16 +18,39 @@
     ]
   },
   "vocab": [
-    { "en": "ambitious", "emoji": "🚀", "meanings": [ { "context": "demanding or difficult", "ru": "амбициозный, масштабный", "ex": "The council launched an <b>ambitious</b> programme to reduce car use." }, { "context": "having a strong desire to succeed", "ru": "целеустремлённый", "ex": "She is an <b>ambitious</b> young architect." } ] },
-    { "en": "dependence", "emoji": "🔗", "meanings": [ { "context": "relying on something", "ru": "зависимость", "ex": "The city aims to reduce its <b>dependence</b> on cars." } ] },
-    { "en": "experiment", "emoji": "🧪", "meanings": [ { "context": "a test or trial", "ru": "эксперимент, испытание", "ex": "Planners began with a modest <b>experiment</b>: closing one street for three months." } ] },
-    { "en": "convert", "emoji": "🔁", "meanings": [ { "context": "change from one use to another", "ru": "преобразовывать", "ex": "The council <b>converted</b> five more streets into pedestrian zones." } ] },
-    { "en": "dedicated", "emoji": "🎯", "meanings": [ { "context": "made for a specific purpose", "ru": "специально выделенный", "ex": "Rivergate has 200 kilometres of <b>dedicated</b> cycle lanes." }, { "context": "devoted to a task", "ru": "преданный", "ex": "She is a <b>dedicated</b> teacher." } ] },
-    { "en": "controversial", "emoji": "⚔️", "meanings": [ { "context": "causing disagreement", "ru": "спорный, вызывающий споры", "ex": "Clearing cycle paths before roads was <b>controversial</b> at first." } ] },
-    { "en": "priority", "emoji": "🥇", "meanings": [ { "context": "the right to go first", "ru": "приоритет", "ex": "Cyclists are given <b>priority</b> at most intersections." } ] },
-    { "en": "convert", "emoji": "🏭", "meanings": [ { "context": "repurpose a building", "ru": "переоборудовать", "ex": "Warehouses were <b>converted</b> into apartments and cafés." } ] },
-    { "en": "critics", "emoji": "🗣️", "meanings": [ { "context": "people who express disapproval", "ru": "критики", "ex": "<b>Critics</b> argued the programme had been too expensive." } ] },
-    { "en": "investment", "emoji": "💼", "meanings": [ { "context": "money put into a project", "ru": "инвестиция", "ex": "Rivergate has attracted new <b>investment</b> from technology companies." } ] }
+    { "en": "ambitious", "emoji": "🚀", "meanings": [ 
+      { "context": "demanding or difficult", "pos": "adjective", "ru": "амбициозный, масштабный", "ex": "The council launched an <b>ambitious</b> programme to reduce car use." }, 
+      { "context": "having a strong desire to succeed", "pos": "adjective", "ru": "целеустремлённый", "ex": "She is an <b>ambitious</b> young architect." } 
+    ] },
+    { "en": "dependence", "emoji": "🔗", "meanings": [ 
+      { "context": "relying on something", "pos": "noun", "ru": "зависимость", "ex": "The city aims to reduce its <b>dependence</b> on cars." },
+      { "context": "to rely on", "pos": "verb", "displayEn": "to depend", "ru": "зависеть", "ex": "We <b>depend</b> on public transport." }
+    ] },
+    { "en": "experiment", "emoji": "🧪", "meanings": [ 
+      { "context": "a test or trial", "pos": "noun", "ru": "эксперимент, испытание", "ex": "Planners began with a modest <b>experiment</b>: closing one street for three months." } 
+    ] },
+    { "en": "convert", "emoji": "🔁", "meanings": [ 
+      { "context": "change from one use to another", "pos": "verb", "ru": "преобразовывать", "ex": "The council <b>converted</b> five more streets into pedestrian zones." } 
+    ] },
+    { "en": "dedicated", "emoji": "🎯", "meanings": [ 
+      { "context": "made for a specific purpose", "pos": "adjective", "ru": "специально выделенный", "ex": "Rivergate has 200 kilometres of <b>dedicated</b> cycle lanes." }, 
+      { "context": "devoted to a task", "pos": "adjective", "ru": "преданный", "ex": "She is a <b>dedicated</b> teacher." } 
+    ] },
+    { "en": "controversial", "emoji": "⚔️", "meanings": [ 
+      { "context": "causing disagreement", "pos": "adjective", "ru": "спорный, вызывающий споры", "ex": "Clearing cycle paths before roads was <b>controversial</b> at first." },
+      { "context": "a disagreement", "pos": "noun", "displayEn": "controversy", "ru": "спор", "ex": "The plan caused great <b>controversy</b>." }
+    ] },
+    { "en": "priority", "emoji": "🥇", "meanings": [ 
+      { "context": "the right to go first", "pos": "noun", "ru": "приоритет", "ex": "Cyclists are given <b>priority</b> at most intersections." } 
+    ] },
+    { "en": "critics", "emoji": "🗣️", "meanings": [ 
+      { "context": "people who express disapproval", "pos": "noun", "ru": "критики", "ex": "<b>Critics</b> argued the programme had been too expensive." },
+      { "context": "to express disapproval", "pos": "verb", "displayEn": "to criticize", "ru": "критиковать", "ex": "They <b>criticize</b> the new rules." }
+    ] },
+    { "en": "investment", "emoji": "💼", "meanings": [ 
+      { "context": "money put into a project", "pos": "noun", "ru": "инвестиция", "ex": "Rivergate has attracted new <b>investment</b> from technology companies." },
+      { "context": "to put money into something", "pos": "verb", "displayEn": "to invest", "ru": "инвестировать", "ex": "The city will <b>invest</b> in green energy." }
+    ] }
   ],
   "questions": [
     { "type": "short", "prompt": "In what year did Rivergate launch its programme to reduce car dependence?", "answers": ["2018"], "exp": "The article says the programme launched in 2018." },
@@ -37,14 +60,14 @@
     { "type": "tfng", "prompt": "The pilot experiment showed that sales in local shops fell.", "answer": "False", "exp": "Sales actually rose slightly." },
     { "type": "tfng", "prompt": "Cycle paths are cleared of snow before roads in winter.", "answer": "True", "exp": "The passage confirms this." },
     { "type": "tfng", "prompt": "The mayor of Rivergate was re-elected after the programme.", "answer": "Not Given", "exp": "The article never mentions re-election." },
-    { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["A small city successfully transformed its urban planning","Cycling is dangerous in winter","Industrial harbours should be demolished"], "correct": "A small city successfully transformed its urban planning", "exp": "The article tells the story of Rivergate\u2019s transformation." },
+    { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["A small city successfully transformed its urban planning","Cycling is dangerous in winter","Industrial harbours should be demolished"], "correct": "A small city successfully transformed its urban planning", "exp": "The article tells the story of Rivergate's transformation." },
     { "type": "mcq", "prompt": "Which of the following is NOT stated as a result of the changes?", "options": ["Lower air pollution","Attracting technology companies","A rise in average salaries"], "correct": "A rise in average salaries", "exp": "The article mentions pollution and investment, not salaries." },
-    { "type": "mcq", "prompt": "What is the author\u2019s overall tone?", "options": ["Broadly positive with balanced criticisms","Entirely critical","Neutral and detached"], "correct": "Broadly positive with balanced criticisms", "exp": "The article praises the results but includes paragraph E\u2019s criticisms." },
+    { "type": "mcq", "prompt": "What is the author's overall tone?", "options": ["Broadly positive with balanced criticisms","Entirely critical","Neutral and detached"], "correct": "Broadly positive with balanced criticisms", "exp": "The article praises the results but includes paragraph E's criticisms." },
     { "type": "long", "prompt": "In your own words, explain why the pilot experiment was important for Rivergate.",
       "keywordGroups": [["experiment","trial","test"],["sales","customers","shops"],["rose","increased","grew","rise"],["confidence","believe","trust"],["expand","continue","more"]],
       "minWords": 10, "minGroups": 2,
       "sample": "The pilot experiment was important because it showed that closing a street to cars did not reduce sales in local shops — in fact, sales rose, and this gave the council confidence to expand the programme.",
-      "exp": "Key ideas: experiment/trial, sales didn\u2019t fall, confidence, expansion." },
+      "exp": "Key ideas: experiment/trial, sales didn't fall, confidence, expansion." },
     { "type": "long", "prompt": "Describe TWO benefits of the transformation mentioned in the article.",
       "keywordGroups": [["pollution","cleaner","air"],["accident","safe","safety"],["happy","happier","satisfied"],["investment","company","business"],["cycle","bike","commute"]],
       "minWords": 10, "minGroups": 2,

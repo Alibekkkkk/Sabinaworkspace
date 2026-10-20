@@ -16,31 +16,32 @@
   },
   "vocab": [
     { "en": "alien", "emoji": "👽", "meanings": [
-      { "context": "a creature from another planet (noun)", "displayEn": "alien", "ru": "пришелец (существо с другой планеты)", "ex": "The octopus looks like an <b>alien</b>." },
-      { "context": "strange and unfamiliar (adjective)", "displayEn": "alien", "ru": "чужой, чуждый (странный)", "ex": "The customs were <b>alien</b> to me." }
+      { "context": "a creature from another planet", "pos": "noun", "displayEn": "alien", "ru": "пришелец", "ex": "The octopus looks like an <b>alien</b>." },
+      { "context": "strange and unfamiliar", "pos": "adjective", "displayEn": "alien", "ru": "чужой, чуждый", "ex": "The customs were <b>alien</b> to me." }
     ]},
     { "en": "texture", "emoji": "🧶", "meanings": [
-      { "context": "how something feels when you touch it (noun)", "ru": "текстура (строение поверхности на ощупь)", "ex": "The octopus changed its skin <b>texture</b>." }
+      { "context": "how something feels when you touch it", "pos": "noun", "displayEn": "texture", "ru": "текстура", "ex": "The octopus changed its skin <b>texture</b>." }
     ]},
     { "en": "to hide", "emoji": "🫣", "meanings": [
-      { "context": "to go somewhere you cannot be seen (verb)", "ru": "прятаться (скрываться)", "ex": "It tried to <b>hide</b> from the shark." }
+      { "context": "to go somewhere you cannot be seen", "pos": "verb", "displayEn": "to hide", "ru": "прятаться", "ex": "It tried to <b>hide</b> from the shark." }
     ]},
     { "en": "to escape", "emoji": "🏃‍♂️", "meanings": [
-      { "context": "to get away from a place (verb)", "displayEn": "to escape", "ru": "совершать побег (выбираться)", "ex": "The octopus managed to <b>escape</b> the tank." },
-      { "context": "the act of getting away (noun)", "displayEn": "escape", "ru": "побег (спасение)", "ex": "It was a brilliant <b>escape</b>." }
+      { "context": "to get away from a place", "pos": "verb", "displayEn": "to escape", "ru": "совершать побег", "ex": "The octopus managed to <b>escape</b> the tank." },
+      { "context": "the act of getting away", "pos": "noun", "displayEn": "escape", "ru": "побег", "ex": "It was a brilliant <b>escape</b>." }
     ]},
     { "en": "intelligent", "emoji": "🧠", "meanings": [
-      { "context": "able to learn and understand things (adjective)", "displayEn": "intelligent", "ru": "умный, сообразительный (способный учиться)", "ex": "Octopuses are very <b>intelligent</b>." },
-      { "context": "the ability to learn (noun)", "displayEn": "intelligence", "ru": "интеллект (умственные способности)", "ex": "They have a different kind of <b>intelligence</b>." }
+      { "context": "able to learn and understand", "pos": "adjective", "displayEn": "intelligent", "ru": "умный", "ex": "Octopuses are very <b>intelligent</b>." },
+      { "context": "the ability to learn", "pos": "noun", "displayEn": "intelligence", "ru": "интеллект", "ex": "They have a different kind of <b>intelligence</b>." }
     ]},
     { "en": "marine", "emoji": "🌊", "meanings": [
-      { "context": "related to the sea (adjective)", "ru": "морской (относящийся к морю)", "ex": "<b>Marine</b> biology is the study of sea life." }
+      { "context": "related to the sea", "pos": "adjective", "displayEn": "marine", "ru": "морской", "ex": "<b>Marine</b> biology is the study of sea life." }
     ]},
     { "en": "to slide", "emoji": "🛝", "meanings": [
-      { "context": "to move smoothly over a surface (verb)", "ru": "скользить (плавно двигаться)", "ex": "It <b>slid</b> across the floor." }
+      { "context": "to move smoothly over a surface", "pos": "verb", "displayEn": "to slide", "ru": "скользить", "ex": "It <b>slid</b> across the floor." }
     ]},
     { "en": "survival", "emoji": "🛡️", "meanings": [
-      { "context": "continuing to live in difficult conditions (noun)", "ru": "выживание (сохранение жизни)", "ex": "Camouflage is key for their <b>survival</b>." }
+      { "context": "continuing to live", "pos": "noun", "displayEn": "survival", "ru": "выживание", "ex": "Camouflage is key for their <b>survival</b>." },
+      { "context": "to continue to live", "pos": "verb", "displayEn": "to survive", "ru": "выживать", "ex": "They must <b>survive</b> in the ocean." }
     ]}
   ],
   "questions": [

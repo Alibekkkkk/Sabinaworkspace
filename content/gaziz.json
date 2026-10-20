@@ -1,91 +1,83 @@
 {
   "vocab": [
     { "en": "environment", "emoji": "🌍", "meanings": [
-      { "context": "the natural world", "ru": "окружающая среда", "ex": "We must protect the <b>environment</b> for future generations." },
-      { "context": "surroundings or conditions", "ru": "обстановка, условия", "ex": "Children learn best in a safe and friendly <b>environment</b>." }
+      { "context": "the natural world", "pos": "noun", "ru": "окружающая среда", "ex": "We must protect the <b>environment</b> for future generations." },
+      { "context": "relating to the environment", "pos": "adjective", "displayEn": "environmental", "ru": "экологический", "ex": "We must solve <b>environmental</b> problems." }
     ]},
     { "en": "pollution", "emoji": "💨", "meanings": [
-      { "context": "harmful substances", "ru": "загрязнение", "ex": "Air <b>pollution</b> in the city centre has dropped by 40%." },
-      { "context": "noise or light", "ru": "шумовое загрязнение", "ex": "Noise <b>pollution</b> from the ring road keeps residents awake." }
+      { "context": "harmful substances", "pos": "noun", "ru": "загрязнение", "ex": "Air <b>pollution</b> in the city centre has dropped by 40%." },
+      { "context": "to make dirty", "pos": "verb", "displayEn": "to pollute", "ru": "загрязнять", "ex": "Factories should not <b>pollute</b> the river." }
     ]},
     { "en": "transport", "emoji": "🚌", "meanings": [
-      { "context": "ways of moving people", "ru": "транспорт", "ex": "Public <b>transport</b> in Copenhagen is fast and reliable." },
-      { "context": "to move something", "displayEn": "to transport", "ru": "перевозить", "ex": "The company <b>transports</b> goods by electric truck." }
+      { "context": "ways of moving people", "pos": "noun", "ru": "транспорт", "ex": "Public <b>transport</b> in Copenhagen is fast and reliable." },
+      { "context": "to move something", "pos": "verb", "displayEn": "to transport", "ru": "перевозить", "ex": "The company <b>transports</b> goods by electric truck." }
     ]},
     { "en": "community", "emoji": "👥", "meanings": [
-      { "context": "people in one area", "ru": "сообщество, местные жители", "ex": "The whole <b>community</b> helped clean the riverbank." },
-      { "context": "a group with shared interests", "ru": "община, круг", "ex": "She joined an online <b>community</b> of urban gardeners." }
+      { "context": "people in one area", "pos": "noun", "ru": "сообщество, местные жители", "ex": "The whole <b>community</b> helped clean the riverbank." }
     ]},
     { "en": "to improve", "emoji": "✨", "meanings": [
-      { "context": "make better", "ru": "улучшать", "ex": "The council wants to <b>improve</b> air quality in the city centre." },
-      { "context": "become better", "ru": "улучшаться", "ex": "Her English has <b>improved</b> a lot this year." }
+      { "context": "make better", "pos": "verb", "ru": "улучшать", "ex": "The council wants to <b>improve</b> air quality in the city centre." },
+      { "context": "the act of making better", "pos": "noun", "displayEn": "improvement", "ru": "улучшение", "ex": "There has been a huge <b>improvement</b> in air quality." }
     ]},
     { "en": "to increase", "emoji": "📈", "meanings": [
-      { "context": "become larger", "ru": "увеличиваться, расти", "ex": "Cycling rates have <b>increased</b> every year since 2015." },
-      { "context": "make larger", "ru": "увеличивать", "ex": "The city plans to <b>increase</b> the number of electric buses." },
-      { "context": "a rise (noun)", "displayEn": "increase", "ru": "рост, увеличение", "ex": "There has been a sharp <b>increase</b> in recycling." }
+      { "context": "become larger", "pos": "verb", "ru": "увеличиваться, расти", "ex": "Cycling rates have <b>increased</b> every year since 2015." },
+      { "context": "a rise", "pos": "noun", "displayEn": "increase", "ru": "рост, увеличение", "ex": "There has been a sharp <b>increase</b> in recycling." }
     ]},
     { "en": "to reduce", "emoji": "📉", "meanings": [
-      { "context": "make smaller", "ru": "уменьшать, сокращать", "ex": "The new plan will <b>reduce</b> traffic in the old town." },
-      { "context": "become smaller", "ru": "уменьшаться", "ex": "Pollution has <b>reduced</b> significantly since 2015." }
+      { "context": "make smaller", "pos": "verb", "ru": "уменьшать, сокращать", "ex": "The new plan will <b>reduce</b> traffic in the old town." },
+      { "context": "the act of making smaller", "pos": "noun", "displayEn": "reduction", "ru": "сокращение", "ex": "The <b>reduction</b> in cars helped the environment." }
     ]},
     { "en": "to provide", "emoji": "🎁", "meanings": [
-      { "context": "give what is needed", "ru": "предоставлять, обеспечивать", "ex": "The council <b>provides</b> free bike repairs for residents." },
-      { "context": "supply for a purpose", "ru": "снабжать", "ex": "Local farms <b>provide</b> vegetables for the school canteen." }
+      { "context": "give what is needed", "pos": "verb", "ru": "предоставлять, обеспечивать", "ex": "The council <b>provides</b> free bike repairs for residents." },
+      { "context": "the act of giving", "pos": "noun", "displayEn": "provision", "ru": "обеспечение", "ex": "The <b>provision</b> of public transport is essential." }
     ]},
     { "en": "to affect", "emoji": "🔄", "meanings": [
-      { "context": "influence or change", "ru": "влиять на", "ex": "Air pollution <b>affects</b> everyone, especially children and the elderly." },
-      { "context": "cause emotional change", "ru": "воздействовать эмоционально", "ex": "The story of the flood deeply <b>affected</b> the readers." }
+      { "context": "influence or change", "pos": "verb", "ru": "влиять на", "ex": "Air pollution <b>affects</b> everyone, especially children and the elderly." },
+      { "context": "a result or change", "pos": "noun", "displayEn": "effect", "ru": "влияние, результат", "ex": "The <b>effect</b> of pollution on health is severe." }
     ]},
     { "en": "result", "emoji": "🎯", "meanings": [
-      { "context": "outcome", "ru": "результат", "ex": "The <b>result</b> of the project was cleaner air and happier residents." },
-      { "context": "to happen because of", "displayEn": "to result", "ru": "приводить к", "ex": "New cycling lanes <b>resulted</b> in fewer accidents." }
+      { "context": "outcome", "pos": "noun", "ru": "результат", "ex": "The <b>result</b> of the project was cleaner air and happier residents." },
+      { "context": "to happen because of", "pos": "verb", "displayEn": "to result", "ru": "приводить к", "ex": "New cycling lanes <b>resulted</b> in fewer accidents." }
     ]},
     { "en": "benefit", "emoji": "👍", "meanings": [
-      { "context": "a good effect", "ru": "польза, выгода", "ex": "One <b>benefit</b> of cycling is better health." },
-      { "context": "to gain from", "displayEn": "to benefit", "ru": "извлекать пользу, получать выгоду", "ex": "Everyone <b>benefits</b> from cleaner air." }
+      { "context": "a good effect", "pos": "noun", "ru": "польза, выгода", "ex": "One <b>benefit</b> of cycling is better health." },
+      { "context": "to gain from", "pos": "verb", "displayEn": "to benefit", "ru": "извлекать пользу, получать выгоду", "ex": "Everyone <b>benefits</b> from cleaner air." }
     ]},
     { "en": "cost", "emoji": "💰", "meanings": [
-      { "context": "price", "ru": "стоимость, цена", "ex": "The <b>cost</b> of the new metro line was very high." },
-      { "context": "to have a price", "displayEn": "to cost", "ru": "стоить", "ex": "Solar panels <b>cost</b> less than they did ten years ago." },
-      { "context": "to cause loss", "displayEn": "to cost", "ru": "стоить (потерь)", "ex": "The delay <b>cost</b> the company millions of dollars." }
+      { "context": "price", "pos": "noun", "ru": "стоимость, цена", "ex": "The <b>cost</b> of the new metro line was very high." },
+      { "context": "to have a price", "pos": "verb", "displayEn": "to cost", "ru": "стоить", "ex": "Solar panels <b>cost</b> less than they did ten years ago." }
     ]},
     { "en": "issue", "emoji": "❔", "meanings": [
-      { "context": "a problem to discuss", "ru": "проблема, вопрос", "ex": "Traffic congestion is a major <b>issue</b> in many cities." },
-      { "context": "to officially release", "displayEn": "to issue", "ru": "выпускать", "ex": "The government <b>issued</b> a new report on air quality." }
+      { "context": "a problem to discuss", "pos": "noun", "ru": "проблема, вопрос", "ex": "Traffic congestion is a major <b>issue</b> in many cities." },
+      { "context": "to officially release", "pos": "verb", "displayEn": "to issue", "ru": "выпускать", "ex": "The government <b>issued</b> a new report on air quality." }
     ]},
     { "en": "solution", "emoji": "💡", "meanings": [
-      { "context": "an answer to a problem", "ru": "решение", "ex": "Cycling is one <b>solution</b> to urban pollution." },
-      { "context": "a liquid mixture (chemistry)", "ru": "раствор", "ex": "The lab technician prepared a salt <b>solution</b>." }
+      { "context": "an answer to a problem", "pos": "noun", "ru": "решение", "ex": "Cycling is one <b>solution</b> to urban pollution." },
+      { "context": "to solve a problem", "pos": "verb", "displayEn": "to solve", "ru": "решать", "ex": "We must <b>solve</b> the traffic issue." }
     ]},
     { "en": "public", "emoji": "🏛️", "meanings": [
-      { "context": "for everyone", "ru": "общественный, публичный", "ex": "Public transport should be cheap and reliable." },
-      { "context": "people in general", "ru": "публика, общественность", "ex": "The <b>public</b> was invited to comment on the new plan." }
+      { "context": "for everyone", "pos": "adjective", "ru": "общественный, публичный", "ex": "Public transport should be cheap and reliable." },
+      { "context": "people in general", "pos": "noun", "ru": "публика, общественность", "ex": "The <b>public</b> was invited to comment on the new plan." }
     ]},
     { "en": "local", "emoji": "📍", "meanings": [
-      { "context": "nearby, from this area", "ru": "местный", "ex": "Local shops give discounts to residents who cycle." },
-      { "context": "a person from the area", "ru": "местный житель", "ex": "The <b>locals</b> know the best cycling routes." }
+      { "context": "nearby, from this area", "pos": "adjective", "ru": "местный", "ex": "Local shops give discounts to residents who cycle." },
+      { "context": "a person from the area", "pos": "noun", "ru": "местный житель", "ex": "The <b>locals</b> know the best cycling routes." }
     ]},
     { "en": "energy", "emoji": "⚡", "meanings": [
-      { "context": "power for heat or light", "ru": "энергия", "ex": "The city uses wind <b>energy</b> to power public buildings." },
-      { "context": "physical or mental strength", "ru": "силы, энергия", "ex": "After a long bike ride, she had no <b>energy</b> left." }
+      { "context": "power for heat or light", "pos": "noun", "ru": "энергия", "ex": "The city uses wind <b>energy</b> to power public buildings." }
     ]},
     { "en": "resource", "emoji": "🧰", "meanings": [
-      { "context": "useful material or supply", "ru": "ресурс", "ex": "Water is a precious <b>resource</b> in dry regions." },
-      { "context": "something useful for a task", "ru": "средство, возможность", "ex": "The internet is a great <b>resource</b> for language learners." }
+      { "context": "useful material or supply", "pos": "noun", "ru": "ресурс", "ex": "Water is a precious <b>resource</b> in dry regions." }
     ]},
     { "en": "to develop", "emoji": "🌱", "meanings": [
-      { "context": "build or expand a place", "ru": "развивать, застраивать", "ex": "The city <b>developed</b> the empty lot into a public park." },
-      { "context": "grow or gain skills", "ru": "развивать(ся)", "ex": "She <b>developed</b> strong English skills through daily practice." },
-      { "context": "create a product or idea", "ru": "разрабатывать", "ex": "Engineers <b>developed</b> an app that maps safe cycling routes." }
+      { "context": "build or expand a place", "pos": "verb", "ru": "развивать, застраивать", "ex": "The city <b>developed</b> the empty lot into a public park." },
+      { "context": "the act of growing", "pos": "noun", "displayEn": "development", "ru": "развитие", "ex": "The <b>development</b> of the area took years." }
     ]},
     { "en": "to support", "emoji": "🤝", "meanings": [
-      { "context": "help or encourage", "ru": "поддерживать", "ex": "Local shops <b>support</b> the cycling campaign." },
-      { "context": "agree with a plan", "ru": "одобрять, поддерживать", "ex": "Most residents <b>support</b> the pedestrianisation plan." },
-      { "context": "help or encouragement (noun)", "displayEn": "support", "ru": "поддержка", "ex": "She needs more <b>support</b> with her grammar." }
+      { "context": "help or encourage", "pos": "verb", "ru": "поддерживать", "ex": "Local shops <b>support</b> the cycling campaign." },
+      { "context": "help or encouragement", "pos": "noun", "displayEn": "support", "ru": "поддержка", "ex": "She needs more <b>support</b> with her grammar." }
     ]}
   ],
-
   "matchData": [
     { "word": "environment", "meaning": "the natural world around us" },
     { "word": "pollution", "meaning": "harmful material in air, water, or land" },
@@ -98,24 +90,22 @@
     { "word": "to affect", "meaning": "change or influence something" },
     { "word": "benefit", "meaning": "a good or helpful result" }
   ],
-
-  "readingHtml": "<h1>The City That Said Goodbye to Cars</h1><div class=\"subtitle\">A case study in urban transformation</div><p><span class=\"para-label\">A.</span>In 2015, the mayor of Copenhagen stood in front of a crowded town hall and made a promise that many thought was impossible: within a decade, the city would become the first capital in the world to be carbon-neutral. At the time, Copenhagen was struggling with the same problems that face most growing cities — congested roads, rising pollution, and residents who complained that their neighbourhoods had become unlivable. Few believed the plan would work. Ten years later, the city has proved many of those sceptics wrong.</p><p><span class=\"para-label\">B.</span>The idea was not new. As early as 2009, city planners had begun to discuss a bold strategy: to reduce the number of cars in the city centre and to make cycling, walking, and public transport the primary ways of getting around. What made Copenhagen\u2019s plan different was not the goal, but the scale. Rather than gently discouraging drivers, the council made a series of decisions that changed the physical shape of the city. Parking spaces were removed. Whole streets were turned into pedestrian-only zones. A network of elevated cycle paths — the so-called \u201Ccycle super-highways\u201D — was built to connect the suburbs with the city centre.</p><p><span class=\"para-label\">C.</span>The cycling infrastructure is perhaps the most striking feature of the transformation. Copenhagen now has over 400 kilometres of dedicated cycle lanes, many of them separated from car traffic by curbs or planters. In winter, the snow is cleared from cycle paths before it is cleared from roads. At major intersections, cyclists are given priority with their own traffic lights. Perhaps most importantly, the city made a decision that no other capital had made: it began to measure its success not by how fast cars could move, but by how many people chose to cycle. Today, more than 60 per cent of Copenhagen residents commute to work or school by bike — a figure that would have seemed absurd a generation ago.</p><p><span class=\"para-label\">D.</span>The transformation was not limited to transport. The city\u2019s harbour, once an industrial area that residents avoided, has been cleaned and reopened as a public space. Old warehouses have been converted into apartments, restaurants, and cultural centres. A series of new bridges allow pedestrians and cyclists to cross the water easily. In summer, locals swim in the harbour — something that would have been unthinkable in the 1990s, when the water was considered unsafe. The city has also invested heavily in renewable energy, particularly wind power and district heating systems that use waste heat from factories.</p><p><span class=\"para-label\">E.</span>Not everyone welcomed the changes. Small business owners in the city centre complained that removing parking spaces had reduced their customers. Some residents in the suburbs argued that the new cycle highways served wealthier neighbourhoods better than poorer ones. Critics noted that the transition had been expensive, and that the council had spent millions on projects that would take decades to pay back. Others pointed out that Copenhagen\u2019s success was possible partly because the city was relatively small and wealthy — conditions that many other cities do not share.</p><p><span class=\"para-label\">F.</span>Despite the criticisms, the results have been difficult to ignore. Air pollution in the city centre has dropped by more than 40 per cent since 2015. Traffic accidents involving cyclists have fallen, partly because of safer road design. Most importantly, surveys suggest that residents are happier with their city than they were a decade ago. Copenhagen has become a model that other cities now study carefully — from Paris to Bogotá to Seoul. The question is no longer whether a city can reduce its dependence on cars, but how quickly others will follow.</p>",
-
+  "readingHtml": "<h1>The City That Said Goodbye to Cars</h1><div class=\"subtitle\">A case study in urban transformation</div><p><span class=\"para-label\">A.</span>In 2015, the mayor of Copenhagen stood in front of a crowded town hall and made a promise that many thought was impossible: within a decade, the city would become the first capital in the world to be carbon-neutral. At the time, Copenhagen was struggling with the same problems that face most growing cities — congested roads, rising pollution, and residents who complained that their neighbourhoods had become unlivable. Few believed the plan would work. Ten years later, the city has proved many of those sceptics wrong.</p><p><span class=\"para-label\">B.</span>The idea was not new. As early as 2009, city planners had begun to discuss a bold strategy: to reduce the number of cars in the city centre and to make cycling, walking, and public transport the primary ways of getting around. What made Copenhagen’s plan different was not the goal, but the scale. Rather than gently discouraging drivers, the council made a series of decisions that changed the physical shape of the city. Parking spaces were removed. Whole streets were turned into pedestrian-only zones. A network of elevated cycle paths — the so-called “cycle super-highways” — was built to connect the suburbs with the city centre.</p><p><span class=\"para-label\">C.</span>The cycling infrastructure is perhaps the most striking feature of the transformation. Copenhagen now has over 400 kilometres of dedicated cycle lanes, many of them separated from car traffic by curbs or planters. In winter, the snow is cleared from cycle paths before it is cleared from roads. At major intersections, cyclists are given priority with their own traffic lights. Perhaps most importantly, the city made a decision that no other capital had made: it began to measure its success not by how fast cars could move, but by how many people chose to cycle. Today, more than 60 per cent of Copenhagen residents commute to work or school by bike — a figure that would have seemed absurd a generation ago.</p><p><span class=\"para-label\">D.</span>The transformation was not limited to transport. The city’s harbour, once an industrial area that residents avoided, has been cleaned and reopened as a public space. Old warehouses have been converted into apartments, restaurants, and cultural centres. A series of new bridges allow pedestrians and cyclists to cross the water easily. In summer, locals swim in the harbour — something that would have been unthinkable in the 1990s, when the water was considered unsafe. The city has also invested heavily in renewable energy, particularly wind power and district heating systems that use waste heat from factories.</p><p><span class=\"para-label\">E.</span>Not everyone welcomed the changes. Small business owners in the city centre complained that removing parking spaces had reduced their customers. Some residents in the suburbs argued that the new cycle highways served wealthier neighbourhoods better than poorer ones. Critics noted that the transition had been expensive, and that the council had spent millions on projects that would take decades to pay back. Others pointed out that Copenhagen’s success was possible partly because the city was relatively small and wealthy — conditions that many other cities do not share.</p><p><span class=\"para-label\">F.</span>Despite the criticisms, the results have been difficult to ignore. Air pollution in the city centre has dropped by more than 40 per cent since 2015. Traffic accidents involving cyclists have fallen, partly because of safer road design. Most importantly, surveys suggest that residents are happier with their city than they were a decade ago. Copenhagen has become a model that other cities now study carefully — from Paris to Bogotá to Seoul. The question is no longer whether a city can reduce its dependence on cars, but how quickly others will follow.</p>",
   "readingQ": [
     { "type": "short", "prompt": "In what year did the mayor make the carbon-neutral promise?", "answers": ["2015"], "exp": "The article says the promise was made in 2015." },
     { "type": "short", "prompt": "What percentage of Copenhagen residents currently commute by bicycle?", "answers": ["60","60%","60 per cent","more than 60","over 60"], "exp": "More than 60 per cent of residents cycle to work or school." },
     { "type": "short", "prompt": "By how much has air pollution dropped in the city centre since 2015?", "answers": ["40","40%","40 per cent","more than 40","over 40"], "exp": "Air pollution has dropped by more than 40 per cent." },
     { "type": "short", "prompt": "In which decade was the harbour considered unsafe for swimming?", "answers": ["1990s","the 1990s","1990"], "exp": "The water was considered unsafe in the 1990s." },
     { "type": "short", "prompt": "What is cleared from cycle paths first in winter?", "answers": ["snow","the snow"], "exp": "Snow is cleared from cycle paths before roads." },
-    { "type": "short", "prompt": "Name ONE city mentioned in the article as studying Copenhagen\u2019s model.", "answers": ["paris","bogota","bogotá","seoul"], "exp": "Paris, Bogotá and Seoul are all mentioned." },
+    { "type": "short", "prompt": "Name ONE city mentioned in the article as studying Copenhagen’s model.", "answers": ["paris","bogota","bogotá","seoul"], "exp": "Paris, Bogotá and Seoul are all mentioned." },
     { "type": "tfng", "prompt": "Copenhagen promised to become carbon-neutral within ten years.", "answer": "True", "exp": "The mayor promised carbon neutrality \"within a decade.\"" },
     { "type": "tfng", "prompt": "The cycle super-highways were built underground.", "answer": "False", "exp": "They were elevated, not underground." },
     { "type": "tfng", "prompt": "Snow is cleared from roads before cycle paths.", "answer": "False", "exp": "Snow is cleared from cycle paths first." },
     { "type": "tfng", "prompt": "The mayor of Copenhagen was re-elected after the transformation.", "answer": "Not Given", "exp": "The article never mentions re-election." },
-    { "type": "long", "prompt": "In your own words, explain why Copenhagen\u2019s plan was considered different from other cities\u2019 plans.",
+    { "type": "long", "prompt": "In your own words, explain why Copenhagen’s plan was considered different from other cities’ plans.",
       "keywordGroups": [["scale","size","extent"],["physical","shape","structure"],["removed","removal","parking"],["pedestrian","walking","walk"],["bold","ambitious","radical","large"]],
       "minWords": 12, "minGroups": 3,
-      "sample": "Copenhagen\u2019s plan was different because of its scale and because it changed the physical shape of the city — for example, by removing parking spaces and creating pedestrian-only zones.",
+      "sample": "Copenhagen’s plan was different because of its scale and because it changed the physical shape of the city — for example, by removing parking spaces and creating pedestrian-only zones.",
       "exp": "Key ideas: scale/size, physical change, removal of parking, pedestrian zones." },
     { "type": "long", "prompt": "Describe TWO benefits of the transformation that are mentioned in the article.",
       "keywordGroups": [["pollution","cleaner","air"],["accident","safe","safety"],["happy","happier","satisfied"],["cycle","bike","commute","travel"],["health","healthy"]],
@@ -130,11 +120,10 @@
     { "type": "short", "prompt": "Complete the summary: \"The city made a decision that no other capital had made: to measure success by how many people chose to ______.\"", "answers": ["cycle","bike","ride"], "exp": "The city measures success by how many people cycle." },
     { "type": "short", "prompt": "Complete: \"The council removed parking spaces and turned whole streets into ______ -only zones.\"", "answers": ["pedestrian","pedestrians"], "exp": "Streets became pedestrian-only zones." },
     { "type": "short", "prompt": "Complete: \"The city invested heavily in renewable energy, particularly wind power and ______ heating.\"", "answers": ["district"], "exp": "District heating uses waste heat from factories." },
-    { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["A city can reduce its dependence on cars with bold planning","Bicycles are dangerous in winter","Only wealthy cities can be sustainable"], "correct": "A city can reduce its dependence on cars with bold planning", "exp": "The article tells the story of Copenhagen\u2019s successful urban transformation." },
+    { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["A city can reduce its dependence on cars with bold planning","Bicycles are dangerous in winter","Only wealthy cities can be sustainable"], "correct": "A city can reduce its dependence on cars with bold planning", "exp": "The article tells the story of Copenhagen’s successful urban transformation." },
     { "type": "mcq", "prompt": "Which of these is NOT stated as a benefit of the transformation?", "options": ["Lower air pollution","Fewer cycling accidents","Cheaper housing for residents"], "correct": "Cheaper housing for residents", "exp": "The article never says housing became cheaper." },
-    { "type": "mcq", "prompt": "What is the author\u2019s overall tone towards Copenhagen\u2019s plan?", "options": ["Broadly positive with balanced criticisms","Entirely critical","Neutral and uninterested"], "correct": "Broadly positive with balanced criticisms", "exp": "The article praises results but includes paragraph E\u2019s criticisms." }
+    { "type": "mcq", "prompt": "What is the author’s overall tone towards Copenhagen’s plan?", "options": ["Broadly positive with balanced criticisms","Entirely critical","Neutral and uninterested"], "correct": "Broadly positive with balanced criticisms", "exp": "The article praises results but includes paragraph E’s criticisms." }
   ],
-
   "contextQ": [
     { "prompt": "In paragraph A, \"sceptics\" are people who...", "options": ["doubt something is true","support a plan","write about cities"], "correct": "doubt something is true", "exp": "A sceptic doubts claims." },
     { "prompt": "In paragraph B, \"scale\" refers to...", "options": ["the size or extent of the plan","a weighing machine","a map"], "correct": "the size or extent of the plan", "exp": "Here scale means the size of the change." },
@@ -145,7 +134,6 @@
     { "prompt": "In paragraph B, \"elevated\" cycle paths are...", "options": ["raised above the ground","underground","on the water"], "correct": "raised above the ground", "exp": "Elevated means raised." },
     { "prompt": "In paragraph C, \"priority\" means...", "options": ["the right to go first","a type of vehicle","a small road"], "correct": "the right to go first", "exp": "Cyclists get the right of way." }
   ],
-
   "g6": {
     "pos": [
       { "p": "The city ___ (install) solar panels on all public buildings since 2020.", "a": "has installed", "ex": "Present perfect: has + installed. Result matters now." },
@@ -201,7 +189,6 @@
       { "p": "The council ___ (not / decide) on the new parking rules yet.", "a": "has not decided" }
     ]
   },
-
   "g7": {
     "pos": [
       { "p": "The new cycle lane ___ (open) by the mayor in 2023.", "a": "was opened", "ex": "Past passive: was + V3." },
@@ -257,7 +244,6 @@
       { "p": "Public feedback ___ (collect) via the city website.", "a": "was collected" }
     ]
   },
-
   "sbPp": {
     "pos": [
       { "prompt": "Build a present perfect sentence about the city park.", "correct": ["The","city","has","opened","three","new","parks","recently."] },
@@ -313,7 +299,6 @@
       { "prompt": "Build: The government has invested in wind power.", "correct": ["The","government","has","invested","in","wind","power."] }
     ]
   },
-
   "sbPs": {
     "pos": [
       { "prompt": "Build a past passive sentence about the new park.", "correct": ["The","new","park","was","opened","last","year."] },
@@ -369,7 +354,6 @@
       { "prompt": "Build: Public feedback was collected online.", "correct": ["Public","feedback","was","collected","online."] }
     ]
   },
-
   "g10": {
     "pos": [
       { "p": "The council ___ (add) three new bus routes in 2022.", "a": "added", "ex": "Finished year → past simple." },
@@ -390,7 +374,7 @@
       { "p": "___ the city ___ (provide) clear maps so far?", "a": "Has the city provided", "ex": "\"So far\" → present perfect question." },
       { "p": "___ they ___ (install) the new lights in 2020?", "a": "Did they install", "ex": "Finished year → past simple." },
       { "p": "___ you ever ___ (cycle) across the old bridge?", "a": "Have you ever cycled", "ex": "\"Ever\" → present perfect." },
-      { "p": "___ the mayor ___ (speak) at yesterday\u2019s meeting?", "a": "Did the mayor speak", "ex": "\"Yesterday\" → past simple." }
+      { "p": "___ the mayor ___ (speak) at yesterday’s meeting?", "a": "Did the mayor speak", "ex": "\"Yesterday\" → past simple." }
     ],
     "shuffled": [
       { "p": "The council ___ (add) the cycle lane in 2020.", "a": "added" },
@@ -425,7 +409,6 @@
       { "p": "We ___ (know) each other since primary school.", "a": "have known" }
     ]
   },
-
   "testMcq": [
     { "q": "Which word means \"harmful material in air, water, or land\"?", "options": ["pollution","community","transport"], "correct": "pollution", "exp": "Pollution harms the environment." },
     { "q": "Which word means \"a good or helpful result\"?", "options": ["benefit","cost","issue"], "correct": "benefit", "exp": "A benefit is a good or helpful result." },
@@ -436,16 +419,14 @@
     { "q": "Which word means \"ways of moving people or goods\"?", "options": ["transport","community","benefit"], "correct": "transport", "exp": "Transport is how people/goods move." },
     { "q": "Which word means \"to change or influence something\"?", "options": ["to affect","to provide","to result"], "correct": "to affect", "exp": "To affect = change/influence." }
   ],
-
   "testShort": [
     { "q": "In what year did the mayor of Copenhagen promise carbon neutrality?", "answers": ["2015"], "exp": "2015." },
     { "q": "What percentage of residents commute by bike?", "answers": ["60","60%","60 per cent","more than 60","over 60"], "exp": "More than 60 per cent." },
     { "q": "By how much has air pollution dropped?", "answers": ["40","40%","40 per cent","more than 40","over 40"], "exp": "By more than 40 per cent." },
     { "q": "In which decade was the harbour unsafe for swimming?", "answers": ["1990s","the 1990s","1990"], "exp": "The 1990s." },
     { "q": "What is cleared from cycle paths first in winter?", "answers": ["snow","the snow"], "exp": "Snow." },
-    { "q": "Name ONE city mentioned as studying Copenhagen\u2019s model.", "answers": ["paris","bogota","bogotá","seoul"], "exp": "Paris, Bogotá, Seoul." }
+    { "q": "Name ONE city mentioned as studying Copenhagen’s model.", "answers": ["paris","bogota","bogotá","seoul"], "exp": "Paris, Bogotá, Seoul." }
   ],
-
   "testTfng": [
     { "q": "Copenhagen promised carbon neutrality within ten years.", "answer": "True", "exp": "Within a decade." },
     { "q": "The cycle paths were built underground.", "answer": "False", "exp": "They were elevated." },
@@ -453,7 +434,6 @@
     { "q": "The mayor was re-elected.", "answer": "Not Given", "exp": "Not mentioned." },
     { "q": "The article mentions Paris, Bogotá and Seoul.", "answer": "True", "exp": "Yes, all three." }
   ],
-
   "testComplete": [
     { "p": "The city ___ (open) five new parks since 2020.", "a": "has opened" },
     { "p": "The council ___ (approve) the plan in 2021.", "a": "approved" },

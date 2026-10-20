@@ -1,36 +1,36 @@
 {
   "vocab": [
     { "en": "to launch", "emoji": "🚀", "meanings": [
-      { "context": "to send a rocket into space (verb)", "displayEn": "to launch", "ru": "запускать (отправлять в космос)", "ex": "They will <b>launch</b> the rocket tomorrow." },
-      { "context": "the act of starting something (noun)", "displayEn": "launch", "ru": "запуск (начало)", "ex": "The <b>launch</b> was successful." }
+      { "context": "to send a rocket into space", "pos": "verb", "displayEn": "to launch", "ru": "запускать", "ex": "They will <b>launch</b> the rocket tomorrow." },
+      { "context": "the act of starting", "pos": "noun", "displayEn": "launch", "ru": "запуск", "ex": "The <b>launch</b> was successful." }
     ]},
     { "en": "orbit", "emoji": "🪐", "meanings": [
-      { "context": "the curved path around a planet (noun)", "displayEn": "orbit", "ru": "орбита (путь вокруг планеты)", "ex": "The space station is in <b>orbit</b>." },
-      { "context": "to move around a planet (verb)", "displayEn": "to orbit", "ru": "вращаться по орбите (обходить вокруг)", "ex": "The moon <b>orbits</b> the Earth." }
+      { "context": "the curved path around a planet", "pos": "noun", "displayEn": "orbit", "ru": "орбита", "ex": "The space station is in <b>orbit</b>." },
+      { "context": "to move around a planet", "pos": "verb", "displayEn": "to orbit", "ru": "вращаться по орбите", "ex": "The moon <b>orbits</b> the Earth." }
     ]},
     { "en": "to require", "emoji": "📋", "meanings": [
-      { "context": "to need something (verb)", "displayEn": "to require", "ru": "требовать (нуждаться в чем-то)", "ex": "Space travel <b>requires</b> a lot of training." },
-      { "context": "something that is needed (noun)", "displayEn": "requirement", "ru": "требование (необходимое условие)", "ex": "Health is a strict <b>requirement</b>." }
+      { "context": "to need something", "pos": "verb", "displayEn": "to require", "ru": "требовать", "ex": "Space travel <b>requires</b> a lot of training." },
+      { "context": "something that is needed", "pos": "noun", "displayEn": "requirement", "ru": "требование", "ex": "Health is a strict <b>requirement</b>." }
     ]},
     { "en": "hazard", "emoji": "⚠️", "meanings": [
-      { "context": "a danger or risk (noun)", "displayEn": "hazard", "ru": "опасность (риск, угроза)", "ex": "Space debris is a major <b>hazard</b>." },
-      { "context": "dangerous (adjective)", "displayEn": "hazardous", "ru": "опасный (рискованный)", "ex": "It is a <b>hazardous</b> journey." }
+      { "context": "a danger or risk", "pos": "noun", "displayEn": "hazard", "ru": "опасность", "ex": "Space debris is a major <b>hazard</b>." },
+      { "context": "dangerous", "pos": "adjective", "displayEn": "hazardous", "ru": "опасный", "ex": "It is a <b>hazardous</b> journey." }
     ]},
     { "en": "to survive", "emoji": "🛡️", "meanings": [
-      { "context": "to continue to live in difficult conditions (verb)", "displayEn": "to survive", "ru": "выживать (оставаться в живых)", "ex": "Astronauts must learn how to <b>survive</b> in space." },
-      { "context": "the state of continuing to live (noun)", "displayEn": "survival", "ru": "выживание (сохранение жизни)", "ex": "Survival training is essential." }
+      { "context": "to continue to live", "pos": "verb", "displayEn": "to survive", "ru": "выживать", "ex": "Astronauts must learn how to <b>survive</b> in space." },
+      { "context": "the state of continuing to live", "pos": "noun", "displayEn": "survival", "ru": "выживание", "ex": "<b>Survival</b> training is essential." }
     ]},
     { "en": "to adapt", "emoji": "🔄", "meanings": [
-      { "context": "to change to fit a new situation (verb)", "displayEn": "to adapt", "ru": "адаптироваться (приспосабливаться)", "ex": "The human body must <b>adapt</b> to zero gravity." },
-      { "context": "a change to fit a new situation (noun)", "displayEn": "adaptation", "ru": "адаптация (приспособление)", "ex": "The <b>adaptation</b> to space takes time." }
+      { "context": "to change to fit a new situation", "pos": "verb", "displayEn": "to adapt", "ru": "адаптироваться", "ex": "The human body must <b>adapt</b> to zero gravity." },
+      { "context": "a change to fit a new situation", "pos": "noun", "displayEn": "adaptation", "ru": "адаптация", "ex": "The <b>adaptation</b> to space takes time." }
     ]},
     { "en": "to establish", "emoji": "🏗️", "meanings": [
-      { "context": "to start something that will last (verb)", "displayEn": "to establish", "ru": "учреждать, основывать (создавать)", "ex": "They want to <b>establish</b> a hotel in orbit." },
-      { "context": "an organization or place (noun)", "displayEn": "establishment", "ru": "учреждение (организация)", "ex": "It is a scientific <b>establishment</b>." }
+      { "context": "to start something that will last", "pos": "verb", "displayEn": "to establish", "ru": "учреждать, основывать", "ex": "They want to <b>establish</b> a hotel in orbit." },
+      { "context": "an organization or place", "pos": "noun", "displayEn": "establishment", "ru": "учреждение", "ex": "It is a scientific <b>establishment</b>." }
     ]},
     { "en": "to isolate", "emoji": "🏝️", "meanings": [
-      { "context": "to separate someone from others (verb)", "displayEn": "to isolate", "ru": "изолировать (отделять от других)", "ex": "Astronauts can feel <b>isolated</b> in space." },
-      { "context": "the state of being alone (noun)", "displayEn": "isolation", "ru": "изоляция (одиночество)", "ex": "They must cope with <b>isolation</b>." }
+      { "context": "to separate someone from others", "pos": "verb", "displayEn": "to isolate", "ru": "изолировать", "ex": "Astronauts can feel <b>isolated</b> in space." },
+      { "context": "the state of being alone", "pos": "noun", "displayEn": "isolation", "ru": "изоляция", "ex": "They must cope with <b>isolation</b>." }
     ]}
   ],
   "matchData": [

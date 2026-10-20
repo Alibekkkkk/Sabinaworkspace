@@ -1,68 +1,73 @@
 {
   "vocab": [
     { "en": "blizzard", "emoji": "❄️", "meanings": [
-      { "context": "a long snowstorm", "ru": "снежная буря, пурга", "ex": "A <b>blizzard</b> is a long snowstorm with very strong winds." },
-      { "context": "a sudden rush of snow", "ru": "снежный вихрь", "ex": "The mountain pass was closed by a sudden <b>blizzard</b>." }
+      { "context": "a long snowstorm", "pos": "noun", "ru": "снежная буря, пурга", "ex": "A <b>blizzard</b> is a long snowstorm with very strong winds." },
+      { "context": "a sudden rush of snow", "pos": "noun", "ru": "снежный вихрь", "ex": "The mountain pass was closed by a sudden <b>blizzard</b>." }
     ]},
     { "en": "drought", "emoji": "🏜️", "meanings": [
-      { "context": "a long period without rain", "ru": "засуха", "ex": "A <b>drought</b> is a long period with very little or no rain." },
-      { "context": "a serious shortage", "ru": "нехватка, дефицит", "ex": "The country suffered a <b>drought</b> of investment." }
+      { "context": "a long period without rain", "pos": "noun", "ru": "засуха", "ex": "A <b>drought</b> is a long period with very little or no rain." },
+      { "context": "a serious shortage", "pos": "noun", "ru": "нехватка, дефицит", "ex": "The country suffered a <b>drought</b> of investment." }
     ]},
     { "en": "earthquake", "emoji": "🏚️", "meanings": [
-      { "context": "a sudden shaking of the ground", "ru": "землетрясение", "ex": "An <b>earthquake</b> happens when the Earth’s crust moves suddenly." }
+      { "context": "a sudden shaking of the ground", "pos": "noun", "ru": "землетрясение", "ex": "An <b>earthquake</b> happens when the Earth’s crust moves suddenly." }
     ]},
     { "en": "flood", "emoji": "🌊", "meanings": [
-      { "context": "water covering dry land", "ru": "наводнение, паводок", "ex": "A <b>flood</b> happens when water covers land that is usually dry." },
-      { "context": "a large amount of something", "ru": "поток, масса (чего-либо)", "ex": "A <b>flood</b> of messages arrived after the announcement." }
+      { "context": "water covering dry land", "pos": "noun", "ru": "наводнение, паводок", "ex": "A <b>flood</b> happens when water covers land that is usually dry." },
+      { "context": "to cover with water", "pos": "verb", "displayEn": "to flood", "ru": "затоплять", "ex": "Heavy rain can <b>flood</b> the streets." }
     ]},
     { "en": "heat wave", "emoji": "🥵", "meanings": [
-      { "context": "a period of very hot weather", "ru": "волна жары", "ex": "A <b>heat wave</b> brings temperatures much higher than usual." }
+      { "context": "a period of very hot weather", "pos": "noun", "ru": "волна жары", "ex": "A <b>heat wave</b> brings temperatures much higher than usual." }
     ]},
     { "en": "hurricane", "emoji": "🌀", "meanings": [
-      { "context": "a giant tropical storm", "ru": "ураган", "ex": "A <b>hurricane</b> is a giant swirling storm with winds up to 160 mph." }
+      { "context": "a giant tropical storm", "pos": "noun", "ru": "ураган", "ex": "A <b>hurricane</b> is a giant swirling storm with winds up to 160 mph." }
     ]},
     { "en": "tornado", "emoji": "🌪️", "meanings": [
-      { "context": "a rotating column of air", "ru": "торнадо, смерч", "ex": "A <b>tornado</b> is a destructive rotating column of air." }
+      { "context": "a rotating column of air", "pos": "noun", "ru": "торнадо, смерч", "ex": "A <b>tornado</b> is a destructive rotating column of air." }
     ]},
     { "en": "tsunami", "emoji": "🌊", "meanings": [
-      { "context": "a huge ocean wave", "ru": "цунами", "ex": "A <b>tsunami</b> is a very large ocean wave that surges onto land." }
+      { "context": "a huge ocean wave", "pos": "noun", "ru": "цунами", "ex": "A <b>tsunami</b> is a very large ocean wave that surges onto land." }
     ]},
     { "en": "wildfire", "emoji": "🔥", "meanings": [
-      { "context": "a fire that spreads in nature", "ru": "лесной пожар", "ex": "A <b>wildfire</b> is a forest or grass fire that spreads quickly." }
+      { "context": "a fire that spreads in nature", "pos": "noun", "ru": "лесной пожар", "ex": "A <b>wildfire</b> is a forest or grass fire that spreads quickly." }
     ]},
     { "en": "landslide", "emoji": "⛰️", "meanings": [
-      { "context": "rocks sliding down a slope", "ru": "оползень", "ex": "A <b>landslide</b> happens when rocks and earth slide down a slope." }
+      { "context": "rocks sliding down a slope", "pos": "noun", "ru": "оползень", "ex": "A <b>landslide</b> happens when rocks and earth slide down a slope." }
     ]},
     { "en": "avalanche", "emoji": "🏔️", "meanings": [
-      { "context": "snow and ice sliding down", "ru": "лавина", "ex": "An <b>avalanche</b> can follow heavy snowfall." }
+      { "context": "snow and ice sliding down", "pos": "noun", "ru": "лавина", "ex": "An <b>avalanche</b> can follow heavy snowfall." }
     ]},
     { "en": "volcano", "emoji": "🌋", "meanings": [
-      { "context": "a mountain that can erupt", "ru": "вулкан", "ex": "Active <b>volcanoes</b> send ash into the air and lava onto the ground." }
+      { "context": "a mountain that can erupt", "pos": "noun", "ru": "вулкан", "ex": "Active <b>volcanoes</b> send ash into the air and lava onto the ground." },
+      { "context": "related to a volcano", "pos": "adjective", "displayEn": "volcanic", "ru": "вулканический", "ex": "The <b>volcanic</b> eruption was massive." }
     ]},
     { "en": "eruption", "emoji": "💥", "meanings": [
-      { "context": "when a volcano explodes", "ru": "извержение", "ex": "The <b>eruption</b> sent ash clouds into the sky." }
+      { "context": "when a volcano explodes", "pos": "noun", "ru": "извержение", "ex": "The <b>eruption</b> sent ash clouds into the sky." },
+      { "context": "to explode", "pos": "verb", "displayEn": "to erupt", "ru": "извергаться", "ex": "The volcano could <b>erupt</b> at any moment." }
     ]},
     { "en": "magnitude", "emoji": "📊", "meanings": [
-      { "context": "the strength of an earthquake", "ru": "магнитуда", "ex": "The <b>magnitude</b> of an earthquake describes its strength." },
-      { "context": "importance or scale", "ru": "масштаб, величина", "ex": "Few understood the <b>magnitude</b> of the disaster." }
+      { "context": "the strength of an earthquake", "pos": "noun", "ru": "магнитуда", "ex": "The <b>magnitude</b> of an earthquake describes its strength." },
+      { "context": "importance or scale", "pos": "noun", "ru": "масштаб, величина", "ex": "Few understood the <b>magnitude</b> of the disaster." }
     ]},
     { "en": "tremor", "emoji": "📳", "meanings": [
-      { "context": "a small shaking", "ru": "толчок, дрожь", "ex": "The earthquake was minor, with only a few small <b>tremors</b>." }
+      { "context": "a small shaking", "pos": "noun", "ru": "толчок, дрожь", "ex": "The earthquake was minor, with only a few small <b>tremors</b>." }
     ]},
     { "en": "crust", "emoji": "🪨", "meanings": [
-      { "context": "Earth’s outer layer", "ru": "земная кора", "ex": "An earthquake happens when the Earth’s <b>crust</b> moves suddenly." }
+      { "context": "Earth’s outer layer", "pos": "noun", "ru": "земная кора", "ex": "An earthquake happens when the Earth’s <b>crust</b> moves suddenly." }
     ]},
     { "en": "humid", "emoji": "💧", "meanings": [
-      { "context": "warm and wet in the air", "ru": "влажный", "ex": "Warm, <b>humid</b> air rises quickly into the sky." }
+      { "context": "warm and wet in the air", "pos": "adjective", "ru": "влажный", "ex": "Warm, <b>humid</b> air rises quickly into the sky." },
+      { "context": "the state of being wet", "pos": "noun", "displayEn": "humidity", "ru": "влажность", "ex": "The <b>humidity</b> in the jungle is very high." }
     ]},
     { "en": "deforestation", "emoji": "🪓", "meanings": [
-      { "context": "the removal of many trees", "ru": "вырубка лесов", "ex": "<b>Deforestation</b> can make droughts worse." }
+      { "context": "the removal of many trees", "pos": "noun", "ru": "вырубка лесов", "ex": "<b>Deforestation</b> can make droughts worse." },
+      { "context": "to remove trees", "pos": "verb", "displayEn": "to deforest", "ru": "вырубать леса", "ex": "Companies <b>deforest</b> large areas for farming." }
     ]},
     { "en": "atmosphere", "emoji": "🌍", "meanings": [
-      { "context": "the air around Earth", "ru": "атмосфера", "ex": "High pressure in the <b>atmosphere</b> can cause a heat wave." }
+      { "context": "the air around Earth", "pos": "noun", "ru": "атмосфера", "ex": "High pressure in the <b>atmosphere</b> can cause a heat wave." }
     ]},
     { "en": "evacuation", "emoji": "🚨", "meanings": [
-      { "context": "organized removal from danger", "ru": "эвакуация", "ex": "The <b>evacuation</b> of the coastal town began at dawn." }
+      { "context": "organized removal from danger", "pos": "noun", "ru": "эвакуация", "ex": "The <b>evacuation</b> of the coastal town began at dawn." },
+      { "context": "to move to a safe place", "pos": "verb", "displayEn": "to evacuate", "ru": "эвакуировать", "ex": "They had to <b>evacuate</b> the town." }
     ]}
   ],
   "matchData": [
