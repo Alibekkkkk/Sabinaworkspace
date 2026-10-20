@@ -39,13 +39,61 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 @media(max-width:980px){.hw-split{grid-template-columns:1fr}}
 .reading-pane{position:sticky;top:80px}
 .questions-pane{min-width:0}
-.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.9;color:var(--ink);box-shadow:var(--shadow-sm);max-height:calc(100vh - 120px);overflow-y:auto}
+.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.9;color:var(--ink);box-shadow:var(--shadow-sm);max-height:calc(100vh - 120px);overflow-y:auto;user-select:text;}
 .passage h2{font-size:26px;color:var(--accent);margin-bottom:6px;font-weight:800;line-height:1.2}
 .passage .subtitle{font-size:14px;color:var(--ink-soft);font-style:italic;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px}
 .passage p{margin-bottom:16px;text-align:justify}
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
 .v-word{background:rgba(238,90,36,.12);color:var(--accent-dark);font-weight:700;cursor:pointer;padding:1px 5px;border-radius:5px;border-bottom:2px dotted var(--accent);font-family:inherit;font-size:inherit}
 .v-word:hover{background:var(--accent);color:#fff}
+
+/* HIGHLIGHTS & NOTES */
+.hl-yellow{background-color:#fce883;color:#000;}
+.hl-green{background-color:#b5e8c5;color:#000;}
+.hl-blue{background-color:#c5e1f5;color:#000;}
+.hl-purple{background-color:#e9d5ff;color:#000;}
+.hl-pink{background-color:#fbcfe8;color:#000;}
+.user-note{background-color:#fef08a;border-bottom:2px dashed #eab308;cursor:pointer;padding:0 2px;border-radius:2px;color:#000;transition:background .2s;}
+.user-note:hover{background-color:#fde047;}
+html.dark .hl-yellow{background-color:rgba(250, 204, 21, 0.3);color:#fff;border-bottom:2px solid rgba(250, 204, 21, 0.6);}
+html.dark .hl-green{background-color:rgba(74, 222, 128, 0.3);color:#fff;border-bottom:2px solid rgba(74, 222, 128, 0.6);}
+html.dark .hl-blue{background-color:rgba(96, 165, 250, 0.3);color:#fff;border-bottom:2px solid rgba(96, 165, 250, 0.6);}
+html.dark .hl-purple{background-color:rgba(192, 132, 252, 0.3);color:#fff;border-bottom:2px solid rgba(192, 132, 252, 0.6);}
+html.dark .hl-pink{background-color:rgba(244, 114, 182, 0.3);color:#fff;border-bottom:2px solid rgba(244, 114, 182, 0.6);}
+html.dark .user-note{background-color:rgba(253, 224, 71, 0.3);border-bottom:2px dashed rgba(250, 204, 21, 0.8);color:#fff;}
+html.dark .user-note:hover{background-color:rgba(253, 224, 71, 0.5);}
+.hl-yellow:hover, .hl-green:hover, .hl-blue:hover, .hl-purple:hover, .hl-pink:hover { outline: 2px solid var(--ink-soft); outline-offset: 2px; border-radius: 4px; cursor: pointer; }
+.underline:hover { background-color: rgba(0, 0, 0, 0.08); border-radius: 4px; cursor: pointer; }
+html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
+.user-note:hover { box-shadow: 0 0 0 2px var(--warn); }
+
+/* CUSTOM CONTEXT MENU */
+.context-menu{position:absolute;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;padding:4px;z-index:10000;min-width:160px;}
+.context-menu.show{display:flex;}
+.context-item{padding:8px 12px;font-size:14px;cursor:pointer;border-radius:6px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-weight:600;position:relative;}
+.context-item:hover{background:var(--bg);color:var(--accent);}
+.context-item.delete{color:var(--error);}
+.context-item.delete:hover{background:var(--error-soft);}
+.has-submenu:hover .submenu { display: flex; }
+.submenu { display: none; position: absolute; top: 0; left: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); flex-direction: column; padding: 4px; min-width: 120px; z-index: 10001; }
+.submenu-item { padding: 6px 12px; font-size: 13px; cursor: pointer; border-radius: 4px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.submenu-item:hover { background: var(--bg); }
+.color-swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+/* STICKY NOTE POPUP */
+.sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;height:200px;display:none;flex-direction:column;z-index:10001;font-family:'EB Garamond',serif;resize:both;overflow:auto;min-width:200px;min-height:150px;}
+.sticky-note.show{display:flex;}
+.sticky-header{background:#facc15;padding:6px 10px;border-radius:7px 7px 0 0;display:flex;justify-content:space-between;align-items:center;cursor:grab;}
+.sticky-header:active{cursor:grabbing;}
+.sticky-title{font-size:12px;font-weight:800;color:#422006;text-transform:uppercase;letter-spacing:1px;}
+.sticky-actions{display:flex;gap:6px;}
+.sticky-btn{background:transparent;border:none;cursor:pointer;font-size:14px;color:#422006;padding:2px;transition:transform .1s;}
+.sticky-btn:hover{transform:scale(1.2);}
+.sticky-btn.delete:hover{color:#b91c1c;}
+.sticky-body{padding:10px;flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.sticky-text{width:100%;height:100%;background:transparent;border:none;resize:none;outline:none;font-family:'EB Garamond',serif;font-size:16px;line-height:1.4;color:#422006;font-weight:500;}
+.sticky-text::placeholder{color:rgba(66,32,6,0.5);font-style:italic;}
+
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
 .q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
@@ -88,9 +136,10 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .vocab-card .head .emoji{font-size:64px;line-height:1;margin-bottom:8px}
 .vocab-card .head .word{font-size:30px;font-weight:800;color:var(--primary)}
 .fc-meaning{padding:14px 16px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);margin-bottom:12px}
-.fc-meaning .context{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
-.fc-meaning .translation{font-size:19px;font-weight:700;color:var(--ink);margin-bottom:8px}
-.fc-meaning .example{font-size:14px;line-height:1.6;color:var(--ink-soft);font-style:italic;padding-left:10px;border-left:2px solid var(--border)}
+.fc-meaning .context{font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:4px;display:flex;justify-content:space-between;}
+.fc-meaning .pos-badge{background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;letter-spacing:0;text-transform:none;}
+.fc-meaning .translation{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.fc-meaning .example{font-size:15px;line-height:1.6;color:var(--ink-soft);font-style:italic;padding-left:10px;border-left:2px solid var(--border)}
 .confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;animation:confettiFall 3s linear forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 </style>
@@ -140,6 +189,23 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
   </div>
 </div>
 
+<!-- CUSTOM CONTEXT MENU -->
+<div id="customContextMenu" class="context-menu"></div>
+
+<!-- DRAGGABLE STICKY NOTE -->
+<div id="stickyNote" class="sticky-note">
+  <div class="sticky-header" id="stickyDragHandle">
+    <span class="sticky-title">📝 My Note</span>
+    <div class="sticky-actions">
+      <button class="sticky-btn delete" onclick="deleteCurrentNote()" title="Delete Note">🗑️</button>
+      <button class="sticky-btn" onclick="closeStickyNote()" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="sticky-body">
+    <textarea class="sticky-text" id="stickyText" placeholder="Type your note here..."></textarea>
+  </div>
+</div>
+
 <div class="vocab-backdrop" id="vocabBackdrop" onclick="if(event.target===this)closeVocab()">
   <div class="vocab-card">
     <button class="close-x" onclick="closeVocab()">×</button>
@@ -169,10 +235,13 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<'
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 
-// Smart Matcher
+/* ================== EXTREMELY SMART ANSWER MATCHER ================== */
+const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
+
 function expandContractions(str) {
   return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would');
 }
+
 function normalizeString(str) {
   let s = String(str).toLowerCase().trim();
   s = expandContractions(s);
@@ -180,6 +249,12 @@ function normalizeString(str) {
   s = s.replace(/\s+/g, ' ');
   return s;
 }
+
+function getCoreWords(str) {
+  const norm = normalizeString(str);
+  return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w));
+}
+
 function levenshtein(a, b) {
   const matrix = [];
   for (let i = 0; i <= b.length; i++) matrix[i] = [i];
@@ -192,18 +267,49 @@ function levenshtein(a, b) {
   }
   return matrix[b.length][a.length];
 }
+
 function isAnswerCorrect(userStr, expectedArr) {
   if(!userStr) return false;
   let user = normalizeString(userStr);
   if(!user) return false;
+
   for (let exp of expectedArr) {
     let target = normalizeString(exp);
+    
+    // 1. Exact Match
     if (user === target) return true;
+    
+    // 2. Numeric Extraction (e.g., "In 2015" vs "2015")
+    const userNums = user.match(/\d+/g) || [];
+    const targetNums = target.match(/\d+/g) || [];
+    if (targetNums.length > 0) {
+        const numMatch = targetNums.every(tn => userNums.includes(tn));
+        if (numMatch) return true;
+    }
+    
+    // 3. Core Words Match
+    const userCores = getCoreWords(user);
+    const targetCores = getCoreWords(target);
+    
+    if (userCores.length > 0 && targetCores.length > 0) {
+        const userCoreStr = userCores.join(' ');
+        const targetCoreStr = targetCores.join(' ');
+        if (userCoreStr === targetCoreStr) return true;
+        
+        if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true;
+        if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
+    }
+    
+    // 4. Substring match
     if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
+    
+    // 5. Morphological Variations
     if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
        const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
        if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
     }
+
+    // 6. Levenshtein
     if (target.length > 4) {
        const maxAllowedDist = target.length > 8 ? 2 : 1;
        if (levenshtein(user, target) <= maxAllowedDist) return true;
@@ -212,6 +318,235 @@ function isAnswerCorrect(userStr, expectedArr) {
   return false;
 }
 
+/* ================== ANNOTATION & NOTES LOGIC ================== */
+let activeNoteId = null;
+let savedRange = null; 
+let contextTargetEdit = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const menu = document.getElementById('customContextMenu');
+  
+  document.addEventListener('click', function(e) {
+    if(e.target.closest('.context-menu')) return;
+    menu.classList.remove('show');
+
+    if(e.target.closest('.sticky-note')) return;
+
+    const targetNote = e.target.closest('.user-note');
+    if (targetNote) {
+        if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
+        openExistingNote(targetNote.dataset.id);
+        return;
+    }
+
+    closeStickyNote();
+  });
+
+  document.addEventListener('contextmenu', function(e) {
+    if(!e.target.closest('#passageBody')) return;
+    
+    e.preventDefault();
+    menu.innerHTML = ''; 
+    contextTargetEdit = null;
+    
+    const selection = window.getSelection();
+    const targetNote = e.target.closest('.user-note');
+    
+    let node = e.target;
+    while (node && node !== document.body) {
+        if (node.nodeType === 1) { 
+            if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('hl-purple') || node.classList.contains('hl-pink') || node.classList.contains('underline')) {
+                contextTargetEdit = node;
+                break;
+            }
+        }
+        node = node.parentNode;
+    }
+
+    const safeClick = "event.preventDefault(); event.stopPropagation();";
+
+    if (targetNote) {
+      if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
+      menu.innerHTML = `
+        <div class="context-item" onclick="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
+        <div class="context-item delete" onclick="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
+      `;
+    } else if (contextTargetEdit) {
+      menu.innerHTML = `
+        <div class="context-item delete" onclick="${safeClick} removeExistingEdit()">🗑️ Remove Edit</div>
+      `;
+    } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
+      savedRange = selection.getRangeAt(0).cloneRange(); 
+      
+      menu.innerHTML = `
+        <div class="context-item has-submenu">
+            🖍️ Highlight
+            <div class="submenu">
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-yellow')"><span class="color-swatch" style="background:#fce883"></span> Yellow</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-green')"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-blue')"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-purple')"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-pink')"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div>
+            </div>
+        </div>
+        <div class="context-item" onclick="${safeClick} applyAnnotation('underline')">U̲ Underline</div>
+        <div class="context-item" onclick="${safeClick} createNewNote()">💬 Add Note</div>
+      `;
+    } else {
+      return; 
+    }
+    
+    let x = e.pageX;
+    let y = e.pageY;
+    if (x + 160 > window.innerWidth) x -= 160;
+    if (y + 200 > window.innerHeight) y -= 200;
+
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    menu.classList.add('show');
+  });
+
+  const dragHandle = document.getElementById('stickyDragHandle');
+  const stickyNote = document.getElementById('stickyNote');
+  let isDragging = false, startX, startY, initialX, initialY;
+
+  dragHandle.addEventListener('mousedown', function(e) {
+    if(e.target.tagName === 'BUTTON') return;
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initialX = stickyNote.offsetLeft;
+    initialY = stickyNote.offsetTop;
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    stickyNote.style.left = (initialX + dx) + 'px';
+    stickyNote.style.top = (initialY + dy) + 'px';
+  });
+
+  document.addEventListener('mouseup', function() {
+    isDragging = false;
+    document.body.style.userSelect = '';
+  });
+});
+
+function applyAnnotation(className) {
+  if(!savedRange) return;
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(savedRange);
+  
+  const span = document.createElement('span');
+  span.className = className;
+  if(className === 'underline') span.style.textDecoration = 'underline';
+  
+  try {
+    span.appendChild(savedRange.extractContents());
+    savedRange.insertNode(span);
+  } catch(e) { console.error("Highlight error:", e); }
+  
+  selection.removeAllRanges(); 
+  savedRange = null; 
+  document.getElementById('customContextMenu').classList.remove('show');
+  saveAnnotations();
+}
+
+function createNewNote() {
+  if(!savedRange) return;
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(savedRange);
+
+  const id = 'note_' + Date.now();
+  const span = document.createElement('span');
+  span.className = 'user-note';
+  span.dataset.id = id;
+  span.dataset.note = "";
+  
+  try {
+    span.appendChild(savedRange.extractContents());
+    savedRange.insertNode(span);
+  } catch(e) { console.error("Note error:", e); }
+  
+  selection.removeAllRanges();
+  savedRange = null; 
+  document.getElementById('customContextMenu').classList.remove('show');
+  openExistingNote(id);
+}
+
+function removeExistingEdit() {
+  if (!contextTargetEdit) return;
+  const parent = contextTargetEdit.parentNode;
+  while (contextTargetEdit.firstChild) {
+      parent.insertBefore(contextTargetEdit.firstChild, contextTargetEdit);
+  }
+  parent.removeChild(contextTargetEdit);
+  contextTargetEdit = null;
+  document.getElementById('customContextMenu').classList.remove('show');
+  saveAnnotations();
+  showToast('Edit removed');
+}
+
+function openExistingNote(id) {
+  const span = document.querySelector(`.user-note[data-id="${id}"]`);
+  if(!span) return;
+  activeNoteId = id;
+  const rect = span.getBoundingClientRect();
+  const sticky = document.getElementById('stickyNote');
+  const textArea = document.getElementById('stickyText');
+  textArea.value = span.dataset.note || "";
+  let posX = rect.right + 15;
+  if (posX + 300 > window.innerWidth) posX = rect.left - 300; 
+  sticky.style.left = posX + 'px';
+  sticky.style.top = (rect.top - 20) + 'px';
+  sticky.classList.add('show');
+  setTimeout(() => textArea.focus(), 50);
+}
+
+function closeStickyNote() {
+  const sticky = document.getElementById('stickyNote');
+  if(!sticky.classList.contains('show')) return;
+  if (activeNoteId) {
+    const span = document.querySelector(`.user-note[data-id="${activeNoteId}"]`);
+    if(span) {
+      span.dataset.note = document.getElementById('stickyText').value;
+      saveAnnotations();
+    }
+  }
+  sticky.classList.remove('show');
+  activeNoteId = null;
+}
+
+function deleteNoteById(id) {
+  const span = document.querySelector(`.user-note[data-id="${id}"]`);
+  if(!span) return;
+  const parent = span.parentNode;
+  while (span.firstChild) parent.insertBefore(span.firstChild, span);
+  parent.removeChild(span);
+  if(activeNoteId === id) closeStickyNote();
+  document.getElementById('customContextMenu').classList.remove('show');
+  saveAnnotations();
+  showToast('Note deleted');
+}
+
+function deleteCurrentNote() { if(activeNoteId) deleteNoteById(activeNoteId); }
+
+function saveAnnotations() {
+  if(fbDb && code && !teacherMode) {
+    fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML).then(()=>{
+      if(typeof showToast === 'function') showToast('Annotations saved');
+    });
+  } else if (fbDb && code && teacherMode) {
+    // Teacher saving preview
+    fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML);
+  }
+}
+
+/* ================== FIREBASE ================== */
 function toggleTheme(){
   document.documentElement.classList.toggle('dark');
   const dark=document.documentElement.classList.contains('dark');
@@ -242,13 +577,6 @@ function renderPassage(){
   const body=document.getElementById('passageBody');
   if(!body)return;
   let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>';
-  
-  if (p.video) {
-    html += '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)">'
-         + '<iframe src="'+escapeHtml(p.video)+'" title="'+escapeHtml(p.videoTitle||p.title)+'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%"></iframe>'
-         + '</div>';
-  }
-
   const vocabWords=lesson.vocab.map(v=>v.en);
   p.paragraphs.forEach(function(par){
     let text=escapeHtml(par.text);
@@ -265,6 +593,18 @@ function renderPassage(){
   body.querySelectorAll('.v-word').forEach(function(el){
     el.onclick=function(){openVocab(el.dataset.vocab)};
   });
+
+  // Load Annotations
+  if(fbDb && code) {
+     fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).once('value').then(snap => {
+         if(snap.exists()) {
+             body.innerHTML = snap.val();
+             body.querySelectorAll('.user-note').forEach((note, i) => {
+                 if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i;
+             });
+         }
+     });
+  }
 }
 
 function openVocab(word){
@@ -274,7 +614,8 @@ function openVocab(word){
   document.getElementById('vocabWord').textContent=v.en;
   document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){
     const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : '';
-    return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+'</div>'+
+    const posBadge = m.pos ? `<span class="pos-badge">${escapeHtml(m.pos)}</span>` : '';
+    return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+' '+posBadge+'</div>'+
       '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+
       '<div class="example">'+m.ex+'</div></div>';
   }).join('');

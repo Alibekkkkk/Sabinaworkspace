@@ -113,9 +113,10 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .fc-reveal-area{display:none;text-align:left;margin-top:18px}
 .fc-reveal-area.show{display:block}
 .fc-meaning{padding:14px 16px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);margin-bottom:12px}
-.fc-meaning .context{font-size:12px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
-.fc-meaning .translation{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:8px}
-.fc-meaning .example{font-size:15px;line-height:1.6;color:var(--ink-soft);font-style:normal;font-weight:500;padding-left:10px;border-left:2px solid var(--border)}
+.fc-meaning .context{font-size:14px;font-weight:800;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.fc-meaning .pos-badge{background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;letter-spacing:0;text-transform:none;}
+.fc-meaning .translation{font-size:24px;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.3;}
+.fc-meaning .example{font-size:18px;line-height:1.6;color:var(--ink-soft);font-style:normal;font-weight:500;padding-left:12px;border-left:3px solid var(--border)}
 .fc-meaning .example b{color:var(--primary);font-style:normal}
 .fc-modal-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .fc-modal-actions .btn{min-width:130px;justify-content:center}
@@ -166,6 +167,8 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 .hl-yellow{background-color:#fce883;color:#000;}
 .hl-green{background-color:#b5e8c5;color:#000;}
 .hl-blue{background-color:#c5e1f5;color:#000;}
+.hl-purple{background-color:#e9d5ff;color:#000;}
+.hl-pink{background-color:#fbcfe8;color:#000;}
 .user-note{background-color:#fef08a;border-bottom:2px dashed #eab308;cursor:pointer;padding:0 2px;border-radius:2px;color:#000;transition:background .2s;}
 .user-note:hover{background-color:#fde047;}
 
@@ -173,11 +176,13 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,#2a3142,#3a2e28)}
 html.dark .hl-yellow{background-color:rgba(250, 204, 21, 0.3);color:#fff;border-bottom:2px solid rgba(250, 204, 21, 0.6);}
 html.dark .hl-green{background-color:rgba(74, 222, 128, 0.3);color:#fff;border-bottom:2px solid rgba(74, 222, 128, 0.6);}
 html.dark .hl-blue{background-color:rgba(96, 165, 250, 0.3);color:#fff;border-bottom:2px solid rgba(96, 165, 250, 0.6);}
+html.dark .hl-purple{background-color:rgba(192, 132, 252, 0.3);color:#fff;border-bottom:2px solid rgba(192, 132, 252, 0.6);}
+html.dark .hl-pink{background-color:rgba(244, 114, 182, 0.3);color:#fff;border-bottom:2px solid rgba(244, 114, 182, 0.6);}
 html.dark .user-note{background-color:rgba(253, 224, 71, 0.3);border-bottom:2px dashed rgba(250, 204, 21, 0.8);color:#fff;}
 html.dark .user-note:hover{background-color:rgba(253, 224, 71, 0.5);}
 
 /* HOVER EFFECTS (Visual distinction for edits) */
-.hl-yellow:hover, .hl-green:hover, .hl-blue:hover {
+.hl-yellow:hover, .hl-green:hover, .hl-blue:hover, .hl-purple:hover, .hl-pink:hover {
     outline: 2px solid var(--ink-soft);
     outline-offset: 2px;
     border-radius: 4px;
@@ -195,15 +200,22 @@ html.dark .underline:hover {
     box-shadow: 0 0 0 2px var(--warn);
 }
 
-/* CUSTOM CONTEXT MENU */
-.context-menu{position:absolute;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;padding:4px;z-index:10000;min-width:150px;}
+/* CUSTOM CONTEXT MENU & SUBMENU */
+.context-menu{position:absolute;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;padding:4px;z-index:10000;min-width:160px;}
 .context-menu.show{display:flex;}
-.context-item{padding:8px 12px;font-size:14px;cursor:pointer;border-radius:6px;color:var(--ink);display:flex;align-items:center;gap:8px;font-weight:600;}
+.context-item{padding:8px 12px;font-size:14px;cursor:pointer;border-radius:6px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-weight:600;position:relative;}
 .context-item:hover{background:var(--bg);color:var(--accent);}
 .context-item.delete{color:var(--error);}
 .context-item.delete:hover{background:var(--error-soft);}
 
-/* STICKY NOTE POPUP (Resizable) */
+/* SUBMENU FOR HIGHLIGHTS */
+.has-submenu:hover .submenu { display: flex; }
+.submenu { display: none; position: absolute; top: 0; left: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); flex-direction: column; padding: 4px; min-width: 120px; z-index: 10001; }
+.submenu-item { padding: 6px 12px; font-size: 13px; cursor: pointer; border-radius: 4px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.submenu-item:hover { background: var(--bg); }
+.color-swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+/* STICKY NOTE POPUP */
 .sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;height:200px;display:none;flex-direction:column;z-index:10001;font-family:'EB Garamond',serif;resize:both;overflow:auto;min-width:200px;min-height:150px;}
 .sticky-note.show{display:flex;}
 .sticky-header{background:#facc15;padding:6px 10px;border-radius:7px 7px 0 0;display:flex;justify-content:space-between;align-items:center;cursor:grab;}
@@ -216,6 +228,15 @@ html.dark .underline:hover {
 .sticky-body{padding:10px;flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .sticky-text{width:100%;height:100%;background:transparent;border:none;resize:none;outline:none;font-family:'EB Garamond',serif;font-size:16px;line-height:1.4;color:#422006;font-weight:500;}
 .sticky-text::placeholder{color:rgba(66,32,6,0.5);font-style:italic;}
+
+/* IMAGE SETTING MODAL */
+#imageUrlModal{position:fixed;inset:0;background:rgba(20,25,40,.85);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;}
+#imageUrlModal.open{display:flex;}
+.image-modal-content{background:var(--panel);border-radius:16px;padding:24px;width:100%;max-width:450px;box-shadow:var(--shadow-lg);text-align:center;}
+.image-modal-content h3{margin-bottom:12px;color:var(--ink);}
+.image-modal-content input{width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;margin-bottom:16px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:16px;outline:none;}
+.image-modal-content input:focus{border-color:var(--accent);}
+.image-modal-content .actions{display:flex;gap:10px;justify-content:flex-end;}
 
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
@@ -353,6 +374,19 @@ html.dark .q-feedback.info{color:#f5c66b}
   </div>
 </div>
 
+<!-- IMAGE SETTING MODAL -->
+<div id="imageUrlModal" onclick="if(event.target===this)closeImageModal()">
+  <div class="image-modal-content">
+    <h3>Set Custom Image</h3>
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:12px">Paste a public `https://` image URL below. Leave blank to remove.</p>
+    <input type="text" id="imageUrlInput" placeholder="https://example.com/image.jpg">
+    <div class="actions">
+      <button class="btn ghost" onclick="closeImageModal()">Cancel</button>
+      <button class="btn success" onclick="saveImageUrl()">Save Image</button>
+    </div>
+  </div>
+</div>
+
 <div class="fc-modal-backdrop" id="fcModal" onclick="if(event.target===this)closeFCModal()">
   <div class="fc-modal">
     <button class="fc-modal-close" onclick="closeFCModal()">×</button>
@@ -371,7 +405,7 @@ html.dark .q-feedback.info{color:#f5c66b}
       <div class="fc-modal-nav">
         <button onclick="fcPrev()">← Previous</button>
         <span class="counter" id="fcCounter">1 / 20</span>
-        <button onclick="fcNext()">Next →</button>
+        <button onclick="fcNext()">Next Flashcard →</button>
       </div>
     </div>
   </div>
@@ -430,10 +464,13 @@ let TEST_SHORT = [];
 let TEST_TFNG = [];
 let TEST_COMPLETE = [];
 
-/* ================== SMART ANSWER MATCHER ================== */
+/* ================== EXTREMELY SMART ANSWER MATCHER ================== */
+const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
+
 function expandContractions(str) {
   return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would');
 }
+
 function normalizeString(str) {
   let s = String(str).toLowerCase().trim();
   s = expandContractions(s);
@@ -441,6 +478,12 @@ function normalizeString(str) {
   s = s.replace(/\s+/g, ' ');
   return s;
 }
+
+function getCoreWords(str) {
+  const norm = normalizeString(str);
+  return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w));
+}
+
 function levenshtein(a, b) {
   const matrix = [];
   for (let i = 0; i <= b.length; i++) matrix[i] = [i];
@@ -453,6 +496,7 @@ function levenshtein(a, b) {
   }
   return matrix[b.length][a.length];
 }
+
 function isAnswerCorrect(userStr, expectedArr) {
   if(!userStr) return false;
   let user = normalizeString(userStr);
@@ -460,12 +504,42 @@ function isAnswerCorrect(userStr, expectedArr) {
 
   for (let exp of expectedArr) {
     let target = normalizeString(exp);
+    
+    // 1. Exact Match
     if (user === target) return true;
+    
+    // 2. Numeric Extraction (e.g., "In 2015" vs "2015")
+    const userNums = user.match(/\d+/g) || [];
+    const targetNums = target.match(/\d+/g) || [];
+    if (targetNums.length > 0) {
+        const numMatch = targetNums.every(tn => userNums.includes(tn));
+        if (numMatch) return true;
+    }
+    
+    // 3. Core Words Match (ignores fillers like "in", "the", etc.)
+    const userCores = getCoreWords(user);
+    const targetCores = getCoreWords(target);
+    
+    if (userCores.length > 0 && targetCores.length > 0) {
+        const userCoreStr = userCores.join(' ');
+        const targetCoreStr = targetCores.join(' ');
+        if (userCoreStr === targetCoreStr) return true;
+        
+        // Substring match on core words
+        if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true;
+        if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
+    }
+    
+    // 4. Substring match on raw string
     if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
+    
+    // 5. Morphological Variations (sleep vs sleeping)
     if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
        const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
        if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
     }
+
+    // 6. Levenshtein Typo Tolerance
     if (target.length > 4) {
        const maxAllowedDist = target.length > 8 ? 2 : 1;
        if (levenshtein(user, target) <= maxAllowedDist) return true;
@@ -485,13 +559,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', function(e) {
     if(e.target.closest('.context-menu')) return;
     menu.classList.remove('show');
+
     if(e.target.closest('.sticky-note')) return;
+
     const targetNote = e.target.closest('.user-note');
     if (targetNote) {
         if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
         openExistingNote(targetNote.dataset.id);
-        return; 
+        return;
     }
+
     closeStickyNote();
   });
 
@@ -508,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let node = e.target;
     while (node && node !== document.body) {
         if (node.nodeType === 1) { 
-            if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('underline')) {
+            if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('hl-purple') || node.classList.contains('hl-pink') || node.classList.contains('underline')) {
                 contextTargetEdit = node;
                 break;
             }
@@ -531,10 +608,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
       
+      // Submenu for Highlights
       menu.innerHTML = `
-        <div class="context-item" onclick="${safeClick} applyAnnotation('hl-yellow')">🖍️ Highlight Yellow</div>
-        <div class="context-item" onclick="${safeClick} applyAnnotation('hl-green')">🟢 Highlight Green</div>
-        <div class="context-item" onclick="${safeClick} applyAnnotation('hl-blue')">🔵 Highlight Blue</div>
+        <div class="context-item has-submenu">
+            🖍️ Highlight
+            <div class="submenu">
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-yellow')"><span class="color-swatch" style="background:#fce883"></span> Yellow</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-green')"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-blue')"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-purple')"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div>
+                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-pink')"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div>
+            </div>
+        </div>
         <div class="context-item" onclick="${safeClick} applyAnnotation('underline')">U̲ Underline</div>
         <div class="context-item" onclick="${safeClick} createNewNote()">💬 Add Note</div>
       `;
@@ -582,7 +667,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function applyAnnotation(className) {
   if(!savedRange) return;
-  
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(savedRange);
@@ -604,7 +688,6 @@ function applyAnnotation(className) {
 
 function createNewNote() {
   if(!savedRange) return;
-
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(savedRange);
@@ -623,19 +706,16 @@ function createNewNote() {
   selection.removeAllRanges();
   savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
-  
   openExistingNote(id);
 }
 
 function removeExistingEdit() {
   if (!contextTargetEdit) return;
-  
   const parent = contextTargetEdit.parentNode;
   while (contextTargetEdit.firstChild) {
       parent.insertBefore(contextTargetEdit.firstChild, contextTargetEdit);
   }
   parent.removeChild(contextTargetEdit);
-  
   contextTargetEdit = null;
   document.getElementById('customContextMenu').classList.remove('show');
   saveAnnotations();
@@ -645,29 +725,22 @@ function removeExistingEdit() {
 function openExistingNote(id) {
   const span = document.querySelector(`.user-note[data-id="${id}"]`);
   if(!span) return;
-
   activeNoteId = id;
   const rect = span.getBoundingClientRect();
-  
   const sticky = document.getElementById('stickyNote');
   const textArea = document.getElementById('stickyText');
-  
   textArea.value = span.dataset.note || "";
-  
   let posX = rect.right + 15;
   if (posX + 300 > window.innerWidth) posX = rect.left - 300; 
-  
   sticky.style.left = posX + 'px';
   sticky.style.top = (rect.top - 20) + 'px';
   sticky.classList.add('show');
-  
   setTimeout(() => textArea.focus(), 50);
 }
 
 function closeStickyNote() {
   const sticky = document.getElementById('stickyNote');
   if(!sticky.classList.contains('show')) return;
-  
   if (activeNoteId) {
     const span = document.querySelector(`.user-note[data-id="${activeNoteId}"]`);
     if(span) {
@@ -675,7 +748,6 @@ function closeStickyNote() {
       saveAnnotations();
     }
   }
-  
   sticky.classList.remove('show');
   activeNoteId = null;
 }
@@ -683,24 +755,16 @@ function closeStickyNote() {
 function deleteNoteById(id) {
   const span = document.querySelector(`.user-note[data-id="${id}"]`);
   if(!span) return;
-  
   const parent = span.parentNode;
-  while (span.firstChild) {
-    parent.insertBefore(span.firstChild, span);
-  }
+  while (span.firstChild) parent.insertBefore(span.firstChild, span);
   parent.removeChild(span);
-  
   if(activeNoteId === id) closeStickyNote();
   document.getElementById('customContextMenu').classList.remove('show');
   saveAnnotations();
   showToast('Note deleted');
 }
 
-function deleteCurrentNote() {
-  if(activeNoteId) {
-    deleteNoteById(activeNoteId);
-  }
-}
+function deleteCurrentNote() { if(activeNoteId) deleteNoteById(activeNoteId); }
 
 function saveAnnotations() {
   if(fbConnected && sessionRef) {
@@ -708,6 +772,56 @@ function saveAnnotations() {
       if(typeof showToast === 'function') showToast('Annotations saved');
     });
   }
+}
+
+/* ================== IMAGE MODAL LOGIC ================== */
+let currentEditWord = null;
+let currentEditMeaningIdx = null;
+
+function editFlashcardImage(){
+  if(!teacherCanEdit||!fbDb){alert('Sign in with the teacher account to edit.');return}
+  if(!quizWord)return;
+  const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
+  
+  currentEditWord = quizWord;
+  currentEditMeaningIdx = quizCurrentIdx;
+  
+  const meaning = w.meanings[quizCurrentIdx];
+  const displayWord = meaning.displayEn || w.en;
+  const imgKey = displayWord + '_' + quizCurrentIdx;
+  
+  const current = customImages[imgKey] || customImages[displayWord] || customImages[w.en] || '';
+  
+  document.getElementById('imageUrlInput').value = current;
+  document.getElementById('imageUrlModal').classList.add('open');
+}
+
+function closeImageModal() {
+  document.getElementById('imageUrlModal').classList.remove('open');
+}
+
+function saveImageUrl() {
+  const url = document.getElementById('imageUrlInput').value.trim();
+  if(url && !/^https?:\/\//i.test(url)) {
+      alert('URL must start with http:// or https://');
+      return;
+  }
+  
+  const w = VOCAB.find(x => x.en === currentEditWord);
+  const meaning = w.meanings[currentEditMeaningIdx];
+  const displayWord = meaning.displayEn || w.en;
+  const imgKey = displayWord + '_' + currentEditMeaningIdx;
+  
+  const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||'lesson_1';
+  
+  fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+imgKey).set(url || null).then(function(){
+    if(url) customImages[imgKey] = url;
+    else delete customImages[imgKey];
+    renderQuizModal();
+    renderFlashcards();
+    closeImageModal();
+    showToast('Image saved for meaning ' + (currentEditMeaningIdx+1));
+  }).catch(function(e){alert('Failed: '+e.message)});
 }
 
 /* ================== FIREBASE INIT ================== */
@@ -987,7 +1101,7 @@ let quizOptionsCache={};
 let quizHintShown=false;
 let quizRoundFinalized=false;
 let practiceMode=false;
-let practiceQueue=[];
+let practiceQueue=[]; // Now stores { word: wordObj, meanings: [indices] }
 let practiceIdx=0;
 
 function vocabKey(){return 'nd_vocab_'+state.currentLessonId}
@@ -1004,14 +1118,26 @@ function saveVocabStateLocal(){try{localStorage.setItem(vocabKey(),JSON.stringif
 function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(vocabState).catch(function(){})}catch(e){}}
 function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
 
+// Returns status of a specific meaning or the whole word
+function getMeaningStatus(word, meaningIdx) {
+   if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return 'learned';
+   const wordState = vocabState[word];
+   if(!wordState || !wordState.meanings || !wordState.meanings[meaningIdx]) return 'learning';
+   const s = wordState.meanings[meaningIdx];
+   if(s.perfectStreak >= 2) return 'learned';
+   if(s.wrongCount >= 2) return 'practice';
+   return 'learning';
+}
+
 function getWordStatus(word){
-  if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return 'learned';
-  const s=vocabState[word];
-  if(!s)return 'learning';
-  if((s.perfectStreak||0)>=2)return 'learned';
-  if((s.wrongCount||0)>=2)return 'practice';
+  const w = VOCAB.find(x => x.en === word);
+  if(!w) return 'learning';
+  let statuses = w.meanings.map((_, i) => getMeaningStatus(word, i));
+  if(statuses.every(s => s === 'learned')) return 'learned';
+  if(statuses.some(s => s === 'practice')) return 'practice';
   return 'learning';
 }
+
 function getVocabCounts(){
   const c={learning:0,learned:0,practice:0};
   VOCAB.forEach(function(w){c[getWordStatus(w.en)]++});
@@ -1061,8 +1187,8 @@ function renderFlashcards(){
     if(status==='practice')card.classList.add('needs-practice');
     
     const firstMeaning = w.meanings[0];
-    const imgKey = (firstMeaning && firstMeaning.displayEn) ? firstMeaning.displayEn : w.en;
-    const img=customImages[imgKey] || customImages[w.en];
+    const imgKey = (firstMeaning && firstMeaning.displayEn) ? firstMeaning.displayEn + '_0' : w.en + '_0';
+    const img = customImages[imgKey] || customImages[w.en];
 
     card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" loading="lazy" onerror="this.parentNode.textContent=\''+w.emoji+'\'">':w.emoji)+'</div><div class="flashcard-word">'+escapeHtml(w.en)+'</div>';
     card.onclick=function(){openQuiz(idx)};
@@ -1074,16 +1200,21 @@ function openQuiz(idx){
   s1CurrentIdx=idx;
   const w=s1VisibleList[idx];if(!w)return;
   practiceMode=false;
-  openQuizWord(w.en);
+  openQuizWord(w.en, w.meanings.map((_, i) => i));
 }
-function openQuizWord(word){
+
+// New signature: word and array of meaning indices to test
+function openQuizWord(word, meaningIndices){
   try{
     quizWord=word;
     quizOptionsCache={};
     quizHintShown=false;
     quizRoundFinalized=false;
     const w=VOCAB.find(function(x){return x.en===word});if(!w){console.warn('Word not found:',word);return}
-    quizMeanings=w.meanings.slice();
+    
+    // Filter meanings to only include the ones we need to practice
+    quizMeanings = meaningIndices.map(i => ({ idx: i, data: w.meanings[i] }));
+    
     quizCurrentIdx=0;
     quizRoundWrongs=0;
     quizAnswers={};
@@ -1133,22 +1264,34 @@ function buildQuizOptions(word,meaningIdx){
 
 function renderQuizModal(){
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
-  const meaning=w.meanings[quizCurrentIdx];
-  const displayWord=meaning.displayEn||w.en;
+  const activeMeaningObj = quizMeanings[quizCurrentIdx];
+  if(!activeMeaningObj) return;
   
-  const imgKey = displayWord; 
-  const img = customImages[imgKey] || customImages[w.en];
+  const meaning = activeMeaningObj.data;
+  const displayWord = meaning.displayEn || w.en;
+  const realMeaningIdx = activeMeaningObj.idx;
+  
+  const imgKey = displayWord + '_' + realMeaningIdx; 
+  const img = customImages[imgKey] || customImages[displayWord] || customImages[w.en];
 
   document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(displayWord)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+w.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+w.emoji+'</div>')+'<div class="label">WORD</div>';
   document.getElementById('fcModalWord').textContent=displayWord;
-  const q=buildQuizOptions(quizWord,quizCurrentIdx);
+  
+  const q=buildQuizOptions(quizWord,realMeaningIdx);
   const answered=quizAnswers[quizCurrentIdx];
-  let html='<div class="quiz-progress">'+(practiceMode?'Practice · ':'')+'Meaning '+(quizCurrentIdx+1)+' of '+w.meanings.length+'</div>';
+  
+  // Build Part of Speech Badge
+  let posBadge = '';
+  if (meaning.pos) {
+      posBadge = `<span class="pos-badge">${escapeHtml(meaning.pos)}</span>`;
+  }
+  
+  let html='<div class="quiz-progress">'+(practiceMode?'Practice · ':'')+'Meaning '+(quizCurrentIdx+1)+' of '+quizMeanings.length+'</div>';
   html+='<div class="quiz-hint-row"><button class="quiz-hint-btn" onclick="toggleQuizHint()">'+(quizHintShown?'🙈 Hide hint':'💡 Show hint')+'</button></div>';
   if(quizHintShown){
     html+='<div class="quiz-context"><span class="hint-label">Hint · English meaning</span>'+escapeHtml(meaning.context)+'</div>';
   }
-  html+='<div class="quiz-question">Choose the correct translation:</div>';
+  html+='<div class="quiz-question" style="display:flex;justify-content:space-between;align-items:center">Choose the correct translation: '+posBadge+'</div>';
   html+='<div class="quiz-options">';
   q.options.forEach(function(opt){
     let cls='quiz-opt';
@@ -1166,7 +1309,7 @@ function renderQuizModal(){
   }
   document.getElementById('fcRevealArea').innerHTML=html;
   document.getElementById('fcRevealArea').classList.add('show');
-  document.getElementById('fcCounter').textContent=(quizCurrentIdx+1)+' / '+w.meanings.length;
+  document.getElementById('fcCounter').textContent=(quizCurrentIdx+1)+' / '+quizMeanings.length;
   document.querySelector('.fc-modal-actions').style.display='none';
   const tools=document.querySelector('.fc-modal-tools');
   if(tools){
@@ -1178,7 +1321,7 @@ function renderQuizModal(){
   if(navBtns.length>=2){
     navBtns[0].onclick=function(){quizPrev()};
     navBtns[navBtns.length-1].onclick=function(){quizNext()};
-    navBtns[navBtns.length-1].textContent=(quizCurrentIdx>=w.meanings.length-1)?'Finish →':'Next →';
+    navBtns[navBtns.length-1].textContent=(quizCurrentIdx>=quizMeanings.length-1)?'Next Flashcard →':'Next →';
   }
 }
 
@@ -1186,12 +1329,17 @@ function answerQuiz(btn){
   if(quizAnswers[quizCurrentIdx])return;
   const opt=btn.dataset.opt;
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
-  const q=buildQuizOptions(quizWord,quizCurrentIdx);
+  const realMeaningIdx = quizMeanings[quizCurrentIdx].idx;
+  const q=buildQuizOptions(quizWord,realMeaningIdx);
   const correct=opt===q.correct;
   quizAnswers[quizCurrentIdx]={selected:opt,correct:correct};
-  if(!vocabState[quizWord])vocabState[quizWord]={perfectStreak:0,wrongCount:0,meaningsCorrect:{}};
+  
+  if(!vocabState[quizWord]) vocabState[quizWord] = { meanings: {} };
+  if(!vocabState[quizWord].meanings) vocabState[quizWord].meanings = {}; // migration fallback
+  if(!vocabState[quizWord].meanings[realMeaningIdx]) vocabState[quizWord].meanings[realMeaningIdx] = { perfectStreak: 0, wrongCount: 0 };
+  
   if(correct){
-    vocabState[quizWord].meaningsCorrect[quizCurrentIdx]='correct';
+    vocabState[quizWord].meanings[realMeaningIdx].meaningsCorrect = 'correct';
     sCorrect();
   }else{
     quizRoundWrongs++;
@@ -1205,7 +1353,7 @@ function answerQuiz(btn){
 function quizNext(){
   if(!quizAnswers[quizCurrentIdx])return;
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
-  if(quizCurrentIdx<w.meanings.length-1){quizCurrentIdx++;quizHintShown=false;renderQuizModal()}
+  if(quizCurrentIdx<quizMeanings.length-1){quizCurrentIdx++;quizHintShown=false;renderQuizModal()}
   else{finalizeRound()}
 }
 function quizPrev(){if(quizCurrentIdx>0){quizCurrentIdx--;quizHintShown=false;renderQuizModal()}}
@@ -1215,14 +1363,24 @@ function finalizeRound(){
   if(!quizWord)return;
   if(quizRoundFinalized)return;
   quizRoundFinalized=true;
-  const s=vocabState[quizWord];if(!s)return;
-  if(quizRoundWrongs===0){
-    s.perfectStreak=(s.perfectStreak||0)+1;
-  }else{
-    s.perfectStreak=0;
-    s.wrongCount=(s.wrongCount||0)+quizRoundWrongs;
-  }
-  if((s.perfectStreak||0)>=2){s.wrongCount=0}
+  const wState = vocabState[quizWord];
+  if(!wState || !wState.meanings) return;
+  
+  // Apply result to ALL meanings tested in this round
+  quizMeanings.forEach((mObj, i) => {
+     const idx = mObj.idx;
+     const answered = quizAnswers[i];
+     const s = wState.meanings[idx];
+     if(!s) return;
+     
+     if(answered && answered.correct) {
+         s.perfectStreak = (s.perfectStreak || 0) + 1;
+         if(s.perfectStreak >= 2) s.wrongCount = 0;
+     } else {
+         s.perfectStreak = 0;
+         s.wrongCount = (s.wrongCount || 0) + 1;
+     }
+  });
   saveVocabState();
   
   const learned=VOCAB.filter(function(x){return getWordStatus(x.en)==='learned'}).length;
@@ -1239,39 +1397,49 @@ function finalizeRound(){
   if(practiceMode){
     practiceIdx++;
     if(practiceIdx<practiceQueue.length){
-      openQuizWord(practiceQueue[practiceIdx].en);
+      const nextItem = practiceQueue[practiceIdx];
+      setTimeout(function(){openQuizWord(nextItem.word.en, nextItem.meanings)},400);
       return;
     }
-    continuePracticeQueue();
+    setTimeout(continuePracticeQueue,400);
     return;
   }
-  advanceToNextCard();
+  setTimeout(advanceToNextCard,400);
 }
 
 function advanceToNextCard(){
   if(!s1VisibleList||!s1VisibleList.length){closeFCModal();return}
   if(s1CurrentIdx<s1VisibleList.length-1){
     s1CurrentIdx++;
-    openQuizWord(s1VisibleList[s1CurrentIdx].en);
+    const w = s1VisibleList[s1CurrentIdx];
+    openQuizWord(w.en, w.meanings.map((_, i) => i));
   }else{
     closeFCModal();
   }
 }
 
 function continuePracticeQueue(){
-  const stillNeeds=VOCAB.filter(function(w){
-    const st=getWordStatus(w.en);
-    if(st==='practice')return true;
-    if(st==='learning'&&vocabState[w.en])return true;
-    return false;
+  const stillNeeds = [];
+  VOCAB.forEach(w => {
+      const indicesToPractice = [];
+      w.meanings.forEach((m, idx) => {
+          const st = getMeaningStatus(w.en, idx);
+          if(st === 'practice' || (st === 'learning' && vocabState[w.en] && vocabState[w.en].meanings && vocabState[w.en].meanings[idx])) {
+              indicesToPractice.push(idx);
+          }
+      });
+      if(indicesToPractice.length > 0) {
+          stillNeeds.push({ word: w, meanings: indicesToPractice });
+      }
   });
+
   if(!stillNeeds.length){
     showPracticeSummary();
     return;
   }
   practiceQueue=shuffle(stillNeeds);
   practiceIdx=0;
-  openQuizWord(practiceQueue[0].en);
+  openQuizWord(practiceQueue[0].word.en, practiceQueue[0].meanings);
 }
 
 function showPracticeSummary(){
@@ -1293,12 +1461,18 @@ function restartPractice(){practiceMode=false;practiceQueue=[];document.getEleme
 
 function startPractice(){
   try{
-    const toPractice=VOCAB.filter(function(w){
-      const st=getWordStatus(w.en);
-      if(st==='practice')return true;
-      if(st==='learning'&&vocabState[w.en])return true;
-      return false;
+    const toPractice = [];
+    VOCAB.forEach(w => {
+        const indices = [];
+        w.meanings.forEach((m, idx) => {
+            const st = getMeaningStatus(w.en, idx);
+            if(st === 'practice' || (st === 'learning' && vocabState[w.en] && vocabState[w.en].meanings && vocabState[w.en].meanings[idx])) {
+                indices.push(idx);
+            }
+        });
+        if(indices.length > 0) toPractice.push({ word: w, meanings: indices });
     });
+
     if(!toPractice.length){
       showToast('Nothing to practise yet — open some flashcards first!');
       return;
@@ -1306,7 +1480,7 @@ function startPractice(){
     practiceMode=true;
     practiceQueue=shuffle(toPractice);
     practiceIdx=0;
-    openQuizWord(practiceQueue[0].en);
+    openQuizWord(practiceQueue[0].word.en, practiceQueue[0].meanings);
   }catch(err){
     console.error('startPractice failed:',err);
     alert('Practice could not start: '+err.message);
@@ -1316,31 +1490,10 @@ function startPractice(){
 function quizSpeak(){
   const w=VOCAB.find(function(x){return x.en===quizWord});
   if(w){
-    const d=w.meanings[quizCurrentIdx].displayEn||w.en;
+    const realMeaningIdx = quizMeanings[quizCurrentIdx].idx;
+    const d=w.meanings[realMeaningIdx].displayEn||w.en;
     speak(d);
   }
-}
-
-function editFlashcardImage(){
-  if(!teacherCanEdit||!fbDb){alert('Sign in with the teacher account to edit.');return}
-  if(!quizWord)return;
-  const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
-  
-  const meaning=w.meanings[quizCurrentIdx];
-  const displayWord = meaning.displayEn || w.en;
-  
-  const current = customImages[displayWord] || customImages[w.en] || '';
-  const url=prompt('Paste an image URL for "'+displayWord+'" ('+meaning.context+'). Leave blank to remove.',current);
-  if(url===null)return;
-  const trimmed=url.trim();
-  if(trimmed&&!/^https?:\/\//i.test(trimmed)){alert('URL must start with http:// or https://');return}
-  const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||'lesson_1';
-  fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+displayWord).set(trimmed||null).then(function(){
-    if(trimmed) customImages[displayWord]=trimmed;
-    else delete customImages[displayWord];
-    renderQuizModal();renderFlashcards();
-    showToast('Image saved for ' + displayWord);
-  }).catch(function(e){alert('Failed: '+e.message)});
 }
 
 function fcPrev(){quizPrev()}
@@ -1639,37 +1792,19 @@ function resetGrammarStage(id){setScore(id,0);state.done[state.currentLessonId+"
 function renderStage4(){
     let title = '⏳ Completing Sentence — Present Perfect';
     let formula = 'Subject + have/has + past participle (V3)';
-    let listHTML = '<li><b>Experiences:</b> Use for life experiences when the exact time is not important (e.g., <i>I have visited London.</i>). Often used with <i>ever, never, before</i>.</li>' +
-                   '<li><b>Unfinished time:</b> Use for time periods that are not finished yet (e.g., <i>today, this week, this year</i>).</li>' +
-                   '<li><b>Recent news:</b> Use with <i>just, already, yet</i> (e.g., <i>He has just left.</i>).</li>' +
-                   '<li><b>Duration:</b> Use <i>for</i> with a length of time (for 3 years) and <i>since</i> with a starting point (since 2010).</li>' +
-                   '<li><b>Key difference:</b> Present perfect connects the past to the present. Do not use it with finished time words like <i>yesterday, last week, in 1999</i> (use Past Simple for those).</li>';
+    let listHTML = '<li>Use <b>have</b> with I, you, we, they.</li><li>Use <b>has</b> with he, she, it.</li>';
     let lead = 'Complete each sentence.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '⏳ Completing Sentence — Simple Present';
         formula = 'Subject + V1 (or V-s / V-es for he, she, it)';
-        listHTML = '<li><b>Facts and General Truths:</b> (e.g., <i>Water boils at 100 degrees.</i>)</li>' +
-                   '<li><b>Habits and Routines:</b> (e.g., <i>She usually walks to school.</i>) Often used with <i>always, usually, often, sometimes, never, every day</i>.</li>' +
-                   '<li><b>Timetables:</b> Fixed schedules (e.g., <i>The train leaves at 8 AM.</i>).</li>' +
-                   '<li><b>Spelling rules:</b> Add -s for most verbs (work -> works). Add -es for verbs ending in -o, -ch, -sh, -ss, -x (go -> goes). If a consonant + y, change to -ies (study -> studies).</li>';
+        listHTML = '<li>Use for facts, habits, and routines.</li><li>Add -s or -es for he/she/it.</li>';
         lead = 'Complete each sentence using the Simple Present.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Present Tenses';
         formula = 'Present Simple vs Present Continuous';
-        listHTML = '<li><b>Present Simple:</b> Facts, routines, and habits (e.g., <i>He plays football every day.</i>).</li>' +
-                   '<li><b>Present Continuous:</b> Actions happening exactly right now, temporary situations, or future arrangements (e.g., <i>He is playing football right now.</i>).</li>' +
-                   '<li><b>Stative Verbs:</b> Verbs expressing states (know, like, want, believe) are usually NOT used in the continuous form. (e.g., <i>I am knowing</i> is incorrect; use <i>I know</i>).</li>';
+        listHTML = '<li>Present Simple: facts and routines.</li><li>Present Continuous: happening right now.</li>';
         lead = 'Complete each sentence using the correct present tense.';
-    } else if (activeContentName === 'abay') {
-        title = '⏳ Completing Sentence — Gerunds & Infinitives';
-        formula = 'enjoy / avoid / suggest / mind + V-ing · decide / hope / plan / refuse + to + V1';
-        listHTML = '<li><b>Gerund (-ing):</b> Acts as a noun. Used as a subject (e.g., <i>Swimming is fun</i>). Used after prepositions (e.g., <i>good at drawing</i>).</li>' +
-                   '<li><b>Verbs followed by Gerund:</b> enjoy, avoid, mind, finish, suggest, keep, practice, recommend, consider.</li>' +
-                   '<li><b>Verbs followed by Infinitive (to + V1):</b> decide, hope, want, plan, refuse, agree, manage, offer, promise.</li>' +
-                   '<li><b>Change in meaning:</b> "Stop doing" (quit an action) vs "Stop to do" (pause an action to do something else). "Remember doing" (recall a past memory) vs "Remember to do" (not forget a future duty).</li>' +
-                   '<li><b>Bare Infinitive:</b> After modal verbs (must, can, should) and "let/make" (e.g., <i>Let me go. I must study.</i>).</li>';
-        lead = 'Complete each sentence using the gerund or the infinitive form.';
     }
     renderCompletingSentence(G6,4,3,5,title,'Stage 4 — Grammar',formula,listHTML,lead);
 }
@@ -1677,35 +1812,19 @@ function renderStage4(){
 function renderStage5(){
     let title = '🛡️ Completing Sentence — Passive Voice';
     let formula = 'Subject + was/were + past participle (V3)';
-    let listHTML = '<li><b>Focus:</b> Use passive when the action or the receiver of the action is more important than the doer (e.g., <i>The window was broken.</i>).</li>' +
-                   '<li><b>Agent:</b> Use "by + doer" only if the doer is important or surprising (e.g., <i>The novel was written by Orwell.</i>). Otherwise, omit it.</li>' +
-                   '<li><b>Tenses in Passive:</b> Present: <i>is/are + V3</i>. Past: <i>was/were + V3</i>. Perfect: <i>has/have been + V3</i>. Future: <i>will be + V3</i>.</li>' +
-                   '<li><b>Transitive verbs only:</b> Only verbs that take an object can be passive (e.g., <i>He slept</i> cannot be passive because there is no object).</li>';
+    let listHTML = '<li>Past passive.</li>';
     let lead = 'Complete each sentence using the passive voice.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '⏳ Completing Sentence — Present Continuous';
         formula = 'Subject + am/is/are + V-ing';
-        listHTML = '<li><b>Actions happening now:</b> (e.g., <i>Look! It is raining.</i>)</li>' +
-                   '<li><b>Temporary situations:</b> (e.g., <i>I am living in London for a month.</i>)</li>' +
-                   '<li><b>Trends and changes:</b> (e.g., <i>The climate is getting warmer.</i>)</li>' +
-                   '<li><b>Spelling rules:</b> Double the final consonant for short vowel sounds (run -> running). Drop the final -e (make -> making). Change -ie to -y (lie -> lying).</li>';
+        listHTML = '<li>Use for actions happening right now.</li><li>Use for temporary situations.</li>';
         lead = 'Complete each sentence using the Present Continuous.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Past Tenses';
         formula = 'Past Simple vs Past Continuous';
-        listHTML = '<li><b>Past Simple:</b> Finished actions at a specific time in the past (e.g., <i>He played football yesterday.</i>). Often used with <i>yesterday, last week, in 2010</i>.</li>' +
-                   '<li><b>Past Continuous:</b> Actions in progress at a specific time in the past (e.g., <i>He was playing at 5 PM.</i>).</li>' +
-                   '<li><b>Combined:</b> Use Past Continuous for the background action and Past Simple for the interrupting action (e.g., <i>I was sleeping when the phone rang.</i>)</li>';
+        listHTML = '<li>Past Simple: finished actions.</li><li>Past Continuous: actions in progress in the past.</li>';
         lead = 'Complete each sentence using the correct past tense.';
-    } else if (activeContentName === 'abay') {
-        title = '🛡️ Completing Sentence — Modals of Deduction';
-        formula = 'must / might / could / can\'t + bare infinitive (present) · must / might / could have + V3 (past)';
-        listHTML = '<li><b>Present Deduction:</b> Use <i>must</i> (90% certainty, e.g., <i>She must be tired</i>), <i>might/may/could</i> (50% possibility, e.g., <i>He might be busy</i>), or <i>can\'t</i> (0% impossibility, e.g., <i>That can\'t be true</i>).</li>' +
-                   '<li><b>Past Deduction:</b> modal + have + V3 (e.g., <i>She must have left already.</i> / <i>He might have forgotten.</i> / <i>They can\'t have arrived this early.</i>).</li>' +
-                   '<li><b>Advice and Obligation:</b> <i>Should / ought to</i> for advice (e.g., <i>You should check</i>). <i>Must / have to</i> for strong obligation.</li>' +
-                   '<li><b>Prohibition vs No obligation:</b> <i>Must not</i> means it is forbidden. <i>Do not have to</i> means it is not necessary.</li>';
-        lead = 'Complete each sentence using the correct modal verb.';
     }
     renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
 }
@@ -1812,23 +1931,13 @@ function renderStage6(){
     if (activeContentName.includes('araylim_1')) {
         title = '🧩 Sentence Builder — Simple Past';
         formula = 'Subject + V2 (or did not + V1)';
-        listHTML = '<li><b>Regular verbs:</b> Add -ed (play -> played).</li>' +
-                   '<li><b>Irregular verbs:</b> Must be memorized (go -> went, buy -> bought, see -> saw).</li>' +
-                   '<li><b>Questions and Negatives:</b> Use the auxiliary "did" + base verb (e.g., <i>Did you go? I did not go.</i>).</li>';
+        listHTML = '<li>Use for finished actions in the past.</li><li>Remember irregular verbs (e.g., go → went).</li>';
         lead = 'Build each sentence using the Simple Past.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧩 Sentence Builder — Present Tenses';
         formula = 'Subject + V1 / am/is/are + V-ing';
-        listHTML = '<li>Build sentences about routines (Present Simple) and actions happening now (Present Continuous).</li>' +
-                   '<li>Remember to include the helping verb (am/is/are) in the continuous form.</li>';
+        listHTML = '<li>Build sentences about routines and actions happening now.</li>';
         lead = 'Build each sentence.';
-    } else if (activeContentName === 'abay') {
-        title = '🧩 Sentence Builder — Gerunds & Infinitives';
-        formula = 'verb + V-ing OR verb + to + V1 — the verb decides';
-        listHTML = '<li>Check the verb before the gap. If it is <i>enjoy, avoid, mind, suggest, finish</i>, use <b>-ing</b>.</li>' +
-                   '<li>If it is <i>decide, hope, plan, agree, want, refuse</i>, use <b>to + V1</b>.</li>' +
-                   '<li>If the phrase includes a preposition (good at, interested in), use <b>-ing</b>.</li>';
-        lead = 'Build each sentence using the correct verb form.';
     }
     renderSentenceBuilder(SB_PP,6,5,7,title,'Stage 6 — Grammar',formula,listHTML,lead);
 }
@@ -1836,28 +1945,19 @@ function renderStage6(){
 function renderStage7(){
     let title = '🧱 Sentence Builder — Passive Voice';
     let formula = 'was/were + past participle (V3)';
-    let listHTML = '<li>Build past passive sentences word by word. Start with the object that receives the action.</li>' +
-                   '<li>Remember to include the "be" verb (was/were) before the V3.</li>';
+    let listHTML = '<li>Build past passive sentences word by word.</li>';
     let lead = 'Build each sentence.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '🧱 Sentence Builder — Past Continuous';
         formula = 'Subject + was/were + V-ing';
-        listHTML = '<li>Use for actions in progress in the past.</li>' +
-                   '<li>Often used with "when" (interruption) or "while" (background action).</li>';
+        listHTML = '<li>Use for actions in progress in the past.</li><li>Often used with "when" or "while".</li>';
         lead = 'Build each sentence using the Past Continuous.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧱 Sentence Builder — Past Simple';
         formula = 'Subject + V2 (or did not + V1)';
-        listHTML = '<li>Build past simple sentences. Watch out for irregular verbs.</li>';
+        listHTML = '<li>Build past simple sentences.</li>';
         lead = 'Build each sentence.';
-    } else if (activeContentName === 'abay') {
-        title = '🧱 Sentence Builder — Modals of Deduction';
-        formula = 'subject + modal + bare infinitive (present) · modal + have + V3 (past)';
-        listHTML = '<li>No <b>to</b> after must / might / could / can\'t / should.</li>' +
-                   '<li>For past deduction, remember the structure: modal + <b>have</b> + V3 (e.g., <i>must have gone</i>).</li>' +
-                   '<li>For impossibility in the past, use <i>cannot have + V3</i>.</li>';
-        lead = 'Build each sentence using the correct modal form.';
     }
     renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
 }
@@ -1866,30 +1966,19 @@ function renderStage7(){
 function renderStage8(){
     let title = '🧭 Completing Sentence — Choose the Tense';
     let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
-    let listHTML = '<li><b>Past Simple:</b> Use with finished time expressions (yesterday, last year, in 2010).</li>' +
-                   '<li><b>Present Perfect:</b> Use with unfinished time (today, this week), or time expressions like <i>since, for, yet, ever, just, already</i>.</li>' +
-                   '<li><b>Past Passive:</b> Use when the subject receives the action (e.g., <i>The house was built in 1990.</i>).</li>';
+    let listHTML = '<li>Use past simple with finished times.</li><li>Use present perfect with: since, for, yet, ever.</li>';
     let lead = 'Choose the correct tense for each sentence.';
     
     if (activeContentName.includes('araylim_1')) {
         title = '🧭 Completing Sentence — Present Perfect';
         formula = 'Subject + have/has + past participle (V3)';
-        listHTML = '<li>Use for experiences (ever/never).</li>' +
-                   '<li>Use with "since" (point in time) and "for" (duration).</li>' +
-                   '<li>Use with "yet" (questions/negatives) and "already/just" (positives).</li>';
+        listHTML = '<li>Use for experiences (ever/never).</li><li>Use with "since", "for", "yet", "already", "just".</li>';
         lead = 'Complete each sentence using the Present Perfect.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧭 Completing Sentence — Mixed Tenses';
         formula = 'Present Simple/Continuous · Past Simple · Present Perfect';
-        listHTML = '<li>Look at the time words to identify the correct tense (e.g., <i>every day</i> = Present Simple; <i>right now</i> = Present Continuous; <i>yesterday</i> = Past Simple).</li>';
+        listHTML = '<li>Look at the time words to identify the correct tense.</li>';
         lead = 'Choose the correct tense for each sentence.';
-    } else if (activeContentName === 'abay') {
-        title = '🧭 Completing Sentence — Choose the Form';
-        formula = 'gerund · infinitive · modal (+have) · present perfect';
-        listHTML = '<li>Look at the verb before the gap and the time clue after it.</li>' +
-                   '<li>For past deduction use <b>modal + have + V3</b> (e.g., <i>must have left</i>).</li>' +
-                   '<li>For experiences use <b>Present Perfect</b>. For habits use <b>Present Simple</b>.</li>';
-        lead = 'Choose the correct form for each sentence.';
     }
     renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
 }
@@ -1898,16 +1987,8 @@ function renderStage8(){
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 
 function getTestTimeLimit() {
-   // Advanced algorithm: calculates time based on question difficulty
-   const mcqTime = (TEST_MCQ ? TEST_MCQ.length : 0) * 25;       // 25s per MCQ
-   const shortTime = (TEST_SHORT ? TEST_SHORT.length : 0) * 40; // 40s per short answer
-   const tfngTime = (TEST_TFNG ? TEST_TFNG.length : 0) * 20;    // 20s per TFNG
-   const completeTime = (TEST_COMPLETE ? TEST_COMPLETE.length : 0) * 35; // 35s per complete
-   
-   const baseTime = 60; // Base time for reading instructions
-   const totalTime = baseTime + mcqTime + shortTime + tfngTime + completeTime;
-   
-   return Math.max(300, totalTime); // Minimum 5 minutes just in case
+   const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length;
+   return Math.max(300, totalQuestions * 30); 
 }
 
 function buildTestQuestions(){
@@ -2160,16 +2241,16 @@ function renderSidebar(){
   const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
   
   const isAraylim1 = activeContentName.includes('araylim_1');
-  const isAbay = activeContentName === 'abay';
   const customLabels = isAraylim1 ? [
-      'Vocabulary', 'Word Match', 'Reading & Questions',
-      'Simple Present', 'Present Continuous', 'Simple Past',
-      'Past Continuous', 'Present Perfect', 'Test Your Knowledge'
-  ] : isAbay ? [
-      'Vocabulary', 'Word Match', 'Reading & Video',
-      'Gerunds vs Infinitives', 'Modals of Deduction',
-      'Sentence Builder — Gerunds', 'Sentence Builder — Modals',
-      'Choose the Form', 'Test Your Knowledge'
+      'Vocabulary', 
+      'Word Match', 
+      'Reading & Questions', 
+      'Simple Present', 
+      'Present Continuous', 
+      'Simple Past', 
+      'Past Continuous', 
+      'Present Perfect', 
+      'Test Your Knowledge'
   ] : null;
 
   CURRICULUM.forEach(function(yearObj){
