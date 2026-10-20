@@ -181,34 +181,19 @@ html.dark .hl-pink{background-color:rgba(244, 114, 182, 0.3);color:#fff;border-b
 html.dark .user-note{background-color:rgba(253, 224, 71, 0.3);border-bottom:2px dashed rgba(250, 204, 21, 0.8);color:#fff;}
 html.dark .user-note:hover{background-color:rgba(253, 224, 71, 0.5);}
 
-/* HOVER EFFECTS (Visual distinction for edits) */
-.hl-yellow:hover, .hl-green:hover, .hl-blue:hover, .hl-purple:hover, .hl-pink:hover {
-    outline: 2px solid var(--ink-soft);
-    outline-offset: 2px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.underline:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-    border-radius: 4px;
-    cursor: pointer;
-}
-html.dark .underline:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-.user-note:hover {
-    box-shadow: 0 0 0 2px var(--warn);
-}
+/* HOVER EFFECTS */
+.hl-yellow:hover, .hl-green:hover, .hl-blue:hover, .hl-purple:hover, .hl-pink:hover { outline: 2px solid var(--ink-soft); outline-offset: 2px; border-radius: 4px; cursor: pointer; }
+.underline:hover { background-color: rgba(0, 0, 0, 0.08); border-radius: 4px; cursor: pointer; }
+html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
+.user-note:hover { box-shadow: 0 0 0 2px var(--warn); }
 
-/* CUSTOM CONTEXT MENU & SUBMENU */
+/* CUSTOM CONTEXT MENU */
 .context-menu{position:absolute;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;padding:4px;z-index:10000;min-width:160px;}
 .context-menu.show{display:flex;}
 .context-item{padding:8px 12px;font-size:14px;cursor:pointer;border-radius:6px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-weight:600;position:relative;}
 .context-item:hover{background:var(--bg);color:var(--accent);}
 .context-item.delete{color:var(--error);}
 .context-item.delete:hover{background:var(--error-soft);}
-
-/* SUBMENU FOR HIGHLIGHTS */
 .has-submenu:hover .submenu { display: flex; }
 .submenu { display: none; position: absolute; top: 0; left: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); flex-direction: column; padding: 4px; min-width: 120px; z-index: 10001; }
 .submenu-item { padding: 6px 12px; font-size: 13px; cursor: pointer; border-radius: 4px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
@@ -470,7 +455,6 @@ const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is
 function expandContractions(str) {
   return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would');
 }
-
 function normalizeString(str) {
   let s = String(str).toLowerCase().trim();
   s = expandContractions(s);
@@ -478,12 +462,10 @@ function normalizeString(str) {
   s = s.replace(/\s+/g, ' ');
   return s;
 }
-
 function getCoreWords(str) {
   const norm = normalizeString(str);
   return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w));
 }
-
 function levenshtein(a, b) {
   const matrix = [];
   for (let i = 0; i <= b.length; i++) matrix[i] = [i];
@@ -496,7 +478,6 @@ function levenshtein(a, b) {
   }
   return matrix[b.length][a.length];
 }
-
 function isAnswerCorrect(userStr, expectedArr) {
   if(!userStr) return false;
   let user = normalizeString(userStr);
@@ -504,48 +485,64 @@ function isAnswerCorrect(userStr, expectedArr) {
 
   for (let exp of expectedArr) {
     let target = normalizeString(exp);
-    
-    // 1. Exact Match
     if (user === target) return true;
-    
-    // 2. Numeric Extraction (e.g., "In 2015" vs "2015")
     const userNums = user.match(/\d+/g) || [];
     const targetNums = target.match(/\d+/g) || [];
     if (targetNums.length > 0) {
         const numMatch = targetNums.every(tn => userNums.includes(tn));
         if (numMatch) return true;
     }
-    
-    // 3. Core Words Match (ignores fillers like "in", "the", etc.)
     const userCores = getCoreWords(user);
     const targetCores = getCoreWords(target);
-    
     if (userCores.length > 0 && targetCores.length > 0) {
         const userCoreStr = userCores.join(' ');
         const targetCoreStr = targetCores.join(' ');
         if (userCoreStr === targetCoreStr) return true;
-        
-        // Substring match on core words
         if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true;
         if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
     }
-    
-    // 4. Substring match on raw string
     if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
-    
-    // 5. Morphological Variations (sleep vs sleeping)
     if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
        const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
        if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
     }
-
-    // 6. Levenshtein Typo Tolerance
     if (target.length > 4) {
        const maxAllowedDist = target.length > 8 ? 2 : 1;
        if (levenshtein(user, target) <= maxAllowedDist) return true;
     }
   }
   return false;
+}
+
+/* ================== DRAFT SAVE SYSTEM ================== */
+let draftAnswers = {};
+let draftSaveTimeout = null;
+
+function debouncedSaveDraft() {
+  if (teacherMode) return;
+  clearTimeout(draftSaveTimeout);
+  draftSaveTimeout = setTimeout(() => {
+    try { localStorage.setItem('nd_draft_'+state.currentLessonId, JSON.stringify(draftAnswers)); } catch(e) {}
+    if (fbConnected && sessionRef) {
+      sessionRef.child('draft/'+state.currentLessonId).set(draftAnswers).catch(console.error);
+    }
+  }, 400); // Save 400ms after user stops typing
+}
+
+function loadDraft() {
+  try {
+    const local = localStorage.getItem('nd_draft_'+state.currentLessonId);
+    if (local) draftAnswers = JSON.parse(local) || {};
+  } catch(e) {}
+  if (fbConnected && sessionRef) {
+    sessionRef.child('draft/'+state.currentLessonId).once('value').then(snap => {
+      if (snap.exists()) {
+        draftAnswers = Object.assign({}, draftAnswers, snap.val());
+        // Re-render current stage to apply drafts
+        renderStage();
+      }
+    });
+  }
 }
 
 /* ================== ANNOTATION & NOTES LOGIC ================== */
@@ -555,33 +552,25 @@ let contextTargetEdit = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('customContextMenu');
-  
   document.addEventListener('click', function(e) {
     if(e.target.closest('.context-menu')) return;
     menu.classList.remove('show');
-
     if(e.target.closest('.sticky-note')) return;
-
     const targetNote = e.target.closest('.user-note');
     if (targetNote) {
         if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
         openExistingNote(targetNote.dataset.id);
         return;
     }
-
     closeStickyNote();
   });
-
   document.addEventListener('contextmenu', function(e) {
     if(!e.target.closest('#passageBody')) return;
-    
     e.preventDefault();
     menu.innerHTML = ''; 
     contextTargetEdit = null;
-    
     const selection = window.getSelection();
     const targetNote = e.target.closest('.user-note');
-    
     let node = e.target;
     while (node && node !== document.body) {
         if (node.nodeType === 1) { 
@@ -592,9 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         node = node.parentNode;
     }
-
     const safeClick = "event.preventDefault(); event.stopPropagation();";
-
     if (targetNote) {
       if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
       menu.innerHTML = `
@@ -607,8 +594,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
-      
-      // Submenu for Highlights
       menu.innerHTML = `
         <div class="context-item has-submenu">
             🖍️ Highlight
@@ -626,21 +611,17 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       return; 
     }
-    
     let x = e.pageX;
     let y = e.pageY;
     if (x + 160 > window.innerWidth) x -= 160;
     if (y + 200 > window.innerHeight) y -= 200;
-
     menu.style.left = x + 'px';
     menu.style.top = y + 'px';
     menu.classList.add('show');
   });
-
   const dragHandle = document.getElementById('stickyDragHandle');
   const stickyNote = document.getElementById('stickyNote');
   let isDragging = false, startX, startY, initialX, initialY;
-
   dragHandle.addEventListener('mousedown', function(e) {
     if(e.target.tagName === 'BUTTON') return;
     isDragging = true;
@@ -650,7 +631,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initialY = stickyNote.offsetTop;
     document.body.style.userSelect = 'none';
   });
-
   document.addEventListener('mousemove', function(e) {
     if (!isDragging) return;
     const dx = e.clientX - startX;
@@ -658,7 +638,6 @@ document.addEventListener('DOMContentLoaded', () => {
     stickyNote.style.left = (initialX + dx) + 'px';
     stickyNote.style.top = (initialY + dy) + 'px';
   });
-
   document.addEventListener('mouseup', function() {
     isDragging = false;
     document.body.style.userSelect = '';
@@ -670,16 +649,13 @@ function applyAnnotation(className) {
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(savedRange);
-  
   const span = document.createElement('span');
   span.className = className;
   if(className === 'underline') span.style.textDecoration = 'underline';
-  
   try {
     span.appendChild(savedRange.extractContents());
     savedRange.insertNode(span);
   } catch(e) { console.error("Highlight error:", e); }
-  
   selection.removeAllRanges(); 
   savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
@@ -691,18 +667,15 @@ function createNewNote() {
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(savedRange);
-
   const id = 'note_' + Date.now();
   const span = document.createElement('span');
   span.className = 'user-note';
   span.dataset.id = id;
   span.dataset.note = "";
-  
   try {
     span.appendChild(savedRange.extractContents());
     savedRange.insertNode(span);
   } catch(e) { console.error("Note error:", e); }
-  
   selection.removeAllRanges();
   savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
@@ -782,16 +755,12 @@ function editFlashcardImage(){
   if(!teacherCanEdit||!fbDb){alert('Sign in with the teacher account to edit.');return}
   if(!quizWord)return;
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return;
-  
   currentEditWord = quizWord;
   currentEditMeaningIdx = quizCurrentIdx;
-  
   const meaning = w.meanings[quizCurrentIdx];
   const displayWord = meaning.displayEn || w.en;
   const imgKey = displayWord + '_' + quizCurrentIdx;
-  
   const current = customImages[imgKey] || customImages[displayWord] || customImages[w.en] || '';
-  
   document.getElementById('imageUrlInput').value = current;
   document.getElementById('imageUrlModal').classList.add('open');
 }
@@ -806,14 +775,11 @@ function saveImageUrl() {
       alert('URL must start with http:// or https://');
       return;
   }
-  
   const w = VOCAB.find(x => x.en === currentEditWord);
   const meaning = w.meanings[currentEditMeaningIdx];
   const displayWord = meaning.displayEn || w.en;
   const imgKey = displayWord + '_' + currentEditMeaningIdx;
-  
   const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||'lesson_1';
-  
   fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+imgKey).set(url || null).then(function(){
     if(url) customImages[imgKey] = url;
     else delete customImages[imgKey];
@@ -851,11 +817,9 @@ function initFirebase(){
       const fbLessons = Object.keys(curriculumCache).map(id => {
         const l = curriculumCache[id];
         if (l.homework) return null;
-        
         if (l.assignedTo && l.assignedTo.length > 0) {
             if (!code || l.assignedTo.indexOf(code) === -1) return null;
         }
-        
         return {
           id: id,
           title: l.title || 'Untitled Lesson',
@@ -869,13 +833,10 @@ function initFirebase(){
       if (fbLessons.length === 0) {
          fbLessons.push({ id: state.currentLessonId || 'lesson_1', title: 'Lesson', stages: DEFAULT_STAGES, year: '2026', month: 'October' });
       }
-
       CURRICULUM[0].months[0].lessons = fbLessons;
-      
       if (!state.currentLessonId && fbLessons.length > 0) {
           state.currentLessonId = fbLessons[0].id;
       }
-      
       renderSidebar();
       renderStage(); 
     });
@@ -936,6 +897,7 @@ function startStudentSession(code){
   commandRef=sessionRef.child('command');
   commandRef.on('value',function(snap){const cmd=snap.val();if(!cmd)return;applyTeacherResetCommand(cmd);if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage)});
   fbConnected=true;updateSyncUI('live');pushFullState();
+  loadDraft(); // Load drafts when student session starts
 }
 function getSessionCode(){
   const u=new URLSearchParams(window.location.search).get('code');
@@ -967,7 +929,7 @@ function applyTeacherResetCommand(cmd){
     teacherReset();
   }
 }
-function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};document.getElementById('notesArea').value='';updateHUD();renderSidebar();renderStage();saveState()}
+function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};draftAnswers={};document.getElementById('notesArea').value='';if(sessionRef)sessionRef.child('draft/'+state.currentLessonId).remove();updateHUD();renderSidebar();renderStage();saveState()}
 
 /* ================== AUDIO + TTS ================== */
 let audioCtx=null,soundOn=true;
@@ -1101,7 +1063,7 @@ let quizOptionsCache={};
 let quizHintShown=false;
 let quizRoundFinalized=false;
 let practiceMode=false;
-let practiceQueue=[]; // Now stores { word: wordObj, meanings: [indices] }
+let practiceQueue=[];
 let practiceIdx=0;
 
 function vocabKey(){return 'nd_vocab_'+state.currentLessonId}
@@ -1118,7 +1080,6 @@ function saveVocabStateLocal(){try{localStorage.setItem(vocabKey(),JSON.stringif
 function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(vocabState).catch(function(){})}catch(e){}}
 function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
 
-// Returns status of a specific meaning or the whole word
 function getMeaningStatus(word, meaningIdx) {
    if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return 'learned';
    const wordState = vocabState[word];
@@ -1203,7 +1164,6 @@ function openQuiz(idx){
   openQuizWord(w.en, w.meanings.map((_, i) => i));
 }
 
-// New signature: word and array of meaning indices to test
 function openQuizWord(word, meaningIndices){
   try{
     quizWord=word;
@@ -1211,10 +1171,7 @@ function openQuizWord(word, meaningIndices){
     quizHintShown=false;
     quizRoundFinalized=false;
     const w=VOCAB.find(function(x){return x.en===word});if(!w){console.warn('Word not found:',word);return}
-    
-    // Filter meanings to only include the ones we need to practice
     quizMeanings = meaningIndices.map(i => ({ idx: i, data: w.meanings[i] }));
-    
     quizCurrentIdx=0;
     quizRoundWrongs=0;
     quizAnswers={};
@@ -1280,7 +1237,6 @@ function renderQuizModal(){
   const q=buildQuizOptions(quizWord,realMeaningIdx);
   const answered=quizAnswers[quizCurrentIdx];
   
-  // Build Part of Speech Badge
   let posBadge = '';
   if (meaning.pos) {
       posBadge = `<span class="pos-badge">${escapeHtml(meaning.pos)}</span>`;
@@ -1335,7 +1291,7 @@ function answerQuiz(btn){
   quizAnswers[quizCurrentIdx]={selected:opt,correct:correct};
   
   if(!vocabState[quizWord]) vocabState[quizWord] = { meanings: {} };
-  if(!vocabState[quizWord].meanings) vocabState[quizWord].meanings = {}; // migration fallback
+  if(!vocabState[quizWord].meanings) vocabState[quizWord].meanings = {};
   if(!vocabState[quizWord].meanings[realMeaningIdx]) vocabState[quizWord].meanings[realMeaningIdx] = { perfectStreak: 0, wrongCount: 0 };
   
   if(correct){
@@ -1366,13 +1322,11 @@ function finalizeRound(){
   const wState = vocabState[quizWord];
   if(!wState || !wState.meanings) return;
   
-  // Apply result to ALL meanings tested in this round
   quizMeanings.forEach((mObj, i) => {
      const idx = mObj.idx;
      const answered = quizAnswers[i];
      const s = wState.meanings[idx];
      if(!s) return;
-     
      if(answered && answered.correct) {
          s.perfectStreak = (s.perfectStreak || 0) + 1;
          if(s.perfectStreak >= 2) s.wrongCount = 0;
@@ -1598,14 +1552,15 @@ function renderReadingQuestions(){
   READING_Q.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
     const typeLabel={short:'Short answer',tfng:'True / False / Not Given',long:'Long answer',mcq:'Multiple choice'}[item.type];
-    
     const ruHtml = item.ru ? '<span class="ru-prompt">'+escapeHtml(item.ru)+'</span>' : '';
-
     card.innerHTML='<div class="q-num">Question '+(i+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>';
     
     if(item.type==='short'){
       const row=document.createElement('div');row.className='q-input-row';
       const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';
+      // DRAFT RESTORE
+      if(draftAnswers['r'+i+'_draft']) inp.value = draftAnswers['r'+i+'_draft'];
+      
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
       const fb=document.createElement('div');fb.className='q-feedback';
       let done=false;
@@ -1618,6 +1573,7 @@ function renderReadingQuestions(){
           inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;
           fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
           sCorrect();s4Answers['r'+i]=true;checkS4();
+          delete draftAnswers['r'+i+'_draft']; debouncedSaveDraft(); // Remove draft on success
         } else {
           inp.classList.add('wrong');sWrong();
           fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again — check the passage.';
@@ -1631,13 +1587,24 @@ function renderReadingQuestions(){
       }
       btn.onclick=submit;
       inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+      // DRAFT SAVE
+      inp.addEventListener('input', function() {
+          draftAnswers['r'+i+'_draft'] = inp.value;
+          debouncedSaveDraft();
+      });
       row.appendChild(inp);row.appendChild(btn);card.appendChild(row);card.appendChild(fb);
     }else if(item.type==='tfng'){
       const opts=document.createElement('div');opts.className='tfng-opts';
+      const draftVal = draftAnswers['r'+i+'_draft'];
       shuffle(['True','False','Not Given']).forEach(function(o){
         const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+        if (draftVal === o) b.style.background = 'var(--bg)'; // Visual hint for drafted selection
         b.onclick=function(){
           if(b.disabled)return;
+          // SAVE DRAFT ON CLICK
+          draftAnswers['r'+i+'_draft'] = o;
+          debouncedSaveDraft();
+          
           opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
           const fb=card.querySelector('.q-feedback');
           if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
@@ -1650,6 +1617,8 @@ function renderReadingQuestions(){
       const fb=document.createElement('div');fb.className='q-feedback';card.appendChild(fb);
     }else if(item.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
+      if(draftAnswers['r'+i+'_draft']) ta.value = draftAnswers['r'+i+'_draft'];
+      
       const row=document.createElement('div');row.className='q-input-row';row.style.marginTop='10px';
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer';
       const fb=document.createElement('div');fb.className='q-feedback';
@@ -1660,7 +1629,12 @@ function renderReadingQuestions(){
         if(done)return;
         const txt=ta.value.trim();
         const res=checkLongAnswer(txt,item.keywordGroups,item.minWords,item.minGroups);
-        if(res.pass){ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>';sCorrect();s4Answers['r'+i]=true;checkS4()}
+        if(res.pass){
+            ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true;
+            fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>';
+            sCorrect();s4Answers['r'+i]=true;checkS4();
+            delete draftAnswers['r'+i+'_draft']; debouncedSaveDraft();
+        }
         else{ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'}
         
         if(!flagAdded) {
@@ -1669,13 +1643,22 @@ function renderReadingQuestions(){
         }
       }
       btn.onclick=submit;
+      ta.addEventListener('input', function() {
+          draftAnswers['r'+i+'_draft'] = ta.value;
+          debouncedSaveDraft();
+      });
       row.appendChild(btn);card.appendChild(ta);card.appendChild(row);card.appendChild(fb);
     }else if(item.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
+      const draftVal = draftAnswers['r'+i+'_draft'];
       shuffle(item.options).forEach(function(o){
         const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+        if (draftVal === o) b.style.background = 'var(--bg)';
         b.onclick=function(){
           if(b.disabled)return;
+          draftAnswers['r'+i+'_draft'] = o;
+          debouncedSaveDraft();
+          
           opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
           const fb=card.querySelector('.q-feedback');
           if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
@@ -1698,10 +1681,15 @@ function renderContextQ(){
     const ruHtml = item.ru ? '<span class="ru-prompt">'+escapeHtml(item.ru)+'</span>' : '';
     card.innerHTML='<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>';
     const opts=document.createElement('div');opts.className='q-opts';
+    const draftVal = draftAnswers['c'+i+'_draft'];
     shuffle(item.options).forEach(function(o){
       const b=document.createElement('button');b.className='q-opt';b.textContent=o;
+      if (draftVal === o) b.style.background = 'var(--bg)';
       b.onclick=function(){
         if(b.disabled)return;
+        draftAnswers['c'+i+'_draft'] = o;
+        debouncedSaveDraft();
+        
         opts.querySelectorAll('button').forEach(function(x){x.disabled=true});
         const fb=card.querySelector('.q-feedback');
         if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['c'+i]=true}
@@ -1756,6 +1744,10 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
       card.innerHTML='<div class="q-num">Question '+(startNum+i)+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
       const row=document.createElement('div');row.className='q-input-row';
       const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type the missing word(s)...';inp.autocomplete='off';inp.spellcheck=false;
+      
+      const draftKey = 'g'+stageId+'_'+startNum+i+'_draft';
+      if(draftAnswers[draftKey]) inp.value = draftAnswers[draftKey];
+
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
       const fb=document.createElement('div');fb.className='q-feedback';
       let answered=false;
@@ -1770,6 +1762,7 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
           setScore(stageId,Math.floor(score*10/total));
           if(score===total){setScore(stageId,10);markDone(stageId)}
           broadcastAction('answer_correct',item.p.substring(0,40)+' → '+item.a);
+          delete draftAnswers[draftKey]; debouncedSaveDraft();
         }else{
           inp.classList.add('wrong');sWrong();
           fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!';
@@ -1778,6 +1771,10 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
       }
       btn.onclick=submit;
       inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+      inp.addEventListener('input', function() {
+          draftAnswers[draftKey] = inp.value;
+          debouncedSaveDraft();
+      });
       row.appendChild(inp);row.appendChild(btn);
       card.appendChild(row);card.appendChild(fb);body.appendChild(card);
     });
@@ -1794,7 +1791,6 @@ function renderStage4(){
     let formula = 'Subject + have/has + past participle (V3)';
     let listHTML = '<li>Use <b>have</b> with I, you, we, they.</li><li>Use <b>has</b> with he, she, it.</li>';
     let lead = 'Complete each sentence.';
-    
     if (activeContentName.includes('araylim_1')) {
         title = '⏳ Completing Sentence — Simple Present';
         formula = 'Subject + V1 (or V-s / V-es for he, she, it)';
@@ -1814,7 +1810,6 @@ function renderStage5(){
     let formula = 'Subject + was/were + past participle (V3)';
     let listHTML = '<li>Past passive.</li>';
     let lead = 'Complete each sentence using the passive voice.';
-    
     if (activeContentName.includes('araylim_1')) {
         title = '⏳ Completing Sentence — Present Continuous';
         formula = 'Subject + am/is/are + V-ing';
@@ -1859,12 +1854,46 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
       body.appendChild(card);
       const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
       const scrambled=shuffle(item.correct.map(function(w,ii){return{w:w,i:ii}}));
+      
+      const draftKey = 'sb'+stageId+'_'+idx+'_draft';
+      const draftOrder = draftAnswers[draftKey] || []; // Array of original indices
+      
       scrambled.forEach(function(entry){
         const chip=document.createElement('div');chip.className='sb-chip';chip.textContent=entry.w;chip.dataset.origIndex=entry.i;
         chip.onclick=function(){moveChip(stageId,idx,chip,entry.w,entry.i)};
         chipsEl.appendChild(chip);
       });
       SB_STATE[stageId+'_'+idx]=[];
+      
+      // Restore drafted order
+      if (draftOrder.length > 0) {
+         const area = document.getElementById('sbArea'+stageId+'_'+idx);
+         if(area.querySelector('.placeholder')) area.querySelector('.placeholder').remove();
+         area.classList.add('filled');
+         draftOrder.forEach(origIdx => {
+             const chipToMove = chipsEl.querySelector('.sb-chip[data-orig-index="'+origIdx+'"]');
+             if (chipToMove) {
+                 chipToMove.remove();
+                 const newChip = document.createElement('div');
+                 newChip.className = 'sb-chip';
+                 newChip.textContent = item.correct[origIdx];
+                 newChip.dataset.origIndex = origIdx;
+                 newChip.onclick = function() {
+                     newChip.remove();
+                     const back = document.createElement('div');
+                     back.className = 'sb-chip'; back.textContent = item.correct[origIdx]; back.dataset.origIndex = origIdx;
+                     back.onclick = function() { moveChip(stageId, idx, back, item.correct[origIdx], origIdx); };
+                     chipsEl.appendChild(back);
+                     SB_STATE[stageId+'_'+idx] = (SB_STATE[stageId+'_'+idx] || []).filter(x => x !== origIdx);
+                     draftAnswers[draftKey] = SB_STATE[stageId+'_'+idx];
+                     debouncedSaveDraft();
+                     if (!area.querySelector('.sb-chip')) { area.innerHTML = '<span class="placeholder">Click the words below...</span>'; area.classList.remove('filled'); }
+                 };
+                 area.appendChild(newChip);
+                 SB_STATE[stageId+'_'+idx].push(origIdx);
+             }
+         });
+      }
     });
   }
   addSection('Part 1 — Positive sentences',data.pos,1);
@@ -1883,11 +1912,15 @@ function moveChip(stageId,idx,chip,word,origIdx){
     back.onclick=function(){moveChip(stageId,idx,back,word,origIdx)};
     chipsEl.appendChild(back);
     SB_STATE[stageId+'_'+idx]=(SB_STATE[stageId+'_'+idx]||[]).filter(function(x){return x!==origIdx});
+    draftAnswers['sb'+stageId+'_'+idx+'_draft'] = SB_STATE[stageId+'_'+idx];
+    debouncedSaveDraft();
     if(!area.querySelector('.sb-chip')){area.innerHTML='<span class="placeholder">Click the words below...</span>';area.classList.remove('filled')}
   };
   area.appendChild(newChip);area.classList.add('filled');chip.remove();sPop();
   if(!SB_STATE[stageId+'_'+idx])SB_STATE[stageId+'_'+idx]=[];
   SB_STATE[stageId+'_'+idx].push(origIdx);
+  draftAnswers['sb'+stageId+'_'+idx+'_draft'] = SB_STATE[stageId+'_'+idx];
+  debouncedSaveDraft();
 }
 function resetSBItem(stageId,idx){
   const area=document.getElementById('sbArea'+stageId+'_'+idx);const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
@@ -1900,6 +1933,8 @@ function resetSBItem(stageId,idx){
   area.innerHTML='<span class="placeholder">Click the words below...</span>';
   area.classList.remove('filled');
   SB_STATE[stageId+'_'+idx]=[];
+  draftAnswers['sb'+stageId+'_'+idx+'_draft'] = [];
+  debouncedSaveDraft();
   const fb=document.getElementById('sbFb'+stageId+'_'+idx);if(fb)fb.className='q-feedback';
 }
 function checkSBItem(stageId,idx){
@@ -1919,6 +1954,7 @@ function checkSBItem(stageId,idx){
       setScore(stageId,Math.floor(cur*10/tot));
       if(cur===tot){setScore(stageId,10);markDone(stageId)}
     }
+    delete draftAnswers['sb'+stageId+'_'+idx+'_draft']; debouncedSaveDraft();
   }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Check the word order.';sWrong()}
 }
 
@@ -1927,7 +1963,6 @@ function renderStage6(){
     let formula = 'have/has + past participle (V3)';
     let listHTML = '<li>Build sentences word by word.</li>';
     let lead = 'Build each sentence.';
-    
     if (activeContentName.includes('araylim_1')) {
         title = '🧩 Sentence Builder — Simple Past';
         formula = 'Subject + V2 (or did not + V1)';
@@ -1947,7 +1982,6 @@ function renderStage7(){
     let formula = 'was/were + past participle (V3)';
     let listHTML = '<li>Build past passive sentences word by word.</li>';
     let lead = 'Build each sentence.';
-    
     if (activeContentName.includes('araylim_1')) {
         title = '🧱 Sentence Builder — Past Continuous';
         formula = 'Subject + was/were + V-ing';
@@ -1968,7 +2002,6 @@ function renderStage8(){
     let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
     let listHTML = '<li>Use past simple with finished times.</li><li>Use present perfect with: since, for, yet, ever.</li>';
     let lead = 'Choose the correct tense for each sentence.';
-    
     if (activeContentName.includes('araylim_1')) {
         title = '🧭 Completing Sentence — Present Perfect';
         formula = 'Subject + have/has + past participle (V3)';
@@ -1985,12 +2018,10 @@ function renderStage8(){
 
 /* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
-
 function getTestTimeLimit() {
    const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length;
    return Math.max(300, totalQuestions * 30); 
 }
-
 function buildTestQuestions(){
   const qs=[];
   TEST_MCQ.forEach(function(q){qs.push({type:'mcq',prompt:q.q,options:q.options,correct:q.correct,exp:q.exp})});
@@ -1999,20 +2030,16 @@ function buildTestQuestions(){
   TEST_COMPLETE.forEach(function(q){qs.push({type:'complete',prompt:q.p,answer:q.a})});
   return shuffle(qs);
 }
-
 function renderStage9(){
   const main=document.getElementById('main');
   if(!main)return;
   main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
-  
   const limitMins = Math.floor(getTestTimeLimit() / 60);
-  
   v.innerHTML='<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
   '<div class="lead">This is a strict, timed test. You have <b>'+limitMins+' minutes</b> in total. You can only take this test <b>once</b>. After time runs out, the test closes automatically.<span class="ru">Строгий тест на время: '+limitMins+' минут, одна попытка.</span></div>'+
   '<div id="testRoot"></div>';
   main.appendChild(v);
-  
   if (teacherCanEdit) {
       const resetBtn = document.createElement('button');
       resetBtn.className = 'btn danger small';
@@ -2021,9 +2048,7 @@ function renderStage9(){
       resetBtn.onclick = function() { resetStageTeacher(9); };
       v.insertBefore(resetBtn, document.getElementById('testRoot'));
   }
-  
   main.appendChild(stageFooter(8,null));
-  
   if(state.done[state.currentLessonId+"_9"]) {
       const score = state.scores[state.currentLessonId+"_9"] || 0;
       document.getElementById('testRoot').innerHTML = '<div class="complete-banner"><div class="trophy">🏁</div><h3>Test already completed</h3>'+
@@ -2040,7 +2065,6 @@ function renderTestIntro(){
   testState.active=false;
   const preview=buildTestQuestions().length;
   const limitMins = Math.floor(getTestTimeLimit() / 60);
-  
   r.innerHTML='<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+
   '<p>'+preview+' questions · '+limitMins+' minutes · one attempt only</p>'+
   '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+
@@ -2050,11 +2074,9 @@ function startTest(){
   testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:0,timer:null};
   testState.total=testState.questions.length;
   testState.timeLeft = getTestTimeLimit();
-  
   const limitMins = Math.floor(testState.timeLeft / 60);
   const limitSecs = testState.timeLeft % 60;
   const formattedTime = String(limitMins).padStart(2, '0') + ':' + String(limitSecs).padStart(2, '0');
-  
   const r=document.getElementById('testRoot');if(!r)return;
   r.innerHTML='<div class="test-hud">'+
   '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">'+formattedTime+'</span></div>'+
@@ -2174,18 +2196,15 @@ function endTest(timedOut,customReason){
   if(testState.timer){clearInterval(testState.timer);testState.timer=null}
   const total=testState.total||1;
   const score=Math.round((testState.correct/total)*10);
-  
   try {
       state.done[state.currentLessonId+"_9"] = true;
       setScore(9, score); 
       saveState();
   } catch(e) { console.error("State save failed", e); }
-
   const elapsed=getTestTimeLimit()-testState.timeLeft;
   const mins=Math.floor(elapsed/60),secs=elapsed%60;
   const root=document.getElementById('testRoot');if(!root)return;
   const msg=customReason?customReason:(timedOut?'You ran out of time.':'Test complete!');
-  
   root.innerHTML='<div class="'+(timedOut||customReason?'test-timeout':'test-result')+'">'+
   '<div class="icon">'+(timedOut||customReason?'⏰':'🏁')+'</div>'+
   '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+
@@ -2239,18 +2258,12 @@ function resetStageTeacher(stageId) {
 }
 function renderSidebar(){
   const list=document.getElementById('stageList');if(!list)return;list.innerHTML='';
-  
   const isAraylim1 = activeContentName.includes('araylim_1');
   const customLabels = isAraylim1 ? [
-      'Vocabulary', 
-      'Word Match', 
-      'Reading & Questions', 
-      'Simple Present', 
-      'Present Continuous', 
-      'Simple Past', 
-      'Past Continuous', 
-      'Present Perfect', 
-      'Test Your Knowledge'
+      'Vocabulary', 'Word Match', 'Reading & Questions', 
+      'Simple Present', 'Present Continuous', 
+      'Simple Past', 'Past Continuous', 
+      'Present Perfect', 'Test Your Knowledge'
   ] : null;
 
   CURRICULUM.forEach(function(yearObj){
@@ -2268,12 +2281,10 @@ function renderSidebar(){
       if(isM)m.lessons.forEach(function(lesson){
         const isActive=lesson.id===state.currentLessonId;
         const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':'');
-        
         const fbLesson = curriculumCache[lesson.id];
         const title = (fbLesson && fbLesson.title) ? fbLesson.title : lesson.title;
-        
         lEl.innerHTML='<span>📘 '+title+'</span>';
-        lEl.onclick=function(){state.currentLessonId=lesson.id;state.currentStage=1;renderSidebar();renderStage()};
+        lEl.onclick=function(){state.currentLessonId=lesson.id;state.currentStage=1;renderSidebar();renderStage();loadDraft()};
         list.appendChild(lEl);
         if(isActive){
           const studentCode=getSessionCode();
@@ -2297,7 +2308,6 @@ function renderSidebar(){
             }
           }
           const sub=document.createElement('div');sub.className='stage-sub-list';
-          
           DEFAULT_STAGES.forEach(function(st){
             const key=lesson.id+"_"+st.id;
             const isA=st.id===state.currentStage;
@@ -2315,17 +2325,13 @@ function renderSidebar(){
             }
 
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
-            
             const row = document.createElement('div');
             row.style.display = 'flex'; row.style.alignItems = 'stretch'; row.style.gap = '4px';
-
             const stEl=document.createElement('button');
             stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':'');
             stEl.style.flex = '1';
-            
             const displayLabel = customLabels ? customLabels[st.id - 1] : st.label;
             stEl.innerHTML='<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+displayLabel+'</span>';
-            
             stEl.onclick=function(){goToStage(st.id)};
             row.appendChild(stEl);
 
@@ -2360,7 +2366,6 @@ function renderStage(){
   
   const lesson = getCurrentLesson();
   const stages = DEFAULT_STAGES;
-                 
   const stageIndex = stages.findIndex(s => s.id === state.currentStage);
 
   let fn = null;

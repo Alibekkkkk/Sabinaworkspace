@@ -290,12 +290,10 @@ function isAnswerCorrect(userStr, expectedArr) {
     // 3. Core Words Match
     const userCores = getCoreWords(user);
     const targetCores = getCoreWords(target);
-    
     if (userCores.length > 0 && targetCores.length > 0) {
         const userCoreStr = userCores.join(' ');
         const targetCoreStr = targetCores.join(' ');
         if (userCoreStr === targetCoreStr) return true;
-        
         if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true;
         if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
     }
@@ -325,33 +323,25 @@ let contextTargetEdit = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('customContextMenu');
-  
   document.addEventListener('click', function(e) {
     if(e.target.closest('.context-menu')) return;
     menu.classList.remove('show');
-
     if(e.target.closest('.sticky-note')) return;
-
     const targetNote = e.target.closest('.user-note');
     if (targetNote) {
         if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
         openExistingNote(targetNote.dataset.id);
         return;
     }
-
     closeStickyNote();
   });
-
   document.addEventListener('contextmenu', function(e) {
     if(!e.target.closest('#passageBody')) return;
-    
     e.preventDefault();
     menu.innerHTML = ''; 
     contextTargetEdit = null;
-    
     const selection = window.getSelection();
     const targetNote = e.target.closest('.user-note');
-    
     let node = e.target;
     while (node && node !== document.body) {
         if (node.nodeType === 1) { 
@@ -362,9 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         node = node.parentNode;
     }
-
     const safeClick = "event.preventDefault(); event.stopPropagation();";
-
     if (targetNote) {
       if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
       menu.innerHTML = `
@@ -377,7 +365,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
-      
       menu.innerHTML = `
         <div class="context-item has-submenu">
             🖍️ Highlight
@@ -395,21 +382,17 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       return; 
     }
-    
     let x = e.pageX;
     let y = e.pageY;
     if (x + 160 > window.innerWidth) x -= 160;
     if (y + 200 > window.innerHeight) y -= 200;
-
     menu.style.left = x + 'px';
     menu.style.top = y + 'px';
     menu.classList.add('show');
   });
-
   const dragHandle = document.getElementById('stickyDragHandle');
   const stickyNote = document.getElementById('stickyNote');
   let isDragging = false, startX, startY, initialX, initialY;
-
   dragHandle.addEventListener('mousedown', function(e) {
     if(e.target.tagName === 'BUTTON') return;
     isDragging = true;
@@ -419,7 +402,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initialY = stickyNote.offsetTop;
     document.body.style.userSelect = 'none';
   });
-
   document.addEventListener('mousemove', function(e) {
     if (!isDragging) return;
     const dx = e.clientX - startX;
@@ -427,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
     stickyNote.style.left = (initialX + dx) + 'px';
     stickyNote.style.top = (initialY + dy) + 'px';
   });
-
   document.addEventListener('mouseup', function() {
     isDragging = false;
     document.body.style.userSelect = '';
@@ -439,16 +420,13 @@ function applyAnnotation(className) {
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(savedRange);
-  
   const span = document.createElement('span');
   span.className = className;
   if(className === 'underline') span.style.textDecoration = 'underline';
-  
   try {
     span.appendChild(savedRange.extractContents());
     savedRange.insertNode(span);
   } catch(e) { console.error("Highlight error:", e); }
-  
   selection.removeAllRanges(); 
   savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
@@ -460,18 +438,15 @@ function createNewNote() {
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(savedRange);
-
   const id = 'note_' + Date.now();
   const span = document.createElement('span');
   span.className = 'user-note';
   span.dataset.id = id;
   span.dataset.note = "";
-  
   try {
     span.appendChild(savedRange.extractContents());
     savedRange.insertNode(span);
   } catch(e) { console.error("Note error:", e); }
-  
   selection.removeAllRanges();
   savedRange = null; 
   document.getElementById('customContextMenu').classList.remove('show');
@@ -541,7 +516,6 @@ function saveAnnotations() {
       if(typeof showToast === 'function') showToast('Annotations saved');
     });
   } else if (fbDb && code && teacherMode) {
-    // Teacher saving preview
     fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML);
   }
 }
@@ -569,7 +543,7 @@ function debouncedSave(){
         updatedAt:Date.now()
       }).catch(console.error);
     }
-  },800);
+  },400); // Save 400ms after user stops typing
 }
 
 function renderPassage(){
@@ -593,8 +567,6 @@ function renderPassage(){
   body.querySelectorAll('.v-word').forEach(function(el){
     el.onclick=function(){openVocab(el.dataset.vocab)};
   });
-
-  // Load Annotations
   if(fbDb && code) {
      fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).once('value').then(snap => {
          if(snap.exists()) {
@@ -633,7 +605,6 @@ function updateProgress(){
   const remaining=total-answered;
   const hint=document.getElementById('submitHint');
   const btn=document.getElementById('submitBtn');
-  
   if(submitted){
     if(btn){btn.disabled=true;btn.textContent='✓ Submitted'}
     if(hint)hint.innerHTML='Homework already submitted.';
@@ -842,7 +813,6 @@ async function loadHomeworkContent() {
   } else {
      fileName = 'homework_sabina'; 
   }
-  
   const res = await fetch('content/' + fileName + '.json', { cache: 'no-store' });
   if (!res.ok) {
       const fallback = await fetch('content/homework_sabina.json', { cache: 'no-store' });
