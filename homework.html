@@ -12,7 +12,7 @@
   try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
-/* ... KEEP ALL EXISTING STYLES EXACTLY AS THEY ARE ... */
+/* ... KEEP ALL YOUR EXISTING STYLES EXACTLY AS THEY ARE ... */
 :root{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -148,7 +148,7 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
   </div>
   <div class="spacer"></div>
   <div id="teacherResetArea" style="display:none; margin-right:10px;">
-    <button onclick="resetHomeworkTeacher()" style="background:var(--error); color:#fff; border:none; box-shadow:0 2px 0 #a71d2a;">🔄 Reset Homework</button>
+    <button onclick="resetHomeworkTeacher()" style="background:var(--error); color:#fff; border:none; box-shadow:0 2px 0 #a71d2a;">🔄 Reset Whole Homework</button>
   </div>
   <button onclick="toggleTheme()" id="themeButton">🌙 Theme</button>
   <a href="portal.html">← Classwork</a>
@@ -228,626 +228,191 @@ function escapeAttr(s){return escapeHtml(s)}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 
 const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
-function expandContractions(str) {
-  return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would');
-}
-function normalizeString(str) {
-  let s = String(str).toLowerCase().trim();
-  s = expandContractions(s);
-  s = s.replace(/[.,!?;:'"()\[\]{}]/g, '');
-  s = s.replace(/\s+/g, ' ');
-  return s;
-}
-function getCoreWords(str) {
-  const norm = normalizeString(str);
-  return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w));
-}
-function levenshtein(a, b) {
-  const matrix = [];
-  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1];
-      else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1));
-    }
-  }
-  return matrix[b.length][a.length];
-}
+function expandContractions(str) { return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would'); }
+function normalizeString(str) { let s = String(str).toLowerCase().trim(); s = expandContractions(s); s = s.replace(/[.,!?;:'"()\[\]{}]/g, ''); s = s.replace(/\s+/g, ' '); return s; }
+function getCoreWords(str) { const norm = normalizeString(str); return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w)); }
+function levenshtein(a, b) { const matrix = []; for (let i = 0; i <= b.length; i++) matrix[i] = [i]; for (let j = 0; j <= a.length; j++) matrix[0][j] = j; for (let i = 1; i <= b.length; i++) { for (let j = 1; j <= a.length; j++) { if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1]; else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)); } } return matrix[b.length][a.length]; }
 function isAnswerCorrect(userStr, expectedArr) {
-  if(!userStr) return false;
-  let user = normalizeString(userStr);
-  if(!user) return false;
-
+  if(!userStr) return false; let user = normalizeString(userStr); if(!user) return false;
   for (let exp of expectedArr) {
-    let target = normalizeString(exp);
-    if (user === target) return true;
-    const userNums = user.match(/\d+/g) || [];
-    const targetNums = target.match(/\d+/g) || [];
-    if (targetNums.length > 0) {
-        const numMatch = targetNums.every(tn => userNums.includes(tn));
-        if (numMatch) return true;
-    }
-    const userCores = getCoreWords(user);
-    const targetCores = getCoreWords(target);
+    let target = normalizeString(exp); if (user === target) return true;
+    const userNums = user.match(/\d+/g) || []; const targetNums = target.match(/\d+/g) || [];
+    if (targetNums.length > 0) { const numMatch = targetNums.every(tn => userNums.includes(tn)); if (numMatch) return true; }
+    const userCores = getCoreWords(user); const targetCores = getCoreWords(target);
     if (userCores.length > 0 && targetCores.length > 0) {
-        const userCoreStr = userCores.join(' ');
-        const targetCoreStr = targetCores.join(' ');
-        if (userCoreStr === targetCoreStr) return true;
-        if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true;
-        if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
+        const userCoreStr = userCores.join(' '); const targetCoreStr = targetCores.join(' ');
+        if (userCoreStr === targetCoreStr) return true; if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true; if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
     }
     if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
-    if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
-       const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
-       if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
-    }
-    if (target.length > 4) {
-       const maxAllowedDist = target.length > 8 ? 2 : 1;
-       if (levenshtein(user, target) <= maxAllowedDist) return true;
-    }
-  }
-  return false;
+    if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) { const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length); if(['', 'ing', 'ed', 's'].includes(suffix)) return true; }
+    if (target.length > 4) { const maxAllowedDist = target.length > 8 ? 2 : 1; if (levenshtein(user, target) <= maxAllowedDist) return true; }
+  } return false;
 }
 
 /* ================== ANNOTATION & NOTES LOGIC ================== */
-let activeNoteId = null;
-let savedRange = null; 
-let contextTargetEdit = null;
-
+let activeNoteId = null; let savedRange = null; let contextTargetEdit = null;
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('customContextMenu');
   document.addEventListener('click', function(e) {
-    if(e.target.closest('.context-menu')) return;
-    menu.classList.remove('show');
-    if(e.target.closest('.sticky-note')) return;
-    const targetNote = e.target.closest('.user-note');
-    if (targetNote) {
-        if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
-        openExistingNote(targetNote.dataset.id);
-        return;
-    }
-    closeStickyNote();
+    if(e.target.closest('.context-menu')) return; menu.classList.remove('show'); if(e.target.closest('.sticky-note')) return;
+    const targetNote = e.target.closest('.user-note'); if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); openExistingNote(targetNote.dataset.id); return; } closeStickyNote();
   });
   document.addEventListener('contextmenu', function(e) {
-    if(!e.target.closest('#passageBody')) return;
-    e.preventDefault();
-    menu.innerHTML = ''; 
-    contextTargetEdit = null;
-    const selection = window.getSelection();
-    const targetNote = e.target.closest('.user-note');
-    let node = e.target;
-    while (node && node !== document.body) {
-        if (node.nodeType === 1) { 
-            if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('hl-purple') || node.classList.contains('hl-pink') || node.classList.contains('underline')) {
-                contextTargetEdit = node;
-                break;
-            }
-        }
-        node = node.parentNode;
-    }
+    if(!e.target.closest('#passageBody')) return; e.preventDefault(); menu.innerHTML = ''; contextTargetEdit = null;
+    const selection = window.getSelection(); const targetNote = e.target.closest('.user-note'); let node = e.target;
+    while (node && node !== document.body) { if (node.nodeType === 1) { if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('hl-purple') || node.classList.contains('hl-pink') || node.classList.contains('underline')) { contextTargetEdit = node; break; } } node = node.parentNode; }
     const safeClick = "event.preventDefault(); event.stopPropagation();";
-    if (targetNote) {
-      if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
-      menu.innerHTML = `
-        <div class="context-item" onclick="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
-        <div class="context-item delete" onclick="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
-      `;
-    } else if (contextTargetEdit) {
-      menu.innerHTML = `
-        <div class="context-item delete" onclick="${safeClick} removeExistingEdit()">🗑️ Remove Edit</div>
-      `;
-    } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
+    if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); menu.innerHTML = `<div class="context-item" onclick="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div><div class="context-item delete" onclick="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>`; } 
+    else if (contextTargetEdit) { menu.innerHTML = `<div class="context-item delete" onclick="${safeClick} removeExistingEdit()">🗑️ Remove Edit</div>`; } 
+    else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
-      menu.innerHTML = `
-        <div class="context-item has-submenu">
-            🖍️ Highlight
-            <div class="submenu">
-                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-yellow')"><span class="color-swatch" style="background:#fce883"></span> Yellow</div>
-                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-green')"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div>
-                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-blue')"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div>
-                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-purple')"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div>
-                <div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-pink')"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div>
-            </div>
-        </div>
-        <div class="context-item" onclick="${safeClick} applyAnnotation('underline')">U̲ Underline</div>
-        <div class="context-item" onclick="${safeClick} createNewNote()">💬 Add Note</div>
-      `;
-    } else {
-      return; 
-    }
-    let x = e.pageX;
-    let y = e.pageY;
-    if (x + 160 > window.innerWidth) x -= 160;
-    if (y + 200 > window.innerHeight) y -= 200;
-    menu.style.left = x + 'px';
-    menu.style.top = y + 'px';
-    menu.classList.add('show');
+      menu.innerHTML = `<div class="context-item has-submenu">🖍️ Highlight<div class="submenu"><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-yellow')"><span class="color-swatch" style="background:#fce883"></span> Yellow</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-green')"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-blue')"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-purple')"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-pink')"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div></div></div><div class="context-item" onclick="${safeClick} applyAnnotation('underline')">U̲ Underline</div><div class="context-item" onclick="${safeClick} createNewNote()">💬 Add Note</div>`;
+    } else { return; }
+    let x = e.pageX; let y = e.pageY; if (x + 160 > window.innerWidth) x -= 160; if (y + 200 > window.innerHeight) y -= 200; menu.style.left = x + 'px'; menu.style.top = y + 'px'; menu.classList.add('show');
   });
-  const dragHandle = document.getElementById('stickyDragHandle');
-  const stickyNote = document.getElementById('stickyNote');
-  let isDragging = false, startX, startY, initialX, initialY;
-  dragHandle.addEventListener('mousedown', function(e) {
-    if(e.target.tagName === 'BUTTON') return;
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    initialX = stickyNote.offsetLeft;
-    initialY = stickyNote.offsetTop;
-    document.body.style.userSelect = 'none';
-  });
-  document.addEventListener('mousemove', function(e) {
-    if (!isDragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    stickyNote.style.left = (initialX + dx) + 'px';
-    stickyNote.style.top = (initialY + dy) + 'px';
-  });
-  document.addEventListener('mouseup', function() {
-    isDragging = false;
-    document.body.style.userSelect = '';
-  });
+  const dragHandle = document.getElementById('stickyDragHandle'); const stickyNote = document.getElementById('stickyNote'); let isDragging = false, startX, startY, initialX, initialY;
+  dragHandle.addEventListener('mousedown', function(e) { if(e.target.tagName === 'BUTTON') return; isDragging = true; startX = e.clientX; startY = e.clientY; initialX = stickyNote.offsetLeft; initialY = stickyNote.offsetTop; document.body.style.userSelect = 'none'; });
+  document.addEventListener('mousemove', function(e) { if (!isDragging) return; const dx = e.clientX - startX; const dy = e.clientY - startY; stickyNote.style.left = (initialX + dx) + 'px'; stickyNote.style.top = (initialY + dy) + 'px'; });
+  document.addEventListener('mouseup', function() { isDragging = false; document.body.style.userSelect = ''; });
 });
-
-function applyAnnotation(className) {
-  if(!savedRange) return;
-  const selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(savedRange);
-  const span = document.createElement('span');
-  span.className = className;
-  if(className === 'underline') span.style.textDecoration = 'underline';
-  try {
-    span.appendChild(savedRange.extractContents());
-    savedRange.insertNode(span);
-  } catch(e) { console.error("Highlight error:", e); }
-  selection.removeAllRanges(); 
-  savedRange = null; 
-  document.getElementById('customContextMenu').classList.remove('show');
-  saveAnnotations();
-}
-
-function createNewNote() {
-  if(!savedRange) return;
-  const selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(savedRange);
-  const id = 'note_' + Date.now();
-  const span = document.createElement('span');
-  span.className = 'user-note';
-  span.dataset.id = id;
-  span.dataset.note = "";
-  try {
-    span.appendChild(savedRange.extractContents());
-    savedRange.insertNode(span);
-  } catch(e) { console.error("Note error:", e); }
-  selection.removeAllRanges();
-  savedRange = null; 
-  document.getElementById('customContextMenu').classList.remove('show');
-  openExistingNote(id);
-}
-
-function removeExistingEdit() {
-  if (!contextTargetEdit) return;
-  const parent = contextTargetEdit.parentNode;
-  while (contextTargetEdit.firstChild) {
-      parent.insertBefore(contextTargetEdit.firstChild, contextTargetEdit);
-  }
-  parent.removeChild(contextTargetEdit);
-  contextTargetEdit = null;
-  document.getElementById('customContextMenu').classList.remove('show');
-  saveAnnotations();
-  showToast('Edit removed');
-}
-
-function openExistingNote(id) {
-  const span = document.querySelector(`.user-note[data-id="${id}"]`);
-  if(!span) return;
-  activeNoteId = id;
-  const rect = span.getBoundingClientRect();
-  const sticky = document.getElementById('stickyNote');
-  const textArea = document.getElementById('stickyText');
-  textArea.value = span.dataset.note || "";
-  let posX = rect.right + 15;
-  if (posX + 300 > window.innerWidth) posX = rect.left - 300; 
-  sticky.style.left = posX + 'px';
-  sticky.style.top = (rect.top - 20) + 'px';
-  sticky.classList.add('show');
-  setTimeout(() => textArea.focus(), 50);
-}
-
-function closeStickyNote() {
-  const sticky = document.getElementById('stickyNote');
-  if(!sticky.classList.contains('show')) return;
-  if (activeNoteId) {
-    const span = document.querySelector(`.user-note[data-id="${activeNoteId}"]`);
-    if(span) {
-      span.dataset.note = document.getElementById('stickyText').value;
-      saveAnnotations();
-    }
-  }
-  sticky.classList.remove('show');
-  activeNoteId = null;
-}
-
-function deleteNoteById(id) {
-  const span = document.querySelector(`.user-note[data-id="${id}"]`);
-  if(!span) return;
-  const parent = span.parentNode;
-  while (span.firstChild) parent.insertBefore(span.firstChild, span);
-  parent.removeChild(span);
-  if(activeNoteId === id) closeStickyNote();
-  document.getElementById('customContextMenu').classList.remove('show');
-  saveAnnotations();
-  showToast('Note deleted');
-}
-
+function applyAnnotation(className) { if(!savedRange) return; const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(savedRange); const span = document.createElement('span'); span.className = className; if(className === 'underline') span.style.textDecoration = 'underline'; try { span.appendChild(savedRange.extractContents()); savedRange.insertNode(span); } catch(e) { console.error("Highlight error:", e); } selection.removeAllRanges(); savedRange = null; document.getElementById('customContextMenu').classList.remove('show'); saveAnnotations(); }
+function createNewNote() { if(!savedRange) return; const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(savedRange); const id = 'note_' + Date.now(); const span = document.createElement('span'); span.className = 'user-note'; span.dataset.id = id; span.dataset.note = ""; try { span.appendChild(savedRange.extractContents()); savedRange.insertNode(span); } catch(e) { console.error("Note error:", e); } selection.removeAllRanges(); savedRange = null; document.getElementById('customContextMenu').classList.remove('show'); openExistingNote(id); }
+function removeExistingEdit() { if (!contextTargetEdit) return; const parent = contextTargetEdit.parentNode; while (contextTargetEdit.firstChild) parent.insertBefore(contextTargetEdit.firstChild, contextTargetEdit); parent.removeChild(contextTargetEdit); contextTargetEdit = null; document.getElementById('customContextMenu').classList.remove('show'); saveAnnotations(); showToast('Edit removed'); }
+function openExistingNote(id) { const span = document.querySelector(`.user-note[data-id="${id}"]`); if(!span) return; activeNoteId = id; const rect = span.getBoundingClientRect(); const sticky = document.getElementById('stickyNote'); const textArea = document.getElementById('stickyText'); textArea.value = span.dataset.note || ""; let posX = rect.right + 15; if (posX + 300 > window.innerWidth) posX = rect.left - 300; sticky.style.left = posX + 'px'; sticky.style.top = (rect.top - 20) + 'px'; sticky.classList.add('show'); setTimeout(() => textArea.focus(), 50); }
+function closeStickyNote() { const sticky = document.getElementById('stickyNote'); if(!sticky.classList.contains('show')) return; if (activeNoteId) { const span = document.querySelector(`.user-note[data-id="${activeNoteId}"]`); if(span) { span.dataset.note = document.getElementById('stickyText').value; saveAnnotations(); } } sticky.classList.remove('show'); activeNoteId = null; }
+function deleteNoteById(id) { const span = document.querySelector(`.user-note[data-id="${id}"]`); if(!span) return; const parent = span.parentNode; while (span.firstChild) parent.insertBefore(span.firstChild, span); parent.removeChild(span); if(activeNoteId === id) closeStickyNote(); document.getElementById('customContextMenu').classList.remove('show'); saveAnnotations(); showToast('Note deleted'); }
 function deleteCurrentNote() { if(activeNoteId) deleteNoteById(activeNoteId); }
-
-function saveAnnotations() {
-  if(fbDb && code && !teacherMode) {
-    fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML).then(()=>{
-      if(typeof showToast === 'function') showToast('Annotations saved');
-    });
-  }
-}
+function saveAnnotations() { if(fbDb && code && !teacherMode) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML).then(()=>{ if(typeof showToast === 'function') showToast('Annotations saved'); }); } }
 
 /* ================== FIREBASE ================== */
-function toggleTheme(){
-  document.documentElement.classList.toggle('dark');
-  const dark=document.documentElement.classList.contains('dark');
-  try{localStorage.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){}
-  const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme';
-}
+function toggleTheme(){ document.documentElement.classList.toggle('dark'); const dark=document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){} const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme'; }
 document.getElementById('themeButton').textContent=document.documentElement.classList.contains('dark')?'☀️ Theme':'🌙 Theme';
 
-let answers={};
-let submitted=false;
-let saveTimeout;
+let answers={}; let submitted=false; let saveTimeout;
 
 function debouncedSave(){
-  if(teacherMode) return; // Prevent teacher from overwriting student data
-  clearTimeout(saveTimeout);
-  saveTimeout=setTimeout(()=>{
-    if(sessionRef&&!submitted){
-      sessionRef.child('homework/'+homeworkId).update({
-        version:homeworkVersion,
-        answers:answers,
-        updatedAt:Date.now()
-      }).catch(console.error);
-    }
-  },400);
+  if(teacherMode) return;
+  clearTimeout(saveTimeout); saveTimeout=setTimeout(()=>{ if(sessionRef&&!submitted){ sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, updatedAt:Date.now() }).catch(console.error); } },400);
 }
 
 function renderPassage(){
-  const p=lesson.reading;
-  const body=document.getElementById('passageBody');
-  if(!body)return;
-  let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>';
-  const vocabWords=lesson.vocab.map(v=>v.en);
-  p.paragraphs.forEach(function(par){
-    let text=escapeHtml(par.text);
-    vocabWords.forEach(function(w){
-      let matchStr = w;
-      if (w.startsWith('to ')) matchStr = w.substring(3);
-      const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi');
-      text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>');
-    });
-    html+='<p><span class="para-label">'+escapeHtml(par.label)+'</span>'+text+'</p>';
-  });
-  body.innerHTML=html;
-  body.querySelectorAll('.v-word').forEach(function(el){
-    el.onclick=function(){openVocab(el.dataset.vocab)};
-  });
-  if(fbDb && code) {
-     fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).once('value').then(snap => {
-         if(snap.exists()) {
-             body.innerHTML = snap.val();
-             body.querySelectorAll('.user-note').forEach((note, i) => {
-                 if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i;
-             });
-         }
-     });
-  }
+  const p=lesson.reading; const body=document.getElementById('passageBody'); if(!body)return;
+  let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>'; const vocabWords=lesson.vocab.map(v=>v.en);
+  p.paragraphs.forEach(function(par){ let text=escapeHtml(par.text); vocabWords.forEach(function(w){ let matchStr = w; if (w.startsWith('to ')) matchStr = w.substring(3); const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi'); text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>'); }); html+='<p><span class="para-label">'+escapeHtml(par.label)+'</span>'+text+'</p>'; });
+  body.innerHTML=html; body.querySelectorAll('.v-word').forEach(function(el){ el.onclick=function(){openVocab(el.dataset.vocab)}; });
+  if(fbDb && code) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).once('value').then(snap => { if(snap.exists()) { body.innerHTML = snap.val(); body.querySelectorAll('.user-note').forEach((note, i) => { if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i; }); } }); }
 }
-
-function openVocab(word){
-  const v=lesson.vocab.find(function(x){return x.en===word});
-  if(!v)return;
-  document.getElementById('vocabEmoji').textContent=v.emoji||'📖';
-  document.getElementById('vocabWord').textContent=v.en;
-  document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){
-    const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : '';
-    const posBadge = m.pos ? `<span class="pos-badge">${escapeHtml(m.pos)}</span>` : '';
-    return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+' '+posBadge+'</div>'+
-      '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+
-      '<div class="example">'+m.ex+'</div></div>';
-  }).join('');
-  document.getElementById('vocabBackdrop').classList.add('open');
-}
+function openVocab(word){ const v=lesson.vocab.find(function(x){return x.en===word}); if(!v)return; document.getElementById('vocabEmoji').textContent=v.emoji||'📖'; document.getElementById('vocabWord').textContent=v.en; document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){ const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : ''; const posBadge = m.pos ? `<span class="pos-badge">${escapeHtml(m.pos)}</span>` : ''; return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+' '+posBadge+'</div>'+ '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+ '<div class="example">'+m.ex+'</div></div>'; }).join(''); document.getElementById('vocabBackdrop').classList.add('open'); }
 function closeVocab(){document.getElementById('vocabBackdrop').classList.remove('open')}
 
 function updateProgress(){
-  const total=lesson.questions.length;
-  const answered=Object.keys(answers).length;
-  const pct=total?Math.round(answered/total*100):0;
-  const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%';
-  const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%';
-  const pc=document.getElementById('progressCount');if(pc)pc.textContent=answered+' / '+total+' answered';
-  const remaining=total-answered;
-  const hint=document.getElementById('submitHint');
-  const btn=document.getElementById('submitBtn');
-  if(submitted){
-    if(btn){btn.disabled=true;btn.textContent='✓ Submitted'}
-    if(hint)hint.innerHTML='Homework already submitted.';
-    return;
-  }
-  if(remaining===0){
-    if(hint)hint.innerHTML='All questions answered. Ready to submit!';
-    if(btn)btn.disabled=false;
-  }else{
-    if(hint)hint.innerHTML='Answer every question to unlock submission. <b>'+remaining+' remaining.</b>';
-    if(btn)btn.disabled=true;
-  }
+  const total=lesson.questions.length; const answered=Object.keys(answers).length; const pct=total?Math.round(answered/total*100):0;
+  const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pc=document.getElementById('progressCount');if(pc)pc.textContent=answered+' / '+total+' answered';
+  const remaining=total-answered; const hint=document.getElementById('submitHint'); const btn=document.getElementById('submitBtn');
+  if(submitted){ if(btn){btn.disabled=true;btn.textContent='✓ Submitted'} if(hint)hint.innerHTML='Homework already submitted.'; return; }
+  if(remaining===0){ if(hint)hint.innerHTML='All questions answered. Ready to submit!'; if(btn)btn.disabled=false; } else { if(hint)hint.innerHTML='Answer every question to unlock submission. <b>'+remaining+' remaining.</b>'; if(btn)btn.disabled=true; }
 }
 
-function checkLongAnswer(text,keywordGroups,minWords,minGroups){
-  const t=normalizeString(text);
-  const words=t.split(/\s+/).filter(function(w){return w.length>0});
-  if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0};
-  let matched=0;
-  keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(normalizeString(k))!==-1}))matched++});
-  if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length};
-  return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched};
+function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=normalizeString(text); const words=t.split(/\s+/).filter(function(w){return w.length>0}); if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0}; let matched=0; keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(normalizeString(k))!==-1}))matched++}); if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length}; return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched}; }
+
+function undoHomeworkQuestion(idx) {
+  if (!teacherCanEdit) return;
+  delete answers[idx];
+  if (sessionRef) {
+      sessionRef.child('homework/'+homeworkId+'/answers').update({ [idx]: null }).then(() => {
+          renderQuestions();
+          showToast('Question reset by teacher');
+      });
+  } else {
+      renderQuestions();
+  }
 }
 
 function renderQuestions(){
-  const host=document.getElementById('questionsHost');if(!host)return;
-  host.innerHTML='';
+  const host=document.getElementById('questionsHost');if(!host)return; host.innerHTML='';
   lesson.questions.forEach(function(q,idx){
     const card=document.createElement('div');card.className='q-card';
     const typeLabel={short:'Short answer',tfng:'True / False / Not Given',mcq:'Multiple choice',long:'Long answer',complete:'Complete the sentence'}[q.type]||'';
     card.innerHTML='<div class="q-num">Question '+(idx+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(q.prompt).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
-    const body=document.createElement('div');
-    card.appendChild(body);
+    const body=document.createElement('div'); card.appendChild(body);
     
     if(q.type==='short'||q.type==='complete'){
-      const row=document.createElement('div');row.className='q-input-row';
-      const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';
-      if(submitted){inp.value=answers[idx]||'';inp.disabled=true}
-      else {
-        inp.value=answers[idx]||'';
-        inp.addEventListener('input',function(){
-          if(inp.value.trim().length>0){answers[idx]=inp.value;}
-          else{delete answers[idx];}
-          updateProgress();
-          debouncedSave();
-        });
-      }
+      const row=document.createElement('div');row.className='q-input-row'; const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';
+      if(submitted){inp.value=answers[idx]||'';inp.disabled=true} else { inp.value=answers[idx]||''; inp.addEventListener('input',function(){ if(inp.value.trim().length>0){answers[idx]=inp.value;} else{delete answers[idx];} updateProgress(); debouncedSave(); }); }
       row.appendChild(inp);body.appendChild(row);
-      
-      if(submitted){
-        const ok = isAnswerCorrect(inp.value, q.answers || [q.answer]);
-        if(ok)inp.classList.add('correct'); else inp.classList.add('wrong');
-        const fb=document.createElement('div');
-        fb.className='q-feedback ' + (ok ? 'correct' : 'wrong');
-        fb.innerHTML=(ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
-        fb.style.display='block';
-        body.appendChild(fb);
-      }
-      
+      if(submitted){ const ok = isAnswerCorrect(inp.value, q.answers || [q.answer]); if(ok)inp.classList.add('correct'); else inp.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (ok ? 'correct' : 'wrong'); fb.innerHTML=(ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='tfng'){
       const opts=document.createElement('div');opts.className='q-opts';
-      ['True','False','Not Given'].forEach(function(o){
-        const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-        if(submitted){
-          b.disabled=true;
-          if(o===q.answer)b.classList.add('correct');
-          if(answers[idx]===o && o!==q.answer)b.classList.add('wrong');
-        } else {
-          if(answers[idx]===o) b.classList.add('selected');
-          b.onclick=function(){
-            opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')});
-            b.classList.add('selected');
-            answers[idx]=o;updateProgress();debouncedSave();
-          };
-        }
-        opts.appendChild(b);
-      });
+      ['True','False','Not Given'].forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.answer)b.classList.add('correct'); if(answers[idx]===o && o!==q.answer)b.classList.add('wrong'); } else { if(answers[idx]===o) b.classList.add('selected'); b.onclick=function(){ opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')}); b.classList.add('selected'); answers[idx]=o;updateProgress();debouncedSave(); }; } opts.appendChild(b); });
       body.appendChild(opts);
-      if(submitted){
-        const fb=document.createElement('div');
-        fb.className='q-feedback ' + (answers[idx]===q.answer ? 'correct' : 'wrong');
-        fb.innerHTML=(answers[idx]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
-        fb.style.display='block';
-        body.appendChild(fb);
-      }
-      
+      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.answer ? 'correct' : 'wrong'); fb.innerHTML=(answers[idx]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
-      shuffle(q.options).forEach(function(o){
-        const b=document.createElement('button');b.className='q-opt';b.textContent=o;
-        if(submitted){
-          b.disabled=true;
-          if(o===q.correct)b.classList.add('correct');
-          if(answers[idx]===o && o!==q.correct)b.classList.add('wrong');
-        } else {
-          if(answers[idx]===o) b.classList.add('selected');
-          b.onclick=function(){
-            opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')});
-            b.classList.add('selected');
-            answers[idx]=o;updateProgress();debouncedSave();
-          };
-        }
-        opts.appendChild(b);
-      });
+      shuffle(q.options).forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.correct)b.classList.add('correct'); if(answers[idx]===o && o!==q.correct)b.classList.add('wrong'); } else { if(answers[idx]===o) b.classList.add('selected'); b.onclick=function(){ opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')}); b.classList.add('selected'); answers[idx]=o;updateProgress();debouncedSave(); }; } opts.appendChild(b); });
       body.appendChild(opts);
-      if(submitted){
-        const fb=document.createElement('div');
-        fb.className='q-feedback ' + (answers[idx]===q.correct ? 'correct' : 'wrong');
-        fb.innerHTML=(answers[idx]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>';
-        fb.style.display='block';
-        body.appendChild(fb);
-      }
-      
+      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.correct ? 'correct' : 'wrong'); fb.innerHTML=(answers[idx]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
-      if(submitted){ta.value=answers[idx]||'';ta.disabled=true}
-      else {
-        ta.value=answers[idx]||'';
-        ta.addEventListener('input',function(){
-          if(ta.value.trim().length>0){answers[idx]=ta.value;}
-          else{delete answers[idx];}
-          updateProgress();debouncedSave();
-        });
-      }
+      if(submitted){ta.value=answers[idx]||'';ta.disabled=true} else { ta.value=answers[idx]||''; ta.addEventListener('input',function(){ if(ta.value.trim().length>0){answers[idx]=ta.value;} else{delete answers[idx];} updateProgress();debouncedSave(); }); }
       body.appendChild(ta);
-      if(submitted){
-        const res=checkLongAnswer(answers[idx]||'',q.keywordGroups,q.minWords,q.minGroups);
-        if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong');
-        const fb=document.createElement('div');
-        fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong');
-        fb.innerHTML=(res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>';
-        fb.style.display='block';
-        body.appendChild(fb);
-      }
+      if(submitted){ const res=checkLongAnswer(answers[idx]||'',q.keywordGroups,q.minWords,q.minGroups); if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong'); fb.innerHTML=(res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>'; fb.style.display='block'; body.appendChild(fb); }
     }
+
+    if(submitted && teacherCanEdit) {
+        const rst = document.createElement('button');
+        rst.className = 'btn danger small'; rst.textContent = '↺ Undo Question'; rst.style.marginTop = '10px';
+        rst.onclick = () => undoHomeworkQuestion(idx);
+        card.appendChild(rst);
+    }
+
     host.appendChild(card);
   });
   updateProgress();
 }
 
 function submitAll(){
-  if(submitted)return;
-  const total=lesson.questions.length;
-  if(Object.keys(answers).length<total){
-    if(!confirm('Some questions are still blank. Submit anyway?'))return;
-  }
-  let score=0;
-  lesson.questions.forEach(function(q,idx){
-    const a=answers[idx];
-    if(a===undefined)return;
-    if(q.type==='short'||q.type==='complete'){
-      if(isAnswerCorrect(a, q.answers || [q.answer])) score++;
-    }else if(q.type==='tfng'){
-      if(a===q.answer)score++;
-    }else if(q.type==='mcq'){
-      if(a===q.correct)score++;
-    }else if(q.type==='long'){
-      const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups);
-      if(res.pass)score++;
-    }
-  });
+  if(submitted)return; const total=lesson.questions.length; if(Object.keys(answers).length<total){ if(!confirm('Some questions are still blank. Submit anyway?'))return; }
+  let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[idx]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer])) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
   submitted=true;
-  if(sessionRef&&!teacherMode){
-    sessionRef.child('homework/'+homeworkId).update({
-      version:homeworkVersion,
-      answers:answers,
-      score:score,
-      total:total,
-      submitted:true,
-      completed:true,
-      updatedAt:Date.now()
-    }).catch(function(e){console.error(e)});
-  }
-  renderQuestions();
-  const host=document.getElementById('questionsHost');
+  if(sessionRef&&!teacherMode){ sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, score:score, total:total, submitted:true, completed:true, updatedAt:Date.now() }).catch(function(e){console.error(e)}); }
+  renderQuestions(); const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
-  banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+
-    '<div class="big">'+score+' / '+total+'</div>'+
-    '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+
-    '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>';
-  host.insertBefore(banner,host.firstChild);
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(typeof confetti==='function')confetti();
-  updateProgress();
+  banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+ '<div class="big">'+score+' / '+total+'</div>'+ '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+ '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>';
+  host.insertBefore(banner,host.firstChild); window.scrollTo({top:0,behavior:'smooth'}); if(typeof confetti==='function')confetti(); updateProgress();
 }
 
-function confetti(){
-  const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];
-  for(let i=0;i<70;i++){
-    const c=document.createElement('div');c.className='confetti';
-    c.style.left=Math.random()*100+'vw';c.style.top='-20px';
-    c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.animationDelay=Math.random()*.5+'s';
-    c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';
-    if(Math.random()>.5)c.style.borderRadius='50%';
-    document.body.appendChild(c);setTimeout(function(){c.remove()},3600);
-  }
-}
+function confetti(){ const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093']; for(let i=0;i<70;i++){ const c=document.createElement('div');c.className='confetti'; c.style.left=Math.random()*100+'vw';c.style.top='-20px'; c.style.background=colors[Math.floor(Math.random()*colors.length)]; c.style.animationDelay=Math.random()*.5+'s'; c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px'; if(Math.random()>.5)c.style.borderRadius='50%'; document.body.appendChild(c);setTimeout(function(){c.remove()},3600); } }
 
 async function loadHomeworkContent() {
-  let fileName = '';
-  if (variant) {
-     fileName = variant.startsWith('homework_') ? variant : 'homework_' + variant;
-  } else if (code) {
-     fileName = 'homework_' + code.toLowerCase(); 
-  } else {
-     fileName = 'homework_sabina'; 
-  }
+  let fileName = ''; if (variant) { fileName = variant.startsWith('homework_') ? variant : 'homework_' + variant; } else if (code) { fileName = 'homework_' + code.toLowerCase(); } else { fileName = 'homework_sabina'; }
   const res = await fetch('content/' + fileName + '.json', { cache: 'no-store' });
-  if (!res.ok) {
-      const fallback = await fetch('content/homework_sabina.json', { cache: 'no-store' });
-      if(!fallback.ok) throw new Error('content/' + fileName + '.json not found and fallback failed.');
-      lesson = await fallback.json();
-      return;
-  }
+  if (!res.ok) { const fallback = await fetch('content/homework_sabina.json', { cache: 'no-store' }); if(!fallback.ok) throw new Error('content/' + fileName + '.json not found and fallback failed.'); lesson = await fallback.json(); return; }
   lesson = await res.json();
 }
 
 function resetHomeworkTeacher() {
-  if(!confirm('Are you sure you want to reset this homework for the student? They will be able to take it again.')) return;
-  if(sessionRef) {
-     sessionRef.child('homework/'+homeworkId).remove().then(() => {
-         alert('Homework reset successfully. The student can now retake it.');
-         location.reload();
-     }).catch(e => alert('Reset failed: ' + e.message));
-  }
+  if(!confirm('Are you sure you want to reset this ENTIRE homework for the student? They will be able to take it again.')) return;
+  if(sessionRef) { sessionRef.child('homework/'+homeworkId).remove().then(() => { alert('Homework reset successfully. The student can now retake it.'); location.reload(); }).catch(e => alert('Reset failed: ' + e.message)); }
 }
 
 function initFirebase(){
   try{
-    fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
-    fbDb=firebase.database();
-    fbAuth=firebase.auth();
-
-    document.title=lesson.title;
-    document.getElementById('hwTitle').textContent=lesson.title;
-    document.getElementById('hwSub').textContent=lesson.sub;
-    document.getElementById('heroEyebrow').textContent=lesson.eyebrow;
-    document.getElementById('heroHeadline').textContent=lesson.headline;
-    document.getElementById('heroIntro').innerHTML=escapeHtml(lesson.intro)+
-      '<span class="ru">Это одностраничная домашка: прочитайте текст и ответьте на все вопросы. Отправить работу можно только один раз.</span>';
+    fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig); fbDb=firebase.database(); fbAuth=firebase.auth();
+    document.title=lesson.title; document.getElementById('hwTitle').textContent=lesson.title; document.getElementById('hwSub').textContent=lesson.sub; document.getElementById('heroEyebrow').textContent=lesson.eyebrow; document.getElementById('heroHeadline').textContent=lesson.headline;
+    document.getElementById('heroIntro').innerHTML=escapeHtml(lesson.intro)+ '<span class="ru">Это одностраничная домашка: прочитайте текст и ответьте на все вопросы. Отправить работу можно только один раз.</span>';
 
     if(teacherPreviewRequested){
       fbAuth.onAuthStateChanged(function(user){
-        teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
-        teacherMode=teacherCanEdit;
-        if(teacherCanEdit){
-          document.getElementById('teacherResetArea').style.display='block';
-          startHomework(); // Load student's answers if code is present
-        }
+        teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase())); teacherMode=teacherCanEdit;
+        if(teacherCanEdit){ document.getElementById('teacherResetArea').style.display='block'; startHomework(); }
         else{document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Teacher sign-in required</h2></div>'}
       });
       return;
     }
-
     fbAuth.onAuthStateChanged(function(user){
-      if(!user){
-        document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Please sign in</h2><p>Open the <a href="portal.html" style="color:#ee5a24">student portal</a> first.</p></div>';
-        return;
-      }
+      if(!user){ document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Please sign in</h2><p>Open the <a href="portal.html" style="color:#ee5a24">student portal</a> first.</p></div>'; return; }
       if(!code){startHomework();return}
-      fbDb.ref('students/'+code).once('value').then(function(snap){
-        const s=snap.val();
-        const isTeacher = user.email === 'alibek.alpysbayev@gmail.com';
-        if(!s || (!isTeacher && s.uid !== user.uid)){
-          document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>Your account is not linked to this student code.</p></div>';
-          return;
-        }
-        startHomework();
-      });
+      fbDb.ref('students/'+code).once('value').then(function(snap){ const s=snap.val(); const isTeacher = user.email === 'alibek.alpysbayev@gmail.com'; if(!s || (!isTeacher && s.uid !== user.uid)){ document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>Your account is not linked to this student code.</p></div>'; return; } startHomework(); });
     });
   }catch(e){console.error(e);startHomework()}
 }
@@ -857,40 +422,16 @@ function startHomework(){
     sessionRef=fbDb.ref('sessions/'+code);
     sessionRef.child('homework/'+homeworkId).once('value').then(function(snap){
       const data=snap.val()||{};
-      if(Number(data.version)===homeworkVersion){
-        answers=data.answers||{};
-        submitted=!!data.submitted;
-      }else{
-        answers={};submitted=false;
-        if(!teacherMode){
-          sessionRef.child('homework/'+homeworkId).set({
-            version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false
-          }).catch(function(){});
-        }
-      }
+      if(Number(data.version)===homeworkVersion){ answers=data.answers||{}; submitted=!!data.submitted; } 
+      else { answers={};submitted=false; if(!teacherMode){ sessionRef.child('homework/'+homeworkId).set({ version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false }).catch(function(){}); } }
       renderPassage();renderQuestions();
-      if(submitted){
-        const host=document.getElementById('questionsHost');
-        const banner=document.createElement('div');banner.className='result-banner';
-        banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+
-          '<p>Your teacher has your answers. You can review the feedback below.</p>';
-        host.insertBefore(banner,host.firstChild);
-      }
-    }).catch(function(e){
-      console.error(e);renderPassage();renderQuestions();
-    });
-  }else{
-    renderPassage();renderQuestions();
-  }
+      if(submitted){ const host=document.getElementById('questionsHost'); const banner=document.createElement('div');banner.className='result-banner'; banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+ '<p>Your teacher has your answers. You can review the feedback below.</p>'; host.insertBefore(banner,host.firstChild); }
+    }).catch(function(e){ console.error(e);renderPassage();renderQuestions(); });
+  }else{ renderPassage();renderQuestions(); }
 }
 
 (async function boot() {
-  try {
-    await loadHomeworkContent();
-  } catch (e) {
-    document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Homework content failed to load</h2><p>' + e.message + '</p></div>';
-    return;
-  }
+  try { await loadHomeworkContent(); } catch (e) { document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Homework content failed to load</h2><p>' + e.message + '</p></div>'; return; }
   initFirebase();
 })();
 </script>
