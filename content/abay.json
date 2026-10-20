@@ -1,112 +1,80 @@
 {
   "vocab": [
-    { "en": "claim", "emoji": "🗣️", "meanings": [
-      { "context": "noun: a statement that something is true", "pos": "noun", "displayEn": "claim", "ru": "утверждение", "ex": "The writer makes a strong <b>claim</b>." },
-      { "context": "verb: to say something is true", "pos": "verb", "displayEn": "to claim", "ru": "утверждать", "ex": "She <b>claims</b> that this works." }
+    { "en": "cognitive", "emoji": "🧠", "meanings": [
+      { "context": "adjective: related to thinking and understanding", "pos": "adjective", "displayEn": "cognitive", "ru": "познавательный", "ex": "Video games can improve <b>cognitive</b> abilities." }
     ]},
-    { "en": "evidence", "emoji": "📊", "meanings": [
-      { "context": "noun: facts that show something is true", "pos": "noun", "displayEn": "evidence", "ru": "доказательство", "ex": "There is no <b>evidence</b> to support him." },
-      { "context": "adjective: clear and obvious", "pos": "adjective", "displayEn": "evident", "ru": "очевидный", "ex": "It is <b>evident</b> that he is lying." }
+    { "en": "to simulate", "emoji": "🎮", "meanings": [
+      { "context": "verb: to create a realistic situation", "pos": "verb", "displayEn": "to simulate", "ru": "симулировать, имитировать", "ex": "The game <b>simulates</b> real-world problems." }
     ]},
-    { "en": "to assume", "emoji": "🤔", "meanings": [
-      { "context": "verb: to think something is true without proof", "pos": "verb", "displayEn": "to assume", "ru": "предполагать", "ex": "We cannot <b>assume</b> the data is correct." },
-      { "context": "noun: a belief without proof", "pos": "noun", "displayEn": "assumption", "ru": "предположение", "ex": "Based on a false <b>assumption</b>." }
+    { "en": "immersive", "emoji": "🌌", "meanings": [
+      { "context": "adjective: completely surrounding you so you feel involved", "pos": "adjective", "displayEn": "immersive", "ru": "захватывающий, погружающий", "ex": "The <b>immersive</b> world of the game keeps players engaged." }
     ]},
-    { "en": "to justify", "emoji": "⚖️", "meanings": [
-      { "context": "verb: to give a good reason for something", "pos": "verb", "displayEn": "to justify", "ru": "обосновывать", "ex": "Can you <b>justify</b> your opinion?" },
-      { "context": "noun: a good reason or explanation", "pos": "noun", "displayEn": "justification", "ru": "обоснование", "ex": "There is no <b>justification</b> for this behavior." }
+    { "en": "strategy", "emoji": "♟️", "meanings": [
+      { "context": "noun: a plan to achieve a goal", "pos": "noun", "displayEn": "strategy", "ru": "стратегия", "ex": "Winning the match requires a good <b>strategy</b>." }
     ]},
-    { "en": "to contradict", "emoji": "🔄", "meanings": [
-      { "context": "verb: to say the opposite of something", "pos": "verb", "displayEn": "to contradict", "ru": "противоречить", "ex": "The paragraph <b>contradicts</b> the first." },
-      { "context": "noun: a state of being opposite", "pos": "noun", "displayEn": "contradiction", "ru": "противоречие", "ex": "It is a direct <b>contradiction</b> of the rules." },
-      { "context": "adjective: mutually opposed", "pos": "adjective", "displayEn": "contradictory", "ru": "противоречивый", "ex": "The two statements are <b>contradictory</b>." }
+    { "en": "to collaborate", "emoji": "🤝", "meanings": [
+      { "context": "verb: to work together with others", "pos": "verb", "displayEn": "to collaborate", "ru": "сотрудничать", "ex": "Players must <b>collaborate</b> with their teammates." }
     ]},
-    { "en": "to evaluate", "emoji": "🧪", "meanings": [
-      { "context": "verb: to judge the quality or truth of something", "pos": "verb", "displayEn": "to evaluate", "ru": "оценивать", "ex": "Try to <b>evaluate</b> the evidence." },
-      { "context": "noun: the act of judging", "pos": "noun", "displayEn": "evaluation", "ru": "оценка", "ex": "The <b>evaluation</b> of the data took weeks." }
+    { "en": "to optimize", "emoji": "📈", "meanings": [
+      { "context": "verb: to make something as good as possible", "pos": "verb", "displayEn": "to optimize", "ru": "оптимизировать", "ex": "You need to <b>optimize</b> your reaction times." }
     ]},
-    { "en": "to imply", "emoji": "🔍", "meanings": [
-      { "context": "verb: to suggest without saying directly", "pos": "verb", "displayEn": "to imply", "ru": "подразумевать", "ex": "The article <b>implies</b> it is unreliable." },
-      { "context": "noun: a possible result or hidden meaning", "pos": "noun", "displayEn": "implication", "ru": "последствие / скрытый смысл", "ex": "Consider the <b>implications</b> of this." }
+    { "en": "to stimulate", "emoji": "⚡", "meanings": [
+      { "context": "verb: to make something more active", "pos": "verb", "displayEn": "to stimulate", "ru": "стимулировать", "ex": "Gaming can <b>stimulate</b> the brain in positive ways." }
     ]},
-    { "en": "relevant", "emoji": "🎯", "meanings": [
-      { "context": "adjective: connected to the topic", "pos": "adjective", "displayEn": "relevant", "ru": "уместный", "ex": "Keep your answers <b>relevant</b>." },
-      { "context": "noun: the state of being connected", "pos": "noun", "displayEn": "relevance", "ru": "актуальность", "ex": "I question the <b>relevance</b> of this question." }
+    { "en": "distraction", "emoji": "📵", "meanings": [
+      { "context": "noun: something that takes your attention away", "pos": "noun", "displayEn": "distraction", "ru": "отвлечение", "ex": "Too much gaming can be a <b>distraction</b> from schoolwork." }
     ]},
-    { "en": "to persuade", "emoji": "💬", "meanings": [
-      { "context": "verb: to make someone believe or do something", "pos": "verb", "displayEn": "to persuade", "ru": "убеждать", "ex": "The speaker tried to <b>persuade</b> us." },
-      { "context": "noun: the act of convincing", "pos": "noun", "displayEn": "persuasion", "ru": "убеждение", "ex": "He used <b>persuasion</b> to change their minds." },
-      { "context": "adjective: good at persuading", "pos": "adjective", "displayEn": "persuasive", "ru": "убедительный", "ex": "It was a <b>persuasive</b> argument." }
+    { "en": "virtual", "emoji": "🕶️", "meanings": [
+      { "context": "adjective: created by computer technology", "pos": "adjective", "displayEn": "virtual", "ru": "виртуальный", "ex": "<b>Virtual</b> environments offer many benefits." }
     ]},
-    { "en": "coherent", "emoji": "📝", "meanings": [
-      { "context": "adjective: clear and logical", "pos": "adjective", "displayEn": "coherent", "ru": "связный", "ex": "Your essay needs a <b>coherent</b> argument." },
-      { "context": "noun: the quality of being logical", "pos": "noun", "displayEn": "coherence", "ru": "связность", "ex": "The <b>coherence</b> of his speech was excellent." }
-    ]},
-    { "en": "reliable", "emoji": "✅", "meanings": [
-      { "context": "adjective: able to be trusted", "pos": "adjective", "displayEn": "reliable", "ru": "надёжный", "ex": "Make sure your sources are <b>reliable</b>." },
-      { "context": "noun: the quality of being trusted", "pos": "noun", "displayEn": "reliability", "ru": "надёжность", "ex": "Check the <b>reliability</b> of the website." }
-    ]},
-    { "en": "biased", "emoji": "⚡", "meanings": [
-      { "context": "adjective: unfairly favouring one side", "pos": "adjective", "displayEn": "biased", "ru": "предвзятый", "ex": "The article is clearly <b>biased</b>." },
-      { "context": "noun: an unfair preference", "pos": "noun", "displayEn": "bias", "ru": "предвзятость", "ex": "There is a clear <b>bias</b> in the report." }
-    ]},
-    { "en": "to formulate", "emoji": "📐", "meanings": [
-      { "context": "verb: to express an idea clearly", "pos": "verb", "displayEn": "to formulate", "ru": "формулировать", "ex": "You must <b>formulate</b> a clear question." },
-      { "context": "noun: the act of expressing clearly", "pos": "noun", "displayEn": "formulation", "ru": "формулировка", "ex": "The <b>formulation</b> of the theory took years." }
-    ]},
-    { "en": "to gather", "emoji": "🤲", "meanings": [
-      { "context": "verb: to collect things together", "pos": "verb", "displayEn": "to gather", "ru": "собирать", "ex": "Step two is to <b>gather</b> information." },
-      { "context": "noun: a meeting or collection", "pos": "noun", "displayEn": "gathering", "ru": "собрание", "ex": "It was a family <b>gathering</b>." }
+    { "en": "to focus", "emoji": "🎯", "meanings": [
+      { "context": "verb: to give all your attention to something", "pos": "verb", "displayEn": "to focus", "ru": "сосредотачиваться", "ex": "Players need to <b>focus</b> on the screen." }
     ]}
   ],
   "matchData": [
-    { "word": "claim", "meaning": "to say something is true without proving it" },
-    { "word": "evidence", "meaning": "facts that show something is true" },
-    { "word": "to assume", "meaning": "to think something is true without checking" },
-    { "word": "to justify", "meaning": "to give a good reason for something" },
-    { "word": "to contradict", "meaning": "to say the opposite of something" },
-    { "word": "to evaluate", "meaning": "to judge how good or true something is" },
-    { "word": "to imply", "meaning": "to suggest without saying directly" },
-    { "word": "relevant", "meaning": "directly connected to the topic" },
-    { "word": "to persuade", "meaning": "to make someone believe or do something" },
-    { "word": "coherent", "meaning": "clear, logical and well-organised" },
-    { "word": "reliable", "meaning": "able to be trusted" },
-    { "word": "biased", "meaning": "unfairly favouring one side" },
-    { "word": "to formulate", "meaning": "to express an idea clearly" },
-    { "word": "to gather", "meaning": "to collect things together" }
+    { "word": "cognitive", "meaning": "related to thinking and understanding" },
+    { "word": "to simulate", "meaning": "to create a realistic situation" },
+    { "word": "immersive", "meaning": "completely surrounding you so you feel involved" },
+    { "word": "strategy", "meaning": "a plan to achieve a goal" },
+    { "word": "to collaborate", "meaning": "to work together with others" },
+    { "word": "to optimize", "meaning": "to make something as good as possible" },
+    { "word": "to stimulate", "meaning": "to make something more active" },
+    { "word": "distraction", "meaning": "something that takes your attention away" },
+    { "word": "virtual", "meaning": "created by computer technology" },
+    { "word": "to focus", "meaning": "to give all your attention to something" }
   ],
-  "readingHtml": "<h1>The Science of Critical Thinking</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/dItUGF8GdTw\" title=\"5 tips to improve your critical thinking\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch once for the general idea. Watch again with the questions on the right in mind.</div><p><span class=\"para-label\">1.</span> Every day we make hundreds of decisions. <b>Critical thinking</b> is the skill of making good ones — and it can be <b>learned</b>, not just inherited. It is a skill, like any other: it takes practice.</p><p><span class=\"para-label\">2.</span> Critical thinking is a <b>five-step</b> process. <b>Step one</b> is to <b>formulate your question</b> — ask yourself exactly what you want to know. A clear, specific question helps you find <b>relevant</b> answers, instead of collecting random facts.</p><p><span class=\"para-label\">3.</span> <b>Step two</b> is to <b>gather your information</b>. Where is it coming from? Is the source <b>reliable</b>? Is there <b>evidence</b> to support the <b>claim</b>? Be careful — many sources online are <b>biased</b>, so cross-check with at least one more.</p><p><span class=\"para-label\">4.</span> <b>Step three</b> is to <b>apply the information</b>. Look at the evidence. Does it actually support the claim, or does it <b>contradict</b> it? Do not <b>assume</b> that one example is enough — check whether the data genuinely backs up the conclusion.</p><p><span class=\"para-label\">5.</span> <b>Step four</b> is to <b>consider the implications</b>. If the claim is true, what follows from it? What would change in your own life or in the wider world? Try to <b>evaluate</b> both sides of the argument fairly, not just the side you already prefer.</p><p><span class=\"para-label\">6.</span> <b>Step five</b> is to <b>explore other points of view</b>. No one has all the answers. A <b>coherent</b> thinker listens carefully to people who disagree — and is willing to change their mind if the evidence calls for it. You do not have to <b>persuade</b> everyone; you only have to stay open.</p>",
+  "readingHtml": "<h1>The Science of Gaming & Esports</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/4p2g2b4QxWQ\" title=\"How gaming affects your brain\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch once for the general idea. Watch again with the questions on the right in mind.</div><p><span class=\"para-label\">1.</span> Video games are often seen as just a <b>distraction</b> from schoolwork. Many parents worry that staring at a screen is bad for teenagers. However, recent scientific studies have discovered that playing certain types of games can actually <b>stimulate</b> the brain in surprisingly positive ways.</p><p><span class=\"para-label\">2.</span> Modern video games require a good <b>strategy</b>. They ask players to <b>simulate</b> real-world problems, which improves <b>cognitive</b> abilities like memory and problem-solving. The <b>immersive</b> worlds of these games keep players highly engaged, forcing them to think quickly and adapt to new situations.</p><p><span class=\"para-label\">3.</span> In multiplayer games, players must <b>collaborate</b> with their teammates to win. They need to <b>focus</b> intensely on the screen and <b>optimize</b> their reaction times. This teaches valuable skills like communication, teamwork, and quick decision-making under pressure.</p><p><span class=\"para-label\">4.</span> While <b>virtual</b> environments offer many cognitive benefits, scientists warn that balance is key. Too much screen time can reduce our ability to focus on real-life tasks. Therefore, it is important to play smart and take regular breaks.</p>",
   "readingQ": [
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Critical thinking is a five-______ process.", "answers": ["step"], "exp": "The notes call it a five-step process." },
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step one is to formulate your ______.", "answers": ["question"], "exp": "Step one = formulate your question." },
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step two is to gather your ______.", "answers": ["information"], "exp": "Step two = gather your information." },
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step three is to ______ the information.", "answers": ["apply"], "exp": "Step three = apply the information." },
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] In step three, ask whether the evidence supports the ______.", "answers": ["claim"], "exp": "Step three checks whether the evidence supports the claim." },
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step four: consider the ______.", "answers": ["implications"], "exp": "Step four = consider the implications." },
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Step five: explore other ______ of view.", "answers": ["points"], "exp": "Step five = explore other points of view." },
-    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Critical thinking is a skill that takes ______.", "answers": ["practice", "practise"], "exp": "The notes say it takes practice." },
-    { "type": "tfng", "prompt": "The video says that critical thinking takes very little effort.", "answer": "False", "exp": "The notes say it takes practice — not little effort." },
-    { "type": "tfng", "prompt": "The video recommends listening to people who disagree with you.", "answer": "True", "exp": "Step five: explore other points of view." },
-    { "type": "tfng", "prompt": "The video says that no one has all the answers.", "answer": "True", "exp": "The notes say exactly this in step five." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Video games can actually ______ the brain.", "answers": ["stimulate"], "exp": "Paragraph 1 says gaming can stimulate the brain." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Modern games require a good ______.", "answers": ["strategy"], "exp": "Paragraph 2 says modern games require a good strategy." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Games ask players to ______ real-world problems.", "answers": ["simulate"], "exp": "Paragraph 2 mentions simulating real-world problems." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Players must ______ with their teammates.", "answers": ["collaborate"], "exp": "Paragraph 3 says players must collaborate." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Players need to optimize their ______ times.", "answers": ["reaction"], "exp": "Paragraph 3 mentions optimizing reaction times." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] ______ environments offer many benefits.", "answers": ["virtual"], "exp": "Paragraph 4 mentions virtual environments." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Scientists warn that ______ is key.", "answers": ["balance"], "exp": "Paragraph 4 says balance is key." },
+    { "type": "short", "prompt": "[Part 1 · NO MORE THAN THREE WORDS] Too much screen time can be a ______.", "answers": ["distraction"], "exp": "Paragraph 1 and 4 discuss distraction." },
+    { "type": "tfng", "prompt": "Video games are only a distraction and have no benefits.", "answer": "False", "exp": "The text says they can stimulate the brain in positive ways." },
+    { "type": "tfng", "prompt": "Gaming can improve memory and problem-solving.", "answer": "True", "exp": "Paragraph 2 mentions cognitive abilities like memory." },
+    { "type": "tfng", "prompt": "Multiplayer games teach teamwork and communication.", "answer": "True", "exp": "Paragraph 3 mentions valuable skills like communication and teamwork." },
     { "type": "tfng", "prompt": "The video was produced by a university in the UK.", "answer": "Not Given", "exp": "The notes do not mention where the video was made." },
-    { "type": "mcq", "prompt": "What helps you find relevant answers, according to step one?", "options": ["A clear question", "A quick answer", "A long essay"], "correct": "A clear question", "exp": "A clear, specific question helps you find relevant answers." },
-    { "type": "mcq", "prompt": "Why should we be careful with online information?", "options": ["It is always false", "Many sources are biased", "It is too long to read"], "correct": "Many sources are biased", "exp": "The notes warn that many sources online are biased." },
-    { "type": "mcq", "prompt": "What does step four ask you to consider?", "options": ["How fast you can decide", "What would follow if the claim is true", "How to persuade other people"], "correct": "What would follow if the claim is true", "exp": "Step four = consider the implications — what follows from the claim." },
-    { "type": "mcq", "prompt": "What does the video say about critical thinking?", "options": ["It cannot be learned", "It is a skill you can practice", "It is the same as intelligence"], "correct": "It is a skill you can practice", "exp": "The notes say it is a skill that takes practice." },
-    { "type": "mcq", "prompt": "According to the notes, what should you do with people who disagree with you?", "options": ["Ignore them", "Listen to them carefully", "Persuade them immediately"], "correct": "Listen to them carefully", "exp": "A coherent thinker listens carefully to people who disagree." },
-    { "type": "long", "prompt": "In your own words, why is asking a clear question the first step of critical thinking?", "keywordGroups": [["clear", "specific", "precise"], ["relevant", "answer", "focus"], ["information", "research", "gather"], ["question", "ask"]], "minWords": 10, "minGroups": 2, "sample": "Asking a clear question helps you focus on what you actually want to know and find relevant information, instead of collecting random facts.", "exp": "Key ideas: clarity of the question, finding relevant information." },
-    { "type": "long", "prompt": "Explain what it means to \"consider the implications\" using an example from your own life.", "keywordGroups": [["consequence", "result", "effect"], ["believe", "accept", "true"], ["claim", "statement"], ["example", "personal", "life"]], "minWords": 12, "minGroups": 2, "sample": "Considering the implications means asking what would follow if a claim were true. For example, if I believe a study that says students need eight hours of sleep, the implication is that I should change my own routine.", "exp": "Key ideas: consequences, believing a claim, a personal example." },
-    { "type": "long", "prompt": "Do you agree that critical thinking is a \"skill\" rather than a \"talent\"? Why or why not?", "keywordGroups": [["practice", "skill", "learn"], ["improve", "better", "develop"], ["agree", "disagree", "opinion"], ["reason", "think", "argue"]], "minWords": 15, "minGroups": 2, "sample": "I agree that it is a skill, because even people who are not naturally talented can improve by practising, asking better questions, and checking evidence more carefully.", "exp": "Key ideas: agree/disagree, skill vs talent, practice/improvement." }
+    { "type": "mcq", "prompt": "What do immersive worlds do?", "options": ["Make players sleepy", "Keep players highly engaged", "Distract players from school"], "correct": "Keep players highly engaged", "exp": "Paragraph 2 says immersive worlds keep players highly engaged." },
+    { "type": "mcq", "prompt": "What do players need to optimize?", "options": ["Their reaction times", "Their school grades", "Their sleep schedule"], "correct": "Their reaction times", "exp": "Paragraph 3 says players optimize their reaction times." },
+    { "type": "mcq", "prompt": "What is the main idea of the text?", "options": ["Video games are completely bad for you", "Video games have cognitive benefits but balance is needed", "Only esports players can benefit from games"], "correct": "Video games have cognitive benefits but balance is needed", "exp": "The text discusses both the benefits and the need for balance." },
+    { "type": "mcq", "prompt": "According to the text, what should you take during gaming?", "options": ["A long nap", "Regular breaks", "More caffeine"], "correct": "Regular breaks", "exp": "Paragraph 4 says to take regular breaks." },
+    { "type": "mcq", "prompt": "What do games simulate?", "options": ["Real-world problems", "School exams", "Historical events"], "correct": "Real-world problems", "exp": "Paragraph 2 says they simulate real-world problems." },
+    { "type": "long", "prompt": "In your own words, why is balance important when playing video games?", "keywordGroups": [["screen", "time"], ["distraction", "focus", "school"], ["balance", "breaks"], ["cognitive", "benefits"]], "minWords": 10, "minGroups": 2, "sample": "Balance is important because while games have cognitive benefits, too much screen time can become a distraction and reduce our focus on real-life tasks like school.", "exp": "Key ideas: too much screen time is bad, reduces focus, need for balance." },
+    { "type": "long", "prompt": "How do multiplayer games help players develop social skills?", "keywordGroups": [["collaborate", "work together", "teammates"], ["communication", "talk", "teamwork"], ["strategy", "plan"]], "minWords": 10, "minGroups": 2, "sample": "Multiplayer games help players develop social skills because they must collaborate with teammates, communicate effectively, and form a strategy to win.", "exp": "Key ideas: collaboration, communication, strategy." },
+    { "type": "long", "prompt": "Do you agree that video games can be educational? Why or why not?", "keywordGroups": [["agree", "disagree", "opinion"], ["cognitive", "memory", "problem-solving"], ["simulate", "strategy", "learn"]], "minWords": 15, "minGroups": 2, "sample": "I agree that video games can be educational because they simulate real-world problems, improve cognitive abilities like memory, and require players to develop complex strategies.", "exp": "Key ideas: agree/disagree, cognitive benefits, simulation/strategy." }
   ],
   "contextQ": [
-    { "prompt": "In the notes, \"claim\" means…", "options": ["a statement that something is true", "a physical object", "a type of question"], "correct": "a statement that something is true", "exp": "A claim is a statement presented as true." },
-    { "prompt": "\"Evidence\" is…", "options": ["facts that show something is true", "a personal opinion", "a short story"], "correct": "facts that show something is true", "exp": "Evidence supports or undermines a claim." },
-    { "prompt": "To \"assume\" means…", "options": ["to think something is true without proof", "to prove something", "to write something down"], "correct": "to think something is true without proof", "exp": "An assumption is a belief without evidence." },
-    { "prompt": "\"Relevant\" information is…", "options": ["connected to the question", "written in a formal style", "hard to understand"], "correct": "connected to the question", "exp": "Relevant information is on-topic." },
-    { "prompt": "\"Coherent\" arguments are…", "options": ["clear and logical", "short and simple", "emotional and angry"], "correct": "clear and logical", "exp": "Coherent arguments hold together logically." },
-    { "prompt": "A \"reliable\" source is…", "options": ["able to be trusted", "always recent", "very long"], "correct": "able to be trusted", "exp": "Reliable means trustworthy." },
-    { "prompt": "A \"biased\" article is…", "options": ["unfairly favouring one side", "always false", "written in another language"], "correct": "unfairly favouring one side", "exp": "Bias means unfair preference." },
-    { "prompt": "To \"imply\" means…", "options": ["to suggest without saying directly", "to prove with evidence", "to shout loudly"], "correct": "to suggest without saying directly", "exp": "To imply is to hint." }
+    { "prompt": "In the notes, \"stimulate\" means…", "options": ["to make something more active", "to make something sleep", "to destroy something"], "correct": "to make something more active", "exp": "To stimulate means to encourage activity." },
+    { "prompt": "\"Cognitive\" relates to…", "options": ["thinking and understanding", "physical exercise", "eating food"], "correct": "thinking and understanding", "exp": "Cognitive refers to mental processes." },
+    { "prompt": "To \"simulate\" means…", "options": ["to create a realistic situation", "to ignore something", "to break something"], "correct": "to create a realistic situation", "exp": "Simulate means to imitate or replicate." },
+    { "prompt": "\"Immersive\" means…", "options": ["completely surrounding you so you feel involved", "very boring", "difficult to understand"], "correct": "completely surrounding you so you feel involved", "exp": "Immersive worlds make you feel like you are inside them." },
+    { "prompt": "To \"collaborate\" means…", "options": ["to work together", "to compete against", "to sleep"], "correct": "to work together", "exp": "Collaborate means to cooperate." },
+    { "prompt": "To \"optimize\" means…", "options": ["to make something as good as possible", "to make something worse", "to ignore something"], "correct": "to make something as good as possible", "exp": "Optimize means to perfect or improve." },
+    { "prompt": "A \"distraction\" is…", "options": ["something that takes your attention away", "a type of video game", "a good strategy"], "correct": "something that takes your attention away", "exp": "A distraction pulls your focus elsewhere." },
+    { "prompt": "To \"focus\" means…", "options": ["to give all your attention to something", "to look away", "to fall asleep"], "correct": "to give all your attention to something", "exp": "To focus is to concentrate." }
   ],
   "g6": {
     "pos": [
