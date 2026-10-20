@@ -298,8 +298,6 @@ html.dark .q-feedback.info{color:#f5c66b}
 </head>
 <body>
 
-<!-- ... KEEP THE EXACT SAME HTML BODY ... -->
-
 <div class="topbar">
   <div class="logo"><div class="mark">🌪️</div><span class="text" id="workspaceName">Workspace</span></div>
   <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
@@ -527,10 +525,10 @@ function loadDraft() {
     return sessionRef.child('draft/'+state.currentLessonId).once('value').then(snap => {
       const cloud = snap.val() || {};
       draftAnswers = Object.assign(draftAnswers, cloud);
-      if (state.currentStage === 3) renderStage(); 
+      renderStage(); 
     });
   } else {
-    if (state.currentStage === 3) renderStage();
+    renderStage();
     return Promise.resolve();
   }
 }
@@ -851,7 +849,6 @@ function initFirebase(){
               loadVocabStateCloud().then(function(){ 
                 loadDraft().then(() => {
                   renderSidebar(); 
-                  if (state.currentStage !== 3) renderStage();
                   updateHUD(); 
                 });
               });
@@ -1467,20 +1464,29 @@ function renderStage2(){
 function renderDD(){
   const wEl=document.getElementById('ddWords'),sEl=document.getElementById('ddSlots');if(!wEl||!sEl)return;wEl.innerHTML='';sEl.innerHTML='';
   const words=shuffle(MATCH_DATA);const meanings=shuffle(MATCH_DATA);
+  const matched = draftAnswers['match_correct'] || [];
+  
   words.forEach(function(item){
     const d=document.createElement('div');d.className='dd-word';d.draggable=true;d.dataset.word=item.word;d.textContent=item.word;
+    if(matched.includes(item.word)) d.classList.add('used');
     d.addEventListener('dragstart',function(e){if(d.classList.contains('used')){e.preventDefault();return}e.dataTransfer.setData('text/plain',item.word)});
     d.addEventListener('click',function(){if(d.classList.contains('used'))return;document.querySelectorAll('.dd-word').forEach(function(x){x.style.outline=''});d.style.outline='3px solid var(--accent)';d.style.outlineOffset='2px';window.__selDD=item.word});
     wEl.appendChild(d);
   });
   meanings.forEach(function(item){
     const s=document.createElement('div');s.className='dd-slot';s.dataset.answer=item.word;s.innerHTML='<span class="slot-label">'+escapeHtml(item.meaning)+'</span>';
+    if(matched.includes(item.word)){
+        s.classList.add('correct');
+        s.innerHTML += '<span class="dropped-word ok">'+escapeHtml(item.word)+'</span>';
+    }
     s.addEventListener('dragover',function(e){e.preventDefault();if(!s.classList.contains('correct'))s.classList.add('over')});
     s.addEventListener('dragleave',function(){s.classList.remove('over')});
     s.addEventListener('drop',function(e){e.preventDefault();s.classList.remove('over');tryPlace(e.dataTransfer.getData('text/plain'),s)});
     s.addEventListener('click',function(){if(s.classList.contains('correct'))return;if(window.__selDD){tryPlace(window.__selDD,s);window.__selDD=null;document.querySelectorAll('.dd-word').forEach(function(x){x.style.outline=''})}});
     sEl.appendChild(s);
   });
+  updateDDCount();
+  checkDDComplete(true);
 }
 function tryPlace(word,slot){
   if(!word||slot.classList.contains('correct'))return;
@@ -1488,12 +1494,24 @@ function tryPlace(word,slot){
     slot.classList.add('correct');
     slot.innerHTML='<span class="slot-label">'+slot.querySelector('.slot-label').textContent+'</span><span class="dropped-word ok">'+escapeHtml(word)+'</span>';
     document.querySelectorAll('.dd-word').forEach(function(d){if(d.dataset.word===word)d.classList.add('used')});
+    draftAnswers['match_correct'] = draftAnswers['match_correct'] || [];
+    if(!draftAnswers['match_correct'].includes(word)) draftAnswers['match_correct'].push(word);
+    debouncedSaveDraft();
     sCorrect();updateDDCount();checkDDComplete();broadcastAction('match_correct',word);
   }else{slot.classList.add('wrong');sWrong();setTimeout(function(){slot.classList.remove('wrong')},500);broadcastAction('match_wrong',word+' → '+slot.dataset.answer)}
 }
 function updateDDCount(){const c=document.querySelectorAll('.dd-slot.correct').length;const el=document.getElementById('s2count');if(el)el.textContent=c}
-function checkDDComplete(){const c=document.querySelectorAll('.dd-slot.correct').length;if(c===MATCH_DATA.length){setScore(2,15);markDone(2)}else{setScore(2,Math.floor(c*15/MATCH_DATA.length))}}
-function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;renderSidebar();renderStage2();updateHUD()}
+function checkDDComplete(silent){
+   const c=document.querySelectorAll('.dd-slot.correct').length;
+   if(c===MATCH_DATA.length){
+       setScore(2,15);
+       if(!silent) markDone(2);
+       else { state.done[state.currentLessonId+"_2"] = true; renderSidebar(); }
+   } else {
+       setScore(2,Math.floor(c*15/MATCH_DATA.length));
+   }
+}
+function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;draftAnswers['match_correct']=[];debouncedSaveDraft();renderSidebar();renderStage2();updateHUD()}
 
 /* ================== STAGE 3 — READING & QUESTIONS ================== */
 let s4Answers={};
@@ -1805,20 +1823,32 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
   '<div id="p'+stageId+'body"></div>';
   main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
   let score=0;const body=document.getElementById('p'+stageId+'body');
+  
   function addSection(heading,items,startNum){
     if(heading){const h=document.createElement('div');h.className='section-head';h.textContent=heading;body.appendChild(h)}
     items.forEach(function(item,i){
       const card=document.createElement('div');card.className='q-card';
-      card.innerHTML='<div class="q-num">Question '+(startNum+i)+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
+      const idx = startNum + i;
+      const draftKey = 'g'+stageId+'_'+idx+'_draft';
+      const okKey = 'g'+stageId+'_'+idx+'_ok';
+      const isOk = draftAnswers[okKey] === true;
+
+      card.innerHTML='<div class="q-num">Question '+idx+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
       const row=document.createElement('div');row.className='q-input-row';
       const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type the missing word(s)...';inp.autocomplete='off';inp.spellcheck=false;
       
-      const draftKey = 'g'+stageId+'_'+startNum+i+'_draft';
       if(draftAnswers[draftKey]) inp.value = draftAnswers[draftKey];
 
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check';
       const fb=document.createElement('div');fb.className='q-feedback';
-      let answered=false;
+      let answered=isOk;
+      
+      if(isOk){
+          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;
+          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+item.ex+'</span>':'');
+          score++;
+      }
+      
       function submit(){
         if(answered)return;
         const ok = isAnswerCorrect(inp.value, [item.a]);
@@ -1830,11 +1860,15 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
           setScore(stageId,Math.floor(score*10/total));
           if(score===total){setScore(stageId,10);markDone(stageId)}
           broadcastAction('answer_correct',item.p.substring(0,40)+' → '+item.a);
-          delete draftAnswers[draftKey]; debouncedSaveDraft();
+          draftAnswers[draftKey] = inp.value;
+          draftAnswers[okKey] = true;
+          debouncedSaveDraft();
         }else{
           inp.classList.add('wrong');sWrong();
           fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!';
           setTimeout(function(){inp.classList.remove('wrong')},600);
+          draftAnswers[draftKey] = inp.value;
+          debouncedSaveDraft();
         }
       }
       btn.onclick=submit;
@@ -1851,8 +1885,23 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
   addSection('Part 2 — Negative sentences',data.neg,data.pos.length+1);
   addSection('Part 3 — Questions',data.q,data.pos.length+data.neg.length+1);
   addSection('Part 4 — Mixed practice (shuffled)',shuffle(data.shuffled),data.pos.length+data.neg.length+data.q.length+1);
+  
+  document.getElementById('p'+stageId+'live').textContent = score;
+  const total = data.pos.length+data.neg.length+data.q.length+data.shuffled.length;
+  if(score === total && total > 0){
+      setScore(stageId, 10);
+      state.done[state.currentLessonId+"_"+stageId] = true; 
+      renderSidebar();
+  } else {
+      setScore(stageId, Math.floor(score*10/total));
+  }
 }
-function resetGrammarStage(id){setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;renderSidebar();renderStage();updateHUD()}
+function resetGrammarStage(id){
+  setScore(id,0);state.done[state.currentLessonId+"_"+id]=false;
+  Object.keys(draftAnswers).forEach(k=>{ if(k.startsWith('g'+id+'_') || k.startsWith('sb'+id+'_')) delete draftAnswers[k]; });
+  debouncedSaveDraft();
+  renderSidebar();renderStage();updateHUD();
+}
 
 function renderStage4(){
     let title = '⏳ Completing Sentence — Present Perfect';
@@ -1909,21 +1958,27 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
   const body=document.getElementById('sb'+stageId+'body');
   const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length;
   SB_DATA[stageId]={pos:data.pos,neg:data.neg,q:data.q,shuffled:data.shuffled};
+  
+  let score = 0;
+  
   function addSection(heading,items,startNum){
     if(heading){const h=document.createElement('div');h.className='section-head';h.textContent=heading;body.appendChild(h)}
     items.forEach(function(item,i){
       const card=document.createElement('div');card.className='q-card';
       const idx=startNum+i;
+      const draftKey = 'sb'+stageId+'_'+idx+'_draft';
+      const okKey = 'sb'+stageId+'_'+idx+'_ok';
+      const isOk = draftAnswers[okKey] === true;
+      
       card.innerHTML='<div class="q-num">Question '+idx+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+'</div>'+
       '<div class="sb-chips" id="sbChips'+stageId+'_'+idx+'"></div>'+
       '<div class="sb-area" id="sbArea'+stageId+'_'+idx+'"><span class="placeholder">Click the words below...</span></div>'+
-      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" onclick="checkSBItem('+stageId+','+idx+')">✓ Check</button><button class="btn ghost small" onclick="resetSBItem('+stageId+','+idx+')">↻ Reset</button></div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="sbCheck_'+stageId+'_'+idx+'" onclick="checkSBItem('+stageId+','+idx+')">✓ Check</button><button class="btn ghost small" id="sbReset_'+stageId+'_'+idx+'" onclick="resetSBItem('+stageId+','+idx+')">↻ Reset</button></div>'+
       '<div class="q-feedback" id="sbFb'+stageId+'_'+idx+'"></div>';
       body.appendChild(card);
       const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx);
       const scrambled=shuffle(item.correct.map(function(w,ii){return{w:w,i:ii}}));
       
-      const draftKey = 'sb'+stageId+'_'+idx+'_draft';
       const draftOrder = draftAnswers[draftKey] || []; 
       
       scrambled.forEach(function(entry){
@@ -1946,6 +2001,7 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
                  newChip.textContent = item.correct[origIdx];
                  newChip.dataset.origIndex = origIdx;
                  newChip.onclick = function() {
+                     if(isOk) return;
                      newChip.remove();
                      const back = document.createElement('div');
                      back.className = 'sb-chip'; back.textContent = item.correct[origIdx]; back.dataset.origIndex = origIdx;
@@ -1960,6 +2016,14 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
                  SB_STATE[stageId+'_'+idx].push(origIdx);
              }
          });
+         
+         if(isOk){
+             window['sbDone_'+stageId+'_'+idx] = true;
+             score++;
+             const fb=document.getElementById('sbFb'+stageId+'_'+idx);
+             fb.className='q-feedback correct';fb.innerHTML='✓ Correct!';
+             document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = true;
+         }
       }
     });
   }
@@ -1967,6 +2031,15 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
   addSection('Part 2 — Negative sentences',data.neg,data.pos.length+1);
   addSection('Part 3 — Questions',data.q,data.pos.length+data.neg.length+1);
   addSection('Part 4 — Mixed practice (shuffled)',shuffle(data.shuffled),data.pos.length+data.neg.length+data.q.length+1);
+  
+  document.getElementById('sb'+stageId+'live').textContent = score;
+  if(score === total && total > 0){
+      setScore(stageId, 10);
+      state.done[state.currentLessonId+"_"+stageId] = true; 
+      renderSidebar();
+  } else {
+      setScore(stageId, Math.floor(score*10/total));
+  }
 }
 function moveChip(stageId,idx,chip,word,origIdx){
   const area=document.getElementById('sbArea'+stageId+'_'+idx);if(!area)return;
@@ -2001,8 +2074,10 @@ function resetSBItem(stageId,idx){
   area.classList.remove('filled');
   SB_STATE[stageId+'_'+idx]=[];
   draftAnswers['sb'+stageId+'_'+idx+'_draft'] = [];
+  delete draftAnswers['sb'+stageId+'_'+idx+'_ok'];
   debouncedSaveDraft();
   const fb=document.getElementById('sbFb'+stageId+'_'+idx);if(fb)fb.className='q-feedback';
+  document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = false;
 }
 function checkSBItem(stageId,idx){
   const area=document.getElementById('sbArea'+stageId+'_'+idx);if(!area)return;
@@ -2013,6 +2088,10 @@ function checkSBItem(stageId,idx){
   const ok=userOrder.every(function(v,i){return v===i});
   if(ok){
     fb.className='q-feedback correct';fb.innerHTML='✓ Correct!';sCorrect();
+    draftAnswers['sb'+stageId+'_'+idx+'_ok'] = true;
+    debouncedSaveDraft();
+    document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = true;
+    
     if(!window['sbDone_'+stageId+'_'+idx]){
       window['sbDone_'+stageId+'_'+idx]=true;
       const el=document.getElementById('sb'+stageId+'live');
@@ -2021,7 +2100,6 @@ function checkSBItem(stageId,idx){
       setScore(stageId,Math.floor(cur*10/tot));
       if(cur===tot){setScore(stageId,10);markDone(stageId)}
     }
-    delete draftAnswers['sb'+stageId+'_'+idx+'_draft']; debouncedSaveDraft();
   }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Check the word order.';sWrong()}
 }
 

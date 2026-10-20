@@ -12,6 +12,7 @@
   try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
+/* ... KEEP ALL EXISTING STYLES EXACTLY AS THEY ARE ... */
 :root{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -46,8 +47,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
 .v-word{background:rgba(238,90,36,.12);color:var(--accent-dark);font-weight:700;cursor:pointer;padding:1px 5px;border-radius:5px;border-bottom:2px dotted var(--accent);font-family:inherit;font-size:inherit}
 .v-word:hover{background:var(--accent);color:#fff}
-
-/* HIGHLIGHTS & NOTES */
 .hl-yellow{background-color:#fce883;color:#000;}
 .hl-green{background-color:#b5e8c5;color:#000;}
 .hl-blue{background-color:#c5e1f5;color:#000;}
@@ -66,8 +65,6 @@ html.dark .user-note:hover{background-color:rgba(253, 224, 71, 0.5);}
 .underline:hover { background-color: rgba(0, 0, 0, 0.08); border-radius: 4px; cursor: pointer; }
 html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 .user-note:hover { box-shadow: 0 0 0 2px var(--warn); }
-
-/* CUSTOM CONTEXT MENU */
 .context-menu{position:absolute;background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.2);display:none;flex-direction:column;padding:4px;z-index:10000;min-width:160px;}
 .context-menu.show{display:flex;}
 .context-item{padding:8px 12px;font-size:14px;cursor:pointer;border-radius:6px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;font-weight:600;position:relative;}
@@ -79,8 +76,6 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 .submenu-item { padding: 6px 12px; font-size: 13px; cursor: pointer; border-radius: 4px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
 .submenu-item:hover { background: var(--bg); }
 .color-swatch { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-
-/* STICKY NOTE POPUP */
 .sticky-note{position:fixed;background:#fef08a;border:1px solid #ca8a04;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,0.3);width:280px;height:200px;display:none;flex-direction:column;z-index:10001;font-family:'EB Garamond',serif;resize:both;overflow:auto;min-width:200px;min-height:150px;}
 .sticky-note.show{display:flex;}
 .sticky-header{background:#facc15;padding:6px 10px;border-radius:7px 7px 0 0;display:flex;justify-content:space-between;align-items:center;cursor:grab;}
@@ -93,7 +88,6 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 .sticky-body{padding:10px;flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .sticky-text{width:100%;height:100%;background:transparent;border:none;resize:none;outline:none;font-family:'EB Garamond',serif;font-size:16px;line-height:1.4;color:#422006;font-weight:500;}
 .sticky-text::placeholder{color:rgba(66,32,6,0.5);font-style:italic;}
-
 .q-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
 .q-num{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase;margin-bottom:8px}
 .q-type{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--ink-soft);margin-left:6px;text-transform:none;letter-spacing:0}
@@ -189,10 +183,8 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
   </div>
 </div>
 
-<!-- CUSTOM CONTEXT MENU -->
 <div id="customContextMenu" class="context-menu"></div>
 
-<!-- DRAGGABLE STICKY NOTE -->
 <div id="stickyNote" class="sticky-note">
   <div class="sticky-header" id="stickyDragHandle">
     <span class="sticky-title">📝 My Note</span>
@@ -235,13 +227,10 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<'
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 
-/* ================== EXTREMELY SMART ANSWER MATCHER ================== */
 const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
-
 function expandContractions(str) {
   return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would');
 }
-
 function normalizeString(str) {
   let s = String(str).toLowerCase().trim();
   s = expandContractions(s);
@@ -249,12 +238,10 @@ function normalizeString(str) {
   s = s.replace(/\s+/g, ' ');
   return s;
 }
-
 function getCoreWords(str) {
   const norm = normalizeString(str);
   return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w));
 }
-
 function levenshtein(a, b) {
   const matrix = [];
   for (let i = 0; i <= b.length; i++) matrix[i] = [i];
@@ -267,7 +254,6 @@ function levenshtein(a, b) {
   }
   return matrix[b.length][a.length];
 }
-
 function isAnswerCorrect(userStr, expectedArr) {
   if(!userStr) return false;
   let user = normalizeString(userStr);
@@ -275,19 +261,13 @@ function isAnswerCorrect(userStr, expectedArr) {
 
   for (let exp of expectedArr) {
     let target = normalizeString(exp);
-    
-    // 1. Exact Match
     if (user === target) return true;
-    
-    // 2. Numeric Extraction (e.g., "In 2015" vs "2015")
     const userNums = user.match(/\d+/g) || [];
     const targetNums = target.match(/\d+/g) || [];
     if (targetNums.length > 0) {
         const numMatch = targetNums.every(tn => userNums.includes(tn));
         if (numMatch) return true;
     }
-    
-    // 3. Core Words Match
     const userCores = getCoreWords(user);
     const targetCores = getCoreWords(target);
     if (userCores.length > 0 && targetCores.length > 0) {
@@ -297,17 +277,11 @@ function isAnswerCorrect(userStr, expectedArr) {
         if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true;
         if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
     }
-    
-    // 4. Substring match
     if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
-    
-    // 5. Morphological Variations
     if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) {
        const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length);
        if(['', 'ing', 'ed', 's'].includes(suffix)) return true;
     }
-
-    // 6. Levenshtein
     if (target.length > 4) {
        const maxAllowedDist = target.length > 8 ? 2 : 1;
        if (levenshtein(user, target) <= maxAllowedDist) return true;
@@ -515,8 +489,6 @@ function saveAnnotations() {
     fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML).then(()=>{
       if(typeof showToast === 'function') showToast('Annotations saved');
     });
-  } else if (fbDb && code && teacherMode) {
-    fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML);
   }
 }
 
@@ -534,16 +506,17 @@ let submitted=false;
 let saveTimeout;
 
 function debouncedSave(){
+  if(teacherMode) return; // Prevent teacher from overwriting student data
   clearTimeout(saveTimeout);
   saveTimeout=setTimeout(()=>{
-    if(sessionRef&&!teacherMode&&!submitted){
+    if(sessionRef&&!submitted){
       sessionRef.child('homework/'+homeworkId).update({
         version:homeworkVersion,
         answers:answers,
         updatedAt:Date.now()
       }).catch(console.error);
     }
-  },400); // Save 400ms after user stops typing
+  },400);
 }
 
 function renderPassage(){
@@ -853,7 +826,7 @@ function initFirebase(){
         teacherMode=teacherCanEdit;
         if(teacherCanEdit){
           document.getElementById('teacherResetArea').style.display='block';
-          renderPassage();renderQuestions();
+          startHomework(); // Load student's answers if code is present
         }
         else{document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Teacher sign-in required</h2></div>'}
       });
@@ -880,7 +853,7 @@ function initFirebase(){
 }
 
 function startHomework(){
-  if(fbDb&&!teacherMode){
+  if(fbDb && code){
     sessionRef=fbDb.ref('sessions/'+code);
     sessionRef.child('homework/'+homeworkId).once('value').then(function(snap){
       const data=snap.val()||{};
@@ -889,9 +862,11 @@ function startHomework(){
         submitted=!!data.submitted;
       }else{
         answers={};submitted=false;
-        sessionRef.child('homework/'+homeworkId).set({
-          version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false
-        }).catch(function(){});
+        if(!teacherMode){
+          sessionRef.child('homework/'+homeworkId).set({
+            version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false
+          }).catch(function(){});
+        }
       }
       renderPassage();renderQuestions();
       if(submitted){
