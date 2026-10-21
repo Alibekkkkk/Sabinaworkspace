@@ -765,13 +765,26 @@ function initFirebase(){
       });
       return;
     }
+    
+    // STUDENT AUTH CHECK
     firebase.auth().onAuthStateChanged(function(user){
-      if(!user){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Please sign in</h2><p style="color:var(--ink-soft);margin-bottom:22px">Open the <a href="portal.html" style="color:var(--accent);font-weight:700">student portal</a> to sign in with Google, then come back.</p></div>';return}
       const code=getSessionCode();
-      if(!code){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>No lesson selected</h2><p style="color:var(--ink-soft)">Please open this lesson from your portal.</p></div>';return}
-      firebase.database().ref('students/'+code).once('value').then(function(snap){
+      if(!code){
+        document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>No lesson selected</h2><p style="color:var(--ink-soft)">Please open this lesson from your portal.</p></div>';
+        return;
+      }
+      fbDb.ref('students/'+code).once('value').then(function(snap){
         const s=snap.val();
-        if(!s||s.uid!==user.uid){document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">Your account is not linked to this student code.</p></div>';return}
+        if(!s){
+           document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Invalid code</h2><p style="color:var(--ink-soft)">This student code does not exist.</p></div>';
+           return;
+        }
+        // If there is a UID linked AND they are logged into a Google account, it must match.
+        // If they are NOT logged in (user == null), allow access because they logged in via code.
+        if (s.uid && user && s.uid !== user.uid) {
+           document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">Your Google account does not match this student code.</p></div>';
+           return;
+        }
         document.getElementById('workspaceName').textContent = s.name;
         startStudentSession(code);
       });

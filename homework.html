@@ -417,10 +417,21 @@ function initFirebase(){
       });
       return;
     }
+
     fbAuth.onAuthStateChanged(function(user){
-      if(!user){ document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Please sign in</h2><p>Open the <a href="portal.html" style="color:#ee5a24">student portal</a> first.</p></div>'; return; }
       if(!code){startHomework();return}
-      fbDb.ref('students/'+code).once('value').then(function(snap){ const s=snap.val(); const isTeacher = user.email === 'alibek.alpysbayev@gmail.com'; if(!s || (!isTeacher && s.uid !== user.uid)){ document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>Your account is not linked to this student code.</p></div>'; return; } startHomework(); });
+      fbDb.ref('students/'+code).once('value').then(function(snap){
+        const s=snap.val();
+        if(!s){
+           document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Invalid code</h2><p>This student code does not exist.</p></div>';
+           return;
+        }
+        if (s.uid && user && s.uid !== user.uid) {
+           document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>Your Google account does not match this student code.</p></div>';
+           return;
+        }
+        startHomework();
+      });
     });
   }catch(e){console.error(e);startHomework()}
 }
