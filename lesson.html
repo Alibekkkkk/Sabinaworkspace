@@ -12,6 +12,7 @@
   try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
+/* CSS REMAINS THE SAME */
 :root{--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -382,14 +383,13 @@ html.dark .q-feedback.info{color:#f5c66b}
 </div>
 
 <script>
-/* ================== FIREBASE ================== */
+/* SCRIPT REMAINS THE SAME EXCEPT FOR THE COLLAPSIBLE LOGIC */
 const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
 const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 
-/* ================== CURRICULUM ================== */
 let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
 const DEFAULT_STAGES = [
   {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
@@ -404,6 +404,9 @@ const DEFAULT_STAGES = [
 ];
 
 const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
+
+// NEW: Track expanded lessons in sidebar
+let expandedLessons = {};
 
 function getCurrentLesson(){
   const y=CURRICULUM.find(function(x){return x.year===state.currentYear});
@@ -434,7 +437,6 @@ let TEST_SHORT = [];
 let TEST_TFNG = [];
 let TEST_COMPLETE = [];
 
-/* ================== EXTREMELY SMART ANSWER MATCHER ================== */
 const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
 function expandContractions(str) { return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would'); }
 function normalizeString(str) { let s = String(str).toLowerCase().trim(); s = expandContractions(s); s = s.replace(/[.,!?;:'"()\[\]{}]/g, ''); s = s.replace(/\s+/g, ' '); return s; }
@@ -466,7 +468,6 @@ function isAnswerCorrect(userStr, expectedArr) {
   return false;
 }
 
-/* ================== DRAFT SAVE SYSTEM ================== */
 let draftAnswers = {};
 let draftSaveTimeout = null;
 let isRemoteUpdate = false;
@@ -512,7 +513,6 @@ function undoQuestion(prefix, i) {
   showToast('Question reset by teacher');
 }
 
-/* ================== ANNOTATION & NOTES LOGIC ================== */
 let activeNoteId = null;
 let savedRange = null; 
 let contextTargetEdit = null;
@@ -669,7 +669,6 @@ function saveAnnotations() {
   }
 }
 
-/* ================== IMAGE MODAL LOGIC ================== */
 let currentEditWord = null; let currentEditMeaningIdx = null;
 function editFlashcardImage(){
   if(!teacherCanEdit||!fbDb){alert('Sign in with the teacher account to edit.');return}
@@ -694,7 +693,6 @@ function saveImageUrl() {
   }).catch(function(e){alert('Failed: '+e.message)});
 }
 
-/* ================== FIREBASE INIT ================== */
 function initFirebase(){
   try{
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
@@ -714,7 +712,7 @@ function initFirebase(){
                     if (currentTitle && savedHtml.includes(currentTitle)) {
                         body.innerHTML = savedHtml;
                     } else {
-                        fbDb.ref('sessions/'+c+'/annotations/'+lessonId).remove(); // Clear outdated annotations
+                        fbDb.ref('sessions/'+c+'/annotations/'+lessonId).remove();
                     }
                 }
              }
@@ -736,6 +734,12 @@ function initFirebase(){
       if (fbLessons.length === 0) { fbLessons.push({ id: state.currentLessonId || 'lesson_1', title: 'Lesson', stages: DEFAULT_STAGES, year: '2026', month: 'October' }); }
       CURRICULUM[0].months[0].lessons = fbLessons;
       if (!state.currentLessonId && fbLessons.length > 0) { state.currentLessonId = fbLessons[0].id; }
+      
+      // Initialize expanded state for the active lesson
+      if (state.currentLessonId && expandedLessons[state.currentLessonId] === undefined) {
+          expandedLessons[state.currentLessonId] = true;
+      }
+      
       renderSidebar(); renderStage(); 
     });
     
@@ -766,24 +770,28 @@ function initFirebase(){
       return;
     }
     
-    // STUDENT AUTH CHECK
-    firebase.auth().onAuthStateChanged(function(user){
+    firebase.auth().onAuthStateChanged(async function(user){
       const code=getSessionCode();
       if(!code){
         document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>No lesson selected</h2><p style="color:var(--ink-soft)">Please open this lesson from your portal.</p></div>';
         return;
       }
+      
       fbDb.ref('students/'+code).once('value').then(function(snap){
         const s=snap.val();
         if(!s){
            document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Invalid code</h2><p style="color:var(--ink-soft)">This student code does not exist.</p></div>';
            return;
         }
-        // UPDATE: Strict Google Auth check
-        if (s.uid && (!user || s.uid !== user.uid)) {
-           document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">This student account is linked to a Google account. Please sign in via Google.</p></div>';
-           return;
+        
+        // Strict security check for Google linked accounts
+        if (s.uid) {
+            if (!user || s.uid !== user.uid) {
+               document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">This student account is linked to a Google account. Please sign in via Google.</p></div>';
+               return;
+            }
         }
+        
         document.getElementById('workspaceName').textContent = s.name;
         startStudentSession(code);
       });
@@ -831,7 +839,6 @@ function applyTeacherResetCommand(cmd){
 }
 function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};draftAnswers={};document.getElementById('notesArea').value='';if(sessionRef)sessionRef.child('draft/'+state.currentLessonId).remove();updateHUD();renderSidebar();renderStage();saveState()}
 
-/* ================== AUDIO + TTS ================== */
 let audioCtx=null,soundOn=true;
 function playTone(f,d,t,v){if(!soundOn)return;t=t||'sine';v=v||.12;try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
 function sCorrect(){playTone(660,.12);setTimeout(function(){playTone(880,.18)},100)}
@@ -864,7 +871,6 @@ function resumeTTS(){ if(!('speechSynthesis' in window))return; if(ttsState!=='p
 function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;try{window.speechSynthesis.cancel()}catch(e){}ttsState='idle';ttsCharStart=0;updateTTSButtons()}
 function updateTTSButtons(){ const p=document.getElementById('ttsPlay'); const pa=document.getElementById('ttsPause'); const r=document.getElementById('ttsResume'); const s=document.getElementById('ttsStop'); const setVis=function(el,on){if(!el)return;el.style.display=on?'inline-flex':'none'}; setVis(p,ttsState==='idle'); setVis(pa,ttsState==='playing'); setVis(r,ttsState==='paused'); setVis(s,ttsState!=='idle'); }
 
-/* ================== SYNC ================== */
 const CHANNEL='nd_lesson_live_v4_sabina';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
 function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
 function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
@@ -873,13 +879,11 @@ function saveState(){ if(!teacherMode) { try{localStorage.setItem('nd_state_sabi
 function loadState(){try{const raw=localStorage.getItem('nd_state_sabina_v6');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
 let customImages={};
 
-/* ================== HELPERS ================== */
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
 function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
 
-/* ================== TEACHER REVIEW QUEUE ================== */
 function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   if(teacherMode)return; if(!fbConnected||!sessionRef){alert('Cannot send to teacher — no session connected.');return}
   const payload={stage:stageId,questionId:qId,prompt:prompt,studentAnswer:studentAnswer,autoResult:autoResult,ts:Date.now()};
@@ -887,7 +891,6 @@ function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   sessionRef.child('reviewQueue').push(payload).then(function(){ broadcastAction('review_flagged',prompt.substring(0,40)); }).catch(function(e){alert('Failed to send: '+e.message)});
 }
 
-/* ================== STAGE 1 — ADAPTIVE VOCABULARY QUIZ ================== */
 let s1Filter='learning', vocabState={}, vocabCloudLoaded=false, s1VisibleList=[], quizWord=null, quizMeanings=[], quizCurrentIdx=0, quizRoundWrongs=0, quizAnswers={}, quizOptionsCache={}, quizHintShown=false, quizRoundFinalized=false, practiceMode=false, practiceQueue=[], practiceIdx=0;
 
 function vocabKey(){return 'nd_vocab_'+state.currentLessonId}
@@ -1052,7 +1055,6 @@ function startPractice(){
 function quizSpeak(){ const w=VOCAB.find(function(x){return x.en===quizWord}); if(w){ const realMeaningIdx = quizMeanings[quizCurrentIdx].idx; const d=w.meanings[realMeaningIdx].displayEn||w.en; speak(d); } }
 function fcPrev(){quizPrev()} function fcNext(){quizNext()} function fcReveal(){} function fcMarkKnow(){} function fcMarkAgain(){}
 
-/* ================== STAGE 2 — WORD MATCH ================== */
 function renderStage2(){
   const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
@@ -1109,7 +1111,6 @@ function checkDDComplete(silent){
 }
 function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=false;draftAnswers['match_correct']=[];debouncedSaveDraft();renderSidebar();renderStage2();updateHUD()}
 
-/* ================== STAGE 3 — READING & QUESTIONS ================== */
 let s4Answers={};
 function renderStage3(){
   const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
@@ -1151,7 +1152,6 @@ function renderStage3(){
              const currentTitleMatch = READING_HTML.match(/<h1>(.*?)<\/h1>/);
              const currentTitle = currentTitleMatch ? currentTitleMatch[1].trim() : '';
              
-             // Only restore if it's the same text (matching titles), otherwise delete old annotations
              if (currentTitle && savedHtml.includes(currentTitle)) {
                  document.getElementById('passageBody').innerHTML = savedHtml;
                  document.querySelectorAll('.user-note').forEach((note, i) => { if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i; });
@@ -1310,7 +1310,6 @@ function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=norm(te
 function checkS4(silent){ const total=READING_Q.length+CONTEXT_Q.length; const c=Object.keys(s4Answers).length; updateS3Progress(); if(c===total){ setScore(3,25); if(!silent) markDone(3); else { state.done[state.currentLessonId+"_3"] = true; renderSidebar(); } }else{ setScore(3,Math.floor(c*25/total)); } }
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
-/* ================== STAGES 4/5 — COMPLETING SENTENCE ================== */
 function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
   const v=document.createElement('div');v.className='stage-view active';
@@ -1459,7 +1458,6 @@ function renderStage5(){
     renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
 }
 
-/* ================== STAGES 6/7 — SENTENCE BUILDER ================== */
 const SB_STATE={}; const SB_DATA={};
 function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
   const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
@@ -1640,7 +1638,6 @@ function renderStage7(){
     renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
 }
 
-/* ================== STAGE 8 — CHOOSE THE TENSE ================== */
 function renderStage8(){
     let title = '🧭 Completing Sentence — Choose the Tense';
     let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
@@ -1665,7 +1662,6 @@ function renderStage8(){
     renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
 }
 
-/* ================== STAGE 9 — TEST YOUR KNOWLEDGE (timed) ================== */
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 function getTestTimeLimit() { const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length; return Math.max(300, totalQuestions * 30); }
 function buildTestQuestions(){ const qs=[]; TEST_MCQ.forEach(function(q){qs.push({type:'mcq',prompt:q.q,options:q.options,correct:q.correct,exp:q.exp})}); TEST_SHORT.forEach(function(q){qs.push({type:'short',prompt:q.q,answers:q.answers,exp:q.exp})}); TEST_TFNG.forEach(function(q){qs.push({type:'tfng',prompt:q.q,answer:q.answer,exp:q.exp})}); TEST_COMPLETE.forEach(function(q){qs.push({type:'complete',prompt:q.p,answer:q.a})}); return shuffle(qs); }
@@ -1715,18 +1711,19 @@ function endTest(timedOut,customReason){
   if(!timedOut&&!customReason){sWin();confetti();} broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
-/* ================== HUD ================== */
 function updateHUD(){ const el=document.getElementById('scoreDisplay'); if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')} const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak; const lesson=getCurrentLesson();if(!lesson)return; const doneCount=lesson.stages.filter(function(s){return state.done[lesson.id+"_"+s.id]}).length; const pct=Math.round((doneCount/lesson.stages.length)*100); const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; }
 function markDone(stageId){ const key=state.currentLessonId+"_"+stageId; if(state.done[key])return; state.done[key]=true; sWin();confetti();renderSidebar();updateHUD();saveState(); broadcastAction('stage_complete','Stage '+stageId+' complete!'); }
 function setScore(stageId,amount){ const key=state.currentLessonId+"_"+stageId; state.scores[key]=amount; updateHUD();saveState(); }
 
-/* ================== SIDEBAR ================== */
 let expandedYears=["2026"],expandedMonths=["October"];
+
 function resetStageTeacher(stageId) {
   if(!teacherCanEdit) return; if(!confirm('Are you sure you want to reset progress for Stage ' + stageId + '?')) return;
   const key = state.currentLessonId + "_" + stageId; state.scores[key] = 0; state.done[key] = false; if (stageId === 1) { vocabState = {}; saveVocabStateLocal(); }
   saveState(); renderSidebar(); renderStage(); updateHUD(); broadcastAction('teacher_reset_stage', 'Teacher manually reset Stage ' + stageId); if (typeof showToast === 'function') showToast('Stage ' + stageId + ' reset');
 }
+
+// UPDATED: Collapsible sidebar logic
 function renderSidebar(){
   const list=document.getElementById('stageList');if(!list)return;list.innerHTML=''; const isAraylim1 = activeContentName.includes('araylim_1'); const isAraylim3 = activeContentName.includes('araylim_3');
   let customLabels = null;
@@ -1740,12 +1737,28 @@ function renderSidebar(){
       const isM=expandedMonths.includes(m.month); const mEl=document.createElement('div');mEl.className='month-item'+(isM?' open':'');
       mEl.innerHTML='<span>📁 '+m.month+'</span><span class="arrow">▶</span>'; mEl.onclick=function(){if(isM)expandedMonths=expandedMonths.filter(function(x){return x!==m.month});else expandedMonths.push(m.month);renderSidebar()}; list.appendChild(mEl);
       if(isM)m.lessons.forEach(function(lesson){
-        const isActive=lesson.id===state.currentLessonId; const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':''); const fbLesson = curriculumCache[lesson.id]; const title = (fbLesson && fbLesson.title) ? fbLesson.title : lesson.title;
-        lEl.innerHTML='<span>📘 '+title+'</span>'; lEl.onclick=function(){state.currentLessonId=lesson.id;state.currentStage=1;renderSidebar();renderStage();loadDraft()}; list.appendChild(lEl);
-        if(isActive){
+        const isActive=lesson.id===state.currentLessonId;
+        const isOpen = expandedLessons[lesson.id] !== undefined ? expandedLessons[lesson.id] : isActive;
+        const fbLesson = curriculumCache[lesson.id]; const title = (fbLesson && fbLesson.title) ? fbLesson.title : lesson.title;
+        
+        const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':'');
+        lEl.innerHTML='<span style="flex:1;">📘 '+title+'</span><span class="arrow" style="font-size:10px;">'+(isOpen?'▼':'▶')+'</span>';
+        lEl.onclick=function(){
+            if(state.currentLessonId === lesson.id) {
+                expandedLessons[lesson.id] = !isOpen;
+                renderSidebar();
+            } else {
+                state.currentLessonId=lesson.id; 
+                expandedLessons[lesson.id] = true;
+                state.currentStage=1;
+                renderSidebar();renderStage();loadDraft();
+            }
+        }; 
+        list.appendChild(lEl);
+        
+        if(isActive && isOpen){
           const studentCode=getSessionCode();
           if (studentCode) {
-            // UPDATE: Filter homework to only show those linked to this classwork
             const assignedHW=Object.keys(curriculumCache||{}).map(id=>curriculumCache[id]).filter(it=>{ 
                 return it && it.homework && it.published!==false && Array.isArray(it.assignedTo) && it.assignedTo.includes(studentCode) && it.parentId === lesson.id; 
             });
@@ -1794,7 +1807,6 @@ function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.c
 document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
 function showToast(text){ let t=document.getElementById('toast'); if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:white;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:9999;transition:opacity .3s,transform .3s;max-width:90vw;text-align:center';document.body.appendChild(t)} t.textContent=text;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)'; clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2200); }
 
-/* ================== CONTENT LOADER ================== */
 async function loadContent() {
   activeContentName = new URLSearchParams(location.search).get('content') || 'sabina';
   const res = await fetch('content/' + activeContentName + '.json', { cache: 'no-store' });
@@ -1805,7 +1817,6 @@ async function loadContent() {
   TEST_MCQ      = c.testMcq; TEST_SHORT    = c.testShort; TEST_TFNG     = c.testTfng; TEST_COMPLETE = c.testComplete;
 }
 
-/* ================== INIT ================== */
 (async function boot() {
   try { await loadContent(); } catch (e) {
     document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' + '<h2>Content failed to load</h2>' + '<p style="color:var(--ink-soft)">' + e.message + '</p>' + '</div>';

@@ -12,6 +12,7 @@
   try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
 <style>
+/* CSS REMAINS THE SAME */
 :root{color-scheme:light;--bg:#f4f1ea;--panel:#fff;--paper:#fffdf7;--ink:#2c3e50;--ink-soft:#6c757d;--primary:#2a5298;--primary-dark:#1e3c72;--accent:#ee5a24;--accent-dark:#d94a15;--success:#2e9e5b;--success-soft:#d4edda;--error:#dc3545;--error-soft:#f8d7da;--warn:#ff9800;--border:#e0dbd0;--shadow-sm:0 2px 6px rgba(0,0,0,.06);--shadow-md:0 8px 24px rgba(0,0,0,.08);--shadow-lg:0 20px 50px rgba(0,0,0,.15)}
 html.dark{color-scheme:dark;--bg:#1a1d24;--panel:#232832;--paper:#1e222a;--ink:#e8e8ea;--ink-soft:#a0a6b0;--primary:#5b8dd9;--primary-dark:#2a5298;--accent:#ff8a5b;--accent-dark:#ee5a24;--success:#4caf7d;--success-soft:#1e3a2a;--error:#ef5468;--error-soft:#3a1e22;--border:#333944}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -383,9 +384,10 @@ function submitAll(){
   let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[idx]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer])) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
   submitted=true;
   
-  // UPDATE: Added history logging
   if(sessionRef&&!teacherMode){ 
       sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, score:score, total:total, submitted:true, completed:true, updatedAt:Date.now() }).catch(function(e){console.error(e)}); 
+      
+      // Log submission to history
       sessionRef.child('history').push({
           actor: 'student',
           type: 'homework_submit',
@@ -429,19 +431,28 @@ function initFirebase(){
       return;
     }
 
-    fbAuth.onAuthStateChanged(function(user){
-      if(!code){startHomework();return}
+    // STRICT SECURITY CHECK FOR STUDENTS
+    if (!code) {
+        document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access Denied</h2><p>No student code provided. Please open this homework from your portal.</p></div>';
+        return;
+    }
+
+    fbAuth.onAuthStateChanged(async function(user){
       fbDb.ref('students/'+code).once('value').then(function(snap){
         const s=snap.val();
         if(!s){
            document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Invalid code</h2><p>This student code does not exist.</p></div>';
            return;
         }
-        // UPDATE: Strict Google Auth check
-        if (s.uid && (!user || s.uid !== user.uid)) {
-           document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>This student account is linked to a Google account. Please sign in via Google.</p></div>';
-           return;
+        
+        // Verify Google account matches if linked
+        if (s.uid) {
+            if (!user || s.uid !== user.uid) {
+               document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access Denied</h2><p>This account is linked to a Google account. You must sign in with Google on this device first.</p></div>';
+               return;
+            }
         }
+        
         startHomework();
       });
     });

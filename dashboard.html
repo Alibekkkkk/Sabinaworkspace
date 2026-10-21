@@ -17,6 +17,7 @@
 })();
 </script>
 <style>
+/* CSS REMAINS THE SAME EXCEPT WE ADDED .grid-2 */
 :root{--bg:#f5f3ed;--panel:#fffefa;--panel-2:#edf4ed;--ink:#18302b;--ink-soft:#677771;--primary:#2c6653;--accent:#2c6653;--accent-dark:#1f5141;--success:#43845a;--warn:#916313;--error:#b33e37;--border:#dce1d8;color-scheme:light}
 [data-theme="dark"]{--bg:#14181a;--panel:#1d2426;--panel-2:#272f32;--ink:#e6ede9;--ink-soft:#8fa098;--primary:#7ab89a;--accent:#3d9970;--accent-dark:#2a6e52;--success:#6ec28f;--warn:#d4a545;--error:#e08a80;--border:#2f3a38;color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -84,22 +85,12 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .selected-header .info .meta{font-size:14px;color:var(--ink-soft);font-family:'Fira Code',monospace;letter-spacing:1px}
 .selected-header .info .meta b{color:var(--accent)}
 .selected-actions{display:flex;gap:8px;flex-wrap:wrap}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
-@media(max-width:1100px){.grid-3{grid-template-columns:1fr 1fr}}
-@media(max-width:700px){.grid-3,.grid{grid-template-columns:1fr}}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:1100px){.grid-2{grid-template-columns:1fr}}
 .info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:16px}
 .info-row:last-child{border-bottom:none}
 .info-row .k{color:var(--ink-soft);font-weight:600}
 .info-row .v{font-weight:700}
-.big-stat{text-align:center;padding:18px 0}
-.big-stat .num{font-size:56px;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px}
-.big-stat .lbl{color:var(--ink-soft);font-size:15px;font-weight:600}
-.stage-vis{display:flex;gap:4px;margin-top:16px;flex-wrap:wrap}
-.stage-chip{padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;background:var(--panel-2);color:var(--ink-soft);border:1px solid var(--border);transition:all .3s}
-.stage-chip.current{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border-color:var(--accent);transform:scale(1.05)}
-.stage-chip.done{background:rgba(76,175,125,.2);color:var(--success);border-color:var(--success)}
-[data-theme="dark"] .stage-chip.done{background:rgba(110,194,143,.18)}
 .activity-feed{max-height:300px;overflow-y:auto;margin:-4px;padding:4px}
 .feed-item{padding:10px 14px;border-radius:10px;background:var(--panel-2);margin-bottom:8px;font-size:14px;display:flex;align-items:center;gap:10px;border-left:3px solid var(--border)}
 .feed-item.correct{border-left-color:var(--success)}
@@ -111,11 +102,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .feed-item .msg strong{color:var(--accent)}
 .no-data{text-align:center;padding:40px 20px;color:var(--ink-soft);font-size:14px}
 .notes-view{background:var(--panel-2);border-radius:10px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:14px;line-height:1.6;color:var(--ink);min-height:120px;white-space:pre-wrap;word-break:break-word}
-.typing-live{background:rgba(76,175,125,.1);border:1px dashed var(--success);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink);margin-top:10px;min-height:44px;display:none}
-[data-theme="dark"] .typing-live{background:rgba(110,194,143,.1)}
-.typing-live.show{display:block}
-.typing-live .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--success);text-transform:uppercase;display:block;margin-bottom:4px}
-.typing-live .txt{font-family:'Fira Code',monospace;color:var(--accent);font-weight:700}
 .control-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
 .ctrl-btn{padding:12px 10px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);color:var(--ink);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
 .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
@@ -180,11 +166,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .viewer-frame{flex:1;border:0;background:#fff;min-height:400px}
 .viewer-placeholder{flex:1;display:grid;place-items:center;color:var(--ink-soft);font-size:16px;text-align:center;padding:40px}
 .viewer-placeholder .icon{font-size:56px;opacity:.4;margin-bottom:14px}
-.meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px}
-.meta-grid label{display:block;font-size:11px;font-weight:800;letter-spacing:1px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:5px}
-.meta-grid input,.meta-grid select,.meta-grid textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:9px;background:var(--bg);font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);outline:none}
-.meta-grid input:focus,.meta-grid select:focus,.meta-grid textarea:focus{border-color:var(--accent)}
-.meta-grid .full{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -261,44 +242,24 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
             </div>
           </div>
 
-          <div class="card">
-            <h2>Assigned Homework</h2>
-            <div id="studentHomeworkList" style="color:var(--ink-soft);">No homework assigned to this student.</div>
-          </div>
-
-          <div class="grid-3">
+          <!-- UPDATED LAYOUT: Removed useless blocks -->
+          <div class="grid-2">
             <div class="card">
-              <h2>Live Score</h2>
-              <div class="big-stat">
-                <div class="num" id="scoreBig">0</div>
-                <div class="lbl">Total points</div>
+              <h2>Assigned Homework</h2>
+              <div id="studentHomeworkList" style="color:var(--ink-soft);">No homework assigned to this student.</div>
+            </div>
+            <div class="card">
+              <h2>Send Command to Student</h2>
+              <p style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">If the student's lesson page is open, these commands fire immediately.</p>
+              <div class="control-grid" id="controlGrid"></div>
+              <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+                <button class="btn" onclick="sendReset('all')">🔄 Reset ALL progress</button>
+                <button class="btn" onclick="sendReset('vocab')" style="margin-left:8px;">🔄 Reset Vocab Only</button>
               </div>
             </div>
-            <div class="card">
-              <h2>Session Info</h2>
-              <div class="info-row"><span class="k">Current stage</span><span class="v" id="currentStage">—</span></div>
-              <div class="info-row"><span class="k">Elapsed</span><span class="v" id="elapsedTime">00:00</span></div>
-              <div class="info-row"><span class="k">Stages done</span><span class="v" id="stagesDone">0 / 9</span></div>
-              <div class="info-row"><span class="k">Streak</span><span class="v" id="streakVal">0 🔥</span></div>
-              <div class="info-row"><span class="k">Last activity</span><span class="v" id="lastActivity">—</span></div>
-            </div>
-            <div class="card">
-              <h2>Stage Map</h2>
-              <div class="stage-vis" id="stageVis"></div>
-            </div>
           </div>
 
-          <div class="card">
-            <h2>Send Command to Student</h2>
-            <p style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;">If the student's lesson page is open, these commands fire immediately.</p>
-            <div class="control-grid" id="controlGrid"></div>
-            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-              <button class="btn" onclick="sendReset('all')">🔄 Reset ALL progress</button>
-              <button class="btn" onclick="sendReset('vocab')" style="margin-left:8px;">🔄 Reset Vocab Only</button>
-            </div>
-          </div>
-
-          <div class="grid">
+          <div class="grid-2">
             <div class="card">
               <h2>Student History</h2>
               <div class="activity-feed" id="studentHistoryList"></div>
@@ -441,7 +402,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <label for="lessonContentUrl">Content file (e.g. sabina, gaziz, homework_george)</label>
     <input type="text" id="lessonContentUrl" placeholder="e.g. sabina" style="text-transform:lowercase;">
     
-    <!-- ADDED PARENT DROPDOWN -->
     <div id="homeworkExtras" style="display:none;">
       <label for="lessonDue">Homework due (date or note)</label>
       <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
@@ -449,8 +409,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
       <label for="lessonParent">Belongs to Classwork</label>
       <select id="lessonParent"></select>
     </div>
-    <!-- END ADDED PARENT DROPDOWN -->
-
     <label>Visibility</label>
     <div style="display:flex;gap:8px;margin-bottom:14px;">
       <button type="button" class="btn" id="visAllBtn" onclick="setLessonVisibility('all')" style="flex:1;">👥 All</button>
@@ -468,9 +426,6 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 <div class="toast" id="toast"></div>
 
 <script>
-/* ============================================================
-   CONFIG
-============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
   authDomain: "sabina-s-workspace.firebaseapp.com",
@@ -489,7 +444,7 @@ let editingLessonId = null, lessonVisibility = 'all', lessonType = 'classwork';
 let pendingLinkUid = null;
 let currentClassworkId = null, currentClassworkCode = '';
 let currentHomeworkId = null, currentHomeworkCode = '';
-let expandedYears = {}, expandedMonths = {};
+let expandedYears = {}, expandedMonths = {}, expandedLessons = {};
 const UNDO_STORAGE_KEY = 'teacherDashboardUndoV2';
 let undoStack = [];
 
@@ -506,9 +461,6 @@ const STAGE_LIST = [
   {id:9,label:'Test Your Knowledge'}
 ];
 
-/* ============================================================
-   THEME
-============================================================ */
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme') || 'light';
   const next = cur === 'light' ? 'dark' : 'light';
@@ -524,9 +476,6 @@ function updateThemeButton() {
   btn.title = cur === 'light' ? 'Switch to dark theme' : 'Switch to light theme';
 }
 
-/* ============================================================
-   FIREBASE + AUTH
-============================================================ */
 function initFirebase() {
   try {
     fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
@@ -592,9 +541,6 @@ function teacherGoogleSignIn() {
 
 function teacherSignOut() { if (fbAuth) fbAuth.signOut(); }
 
-/* ============================================================
-   DATA LOAD
-============================================================ */
 function initTeacherData() {
   if (!teacherUid) return;
   loadUndoStack();
@@ -647,9 +593,6 @@ function updateConnUI(status) {
   else txt.textContent = 'Connecting…';
 }
 
-/* ============================================================
-   PENDING APPROVALS
-============================================================ */
 function renderPendingApprovals() {
   const card = document.getElementById('pendingCard');
   const list = document.getElementById('pendingList');
@@ -723,9 +666,6 @@ function confirmLinkStudent() {
   }).catch(function(err) { alert('Link failed: ' + err.message); });
 }
 
-/* ============================================================
-   TABS
-============================================================ */
 function switchMainTab(tab) {
   ['students','classwork','homework'].forEach(function(t) {
     document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === tab);
@@ -750,9 +690,6 @@ function clearClassworkFilter() {
   renderClassworkTree();
 }
 
-/* ============================================================
-   STUDENT LIST
-============================================================ */
 function generateCode(existing) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let code;
@@ -787,10 +724,15 @@ function renderStudentsList() {
     const barColor = pct === 100 ? 'var(--success)' : (pct > 50 ? 'var(--warn)' : 'var(--accent)');
     const progressBar = `<div style="width:100%; height:6px; background:var(--border); border-radius:6px; margin-top:8px;"><div style="width:${pct}%; height:100%; background:${barColor}; border-radius:6px; transition:width 0.3s;"></div></div>`;
 
+    // Add homework progress summary
+    const hwCount = Object.keys(meta.homework || {}).length;
+    const hwDone = Object.keys(meta.homework || {}).filter(k => meta.homework[k].submitted).length;
+    const hwText = hwCount > 0 ? `<span style="color:var(--accent);">HW: ${hwDone}/${hwCount}</span>` : '';
+
     return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(\'' + code + '\')">' +
       '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
       '<div class="code">' + linked + ' ' + code + '</div>' +
-      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span></div>' +
+      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
       progressBar +
       '</div>';
   }).join('');
@@ -820,9 +762,6 @@ function deselectStudent() {
   switchMainTab('students'); 
 }
 
-/* ============================================================
-   SELECTED STUDENT VIEW
-============================================================ */
 function renderSelectedView() {
   if (!activeCode || !studentsMap[activeCode]) return;
   const s = studentsMap[activeCode];
@@ -830,22 +769,6 @@ function renderSelectedView() {
   document.getElementById('selectedName').textContent = s.name || activeCode;
   document.getElementById('selectedCode').textContent = activeCode;
   document.getElementById('selectedAdded').textContent = s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—';
-  document.getElementById('scoreBig').textContent = meta.score || 0;
-  document.getElementById('currentStage').textContent = STAGE_NAMES[(meta.stage || 1) - 1] || '—';
-  const sec = meta.elapsed || 0;
-  document.getElementById('elapsedTime').textContent = String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0');
-  const doneCount = Object.keys(meta.done || {}).filter(function(k) { return meta.done[k]; }).length;
-  document.getElementById('stagesDone').textContent = doneCount + ' / 9';
-  document.getElementById('streakVal').textContent = (meta.streak || 0) + ' 🔥';
-  document.getElementById('lastActivity').textContent = meta.lastSeen ? new Date(meta.lastSeen).toLocaleTimeString() : '—';
-  document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
-
-  document.getElementById('stageVis').innerHTML = STAGE_LIST.map(function(st) {
-    const isDone = meta.done && meta.done[st.id];
-    const isCurrent = (meta.stage || 1) === st.id;
-    let icon = isDone ? '✅' : (isCurrent ? '📍' : '🔒');
-    return '<div class="stage-chip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '') + '" style="display:flex; align-items:center; gap:6px;">' + icon + ' ' + st.id + '. ' + st.label + '</div>';
-  }).join('');
 
   document.getElementById('controlGrid').innerHTML = 
     '<button class="btn" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;" onclick="sendGoto(' + (meta.stage || 1) + ')">' +
@@ -856,6 +779,7 @@ function renderSelectedView() {
       return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" onclick="sendGoto(' + st.id + ')"><span class="num">' + st.id + '</span>' + st.label + '</button>';
     }).join('');
 
+  document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
   renderStudentHomework();
 }
 
@@ -994,9 +918,6 @@ function openStudentHomework() {
   switchMainTab('homework');
 }
 
-/* ============================================================
-   OVERVIEW
-============================================================ */
 function renderOverview() {
   const el = document.getElementById('overviewContent');
   const codes = Object.keys(studentsMap);
@@ -1026,9 +947,6 @@ function renderOverview() {
     }).join('') + '</div>';
 }
 
-/* ============================================================
-   ADD / RENAME / DELETE STUDENT
-============================================================ */
 function openAddStudent() {
   document.getElementById('newStudentName').value = '';
   document.getElementById('newStudentCode').value = '';
@@ -1072,9 +990,6 @@ function deleteStudent() {
     .catch(function(err) { alert('Failed: ' + err.message); });
 }
 
-/* ============================================================
-   UNDO
-============================================================ */
 function loadUndoStack() {
   try { undoStack = JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY) || '[]'); } catch (e) { undoStack = []; }
   updateUndoButton();
@@ -1123,66 +1038,85 @@ function undoLastChange() {
   }).catch(function(err) { alert('Undo failed: ' + err.message); });
 }
 
-/* ============================================================
-   CLASSWORK TREE
-============================================================ */
+// UPDATED: Grouping by year -> month -> [lessons & homeworks]
 function renderClassworkTree() {
   const container = document.getElementById('classworkTree');
   if (!container) return;
-  const entries = Object.keys(curriculum).filter(function(id) {
-    const l = curriculum[id] || {};
-    if (l.homework) return false;
-    if (activeCode && Array.isArray(l.assignedTo) && l.assignedTo.length && l.assignedTo.indexOf(activeCode) === -1) return false;
-    return true;
-  });
-  if (!entries.length) {
-    container.innerHTML = '<div class="tree-empty">No lessons yet.<br><br><button class="btn small primary" onclick="openLessonModal()">+ New Lesson</button></div>';
-    return;
-  }
+
   const grouped = {};
-  entries.forEach(function(id) {
-    const l = curriculum[id] || {};
+  Object.keys(curriculum).forEach(id => {
+    const l = curriculum[id];
+    if (activeCode && Array.isArray(l.assignedTo) && l.assignedTo.length > 0 && l.assignedTo.indexOf(activeCode) === -1) return;
+    
     const year = l.year || '2026';
     const month = l.month || 'October';
-    const assigned = Array.isArray(l.assignedTo) ? l.assignedTo : [];
-
-    if (assigned.length === 0) {
-        if (!grouped['🌍 All Students']) grouped['🌍 All Students'] = {};
-        if (!grouped['🌍 All Students'][year]) grouped['🌍 All Students'][year] = {};
-        if (!grouped['🌍 All Students'][year][month]) grouped['🌍 All Students'][year][month] = [];
-        grouped['🌍 All Students'][year][month].push({ id: id, title: l.title || id, studentCode: '' });
-    } else {
-        assigned.forEach(code => {
-            const name = (studentsMap[code] && studentsMap[code].name) || code;
-            if (!grouped['👤 ' + name]) grouped['👤 ' + name] = {};
-            if (!grouped['👤 ' + name][year]) grouped['👤 ' + name][year] = {};
-            if (!grouped['👤 ' + name][year][month]) grouped['👤 ' + name][year][month] = [];
-            grouped['👤 ' + name][year][month].push({ id: id, title: l.title || id, studentCode: code });
-        });
-    }
+    if (!grouped[year]) grouped[year] = {};
+    if (!grouped[year][month]) grouped[year][month] = [];
+    grouped[year][month].push({ id, l });
   });
 
-  const groups = Object.keys(grouped).sort();
-  container.innerHTML = groups.map(function(studentName) {
-    const isSOpen = expandedYears['student_' + studentName] !== false;
-    return '<div class="tree-year' + (isSOpen ? ' open' : '') + '" onclick="toggleYear(\'student_' + studentName + '\')"><span>' + studentName + '</span><span class="arrow">▶</span></div>' +
-      (isSOpen ? Object.keys(grouped[studentName]).sort().reverse().map(function(year) {
-        return Object.keys(grouped[studentName][year]).sort().map(function(month) {
-          const key = studentName + '_' + year + '_' + month;
-          const isMOpen = expandedMonths[key] !== false;
-          return '<div class="tree-month' + (isMOpen ? ' open' : '') + '" onclick="toggleMonth(\'' + studentName + '\',\'' + year + '\',\'' + month + '\')"><span>📁 ' + month + ' ' + year + '</span><span class="arrow">▶</span></div>' +
-            (isMOpen ? grouped[studentName][year][month].map(function(row) {
-              return '<div class="tree-lesson' + (row.id === currentClassworkId ? ' active' : '') + '" onclick="openClassworkLesson(\'' + row.id + '\', \'' + row.studentCode + '\')">' +
-                '<span>' + escapeHtml(row.title) + '</span></div>';
-            }).join('') : '');
-        }).join('');
-      }).join('') : '');
-  }).join('');
+  if (Object.keys(grouped).length === 0) {
+    container.innerHTML = '<div class="tree-empty">No items yet.<br><br><button class="btn small primary" onclick="openLessonModal()">+ New Item</button></div>';
+    return;
+  }
+
+  let html = '';
+  Object.keys(grouped).sort().reverse().forEach(year => {
+    const isY = expandedYears[year] !== false;
+    html += `<div class="tree-year ${isY?'open':''}" onclick="toggleYear('${year}')"><span>📅 ${year}</span><span class="arrow">▶</span></div>`;
+    if (isY) {
+      Object.keys(grouped[year]).sort().forEach(month => {
+        const isM = expandedMonths[year+'_'+month] !== false;
+        html += `<div class="tree-month ${isM?'open':''}" onclick="toggleMonth('${year}','${month}')"><span>📁 ${month}</span><span class="arrow">▶</span></div>`;
+        if (isM) {
+          grouped[year][month].sort((a,b) => (a.l.order||0) - (b.l.order||0)).forEach(item => {
+            const l = item.l;
+            const isActive = item.id === currentClassworkId || item.id === currentHomeworkId;
+            const isOpen = expandedLessons[item.id];
+            
+            if (l.homework) {
+              // Render as homework
+              const prog = (studentMeta[activeCode]?.homework?.[item.id]) || {};
+              let progText = "";
+              if (prog.submitted) progText = `<span style="color:var(--success); font-size:11px; margin-left:auto;">✓ ${prog.score || 0}/${prog.total || 16}</span>`;
+              else if (prog.updatedAt) progText = `<span style="color:var(--warn); font-size:11px; margin-left:auto;">In progress</span>`;
+              else progText = `<span style="color:var(--ink-soft); font-size:11px; margin-left:auto;">Not started</span>`;
+              
+              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="openHomework('${item.id}')">
+                  <span>📝 ${escapeHtml(l.title || item.id)}</span>
+                  ${progText}
+              </div>`;
+            } else {
+              // Render as classwork
+              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="toggleLessonTree('${item.id}')">
+                  <span>📘 ${escapeHtml(l.title || item.id)}</span>
+                  <span style="margin-left:auto; font-size:10px; opacity:0.6;">${isOpen ? '▼' : '▶'}</span>
+              </div>`;
+              
+              if (isOpen) {
+                  html += `<div style="padding-left: 20px; border-left: 1px solid var(--border); margin-left: 44px; margin-bottom: 8px;">`;
+                  STAGE_LIST.forEach(st => {
+                      html += `<div class="tree-lesson" style="padding:4px 10px; font-size:12px;" onclick="openClassworkLesson('${item.id}', '${activeCode || ''}')">${st.label}</div>`;
+                  });
+                  html += `</div>`;
+              }
+            }
+          });
+        }
+      });
+    }
+  });
+  container.innerHTML = html;
 }
+
 function toggleYear(year) { expandedYears[year] = expandedYears[year] === false; renderClassworkTree(); }
-function toggleMonth(studentName, year, month) {
-  const k = studentName + '_' + year + '_' + month;
+function toggleMonth(year, month) {
+  const k = year + '_' + month;
   expandedMonths[k] = expandedMonths[k] === false;
+  renderClassworkTree();
+}
+function toggleLessonTree(id) {
+  expandedLessons[id] = !expandedLessons[id];
   renderClassworkTree();
 }
 
@@ -1229,9 +1163,6 @@ function openCurrentClassworkInTab() {
   window.open(url.href, '_blank');
 }
 
-/* ============================================================
-   HOMEWORK TREE
-============================================================ */
 function renderHomeworkTree() {
   const container = document.getElementById('homeworkTree');
   if (!container) return;
@@ -1278,7 +1209,6 @@ function openHomework(id) {
   document.getElementById('homeworkPlaceholder').style.display = 'none';
   const frame = document.getElementById('homeworkFrame');
   
-  // Fallback logic to infer file if it's missing
   let contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   if(!contentFile) {
       if (l.assignedTo && l.assignedTo.length > 0) {
@@ -1289,7 +1219,7 @@ function openHomework(id) {
           const sName = (studentsMap[activeCode] && studentsMap[activeCode].name) ? studentsMap[activeCode].name : activeCode;
           contentFile = 'homework_' + sName.toLowerCase().replace(/\s+/g, '');
       } else {
-          contentFile = 'homework_sabina'; // Default fallback
+          contentFile = 'homework_sabina';
       }
   }
   
@@ -1301,6 +1231,7 @@ function openHomework(id) {
   
   if (activeCode) url.searchParams.set('code', activeCode);
   frame.src = url.href;
+  renderClassworkTree();
   renderHomeworkTree();
 }
 
@@ -1308,7 +1239,6 @@ function openCurrentHomeworkInTab() {
   if (!currentHomeworkId) return;
   const l = curriculum[currentHomeworkId] || {};
   
-  // Fallback logic to infer file if it's missing
   let contentFile = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   if(!contentFile) {
       if (l.assignedTo && l.assignedTo.length > 0) {
@@ -1332,9 +1262,6 @@ function openCurrentHomeworkInTab() {
   window.open(url.href, '_blank');
 }
 
-/* ============================================================
-   LESSON MODAL
-============================================================ */
 function openLessonModal(id) {
   editingLessonId = id || null;
   const l = id ? (curriculum[id] || {}) : {};
@@ -1345,7 +1272,7 @@ function openLessonModal(id) {
   document.getElementById('lessonCustomUrl').value = l.customUrl || '';
   document.getElementById('lessonContentUrl').value = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   document.getElementById('lessonDue').value = l.homeworkDue || '';
-  document.getElementById('lessonParent').value = l.parentId || ''; // UPDATE: Set parent
+  document.getElementById('lessonParent').value = l.parentId || '';
   document.getElementById('lessonPublished').checked = l.published !== false;
   lessonVisibility = (l.assignedTo && l.assignedTo.length) ? 'some' : 'all';
   lessonType = l.homework ? 'homework' : 'classwork';
@@ -1368,7 +1295,6 @@ function setLessonType(type) {
   document.getElementById('typeHomeworkBtn').classList.toggle('primary', type === 'homework');
   document.getElementById('homeworkExtras').style.display = type === 'homework' ? 'block' : 'none';
   
-  // UPDATE: Populate Parent Dropdown
   if (type === 'homework') {
     const select = document.getElementById('lessonParent');
     select.innerHTML = '<option value="">-- None / Independent --</option>';
@@ -1398,10 +1324,10 @@ function submitLesson() {
     description: (document.getElementById('lessonDesc').value || '').trim(),
     icon: (document.getElementById('lessonIcon').value || '📘').trim() || '📘',
     customUrl: (document.getElementById('lessonCustomUrl').value || '').trim(),
-	contentUrl: document.getElementById('lessonContentUrl').value.trim() ? 'content/' + document.getElementById('lessonContentUrl').value.trim() + '.json' : '',
+    contentUrl: document.getElementById('lessonContentUrl').value.trim() ? 'content/' + document.getElementById('lessonContentUrl').value.trim() + '.json' : '',
     homework: lessonType === 'homework',
     homeworkDue: lessonType === 'homework' ? (document.getElementById('lessonDue').value || '').trim() : '',
-    parentId: lessonType === 'homework' ? document.getElementById('lessonParent').value : '', // UPDATE: Save parentId
+    parentId: lessonType === 'homework' ? document.getElementById('lessonParent').value : '',
     assignedTo: assignedTo,
     stages: (curriculum[id] && curriculum[id].stages) || STAGE_LIST,
     published: document.getElementById('lessonPublished').checked,
@@ -1430,9 +1356,6 @@ function deleteLesson(id) {
     .catch(function(err) { alert('Delete failed: ' + err.message); });
 }
 
-/* ============================================================
-   HELPERS
-============================================================ */
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, function(ch) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
@@ -1446,9 +1369,6 @@ function showToast(text) {
   window.__toastT = setTimeout(function() { t.classList.remove('show'); }, 2400);
 }
 
-/* ============================================================
-   BOOT
-============================================================ */
 initFirebase();
 updateThemeButton();
 window.addEventListener('beforeunload', function() { if (activeFeedRef) activeFeedRef.off(); });

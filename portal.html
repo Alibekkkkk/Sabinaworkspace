@@ -9,6 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
+/* CSS REMAINS THE SAME */
 :root{--bg:#0f1420;--panel:#1a2130;--panel-2:#232b3d;--ink:#e8ecf4;--ink-soft:#8b96ab;--primary:#4a7fc8;--accent:#ff8a5b;--accent-dark:#d94a15;--success:#4caf7d;--border:#2a3346;--bg-light:#f4f1ea;--panel-light:#fff;--ink-light:#2c3e50;--ink-soft-light:#6c757d;--border-light:#e0dbd0}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;transition:background .3s,color .3s}
@@ -210,19 +211,23 @@ function switchTab(which){
   document.getElementById('alertBox').className = 'alert';
 }
 
-function doLogin(){
+async function doLogin(){
   const code = (document.getElementById('loginCode').value || '').toUpperCase().trim().replace(/[^A-Z0-9]/g, '');
   if (!code) { showAlert('Please enter your student code.', 'error'); return; }
-  db.ref('students/' + code).once('value').then(snap => {
+  
+  db.ref('students/' + code).once('value').then(async (snap) => {
     const data = snap.val();
     if (!data) {
       showAlert('Code "' + code + '" not found. Check the spelling or register a new account.', 'error');
       return;
     }
     
-    // UPDATE: Security check for Google-linked accounts
+    // Ensure we wait for Auth state to resolve
+    const currentUser = await new Promise((resolve) => {
+        const unsubscribe = firebase.auth().onAuthStateChanged(u => { unsubscribe(); resolve(u); });
+    });
+
     if (data.uid) {
-        const currentUser = firebase.auth().currentUser;
         if (!currentUser || currentUser.uid !== data.uid) {
             showAlert('This account is linked to a Google account. You must sign in with Google on this device first to access it.', 'error');
             return;
@@ -368,13 +373,13 @@ function renderLessons(){
     targetUrl.searchParams.set('code', state.currentCode);
     targetUrl.searchParams.set('lesson', lessonId);
     
-    // UPDATE: Add variant parameter for correct homework loading
+    // Pass variant for homework to ensure correct file is loaded
     if (lesson.contentUrl) {
         const contentFile = lesson.contentUrl.replace(/^content\//, '').replace(/\.json$/, '');
         targetUrl.searchParams.set('variant', contentFile);
     }
 
-    card = document.createElement('a');
+    let card = document.createElement('a');
     card.className = 'lesson-card';
     card.href = targetUrl.href;
     card.innerHTML =
