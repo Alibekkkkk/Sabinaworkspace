@@ -779,10 +779,9 @@ function initFirebase(){
            document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Invalid code</h2><p style="color:var(--ink-soft)">This student code does not exist.</p></div>';
            return;
         }
-        // If there is a UID linked AND they are logged into a Google account, it must match.
-        // If they are NOT logged in (user == null), allow access because they logged in via code.
-        if (s.uid && user && s.uid !== user.uid) {
-           document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">Your Google account does not match this student code.</p></div>';
+        // UPDATE: Strict Google Auth check
+        if (s.uid && (!user || s.uid !== user.uid)) {
+           document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">This student account is linked to a Google account. Please sign in via Google.</p></div>';
            return;
         }
         document.getElementById('workspaceName').textContent = s.name;
@@ -1746,7 +1745,10 @@ function renderSidebar(){
         if(isActive){
           const studentCode=getSessionCode();
           if (studentCode) {
-            const assignedHW=Object.keys(curriculumCache||{}).map(id=>curriculumCache[id]).filter(it=>{ return it && it.homework && it.published!==false && Array.isArray(it.assignedTo) && it.assignedTo.includes(studentCode); });
+            // UPDATE: Filter homework to only show those linked to this classwork
+            const assignedHW=Object.keys(curriculumCache||{}).map(id=>curriculumCache[id]).filter(it=>{ 
+                return it && it.homework && it.published!==false && Array.isArray(it.assignedTo) && it.assignedTo.includes(studentCode) && it.parentId === lesson.id; 
+            });
             if(assignedHW.length){
               const hwList=document.createElement('div');hwList.className='homework-sub-list'; hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){ const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it}); const url=new URL(it.customUrl||'homework.html',window.location.href); url.searchParams.set('lesson',id); if(studentCode)url.searchParams.set('code',studentCode); const contentFile = (it.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, ''); if (contentFile) url.searchParams.set('variant', contentFile); return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>'; }).join('');
               hwList.addEventListener('click',function(e){e.stopPropagation()}); list.appendChild(hwList);

@@ -219,6 +219,16 @@ function doLogin(){
       showAlert('Code "' + code + '" not found. Check the spelling or register a new account.', 'error');
       return;
     }
+    
+    // UPDATE: Security check for Google-linked accounts
+    if (data.uid) {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser || currentUser.uid !== data.uid) {
+            showAlert('This account is linked to a Google account. You must sign in with Google on this device first to access it.', 'error');
+            return;
+        }
+    }
+
     state.currentCode = code;
     state.currentName = data.name || 'Student';
     localStorage.setItem('nd_student_code', code);
@@ -354,11 +364,18 @@ function renderLessons(){
     const isPrivate = assignedTo.length > 0;
 
     const targetFile = lesson.customUrl ? lesson.customUrl : 'lesson.html';
-    const card = document.createElement('a');
-    card.className = 'lesson-card';
     const targetUrl = new URL(targetFile, window.location.href);
     targetUrl.searchParams.set('code', state.currentCode);
     targetUrl.searchParams.set('lesson', lessonId);
+    
+    // UPDATE: Add variant parameter for correct homework loading
+    if (lesson.contentUrl) {
+        const contentFile = lesson.contentUrl.replace(/^content\//, '').replace(/\.json$/, '');
+        targetUrl.searchParams.set('variant', contentFile);
+    }
+
+    card = document.createElement('a');
+    card.className = 'lesson-card';
     card.href = targetUrl.href;
     card.innerHTML =
       (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +

@@ -441,10 +441,16 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <label for="lessonContentUrl">Content file (e.g. sabina, gaziz, homework_george)</label>
     <input type="text" id="lessonContentUrl" placeholder="e.g. sabina" style="text-transform:lowercase;">
     
+    <!-- ADDED PARENT DROPDOWN -->
     <div id="homeworkExtras" style="display:none;">
       <label for="lessonDue">Homework due (date or note)</label>
       <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">
+      
+      <label for="lessonParent">Belongs to Classwork</label>
+      <select id="lessonParent"></select>
     </div>
+    <!-- END ADDED PARENT DROPDOWN -->
+
     <label>Visibility</label>
     <div style="display:flex;gap:8px;margin-bottom:14px;">
       <button type="button" class="btn" id="visAllBtn" onclick="setLessonVisibility('all')" style="flex:1;">👥 All</button>
@@ -1339,6 +1345,7 @@ function openLessonModal(id) {
   document.getElementById('lessonCustomUrl').value = l.customUrl || '';
   document.getElementById('lessonContentUrl').value = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   document.getElementById('lessonDue').value = l.homeworkDue || '';
+  document.getElementById('lessonParent').value = l.parentId || ''; // UPDATE: Set parent
   document.getElementById('lessonPublished').checked = l.published !== false;
   lessonVisibility = (l.assignedTo && l.assignedTo.length) ? 'some' : 'all';
   lessonType = l.homework ? 'homework' : 'classwork';
@@ -1360,6 +1367,17 @@ function setLessonType(type) {
   document.getElementById('typeClassworkBtn').classList.toggle('primary', type === 'classwork');
   document.getElementById('typeHomeworkBtn').classList.toggle('primary', type === 'homework');
   document.getElementById('homeworkExtras').style.display = type === 'homework' ? 'block' : 'none';
+  
+  // UPDATE: Populate Parent Dropdown
+  if (type === 'homework') {
+    const select = document.getElementById('lessonParent');
+    select.innerHTML = '<option value="">-- None / Independent --</option>';
+    Object.keys(curriculum).forEach(id => {
+      if (!curriculum[id].homework) {
+        select.innerHTML += `<option value="${id}">${escapeHtml(curriculum[id].title || id)}</option>`;
+      }
+    });
+  }
 }
 function renderStudentPickList(selected) {
   const list = document.getElementById('studentPickList');
@@ -1383,6 +1401,7 @@ function submitLesson() {
 	contentUrl: document.getElementById('lessonContentUrl').value.trim() ? 'content/' + document.getElementById('lessonContentUrl').value.trim() + '.json' : '',
     homework: lessonType === 'homework',
     homeworkDue: lessonType === 'homework' ? (document.getElementById('lessonDue').value || '').trim() : '',
+    parentId: lessonType === 'homework' ? document.getElementById('lessonParent').value : '', // UPDATE: Save parentId
     assignedTo: assignedTo,
     stages: (curriculum[id] && curriculum[id].stages) || STAGE_LIST,
     published: document.getElementById('lessonPublished').checked,

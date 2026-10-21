@@ -382,7 +382,18 @@ function submitAll(){
   if(submitted)return; const total=lesson.questions.length; if(Object.keys(answers).length<total){ if(!confirm('Some questions are still blank. Submit anyway?'))return; }
   let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[idx]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer])) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
   submitted=true;
-  if(sessionRef&&!teacherMode){ sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, score:score, total:total, submitted:true, completed:true, updatedAt:Date.now() }).catch(function(e){console.error(e)}); }
+  
+  // UPDATE: Added history logging
+  if(sessionRef&&!teacherMode){ 
+      sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, score:score, total:total, submitted:true, completed:true, updatedAt:Date.now() }).catch(function(e){console.error(e)}); 
+      sessionRef.child('history').push({
+          actor: 'student',
+          type: 'homework_submit',
+          detail: 'Submitted homework: ' + (lesson.title || homeworkId),
+          ts: Date.now()
+      }).catch(function(e){console.error(e)});
+  }
+  
   renderQuestions(); const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
   banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+ '<div class="big">'+score+' / '+total+'</div>'+ '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+ '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>';
@@ -426,8 +437,9 @@ function initFirebase(){
            document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Invalid code</h2><p>This student code does not exist.</p></div>';
            return;
         }
-        if (s.uid && user && s.uid !== user.uid) {
-           document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>Your Google account does not match this student code.</p></div>';
+        // UPDATE: Strict Google Auth check
+        if (s.uid && (!user || s.uid !== user.uid)) {
+           document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access denied</h2><p>This student account is linked to a Google account. Please sign in via Google.</p></div>';
            return;
         }
         startHomework();
