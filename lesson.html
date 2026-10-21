@@ -1397,6 +1397,11 @@ function renderStage4(){
         formula = 'Subject + V1 (or V-s / V-es for he, she, it)';
         listHTML = '<li>Use for facts, habits, and routines.</li><li>Add -s or -es for he/she/it.</li>';
         lead = 'Complete each sentence using the Simple Present.';
+    } else if (activeContentName.includes('araylim_3')) {
+        title = '🚀 Completing Sentence — Future I (Plans & Decisions)';
+        formula = 'Present Continuous · Going to · Will';
+        listHTML = '<li><b>Present Continuous</b>: fixed arrangements (I am meeting him tomorrow).</li><li><b>Going to</b>: plans/intentions (I am going to start a business).</li><li><b>Will</b>: spontaneous decisions/promises (I will help you).</li>';
+        lead = 'Complete each sentence using the correct future form. Look for time expressions and context clues.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Present Tenses';
         formula = 'Present Simple vs Present Continuous';
@@ -1441,6 +1446,11 @@ function renderStage5(){
         formula = 'Subject + am/is/are + V-ing';
         listHTML = '<li>Use for actions happening right now.</li><li>Use for temporary situations.</li>';
         lead = 'Complete each sentence using the Present Continuous.';
+    } else if (activeContentName.includes('araylim_3')) {
+        title = '⏳ Completing Sentence — Future II (Continuous & Perfect)';
+        formula = 'Will be doing · Will have done';
+        listHTML = '<li><b>Future Continuous</b>: in the middle of an action in the future (This time tomorrow, I will be working).</li><li><b>Future Perfect</b>: completed before a time in the future (By 2030, machines will have replaced many jobs).</li>';
+        lead = 'Complete each sentence using the Future Continuous or Future Perfect. Watch out for "by" and "this time tomorrow".';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '⏳ Completing Sentence — Past Tenses';
         formula = 'Past Simple vs Past Continuous';
@@ -1569,6 +1579,11 @@ function renderStage6(){
         formula = 'Subject + V2 (or did not + V1)';
         listHTML = '<li>Use for finished actions in the past.</li><li>Remember irregular verbs (e.g., go → went).</li>';
         lead = 'Build each sentence using the Simple Past.';
+    } else if (activeContentName.includes('araylim_3')) {
+        title = '🧩 Sentence Builder — Future Plans & Promises';
+        formula = 'Subject + (is/are going to / will) + verb';
+        listHTML = '<li>Build sentences about future plans, arrangements, and promises.</li>';
+        lead = 'Build each sentence.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧩 Sentence Builder — Present Tenses';
         formula = 'Subject + V1 / am/is/are + V-ing';
@@ -1612,6 +1627,11 @@ function renderStage7(){
         formula = 'Subject + was/were + V-ing';
         listHTML = '<li>Use for actions in progress in the past.</li><li>Often used with "when" or "while".</li>';
         lead = 'Build each sentence using the Past Continuous.';
+    } else if (activeContentName.includes('araylim_3')) {
+        title = '🧱 Sentence Builder — Time Clauses (When/If)';
+        formula = 'When/If + Present Simple, Future';
+        listHTML = '<li>Use present simple after when/if for future events. (e.g. When I finish, I will call you).</li>';
+        lead = 'Build each sentence paying attention to the when/if clause.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧱 Sentence Builder — Past Simple';
         formula = 'Subject + V2 (or did not + V1)';
@@ -1632,6 +1652,11 @@ function renderStage8(){
         formula = 'Subject + have/has + past participle (V3)';
         listHTML = '<li>Use for experiences (ever/never).</li><li>Use with "since", "for", "yet", "already", "just".</li>';
         lead = 'Complete each sentence using the Present Perfect.';
+    } else if (activeContentName.includes('araylim_3')) {
+        title = '🧭 Completing Sentence — Mixed Future Forms';
+        formula = 'Future I (plans) · Future II (predictions/deadlines) · Time clauses';
+        listHTML = '<li>Choose the correct future form based on the context.</li><li>Remember: after when/if, use present simple.</li>';
+        lead = 'Complete the sentences with the correct future tense.';
     } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
         title = '🧭 Completing Sentence — Mixed Tenses';
         formula = 'Present Simple/Continuous · Past Simple · Present Perfect';
@@ -1704,8 +1729,11 @@ function resetStageTeacher(stageId) {
   saveState(); renderSidebar(); renderStage(); updateHUD(); broadcastAction('teacher_reset_stage', 'Teacher manually reset Stage ' + stageId); if (typeof showToast === 'function') showToast('Stage ' + stageId + ' reset');
 }
 function renderSidebar(){
-  const list=document.getElementById('stageList');if(!list)return;list.innerHTML=''; const isAraylim1 = activeContentName.includes('araylim_1');
-  const customLabels = isAraylim1 ? [ 'Vocabulary', 'Word Match', 'Interactive Video & Questions', 'Simple Present', 'Present Continuous', 'Simple Past', 'Past Continuous', 'Present Perfect', 'Test Your Knowledge' ] : null;
+  const list=document.getElementById('stageList');if(!list)return;list.innerHTML=''; const isAraylim1 = activeContentName.includes('araylim_1'); const isAraylim3 = activeContentName.includes('araylim_3');
+  let customLabels = null;
+  if (isAraylim1) { customLabels = [ 'Vocabulary', 'Word Match', 'Interactive Video & Questions', 'Simple Present', 'Present Continuous', 'Simple Past', 'Past Continuous', 'Present Perfect', 'Test Your Knowledge' ]; }
+  else if (isAraylim3) { customLabels = [ 'Vocabulary', 'Word Match', 'Interactive Video & Questions', 'Future I', 'Future II', 'Future Sentences', 'Time Clauses', 'Mixed Future', 'Test Your Knowledge' ]; }
+
   CURRICULUM.forEach(function(yearObj){
     const isY=expandedYears.includes(yearObj.year); const yearEl=document.createElement('div');yearEl.className='year-item'+(isY?' open':'');
     yearEl.innerHTML='<span>📅 '+yearObj.year+'</span><span class="arrow">▶</span>'; yearEl.onclick=function(){if(isY)expandedYears=expandedYears.filter(function(y){return y!==yearObj.year});else expandedYears.push(yearObj.year);renderSidebar()}; list.appendChild(yearEl);
