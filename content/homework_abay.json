@@ -1,85 +1,147 @@
 {
-  "title": "Abay · Critical Thinking — Homework",
-  "headline": "How to Practice Effectively",
-  "intro": "Watch the TED-Ed video and answer the IELTS-style questions below. The transcript under the video acts as a safety net if the speaker goes too fast, but try to answer from listening first.",
-  "hero": "🎬 → 🧠 → ✅",
-  "sub": "Critical Thinking & Study Skills · Reading, Listening & Grammar",
-  "eyebrow": "Topic · Study Skills · Homework",
+  "title": "Abay · Gaming & Esports — Homework",
+  "headline": "The Psychology of Esports",
+  "intro": "Watch the video and read the text about the mental demands of professional gaming. Then answer the questions.",
+  "hero": "🎮 → 🧠 → 🏆",
+  "sub": "Esports & Cognitive Skills · Homework",
+  "eyebrow": "Topic · Gaming & Esports · Homework",
   "reading": {
-    "title": "How to Practice Effectively",
-    "subtitle": "TED-Ed · Annie Bosler & Don Greene",
-    "video": "https://www.youtube-nocookie.com/embed/f2O6mQkFiiw",
-    "videoTitle": "How to practice effectively...for just about anything",
+    "title": "The Psychology of Esports",
+    "subtitle": "More than just playing games",
+    "video": "https://www.youtube-nocookie.com/embed/r4v1K9Z0N-s",
+    "videoTitle": "The Psychology of Esports",
     "paragraphs": [
-      { "label": "A.", "text": "Watch the video once without stopping. Then watch again and complete the questions on the right. Notice how the speaker makes a claim and supports it with evidence — the same pattern we studied in class." },
-      { "label": "B.", "text": "While you watch, pay attention to the speaker's argument. Does she justify her opinion? Does any evidence contradict what she says? This kind of coherent thinking is exactly what we practised in class." },
-      { "label": "C.", "text": "After watching, try to evaluate her argument. What does she imply by the end? Which points are relevant to your own study habits? Then answer the questions on the right." },
-      { "label": "D.", "text": "The video explains that our brains grow when we practice correctly. When you practice a skill, the myelin in your brain wraps around the nerve fibers, helping electrical signals move faster. This is why deliberate, focused practice leads to better results than just repeating things mindlessly." },
-      { "label": "E.", "text": "Finally, remember that sleep and breaks are essential. The brain needs time to consolidate what you have learned. If you want to improve your English, do not just study for hours; study smart, take breaks, and get enough rest." }
+      { "label": "A.", "text": "Esports (competitive video gaming) has grown into a massive global industry. Many adults still view gaming as a simple <b>distraction</b>, but professional esports players treat it as a serious career. These athletes train for hours every day to <b>stimulate</b> their brains and improve their <b>cognitive</b> abilities." },
+      { "label": "B.", "text": "To win tournaments, players cannot just rely on luck. They need a deep <b>strategy</b> and must <b>simulate</b> complex real-world problems in their minds. The <b>immersive</b> environments of modern games require players to <b>focus</b> intensely for long periods, processing huge amounts of <b>virtual</b> information." },
+      { "label": "C.", "text": "Unlike solo gaming, esports is all about <b>teamwork</b>. Players must <b>collaborate</b> perfectly with their teammates to succeed. They communicate constantly to <b>optimize</b> their <b>reaction</b> times and adjust their plans under extreme pressure. This level of <b>collaboration</b> builds real-world social skills." },
+      { "label": "D.", "text": "However, the intense training can be highly <b>addictive</b>. The constant need to win can lead to burnout or poor health. Therefore, even professional gamers must find a healthy <b>balance</b> between training, physical exercise, and rest. The <b>benefits</b> of esports are huge, but only if managed correctly." }
     ]
   },
   "vocab": [
-    { "en": "claim", "emoji": "🗣️", "meanings": [
-      { "context": "a statement that may be true", "pos": "noun", "displayEn": "claim", "ru": "утверждение", "ex": "The speaker makes a strong <b>claim</b> about practice." },
-      { "context": "to say something is true", "pos": "verb", "displayEn": "to claim", "ru": "утверждать", "ex": "She <b>claims</b> that focused practice works better." }
+    { "en": "cognitive", "emoji": "🧠", "meanings": [
+      { "context": "adjective: related to thinking and understanding", "pos": "adjective", "displayEn": "cognitive", "ru": "познавательный", "ex": "Video games can improve <b>cognitive</b> abilities like memory." }
     ]},
-    { "en": "evidence", "emoji": "📊", "meanings": [
-      { "context": "facts that show something is true", "pos": "noun", "displayEn": "evidence", "ru": "доказательство", "ex": "The scientist used <b>evidence</b> from brain research." },
-      { "context": "clear and obvious", "pos": "adjective", "displayEn": "evident", "ru": "очевидный", "ex": "It is <b>evident</b> that practice works." }
+    { "en": "to simulate", "emoji": "🎮", "meanings": [
+      { "context": "verb: to create a realistic situation", "pos": "verb", "displayEn": "to simulate", "ru": "симулировать, имитировать", "ex": "The game <b>simulates</b> real-world problems." },
+      { "context": "noun: a realistic imitation", "pos": "noun", "displayEn": "simulation", "ru": "симуляция", "ex": "Flight <b>simulations</b> help pilots train safely." }
     ]},
-    { "en": "to justify", "emoji": "⚖️", "meanings": [
-      { "context": "to give a good reason for something", "pos": "verb", "displayEn": "to justify", "ru": "обосновывать", "ex": "Can you <b>justify</b> your opinion?" },
-      { "context": "a good reason", "pos": "noun", "displayEn": "justification", "ru": "обоснование", "ex": "There is no <b>justification</b> for that." }
+    { "en": "immersive", "emoji": "🌌", "meanings": [
+      { "context": "adjective: completely surrounding you so you feel involved", "pos": "adjective", "displayEn": "immersive", "ru": "захватывающий, погружающий", "ex": "The <b>immersive</b> world of the game keeps players highly engaged." }
     ]},
-    { "en": "to contradict", "emoji": "🔄", "meanings": [
-      { "context": "to say the opposite of something", "pos": "verb", "displayEn": "to contradict", "ru": "противоречить", "ex": "The new evidence <b>contradicts</b> his theory." },
-      { "context": "a state of being opposite", "pos": "noun", "displayEn": "contradiction", "ru": "противоречие", "ex": "It is a direct <b>contradiction</b>." }
+    { "en": "strategy", "emoji": "♟️", "meanings": [
+      { "context": "noun: a plan to achieve a goal", "pos": "noun", "displayEn": "strategy", "ru": "стратегия", "ex": "Winning the esports match requires a good <b>strategy</b>." }
     ]},
-    { "en": "to evaluate", "emoji": "🧪", "meanings": [
-      { "context": "to judge the quality or truth", "pos": "verb", "displayEn": "to evaluate", "ru": "оценивать", "ex": "Try to <b>evaluate</b> the argument fairly." },
-      { "context": "the act of judging", "pos": "noun", "displayEn": "evaluation", "ru": "оценка", "ex": "The <b>evaluation</b> was positive." }
+    { "en": "to collaborate", "emoji": "🤝", "meanings": [
+      { "context": "verb: to work together with others", "pos": "verb", "displayEn": "to collaborate", "ru": "сотрудничать", "ex": "Players must <b>collaborate</b> with their teammates." },
+      { "context": "noun: the act of working together", "pos": "noun", "displayEn": "collaboration", "ru": "сотрудничество", "ex": "Team <b>collaboration</b> is essential for success." }
     ]},
-    { "en": "to imply", "emoji": "🔍", "meanings": [
-      { "context": "to suggest without saying directly", "pos": "verb", "displayEn": "to imply", "ru": "подразумевать", "ex": "What does the video <b>imply</b> about rest?" },
-      { "context": "a hidden meaning", "pos": "noun", "displayEn": "implication", "ru": "последствие / скрытый смысл", "ex": "Consider the <b>implications</b>." }
+    { "en": "to optimize", "emoji": "📈", "meanings": [
+      { "context": "verb: to make something as good as possible", "pos": "verb", "displayEn": "to optimize", "ru": "оптимизировать", "ex": "You need to <b>optimize</b> your reaction times to win." }
     ]},
-    { "en": "relevant", "emoji": "🎯", "meanings": [
-      { "context": "connected to the topic", "pos": "adjective", "displayEn": "relevant", "ru": "уместный", "ex": "Keep your answer <b>relevant</b> to the question." },
-      { "context": "the state of being connected", "pos": "noun", "displayEn": "relevance", "ru": "актуальность", "ex": "I question the <b>relevance</b>." }
+    { "en": "to stimulate", "emoji": "⚡", "meanings": [
+      { "context": "verb: to make something more active", "pos": "verb", "displayEn": "to stimulate", "ru": "стимулировать", "ex": "Gaming can <b>stimulate</b> the brain in positive ways." },
+      { "context": "noun: the act of making active", "pos": "noun", "displayEn": "stimulation", "ru": "стимуляция", "ex": "Mental <b>stimulation</b> is important for brain health." }
     ]},
-    { "en": "coherent", "emoji": "📝", "meanings": [
-      { "context": "clear and logical", "pos": "adjective", "displayEn": "coherent", "ru": "связный", "ex": "Write a <b>coherent</b> paragraph with a clear argument." },
-      { "context": "the quality of being logical", "pos": "noun", "displayEn": "coherence", "ru": "связность", "ex": "The <b>coherence</b> of the essay was good." }
+    { "en": "distraction", "emoji": "📵", "meanings": [
+      { "context": "noun: something that takes your attention away", "pos": "noun", "displayEn": "distraction", "ru": "отвлечение", "ex": "Too much gaming can be a <b>distraction</b> from schoolwork." },
+      { "context": "verb: to take attention away", "pos": "verb", "displayEn": "to distract", "ru": "отвлекать", "ex": "Do not let your phone <b>distract</b> you." }
     ]},
-    { "en": "to consolidate", "emoji": "🔗", "meanings": [
-      { "context": "to make stronger or combine", "pos": "verb", "displayEn": "to consolidate", "ru": "закреплять, объединять", "ex": "Sleep helps <b>consolidate</b> memory." },
-      { "context": "the act of making stronger", "pos": "noun", "displayEn": "consolidation", "ru": "закрепление", "ex": "Memory <b>consolidation</b> happens during sleep." }
+    { "en": "virtual", "emoji": "🕶️", "meanings": [
+      { "context": "adjective: created by computer technology", "pos": "adjective", "displayEn": "virtual", "ru": "виртуальный", "ex": "<b>Virtual</b> environments offer many cognitive benefits." }
     ]},
-    { "en": "deliberate", "emoji": "🎯", "meanings": [
-      { "context": "done on purpose, careful", "pos": "adjective", "displayEn": "deliberate", "ru": "намеренный, осознанный", "ex": "She made a <b>deliberate</b> effort to improve." },
-      { "context": "on purpose", "pos": "adverb", "displayEn": "deliberately", "ru": "намеренно", "ex": "He <b>deliberately</b> ignored the rules." }
+    { "en": "to focus", "emoji": "🎯", "meanings": [
+      { "context": "verb: to give all your attention to something", "pos": "verb", "displayEn": "to focus", "ru": "сосредотачиваться", "ex": "Players need to <b>focus</b> intensely on the screen." },
+      { "context": "noun: the center of attention", "pos": "noun", "displayEn": "focus", "ru": "фокус, концентрация", "ex": "He lost his <b>focus</b> during the game." }
     ]},
-    { "en": "to focus", "emoji": "🔍", "meanings": [
-      { "context": "to give all your attention", "pos": "verb", "displayEn": "to focus", "ru": "сосредотачиваться", "ex": "You must <b>focus</b> on the target." },
-      { "context": "the center of attention", "pos": "noun", "displayEn": "focus", "ru": "фокус, центр внимания", "ex": "The main <b>focus</b> is on grammar." }
+    { "en": "benefit", "emoji": "👍", "meanings": [
+      { "context": "noun: a good or helpful result", "pos": "noun", "displayEn": "benefit", "ru": "польза, преимущество", "ex": "One <b>benefit</b> of gaming is improved problem-solving." },
+      { "context": "verb: to gain an advantage", "pos": "verb", "displayEn": "to benefit", "ru": "извлекать пользу", "ex": "Players <b>benefit</b> from quick decision-making." }
+    ]},
+    { "en": "balance", "emoji": "⚖️", "meanings": [
+      { "context": "noun: a state where things are equal or steady", "pos": "noun", "displayEn": "balance", "ru": "баланс, равновесие", "ex": "Finding a <b>balance</b> between gaming and studying is key." },
+      { "context": "verb: to keep steady", "pos": "verb", "displayEn": "to balance", "ru": "балансировать", "ex": "It is hard to <b>balance</b> screen time and homework." }
+    ]},
+    { "en": "addictive", "emoji": "🔗", "meanings": [
+      { "context": "adjective: difficult to stop doing", "pos": "adjective", "displayEn": "addictive", "ru": "вызывающий привыкание", "ex": "Video games are designed to be highly <b>addictive</b>." },
+      { "context": "noun: the state of being addicted", "pos": "noun", "displayEn": "addiction", "ru": "зависимость", "ex": "Gaming <b>addiction</b> can affect your health." }
+    ]},
+    { "en": "esports", "emoji": "🏆", "meanings": [
+      { "context": "noun: competitive video gaming", "pos": "noun", "displayEn": "esports", "ru": "киберспорт", "ex": "Professional <b>esports</b> players train for hours every day." }
+    ]},
+    { "en": "reaction", "emoji": "⚡", "meanings": [
+      { "context": "noun: a response to something", "pos": "noun", "displayEn": "reaction", "ru": "реакция", "ex": "Gamers need incredibly fast <b>reaction</b> times." }
+    ]},
+    { "en": "teamwork", "emoji": "👥", "meanings": [
+      { "context": "noun: working together effectively as a group", "pos": "noun", "displayEn": "teamwork", "ru": "командная работа", "ex": "Multiplayer games teach valuable <b>teamwork</b> skills." }
     ]}
   ],
   "questions": [
-    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Effective practice is not just repetition; it must be ______.", "answers": ["focused", "deliberate", "focused and deliberate"] },
-    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] You should practice at the edge of your ______.", "answers": ["ability", "competence"] },
-    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Focused practice is often called ______ practice.", "answers": ["deliberate"] },
-    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] The speaker says you should take short ______ during practice.", "answers": ["breaks", "rests"] },
-    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Sleep helps the brain ______ what you have learned.", "answers": ["store", "consolidate", "save"] },
-    { "type": "complete", "prompt": "[Part 1 · NO MORE THAN TWO WORDS] Making ______ is a normal part of effective learning.", "answers": ["mistakes", "errors"] },
-    { "type": "mcq", "prompt": "[Part 2] According to the video, what is the most important feature of effective practice?", "options": ["Doing it for many hours", "Focusing on a specific goal", "Repeating the same thing every day"], "correct": "Focusing on a specific goal" },
-    { "type": "mcq", "prompt": "[Part 2] The speaker recommends practising…", "options": ["at a level slightly harder than you can do", "at a level much easier than you can do", "only at the level you already know"], "correct": "at a level slightly harder than you can do" },
-    { "type": "mcq", "prompt": "[Part 2] What role does sleep play in learning?", "options": ["It helps the brain store what you practised", "It replaces the need for practice", "It makes practice less important"], "correct": "It helps the brain store what you practised" },
-    { "type": "tfng", "prompt": "The video says that repeating the same action many times is the most effective way to improve.", "answer": "False", "exp": "The video distinguishes focused, deliberate practice from simple repetition." },
-    { "type": "tfng", "prompt": "Deliberate practice means focusing on a specific goal.", "answer": "True", "exp": "Deliberate practice is focused on a clear target." },
-    { "type": "short", "prompt": "Which two things does the speaker say help consolidate learning?", "answers": ["sleep and breaks", "breaks and sleep", "sleep, breaks"], "exp": "Sleep and short breaks both help memory consolidation." },
-    { "type": "complete", "prompt": "[Gerund] The video suggests ______ (practice) at the edge of your ability.", "answers": ["practising", "practicing"] },
-    { "type": "complete", "prompt": "[Modal] Sleep ______ (could / be) the most underrated part of learning.", "answers": ["could be"] },
-    { "type": "long", "prompt": "In your own words, describe ONE tip from the video you plan to use in your own study routine. Use the words 'focus', 'practice', and at least one gerund.", "keywordGroups": [["focus", "concentrate"], ["practice", "practise"], ["tip", "advice", "idea"], ["routine", "study", "habit"]], "minWords": 15, "minGroups": 2, "sample": "One tip I will use is to focus on a specific goal during practice, instead of just repeating things. I will start each study session by writing a clear question, then practice answering it in short focused bursts with breaks in between.", "exp": "Key ideas: focused practice, specific goal, personal plan." },
-    { "type": "long", "prompt": "Do you agree with the video that deliberate practice is more effective than simply repeating something many times? Why or why not?", "keywordGroups": [["agree", "disagree", "opinion"], ["deliberate", "focused", "specific"], ["repetition", "repeat", "many times"], ["because", "reason", "since"], ["effective", "improve", "better"]], "minWords": 20, "minGroups": 3, "sample": "I strongly agree that deliberate practice is more effective than simple repetition. When I repeat something without focus, I often just repeat my own mistakes. When I practice deliberately, I aim at a specific weakness, which makes the improvement much faster.", "exp": "Key ideas: opinion stated clearly, comparison of the two methods, supported with a reason." }
+    { 
+      "type": "short", 
+      "prompt": "What do professional esports players train every day to stimulate?", 
+      "answers": ["brains", "their brains", "brain"], 
+      "exp": "Paragraph A says they train to stimulate their brains." 
+    },
+    { 
+      "type": "short", 
+      "prompt": "What do players need to optimize to win?", 
+      "answers": ["reaction times", "reaction time", "reactions"], 
+      "exp": "Paragraph C says they communicate to optimize their reaction times." 
+    },
+    { 
+      "type": "tfng", 
+      "prompt": "Esports is exactly the same as playing video games alone at home.", 
+      "answer": "False", 
+      "exp": "Paragraph C says: 'Unlike solo gaming, esports is all about teamwork.'" 
+    },
+    { 
+      "type": "tfng", 
+      "prompt": "The text says that esports cannot be addictive.", 
+      "answer": "False", 
+      "exp": "Paragraph D states that the intense training can be highly addictive." 
+    },
+    { 
+      "type": "mcq", 
+      "prompt": "What is a major difference between esports and casual gaming mentioned in the text?", 
+      "options": ["Esports requires teamwork and collaboration", "Casual gaming is much harder", "Esports players never get tired"], 
+      "correct": "Esports requires teamwork and collaboration", 
+      "exp": "Paragraph C emphasizes that esports is all about teamwork and collaboration." 
+    },
+    { 
+      "type": "complete", 
+      "prompt": "Players must find a healthy ______ between training, exercise, and rest.", 
+      "answers": ["balance"], 
+      "exp": "Paragraph D says they must find a healthy balance." 
+    },
+    { 
+      "type": "complete", 
+      "prompt": "Modern games require players to ______ intensely for long periods.", 
+      "answers": ["focus"], 
+      "exp": "Paragraph B says they require players to focus intensely." 
+    },
+    { 
+      "type": "short", 
+      "prompt": "What real-world things do players simulate in their minds?", 
+      "answers": ["complex problems", "problems", "complex real-world problems", "real-world problems"], 
+      "exp": "Paragraph B says they simulate complex real-world problems." 
+    },
+    { 
+      "type": "long", 
+      "prompt": "In your own words, explain why teamwork is so important in esports.", 
+      "keywordGroups": [["collaborate", "work together", "teamwork"], ["communicate", "talk", "plan"], ["strategy", "win", "success"], ["reaction", "optimize"]], 
+      "minWords": 10, 
+      "minGroups": 2, 
+      "sample": "Teamwork is essential because players must collaborate and communicate constantly to execute a strategy, optimize their reaction times, and win the game.", 
+      "exp": "Key ideas: collaboration, communication, strategy, winning." 
+    },
+    { 
+      "type": "long", 
+      "prompt": "Do you agree that esports should be considered a real sport? Why or why not?", 
+      "keywordGroups": [["agree", "disagree", "opinion"], ["cognitive", "brain", "mental", "strategy"], ["training", "practice", "teamwork"], ["athlete", "sport"]], 
+      "minWords": 15, 
+      "minGroups": 2, 
+      "sample": "I agree that esports is a real sport because it requires intense mental training, cognitive strategy, and a high level of teamwork, just like physical sports.", 
+      "exp": "Key ideas: opinion stated, cognitive demands, training, teamwork." 
+    }
   ]
 }
