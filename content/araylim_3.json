@@ -1,0 +1,305 @@
+{
+  "vocab": [
+    { "en": "artificial intelligence", "emoji": "🧠", "meanings": [
+      { "context": "the ability of computers to think and learn", "pos": "noun", "displayEn": "artificial intelligence", "ru": "искусственный интеллект", "ex": "<b>Artificial intelligence</b> is changing the way we work." }
+    ]},
+    { "en": "algorithm", "emoji": "📊", "meanings": [
+      { "context": "a set of rules for solving a problem", "pos": "noun", "displayEn": "algorithm", "ru": "алгоритм", "ex": "The social media <b>algorithm</b> decides what you see." }
+    ]},
+    { "en": "automation", "emoji": "⚙️", "meanings": [
+      { "context": "the use of machines to do work", "pos": "noun", "displayEn": "automation", "ru": "автоматизация", "ex": "Factory <b>automation</b> has increased production." },
+      { "context": "to make something work by machine", "pos": "verb", "displayEn": "to automate", "ru": "автоматизировать", "ex": "They plan to <b>automate</b> the entire process." }
+    ]},
+    { "en": "breakthrough", "emoji": "🚀", "meanings": [
+      { "context": "an important discovery or development", "pos": "noun", "displayEn": "breakthrough", "ru": "прорыв, достижение", "ex": "Scientists have made a huge <b>breakthrough</b> in medicine." }
+    ]},
+    { "en": "ethical", "emoji": "⚖️", "meanings": [
+      { "context": "relating to moral principles", "pos": "adjective", "displayEn": "ethical", "ru": "этичный, моральный", "ex": "We must consider the <b>ethical</b> effects of AI." }
+    ]},
+    { "en": "innovation", "emoji": "💡", "meanings": [
+      { "context": "a new idea or method", "pos": "noun", "displayEn": "innovation", "ru": "инновация", "ex": "Technological <b>innovation</b> is growing rapidly." }
+    ]},
+    { "en": "to replace", "emoji": "🔄", "meanings": [
+      { "context": "to take the place of something or someone", "pos": "verb", "displayEn": "to replace", "ru": "заменять", "ex": "Robots will <b>replace</b> humans in dangerous jobs." }
+    ]},
+    { "en": "workforce", "emoji": "👥", "meanings": [
+      { "context": "all the people working in a company or country", "pos": "noun", "displayEn": "workforce", "ru": "рабочая сила", "ex": "The <b>workforce</b> needs to learn new skills." }
+    ]},
+    { "en": "to predict", "emoji": "🔮", "meanings": [
+      { "context": "to say what will happen in the future", "pos": "verb", "displayEn": "to predict", "ru": "предсказывать", "ex": "It is hard to <b>predict</b> how AI will develop." },
+      { "context": "a statement about the future", "pos": "noun", "displayEn": "prediction", "ru": "предсказание", "ex": "His <b>prediction</b> came true." }
+    ]},
+    { "en": "to adapt", "emoji": "🦎", "meanings": [
+      { "context": "to change to fit a new situation", "pos": "verb", "displayEn": "to adapt", "ru": "адаптироваться", "ex": "Humans must <b>adapt</b> to new technologies." }
+    ]}
+  ],
+  "matchData": [
+    { "word": "artificial intelligence", "meaning": "the ability of computers to think and learn" },
+    { "word": "algorithm", "meaning": "a set of rules for solving a problem" },
+    { "word": "automation", "meaning": "the use of machines to do work" },
+    { "word": "breakthrough", "meaning": "an important discovery or development" },
+    { "word": "ethical", "meaning": "relating to moral principles" },
+    { "word": "innovation", "meaning": "a new idea or method" },
+    { "word": "to replace", "meaning": "to take the place of something" },
+    { "word": "workforce", "meaning": "all the people working in a company" },
+    { "word": "to predict", "meaning": "to say what will happen in the future" },
+    { "word": "to adapt", "meaning": "to change to fit a new situation" }
+  ],
+  "readingHtml": "<h1>The Future of Artificial Intelligence</h1><div class=\"subtitle\">How AI will change our lives</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/a0_lo_GDcFw\" title=\"What is Artificial Intelligence?\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch the video to understand the basics of AI. Then read the text to practice your future tenses!</div><p><span class=\"para-label\">A.</span> <b>Artificial intelligence</b> is no longer science fiction. It is already part of our daily lives. Tech companies are investing billions into new <b>innovation</b>. Next year, they are going to launch even smarter <b>algorithms</b>. We are going to see cars that drive themselves and computers that can write essays. This is a huge <b>breakthrough</b> for humanity.</p><p><span class=\"para-label\">B.</span> However, this creates fear. Many people worry that <b>automation</b> will take their jobs. Will robots <b>replace</b> the human <b>workforce</b>? Experts say that while machines will do routine tasks, they will not replace human creativity. By 2050, the workplace will have changed completely. We will be working alongside robots, not against them.</p><p><span class=\"para-label\">C.</span> There are also <b>ethical</b> questions. It is difficult to <b>predict</b> how AI will behave. If we give machines too much power, will they be dangerous? We must create strict rules. This time next year, governments will be debating new AI laws. By the time the decade ends, we will have established a global framework for AI safety.</p><p><span class=\"para-label\">D.</span> Ultimately, humans are good at one thing: we can <b>adapt</b>. When new technology arrives, we learn how to use it. As soon as we understand AI better, we will use it to solve climate change and diseases. The future isn't something that happens to us; it is something we are going to build.</p>",
+  "readingQ": [
+    { "type": "short", "prompt": "What are tech companies going to launch next year?", "answers": ["algorithms", "smarter algorithms", "smarter algorithms"], "exp": "Paragraph A says they are going to launch even smarter algorithms." },
+    { "type": "short", "prompt": "What will robots not replace according to experts?", "answers": ["human creativity", "creativity"], "exp": "Paragraph B says they will not replace human creativity." },
+    { "type": "short", "prompt": "What will governments be debating this time next year?", "answers": ["new AI laws", "AI laws", "laws"], "exp": "Paragraph C mentions debating new AI laws." },
+    { "type": "tfng", "prompt": "Artificial intelligence is only found in science fiction.", "answer": "False", "exp": "Paragraph A says it is no longer science fiction and is part of our daily lives." },
+    { "type": "tfng", "prompt": "By 2050, the workplace will have changed completely.", "answer": "True", "exp": "Paragraph B confirms this." },
+    { "type": "tfng", "prompt": "Governments have already established a global framework for AI safety.", "answer": "False", "exp": "Paragraph C says we will have established it by the time the decade ends." },
+    { "type": "mcq", "prompt": "What are tech companies doing with their money?", "options": ["Investing in AI", "Buying cars", "Building factories"], "correct": "Investing in AI", "exp": "Paragraph A says they are investing billions." },
+    { "type": "mcq", "prompt": "What is difficult to do regarding AI?", "options": ["Turn it off", "Predict how it will behave", "Use it for essays"], "correct": "Predict how it will behave", "exp": "Paragraph C says it is difficult to predict." },
+    { "type": "long", "prompt": "In your own words, explain the fears people have about AI and automation.", "keywordGroups": [["jobs", "work", "workforce"], ["replace", "take"], ["robots", "machines"]], "minWords": 10, "minGroups": 2, "sample": "People fear that automation will take their jobs because robots and machines might replace the human workforce.", "exp": "Key ideas: fear of losing jobs, robots replacing humans." },
+    { "type": "long", "prompt": "How does the text suggest humans will handle the future of AI?", "keywordGroups": [["adapt", "learn"], ["rules", "laws", "safety"], ["solve", "build", "use"]], "minWords": 10, "minGroups": 2, "sample": "Humans will adapt by learning to use the technology, creating strict laws for safety, and using AI to solve global problems.", "exp": "Key ideas: adaptation, rules/frameworks, solving problems." }
+  ],
+  "contextQ": [
+    { "prompt": "In paragraph A, \"innovation\" means...", "options": ["a new idea or method", "an old tradition", "a type of machine"], "correct": "a new idea or method", "exp": "Innovation refers to creating new things." },
+    { "prompt": "In paragraph B, \"workforce\" refers to...", "options": ["all the people working", "the office building", "the computers used"], "correct": "all the people working", "exp": "Workforce means the group of employees." },
+    { "prompt": "In paragraph C, \"ethical\" questions relate to...", "options": ["moral principles", "mathematical problems", "computer hardware"], "correct": "moral principles", "exp": "Ethical means relating to right and wrong." },
+    { "prompt": "In paragraph B, to \"replace\" means...", "options": ["to take the place of", "to break something", "to hire someone new"], "correct": "to take the place of", "exp": "Replace means to substitute." },
+    { "prompt": "In paragraph D, to \"adapt\" means...", "options": ["to change to fit", "to give up", "to complain"], "correct": "to change to fit", "exp": "Adapt means to adjust to new conditions." }
+  ],
+  "g6": {
+    "pos": [
+      { "p": "Look at those dark clouds! It ___ (rain) very soon.", "a": "is going to rain", "ex": "Going to: prediction based on evidence." },
+      { "p": "I ___ (meet) the AI developers tomorrow at 10 AM.", "a": "am meeting", "ex": "Present Continuous: fixed arrangement." },
+      { "p": "I promise I ___ (help) you with the programming.", "a": "will help", "ex": "Will: spontaneous promise." },
+      { "p": "The company ___ (launch) the new app next week.", "a": "is launching", "ex": "Present Continuous: future plan." },
+      { "p": "I think AI ___ (change) the world completely.", "a": "will change", "ex": "Will: general prediction." }
+    ],
+    "neg": [
+      { "p": "I ___ (not / attend) the conference next month.", "a": "am not attending", "ex": "Present Continuous negative: arrangement." },
+      { "p": "Machines ___ (not / replace) human creativity.", "a": "will not replace", "ex": "Will negative: prediction." },
+      { "p": "We ___ (not / use) that old algorithm anymore.", "a": "are not going to use", "ex": "Going to negative: plan." },
+      { "p": "I ___ (not / tell) anyone your secret.", "a": "will not tell", "ex": "Will negative: promise." },
+      { "p": "They ___ (not / sell) their robot prototype.", "a": "are not selling", "ex": "Present Continuous negative: arrangement." }
+    ],
+    "q": [
+      { "p": "___ you ___ (go) to the AI summit tomorrow?", "a": "Are you going", "ex": "Present Continuous question: arrangement." },
+      { "p": "___ she ___ (buy) a new laptop for her course?", "a": "Is she going to buy", "ex": "Going to question: plan." },
+      { "p": "When ___ they ___ (arrive) at the laboratory?", "a": "will they arrive", "ex": "Will question: prediction/inquiry." },
+      { "p": "What ___ you ___ (do) after you finish your exams?", "a": "are you going to do", "ex": "Going to question: plans." },
+      { "p": "___ the system ___ (work) without internet?", "a": "Will the system work", "ex": "Will question." }
+    ],
+    "shuffled": [
+      { "p": "Look! The robot ___ (fall).", "a": "is going to fall" },
+      { "p": "I ___ (have) lunch with the CEO tomorrow.", "a": "am having" },
+      { "p": "I am cold. I ___ (close) the window.", "a": "will close" },
+      { "p": "We ___ (study) AI ethics next semester.", "a": "are going to study" },
+      { "p": "Perhaps we ___ (find) a cure for cancer.", "a": "will find" },
+      { "p": "They ___ (not / come) to the meeting.", "a": "are not coming" },
+      { "p": "She ___ (not / accept) the job offer.", "a": "is not going to accept" },
+      { "p": "I ___ (not / forget) your birthday again.", "a": "won't forget" },
+      { "p": "___ you ___ (use) the car tonight?", "a": "Are you using" },
+      { "p": "___ he ___ (study) computer science?", "a": "Is he going to study" },
+      { "p": "Where ___ you ___ (stay) when you visit London?", "a": "are you staying" },
+      { "p": "How ___ you ___ (solve) this problem?", "a": "will you solve" },
+      { "p": "The train ___ (leave) at 8 PM tonight.", "a": "leaves" },
+      { "p": "The movie ___ (start) at 9.", "a": "starts" },
+      { "p": "I ___ (see) the doctor tomorrow at 3 PM.", "a": "am seeing" }
+    ]
+  },
+  "g7": {
+    "pos": [
+      { "p": "By 2030, AI ___ (take) over many routine tasks.", "a": "will have taken", "ex": "Future Perfect: completed before a time in the future." },
+      { "p": "This time next year, I ___ (work) for a tech company.", "a": "will be working", "ex": "Future Continuous: in the middle of an action." },
+      { "p": "By the time you arrive, the meeting ___ (finish).", "a": "will have finished", "ex": "Future Perfect." },
+      { "p": "At 8 PM tonight, they ___ (test) the new algorithm.", "a": "will be testing", "ex": "Future Continuous." },
+      { "p": "When the new software is ready, we ___ (launch) it.", "a": "will launch", "ex": "When clause + future." }
+    ],
+    "neg": [
+      { "p": "By 2050, we ___ (not / run out) of fossil fuels.", "a": "will not have run out", "ex": "Future Perfect negative." },
+      { "p": "I ___ (not / sleep) when you call me tonight.", "a": "will not be sleeping", "ex": "Future Continuous negative." },
+      { "p": "By the end of the decade, they ___ (not / replace) all teachers.", "a": "will not have replaced", "ex": "Future Perfect negative." },
+      { "p": "If it rains tomorrow, we ___ (not / go) to the park.", "a": "will not go", "ex": "If clause + future negative." },
+      { "p": "I ___ (not / wait) for you if you are late.", "a": "will not be waiting", "ex": "Future Continuous negative." }
+    ],
+    "q": [
+      { "p": "___ you ___ (use) your computer at 9 PM tonight?", "a": "Will you be using", "ex": "Future Continuous question." },
+      { "p": "___ they ___ (complete) the project by Friday?", "a": "Will they have completed", "ex": "Future Perfect question." },
+      { "p": "What ___ you ___ (do) at this time tomorrow?", "a": "will you be doing", "ex": "Future Continuous question." },
+      { "p": "___ she ___ (finish) the report by the time the boss arrives?", "a": "Will she have finished", "ex": "Future Perfect question." },
+      { "p": "If you don't hurry, ___ we ___ (miss) the train?", "a": "will we miss", "ex": "Conditional question." }
+    ],
+    "shuffled": [
+      { "p": "When you arrive, I ___ (wait) for you at the station.", "a": "will be waiting" },
+      { "p": "By next year, he ___ (write) his thesis.", "a": "will have written" },
+      { "p": "This time tomorrow, we ___ (fly) to New York.", "a": "will be flying" },
+      { "p": "If AI evolves, it ___ (solve) complex problems.", "a": "will solve" },
+      { "p": "When the system becomes conscious, everything ___ (change).", "a": "will change" },
+      { "p": "By 2030, scientists ___ (discover) a cure for Alzheimer's.", "a": "will have discovered" },
+      { "p": "I ___ (not / work) when you come home; I'll be relaxing.", "a": "will not be working" },
+      { "p": "As soon as the bell rings, the students ___ (leave).", "a": "will leave" },
+      { "p": "By the time we get there, the movie ___ (start).", "a": "will have started" },
+      { "p": "At 10 AM tomorrow, she ___ (present) her project.", "a": "will be presenting" },
+      { "p": "Unless we act now, the problem ___ (get) worse.", "a": "will get" },
+      { "p": "Before you go to bed, you ___ (finish) your homework.", "a": "will have finished" },
+      { "p": "I hope I ___ (not / be) late for the interview.", "a": "won't be" },
+      { "p": "They ___ (play) football at 5 PM tomorrow.", "a": "will be playing" },
+      { "p": "If you study hard, you ___ (pass) the exam.", "a": "will pass" }
+    ]
+  },
+  "sbPp": {
+    "pos": [
+      { "prompt": "Build a sentence about a future arrangement.", "correct": ["I","am","meeting","the","investors","tomorrow."] },
+      { "prompt": "Build a sentence about a future intention.", "correct": ["She","is","going","to","become","a","data","scientist."] },
+      { "prompt": "Build a sentence making a promise.", "correct": ["I","will","help","you","with","the","programming."] },
+      { "prompt": "Build a sentence about a fixed future event.", "correct": ["The","train","leaves","at","9","AM","tomorrow."] },
+      { "prompt": "Build a spontaneous decision.", "correct": ["I","will","have","a","cup","of","coffee."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative sentence about a future plan.", "correct": ["They","are","not","going","to","replace","human","employees."] },
+      { "prompt": "Build a negative promise.", "correct": ["I","won't","tell","anyone","your","password."] },
+      { "prompt": "Build a negative arrangement.", "correct": ["I","am","not","attending","the","conference","next","week."] },
+      { "prompt": "Build a negative prediction.", "correct": ["AI","will","not","take","over","the","entire","world."] },
+      { "prompt": "Build a negative sentence about a future event.", "correct": ["We","are","not","using","that","software","anymore."] }
+    ],
+    "q": [
+      { "prompt": "Build a question about an arrangement.", "correct": ["Are","you","attending","the","AI","summit","tomorrow?"] },
+      { "prompt": "Build a question about a plan.", "correct": ["Is","she","going","to","buy","a","new","robot?"] },
+      { "prompt": "Build a question about a prediction.", "correct": ["Will","they","approve","the","new","algorithm?"] },
+      { "prompt": "Build a question about a future event.", "correct": ["What","time","does","the","meeting","start?"] },
+      { "prompt": "Build a question about an intention.", "correct": ["Are","you","going","to","study","machine","learning?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: I am going to study machine learning.", "correct": ["I","am","going","to","study","machine","learning."] },
+      { "prompt": "Build: The company is launching a new product tomorrow.", "correct": ["The","company","is","launching","a","new","product","tomorrow."] },
+      { "prompt": "Build: Look! The drone is going to crash.", "correct": ["Look!","The","drone","is","going","to","crash."] },
+      { "prompt": "Build: I will help you with the code.", "correct": ["I","will","help","you","with","the","code."] },
+      { "prompt": "Build: We are having a meeting next Monday.", "correct": ["We","are","having","a","meeting","next","Monday."] },
+      { "prompt": "Build: She is not going to accept the offer.", "correct": ["She","is","not","going","to","accept","the","offer."] },
+      { "prompt": "Build: I won't forget your birthday.", "correct": ["I","won't","forget","your","birthday."] },
+      { "prompt": "Build: Are you using the computer tonight?", "correct": ["Are","you","using","the","computer","tonight?"] },
+      { "prompt": "Build: Will he come to the party?", "correct": ["Will","he","come","to","the","party?"] },
+      { "prompt": "Build: I am seeing the doctor tomorrow.", "correct": ["I","am","seeing","the","doctor","tomorrow."] },
+      { "prompt": "Build: They are going to build a new lab.", "correct": ["They","are","going","to","build","a","new","lab."] },
+      { "prompt": "Build: I will call you when I arrive.", "correct": ["I","will","call","you","when","I","arrive."] },
+      { "prompt": "Build: The bus leaves at 8 AM.", "correct": ["The","bus","leaves","at","8","AM."] },
+      { "prompt": "Build: We are not going to use this algorithm.", "correct": ["We","are","not","going","to","use","this","algorithm."] },
+      { "prompt": "Build: I think it will rain tomorrow.", "correct": ["I","think","it","will","rain","tomorrow."] }
+    ]
+  },
+  "sbPs": {
+    "pos": [
+      { "prompt": "Build a sentence using Future Continuous.", "correct": ["This","time","tomorrow,","I","will","be","presenting","the","results."] },
+      { "prompt": "Build a sentence using Future Perfect.", "correct": ["By","2050,","AI","will","have","changed","the","workforce."] },
+      { "prompt": "Build a sentence with a time clause.", "correct": ["When","the","robots","arrive,","we","will","be","ready."] },
+      { "prompt": "Build a sentence using Future Continuous.", "correct": ["I","will","be","working","at","9","PM","tonight."] },
+      { "prompt": "Build a sentence using Future Perfect.", "correct": ["They","will","have","finished","the","project","by","Friday."] }
+    ],
+    "neg": [
+      { "prompt": "Build a negative Future Perfect sentence.", "correct": ["By","next","year,","we","will","not","have","finished","the","project."] },
+      { "prompt": "Build a negative Future Continuous sentence.", "correct": ["I","will","not","be","waiting","for","you","when","you","return."] },
+      { "prompt": "Build a negative sentence with a time clause.", "correct": ["If","it","rains,","we","will","not","go","to","the","park."] },
+      { "prompt": "Build a negative Future Perfect sentence.", "correct": ["She","will","not","have","left","by","the","time","you","arrive."] },
+      { "prompt": "Build a negative Future Continuous sentence.", "correct": ["We","will","not","be","using","the","lab","tomorrow."] }
+    ],
+    "q": [
+      { "prompt": "Build a Future Continuous question.", "correct": ["Will","you","be","using","the","computer","at","10","PM?"] },
+      { "prompt": "Build a Future Perfect question.", "correct": ["Will","they","have","completed","the","automation","by","then?"] },
+      { "prompt": "Build a question with a time clause.", "correct": ["Will","you","call","me","when","you","arrive?"] },
+      { "prompt": "Build a Future Continuous question.", "correct": ["What","will","you","be","doing","at","this","time","tomorrow?"] },
+      { "prompt": "Build a Future Perfect question.", "correct": ["Will","she","have","written","the","report","by","Monday?"] }
+    ],
+    "shuffled": [
+      { "prompt": "Build: When you read this, I will have left.", "correct": ["When","you","read","this,","I","will","have","left."] },
+      { "prompt": "Build: We will be testing the new software all day.", "correct": ["We","will","be","testing","the","new","software","all","day."] },
+      { "prompt": "Build: If it rains, we will cancel the drone flight.", "correct": ["If","it","rains,","we","will","cancel","the","drone","flight."] },
+      { "prompt": "Build: As soon as the algorithm is ready, we will launch it.", "correct": ["As","soon","as","the","algorithm","is","ready,","we","will","launch","it."] },
+      { "prompt": "Build: By 2030, scientists will have discovered a cure.", "correct": ["By","2030,","scientists","will","have","discovered","a","cure."] },
+      { "prompt": "Build: This time next week, I will be lying on a beach.", "correct": ["This","time","next","week,","I","will","be","lying","on","a","beach."] },
+      { "prompt": "Build: Before you go to bed, you will have finished your homework.", "correct": ["Before","you","go","to","bed,","you","will","have","finished","your","homework."] },
+      { "prompt": "Build: At 10 AM tomorrow, she will be presenting her project.", "correct": ["At","10","AM","tomorrow,","she","will","be","presenting","her","project."] },
+      { "prompt": "Build: Unless we act now, the problem will get worse.", "correct": ["Unless","we","act","now,","the","problem","will","get","worse."] },
+      { "prompt": "Build: I will not be working when you come home.", "correct": ["I","will","not","be","working","when","you","come","home."] },
+      { "prompt": "Build: Will you have finished the report by Friday?", "correct": ["Will","you","have","finished","the","report","by","Friday?"] },
+      { "prompt": "Build: They will not have replaced all teachers by the end of the decade.", "correct": ["They","will","not","have","replaced","all","teachers","by","the","end","of","the","decade."] },
+      { "prompt": "Build: If you study hard, you will pass the exam.", "correct": ["If","you","study","hard,","you","will","pass","the","exam."] },
+      { "prompt": "Build: By the time we get there, the movie will have started.", "correct": ["By","the","time","we","get","there,","the","movie","will","have","started."] },
+      { "prompt": "Build: What will you be doing at 8 PM tomorrow?", "correct": ["What","will","you","be","doing","at","8","PM","tomorrow?"] }
+    ]
+  },
+  "g10": {
+    "pos": [
+      { "p": "I ___ (see) him tomorrow at 5 PM.", "a": "am seeing", "ex": "Present Continuous: arrangement." },
+      { "p": "The train ___ (leave) at 9 AM tomorrow.", "a": "leaves", "ex": "Present Simple: timetable." },
+      { "p": "I think humans ___ (colonize) Mars in the future.", "a": "will colonize", "ex": "Will: prediction." },
+      { "p": "This time next week, I ___ (lie) on a beach.", "a": "will be lying", "ex": "Future Continuous." },
+      { "p": "By 2030, she ___ (become) a senior engineer.", "a": "will have become", "ex": "Future Perfect." }
+    ],
+    "neg": [
+      { "p": "I ___ (not / attend) the meeting tomorrow.", "a": "am not attending", "ex": "Present Continuous negative." },
+      { "p": "AI ___ (not / replace) human creativity.", "a": "will not replace", "ex": "Will negative." },
+      { "p": "We ___ (not / work) on the weekend.", "a": "are not going to work", "ex": "Going to negative." },
+      { "p": "They ___ (not / finish) the project by Friday.", "a": "will not have finished", "ex": "Future Perfect negative." },
+      { "p": "I ___ (not / sleep) when you arrive.", "a": "will not be sleeping", "ex": "Future Continuous negative." }
+    ],
+    "q": [
+      { "p": "___ you ___ (watch) TV tonight?", "a": "Are you watching", "ex": "Present Continuous for future arrangement." },
+      { "p": "What ___ you ___ (do) at 8 PM tomorrow?", "a": "will you be doing", "ex": "Future Continuous question." },
+      { "p": "___ they ___ (complete) the project by Friday?", "a": "Will they have completed", "ex": "Future Perfect question." },
+      { "p": "___ she ___ (go) to the conference next week?", "a": "Is she going", "ex": "Present Continuous question." },
+      { "p": "When ___ the movie ___ (start)?", "a": "does the movie start", "ex": "Present Simple for timetable." }
+    ],
+    "shuffled": [
+      { "p": "If you study hard, you ___ (pass) the exam.", "a": "will pass" },
+      { "p": "When the sun sets, it ___ (get) dark.", "a": "will get" },
+      { "p": "I promise I ___ (not / be) late.", "a": "won't be" },
+      { "p": "By 10 PM, I ___ (finish) my homework.", "a": "will have finished" },
+      { "p": "They ___ (play) football at 5 PM.", "a": "will be playing" },
+      { "p": "I ___ (meet) my friends tomorrow evening.", "a": "am meeting" },
+      { "p": "Look at those clouds! It ___ (rain).", "a": "is going to rain" },
+      { "p": "The film ___ (start) at 8:15.", "a": "starts" },
+      { "p": "I ___ (have) a glass of water.", "a": "will have" },
+      { "p": "We ___ (not / use) this software anymore.", "a": "are not going to use" },
+      { "p": "___ you ___ (use) the car tonight?", "a": "Are you using" },
+      { "p": "What ___ you ___ (do) when you finish your studies?", "a": "are you going to do" },
+      { "p": "By the time you read this, I ___ (leave).", "a": "will have left" },
+      { "p": "This time next year, I ___ (work) in London.", "a": "will be working" },
+      { "p": "I ___ (not / forget) your birthday again.", "a": "won't forget" }
+    ]
+  },
+  "testMcq": [
+    { "q": "Which sentence expresses a plan or intention?", "options": ["I am going to study AI.", "I will study AI.", "I study AI."], "correct": "I am going to study AI.", "exp": "'Going to' expresses plans and intentions." },
+    { "q": "Which sentence makes a spontaneous decision?", "options": ["I'll have the chicken, please.", "I'm going to have the chicken.", "I have the chicken."], "correct": "I'll have the chicken, please.", "exp": "'Will' is used for spontaneous decisions." },
+    { "q": "Which sentence describes a fixed timetable?", "options": ["The train leaves at 9.", "The train is going to leave at 9.", "The train will leave at 9."], "correct": "The train leaves at 9.", "exp": "Present simple is used for timetables." },
+    { "q": "By 2050, machines ___ many jobs.", "options": ["will have replaced", "will be replacing", "are replacing"], "correct": "will have replaced", "exp": "Future perfect is used for actions completed before a future time." },
+    { "q": "This time next week, I ___ on a beach.", "options": ["will be lying", "will have lied", "am lying"], "correct": "will be lying", "exp": "Future continuous is used for actions in progress at a future time." },
+    { "q": "I'll call you when I ___ home.", "options": ["get", "will get", "am getting"], "correct": "get", "exp": "Use present simple after 'when' for future events." },
+    { "q": "If it ___ tomorrow, we will cancel the trip.", "options": ["rains", "will rain", "is raining"], "correct": "rains", "exp": "Use present simple after 'if' for future events." },
+    { "q": "We ___ to launch the product next month.", "options": ["are going", "will", "are"], "correct": "are going", "exp": "'Going to' is used for plans." }
+  ],
+  "testShort": [
+    { "q": "Complete with the Present Continuous for a future arrangement: \"I ___ (see) the CEO tomorrow.\"", "answers": ["am seeing"], "exp": "Present continuous for fixed arrangements." },
+    { "q": "Complete with 'going to' for a plan: \"She ___ (study) computer science.\"", "answers": ["is going to study"], "exp": "Going to for plans." },
+    { "q": "Complete with 'will' for a promise: \"I ___ (not / tell) anyone.\"", "answers": ["won't tell", "will not tell"], "exp": "Will for promises." },
+    { "q": "Complete with the Future Continuous: \"At 8 PM, I ___ (work).\"", "answers": ["will be working"], "exp": "Future continuous." },
+    { "q": "Complete with the Future Perfect: \"By 2030, they ___ (build) the new factory.\"", "answers": ["will have built"], "exp": "Future perfect." },
+    { "q": "Complete with the Present Simple for a timetable: \"The bus ___ (arrive) at 7 AM.\"", "answers": ["arrives"], "exp": "Present simple for timetables." }
+  ],
+  "testTfng": [
+    { "q": "We use 'will' to talk about fixed arrangements.", "answer": "False", "exp": "We use the Present Continuous for fixed arrangements." },
+    { "q": "We use 'going to' for predictions based on evidence (e.g., dark clouds).", "answer": "True", "exp": "Yes, e.g., 'It is going to rain.'" },
+    { "q": "We use the Present Simple after 'when' and 'if' to talk about the future.", "answer": "True", "exp": "Correct, e.g., 'When I arrive, I will call you.'" },
+    { "q": "The Future Perfect describes an action in progress at a future time.", "answer": "False", "exp": "Future Perfect describes an action completed before a future time. Future Continuous describes actions in progress." },
+    { "q": "'I'm going to the cinema tonight' is an arrangement.", "answer": "True", "exp": "Present Continuous for fixed plans." }
+  ],
+  "testComplete": [
+    { "p": "I ___ (meet) the AI developers tomorrow at 10 AM.", "a": "am meeting" },
+    { "p": "Look! The robot ___ (fall).", "a": "is going to fall" },
+    { "p": "I promise I ___ (help) you.", "a": "will help" },
+    { "p": "The train ___ (leave) at 9 AM tomorrow.", "a": "leaves" },
+    { "p": "By next year, he ___ (write) his thesis.", "a": "will have written" },
+    { "p": "This time tomorrow, we ___ (fly) to New York.", "a": "will be flying" },
+    { "p": "When you arrive, I ___ (wait) for you.", "a": "will be waiting" },
+    { "p": "If AI evolves, it ___ (solve) complex problems.", "a": "will solve" },
+    { "p": "They ___ (not / complete) the project by Friday.", "a": "will not have completed" },
+    { "p": "___ you ___ (use) your computer at 9 PM tonight?", "a": "Will you be using" }
+  ]
+}

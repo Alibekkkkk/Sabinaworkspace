@@ -1,0 +1,70 @@
+{
+  "title": "Araylim · Future Forms — Homework",
+  "headline": "The Robot Revolution",
+  "intro": "Watch the video, read the text about the future of AI, and answer the questions. Practice your Future tenses (plans, predictions, continuous, perfect) and time clauses!",
+  "hero": "🤖 → 🚀 → 🌍",
+  "sub": "Future I & II · Reading & Grammar",
+  "eyebrow": "Topic · AI & Robotics · Homework",
+  "reading": {
+    "title": "The Robot Revolution",
+    "subtitle": "How will AI change our world?",
+    "video": "https://www.youtube-nocookie.com/embed/a0_lo_GDcFw",
+    "videoTitle": "What is Artificial Intelligence?",
+    "paragraphs": [
+      { "label": "A.", "text": "Artificial intelligence is no longer science fiction. It is already part of our daily lives. By 2030, AI <b>will have changed</b> our world completely. Tech companies <b>are going to launch</b> even smarter algorithms next year. We <b>are going to see</b> cars that drive themselves and computers that can write essays. This is a huge breakthrough for humanity." },
+      { "label": "B.", "text": "However, this creates fear. Many people worry that automation will take their jobs. Will robots <b>replace</b> the human workforce? Experts say that while machines will do routine tasks, they will not replace human creativity. Humans <b>are going to adapt</b>. By 2050, the workplace will have changed completely. We <b>will be working</b> alongside robots, not against them." },
+      { "label": "C.", "text": "There are also ethical questions. It is difficult to <b>predict</b> how AI will behave. If we give machines too much power, will they be dangerous? We must create strict rules. I <b>am meeting</b> an AI developer tomorrow at 10 AM to discuss this. This time next year, governments <b>will be debating</b> new AI laws. By the time the decade ends, we <b>will have established</b> a global framework for AI safety." },
+      { "label": "D.", "text": "Ultimately, humans are good at one thing: we can adapt. When new technology arrives, we learn how to use it. As soon as we understand AI better, we <b>will use</b> it to solve climate change and diseases. The future isn't something that happens to us; it is something we are going to build." }
+    ]
+  },
+  "vocab": [
+    { "en": "artificial intelligence", "emoji": "🧠", "meanings": [
+      { "context": "the ability of computers to think and learn", "pos": "noun", "displayEn": "artificial intelligence", "ru": "искусственный интеллект", "ex": "<b>Artificial intelligence</b> is changing the way we work." }
+    ]},
+    { "en": "algorithm", "emoji": "📊", "meanings": [
+      { "context": "a set of rules for solving a problem", "pos": "noun", "displayEn": "algorithm", "ru": "алгоритм", "ex": "The social media <b>algorithm</b> decides what you see." }
+    ]},
+    { "en": "automation", "emoji": "⚙️", "meanings": [
+      { "context": "the use of machines to do work", "pos": "noun", "displayEn": "automation", "ru": "автоматизация", "ex": "Factory <b>automation</b> has increased production." }
+    ]},
+    { "en": "breakthrough", "emoji": "🚀", "meanings": [
+      { "context": "an important discovery or development", "pos": "noun", "displayEn": "breakthrough", "ru": "прорыв, достижение", "ex": "Scientists have made a huge <b>breakthrough</b> in medicine." }
+    ]},
+    { "en": "ethical", "emoji": "⚖️", "meanings": [
+      { "context": "relating to moral principles", "pos": "adjective", "displayEn": "ethical", "ru": "этичный, моральный", "ex": "We must consider the <b>ethical</b> effects of AI." }
+    ]},
+    { "en": "innovation", "emoji": "💡", "meanings": [
+      { "context": "a new idea or method", "pos": "noun", "displayEn": "innovation", "ru": "инновация", "ex": "Technological <b>innovation</b> is growing rapidly." }
+    ]},
+    { "en": "to replace", "emoji": "🔄", "meanings": [
+      { "context": "to take the place of something or someone", "pos": "verb", "displayEn": "to replace", "ru": "заменять", "ex": "Robots will <b>replace</b> humans in dangerous jobs." }
+    ]},
+    { "en": "workforce", "emoji": "👥", "meanings": [
+      { "context": "all the people working in a company or country", "pos": "noun", "displayEn": "workforce", "ru": "рабочая сила", "ex": "The <b>workforce</b> needs to learn new skills." }
+    ]},
+    { "en": "to predict", "emoji": "🔮", "meanings": [
+      { "context": "to say what will happen in the future", "pos": "verb", "displayEn": "to predict", "ru": "предсказывать", "ex": "It is hard to <b>predict</b> how AI will develop." }
+    ]},
+    { "en": "to adapt", "emoji": "🦎", "meanings": [
+      { "context": "to change to fit a new situation", "pos": "verb", "displayEn": "to adapt", "ru": "адаптироваться", "ex": "Humans must <b>adapt</b> to new technologies." }
+    ]}
+  ],
+  "questions": [
+    { "type": "short", "prompt": "What will AI have changed by 2030?", "answers": ["our world", "the world", "world"], "exp": "Paragraph A says AI will have changed our world completely." },
+    { "type": "short", "prompt": "What is difficult to predict about AI?", "answers": ["how AI will behave", "how it will behave", "AI behavior"], "exp": "Paragraph C says it is difficult to predict how AI will behave." },
+    { "type": "tfng", "prompt": "The text states that robots will completely replace the human workforce.", "answer": "False", "exp": "Paragraph B says they will not replace human creativity, and humans are going to adapt." },
+    { "type": "tfng", "prompt": "The author believes we will be working alongside robots in 2050.", "answer": "True", "exp": "Paragraph B says 'We will be working alongside robots'." },
+    { "type": "mcq", "prompt": "What is the writer doing tomorrow at 10 AM?", "options": ["Launching a new app", "Meeting an AI developer", "Debating new laws"], "correct": "Meeting an AI developer", "exp": "Paragraph C says 'I am meeting an AI developer tomorrow'." },
+    { "type": "mcq", "prompt": "According to the text, what will governments be doing this time next year?", "options": ["Building robots", "Debating new AI laws", "Replacing the workforce"], "correct": "Debating new AI laws", "exp": "Paragraph C says governments will be debating new AI laws." },
+    { "type": "complete", "prompt": "[Present Continuous] I ___ (meet) the AI developer tomorrow at 10 AM.", "answers": ["am meeting"] },
+    { "type": "complete", "prompt": "[Going to] Look at that robot! It ___ (fall).", "answers": ["is going to fall"] },
+    { "type": "complete", "prompt": "[Will] I promise I ___ (not / tell) anyone your password.", "answers": ["won't tell", "will not tell"] },
+    { "type": "complete", "prompt": "[Present Simple] The train ___ (leave) at 9 AM tomorrow.", "answers": ["leaves"] },
+    { "type": "complete", "prompt": "[Future Perfect] By next year, they ___ (build) a new lab.", "answers": ["will have built"] },
+    { "type": "complete", "prompt": "[Future Continuous] This time tomorrow, we ___ (test) the software.", "answers": ["will be testing"] },
+    { "type": "complete", "prompt": "[Future Continuous] When you arrive, I ___ (wait) for you.", "answers": ["will be waiting"] },
+    { "type": "complete", "prompt": "[Time Clause] If we ___ (not / act) now, the problem will get worse.", "answers": ["do not act", "don't act"] },
+    { "type": "long", "prompt": "Why are some people worried about AI and automation?", "keywordGroups": [["jobs", "work", "workforce"], ["replace", "take"], ["robots", "machines"], ["adapt", "learn"]], "minWords": 10, "minGroups": 2, "sample": "People are worried that automation will take their jobs because robots and machines might replace the human workforce. However, humans will adapt and learn to work alongside them.", "exp": "Key ideas: fear of losing jobs, robots replacing humans, adaptation." },
+    { "type": "long", "prompt": "What are the ethical questions mentioned in the text?", "keywordGroups": [["predict", "behave"], ["rules", "laws", "safety"], ["power", "dangerous"]], "minWords": 10, "minGroups": 2, "sample": "There are ethical questions because it is difficult to predict how AI will behave. If we give machines too much power, they might be dangerous, so we must create strict rules and laws for safety.", "exp": "Key ideas: predicting behavior, creating rules, avoiding danger." }
+  ]
+}
