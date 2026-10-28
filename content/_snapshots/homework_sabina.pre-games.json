@@ -1,0 +1,83 @@
+{
+  "title": "Sabina · Natural Disasters — Homework",
+  "headline": "The summer the weather changed",
+  "intro": "Read the report and answer every question. This is a single-page homework: work through the article and the questions on the right. You cannot submit until all questions are answered.",
+  "hero": "⛈️ → 🌊 → 🔥",
+  "sub": "Natural Disasters · Reading & Grammar",
+  "eyebrow": "Topic · Natural Disasters · Homework",
+  "reading": {
+    "title": "The Summer the Weather Changed",
+    "subtitle": "A report on three linked natural disasters",
+    "paragraphs": [
+      { "label": "A.", "text": "In the summer of 2023, three separate natural disasters struck the same coastal region in the space of six weeks. First came a heat wave: temperatures rose above 42°C for ten consecutive days. Then, when the rains finally arrived, they came with unusual force. Rivers overflowed, and floods swept through several towns. Later that same summer, a wildfire broke out in the hills above the coast, destroying more than 400 hectares of forest. Scientists later described the events as \u201Cconnected\u201D." },
+      { "label": "B.", "text": "The heat wave was the first warning. Meteorologists had forecast high temperatures, but few people had expected a heat wave of this intensity. Hospitals reported a sharp rise in admissions for heat exhaustion and dehydration. Local authorities opened cooling centres in public libraries and community halls, where residents could escape the worst of the heat. The heat also dried out the soil and vegetation, creating the perfect conditions for the disasters that followed." },
+      { "label": "C.", "text": "When the rain came, it was heavy and sudden. Within two days, more than 200 millimetres of rain had fallen — more than the region normally receives in an entire month. Rivers that had been almost dry overflowed their banks. The town of Marlowe was the worst affected: water reached the ground floor of buildings and cut off the main road for nearly a week. Rescue teams used boats to reach residents who had been trapped in their homes. The floods were later described as the worst the region had seen in fifty years." },
+      { "label": "D.", "text": "The wildfire began in August, three weeks after the floods. By then, the vegetation that had survived the rain had dried out again under the summer sun. Strong winds helped the fire spread quickly across the hills. Firefighters worked for eleven days to bring it under control. Over 400 hectares of forest were destroyed, and several families lost their homes. Although no lives were lost, the ecological damage was severe: many species of plants and small animals were affected, and the soil in the burned areas will take years to recover." },
+      { "label": "E.", "text": "Scientists who studied the events concluded that they were not separate. The heat wave had dried the vegetation, making the wildfire more likely. The heavy rain that ended the heat wave had been intensified by the unusually warm air, which holds more moisture. The floods, in turn, had washed away trees and weakened riverbanks, making some areas more vulnerable. In other words, each disaster had helped to create the conditions for the next one." },
+      { "label": "F.", "text": "The events of that summer have prompted local authorities to rethink their emergency planning. New early-warning systems are being installed in coastal towns. Cooling centres will now open automatically when temperatures exceed 38°C. Firebreaks are being widened in the hills, and residents are being trained in evacuation procedures. Scientists warn that similar events will become more common in the future — not because the region is unlucky, but because a warming climate is making extreme weather more frequent and more intense." }
+    ]
+  },
+  "vocab": [
+    { "en": "consecutive", "emoji": "🔢", "meanings": [ 
+      { "context": "following one after another", "pos": "adjective", "ru": "последовательные", "ex": "Temperatures rose above 42°C for ten <b>consecutive</b> days." } 
+    ] },
+    { "en": "overflow", "emoji": "🌊", "meanings": [ 
+      { "context": "spill over the edge", "pos": "verb", "ru": "выходить из берегов", "ex": "Rivers <b>overflowed</b> their banks after the heavy rain." }, 
+      { "context": "be too full for capacity", "pos": "verb", "ru": "переполняться", "ex": "The stadium <b>overflowed</b> with fans." } 
+    ] },
+    { "en": "intensity", "emoji": "🔥", "meanings": [ 
+      { "context": "strength or force", "pos": "noun", "ru": "интенсивность", "ex": "Few expected a heat wave of this <b>intensity</b>." },
+      { "context": "very strong", "pos": "adjective", "displayEn": "intense", "ru": "интенсивный", "ex": "The heat was <b>intense</b>." }
+    ] },
+    { "en": "vegetation", "emoji": "🌿", "meanings": [ 
+      { "context": "plants, trees, and grass", "pos": "noun", "ru": "растительность", "ex": "The heat dried out the soil and <b>vegetation</b>." } 
+    ] },
+    { "en": "rescue", "emoji": "🚁", "meanings": [ 
+      { "context": "saving from danger", "pos": "noun", "ru": "спасение", "ex": "<b>Rescue</b> teams used boats to reach trapped residents." }, 
+      { "context": "to save someone", "pos": "verb", "ru": "спасать", "ex": "They <b>rescued</b> three families from the roof." } 
+    ] },
+    { "en": "ecological", "emoji": "🌍", "meanings": [ 
+      { "context": "relating to the environment", "pos": "adjective", "ru": "экологический", "ex": "The <b>ecological</b> damage was severe." },
+      { "context": "the study of environment", "pos": "noun", "displayEn": "ecology", "ru": "экология", "ex": "She studies <b>ecology</b>." }
+    ] },
+    { "en": "species", "emoji": "🦌", "meanings": [ 
+      { "context": "a group of similar living things", "pos": "noun", "ru": "вид (биология)", "ex": "Many <b>species</b> of plants were affected." } 
+    ] },
+    { "en": "vulnerable", "emoji": "⚠️", "meanings": [ 
+      { "context": "easily harmed", "pos": "adjective", "ru": "уязвимый", "ex": "Floods made some areas more <b>vulnerable</b>." },
+      { "context": "the state of being vulnerable", "pos": "noun", "displayEn": "vulnerability", "ru": "уязвимость", "ex": "The <b>vulnerability</b> of the coast is a concern." }
+    ] },
+    { "en": "evacuation", "emoji": "🚨", "meanings": [ 
+      { "context": "organized removal from a place", "pos": "noun", "ru": "эвакуация", "ex": "Residents were trained in <b>evacuation</b> procedures." },
+      { "context": "to remove from danger", "pos": "verb", "displayEn": "to evacuate", "ru": "эвакуировать", "ex": "They had to <b>evacuate</b> the town." }
+    ] },
+    { "en": "prompt", "emoji": "💡", "meanings": [ 
+      { "context": "to cause something to happen", "pos": "verb", "ru": "побуждать, вызывать", "ex": "The events have <b>prompted</b> local authorities to rethink their planning." } 
+    ] }
+  ],
+  "questions": [
+    { "type": "short", "prompt": "How many consecutive days did temperatures rise above 42°C?", "answers": ["10","ten"], "exp": "Temperatures rose above 42°C for ten consecutive days." },
+    { "type": "short", "prompt": "How many millimetres of rain fell in two days?", "answers": ["200","more than 200","200 mm"], "exp": "More than 200 millimetres of rain fell in two days." },
+    { "type": "short", "prompt": "How many hectares of forest were destroyed by the wildfire?", "answers": ["400","more than 400","over 400"], "exp": "Over 400 hectares were destroyed." },
+    { "type": "short", "prompt": "How many days did firefighters work to control the wildfire?", "answers": ["11","eleven"], "exp": "Firefighters worked for eleven days." },
+    { "type": "tfng", "prompt": "The events took place over six weeks.", "answer": "True", "exp": "The article says three disasters in six weeks." },
+    { "type": "tfng", "prompt": "Lives were lost in the wildfire.", "answer": "False", "exp": "The article says no lives were lost." },
+    { "type": "tfng", "prompt": "The local council had planned for events of this intensity.", "answer": "Not Given", "exp": "The article doesn't say whether they had planned for this." },
+    { "type": "mcq", "prompt": "What is the main idea of the article?", "options": ["Three disasters were connected by climate conditions","Coastal towns are always in danger","Wildfires are the worst type of disaster"], "correct": "Three disasters were connected by climate conditions", "exp": "The article emphasises that the three disasters were linked." },
+    { "type": "mcq", "prompt": "Which of these is NOT stated as a consequence of the events?", "options": ["New early-warning systems","Automatic cooling centres","A ban on coastal construction"], "correct": "A ban on coastal construction", "exp": "A construction ban is not mentioned." },
+    { "type": "mcq", "prompt": "How did the heat wave contribute to the wildfire?", "options": ["It dried out the vegetation","It caused strong winds","It attracted firefighters away"], "correct": "It dried out the vegetation", "exp": "Heat dried the vegetation, making the wildfire more likely." },
+    { "type": "long", "prompt": "In your own words, explain why the scientists described the three disasters as \u201Cconnected.\u201D",
+      "keywordGroups": [["heat","hot","temperature"],["dried","dry","vegetation"],["fire","wildfire"],["rain","flood","moisture"],["connected","linked","related","warm"]],
+      "minWords": 12, "minGroups": 3,
+      "sample": "The disasters were connected because the heat wave dried out the vegetation, which made the wildfire more likely. The warm air also held more moisture, which intensified the rain and caused the floods.",
+      "exp": "Key ideas: heat dried vegetation, warm air held moisture, chain of disasters." },
+    { "type": "long", "prompt": "Describe TWO measures that local authorities are taking to prepare for future disasters.",
+      "keywordGroups": [["warning","system","early"],["cooling","centre","center"],["firebreak","trees","hills"],["evacuation","training","residents"],["prepare","plan","ready"]],
+      "minWords": 10, "minGroups": 2,
+      "sample": "Two measures are that new early-warning systems are being installed in coastal towns, and that cooling centres will open automatically when temperatures exceed 38°C.",
+      "exp": "Key ideas: early warnings, cooling centres, firebreaks, evacuation training." },
+    { "type": "complete", "prompt": "Scientists ___ (warn) that similar events will become more common.", "answers": ["have warned"] },
+    { "type": "complete", "prompt": "The wildfire ___ (destroy) over 400 hectares of forest last August.", "answers": ["destroyed"] },
+    { "type": "complete", "prompt": "Local authorities ___ (install) new warning systems since the events.", "answers": ["have installed"] }
+  ]
+}
