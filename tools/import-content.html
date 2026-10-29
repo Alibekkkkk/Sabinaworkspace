@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Protected Content Migration</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <style>
+    body{max-width:760px;margin:48px auto;padding:0 20px;font:16px/1.5 system-ui,sans-serif;color:#202938}
+    button{padding:10px 16px;margin-right:8px;font:inherit;cursor:pointer}
+    #status{white-space:pre-wrap;padding:14px;background:#f2f4f7;border-radius:8px}
+  </style>
+</head>
+<body>
+  <h1>Protected content migration</h1>
+  <p>This tool copies existing content into Firebase without overwriting existing protected records or changing curriculum assignments.</p>
+  <p>Student access is copied from each existing curriculum assignment. Files remain public until a teacher verifies the imported content and separately approves their removal.</p>
+  <button id="signInButton" type="button">Sign in as teacher</button>
+  <button id="importButton" type="button" disabled>Import content</button>
+  <p id="status" role="status">Initializing Firebase…</p>
+  <script type="module">
+    import { firebaseConfig, TEACHER_EMAILS } from "../js/config.js";
+
+    const status = document.getElementById("status");
+    const signInButton = document.getElementById("signInButton");
+    const importButton = document.getElementById("importButton");
+    let database;
+    let auth;
+
+    function setStatus(message) {
+      status.textContent = message;
+    }
+
+    function isTeacher(user) {
+      return !!user && user.emailVerified && TEACHER_EMAILS.includes(String(user.email || "").toLowerCase());
+    }
+
+    function safeFileName(value) {
+      if (typeof value !== "string") return null;
+      const fileName = value.replace(/^content\//, "");
+      return /^[a-z0-9_-]+\.json$/i.test(fileName) ? fileName : null;
+    }
+
+    function assignedCodes(assignment) {
+      if (assignment && typeof assignment.assignedTo === "string") return [assignment.assignedTo];
+      if (Array.isArray(assignment && assignment.assignedTo)) {
+        return assignment.assignedTo.filter(value => typeof value === "string");
+      }
+      if (assignment && assignment.assignedTo && typeof assignment.assignedTo === "object") {
+        return Object.keys(assignment.assignedTo).filter(code => assignment.assignedTo[code] === true);
+      }
+      return [];
+    }
+
+    function studentView(lessonId, assignment, classworkFile, homeworkFile) {
+      const fields = [
+        "title", "description", "sub", "eyebrow", "headline", "intro", "stages", "maxScore",
+        "year", "month", "order", "homework", "homeworkDue", "customUrl",
+        "contentUrl", "classworkContentUrl", "homeworkContentUrl", "parentId",
+        "published", "icon", "audience", "flashcardImages"
+      ];
+      const view = { id: lessonId };
+      for (const field of fields) {
+        if (Object.prototype.hasOwnProperty.call(assignment, field)) view[field] = assignment[field];
+      }
+      if (classworkFile) view.classworkContentUrl = `content/${classworkFile}`;
+      if (homeworkFile) view.homeworkContentUrl = `content/${homeworkFile}`;
+      if (view.published === undefined) view.published = true;
+      return view;
+    }
+
+    async function readContentFile(fileName) {
+      const file = safeFileName(fileName);
+      if (!file) throw new Error(`Invalid content filename: ${String(fileName)}`);
+      const response = await fetch(`../content/${encodeURIComponent(file)}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Could not read ../content/${file} (${response.status}).`);
+      const content = await response.json();
+      if (!content || typeof content !== "object") throw new Error(`${file} does not contain a JSON object.`);
+      return { file, content };
+    }
+
+    async function writeIfMissing(path, value) {
+      const result = await database.ref(path).transaction(current => current === null ? value : undefined);
+      return result.committed;
+    }
+
+    async function importContent() {
+      if (!isTeacher(auth.currentUser)) throw new Error("A verified teacher account is required.");
+      importButton.disabled = true;
+      setStatus("Reading manifest and current curriculum assignments…");
+
+      const [manifestResponse, curriculumSnapshot, studentsSnapshot, existingViewsSnapshot] = await Promise.all([
+        fetch("../content/manifest.json", { cache: "no-store" }),
+        database.ref("curriculum").once("value"),
+        database.ref("students").once("value"),
+        database.ref("studentCurriculum").once("value")
+      ]);
+      if (!manifestResponse.ok) throw new Error(`Could not load content manifest (${manifestResponse.status}).`);
+      const manifest = await manifestResponse.json();
+      const curriculum = curriculumSnapshot.val() || {};
+      const students = studentsSnapshot.val() || {};
+      const existingViews = existingViewsSnapshot.val() || {};
+      let imported = 0;
+      let preserved = 0;
+      let studentViews = 0;
+      const lessonIds = new Set([...Object.keys(manifest), ...Object.keys(curriculum)]);
+
+      for (const lessonId of lessonIds) {
+        const entry = manifest[lessonId] || {};
+        if (!/^[a-zA-Z0-9_-]+$/.test(lessonId) || typeof entry !== "object") {
+          throw new Error(`Invalid manifest entry: ${lessonId}`);
+        }
+        const assignment = curriculum[lessonId] || {};
+        const contentUrl = String(assignment.contentUrl || "").replace(/^content\//, "");
+        const classworkUrl = assignment.classworkContentUrl ||
+          (/^homework_[a-z0-9_-]+\.json$/i.test(contentUrl) ? null : assignment.contentUrl);
+        const classworkName = safeFileName(classworkUrl || entry.classworkFile);
+        const homeworkCandidate = assignment.homeworkContentUrl ||
+          (/^homework_[a-z0-9_-]+\.json$/i.test(String(assignment.contentUrl || "").replace(/^content\//, ""))
+            ? assignment.contentUrl
+            : entry.homeworkFile);
+
+        for (const [kind, name] of [["classwork", classworkName], ["homework", homeworkCandidate]]) {
+          if (!name) continue;
+          const record = await readContentFile(name);
+          const inserted = await writeIfMissing(`protectedContent/${lessonId}/${kind}`, {
+            sourceFile: record.file,
+            content: record.content,
+            importedAt: new Date().toISOString()
+          });
+          if (inserted) imported += 1;
+          else preserved += 1;
+        }
+
+        if (!curriculum[lessonId]) continue;
+        const assigned = assignment.published === false ? [] : assignment.audience === "all"
+          ? Object.keys(students)
+          : assignedCodes(assignment);
+        const assignedSet = new Set(assigned);
+        for (const code of Object.keys(existingViews)) {
+          if (existingViews[code] && existingViews[code][lessonId] && !assignedSet.has(code)) {
+            await database.ref(`studentCurriculum/${code}/${lessonId}`).update({ published: false });
+          }
+        }
+        for (const code of assigned) {
+          if (!/^[A-Z0-9]{4,12}$/.test(code)) throw new Error(`Invalid assigned student code for ${lessonId}.`);
+          if (!students[code]) throw new Error(`Student record is missing for assigned code ${code}.`);
+          await database.ref(`studentCurriculum/${code}/${lessonId}`).update(studentView(lessonId, assignment, classworkName, safeFileName(homeworkCandidate)));
+          studentViews += 1;
+        }
+      }
+
+      for (const [code, views] of Object.entries(existingViews)) {
+        for (const lessonId of Object.keys(views || {})) {
+          if (!lessonIds.has(lessonId)) {
+            await database.ref(`studentCurriculum/${code}/${lessonId}`).update({ published: false });
+          }
+        }
+      }
+
+      setStatus(`Migration finished.\nNew protected records: ${imported}\nExisting protected records preserved: ${preserved}\nStudent lesson views created or refreshed: ${studentViews}\n\nVerify assigned content in the student portal before removing any public JSON files.`);
+      importButton.disabled = false;
+    }
+
+    async function signInAsTeacher() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      try {
+        await auth.signInWithPopup(provider);
+      } catch (error) {
+        if (error.code === "auth/popup-blocked" || error.code === "auth/operation-not-supported-in-this-environment") {
+          await auth.signInWithRedirect(provider);
+          return;
+        }
+        throw error;
+      }
+    }
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+      database = firebase.database();
+      auth = firebase.auth();
+      await auth.getRedirectResult();
+      auth.onAuthStateChanged(user => {
+        const allowed = isTeacher(user);
+        importButton.disabled = !allowed;
+        signInButton.disabled = allowed;
+        setStatus(allowed ? `Signed in as ${user.email}.` : "Sign in with a verified teacher account.");
+      });
+    } catch (error) {
+      setStatus(`Firebase initialization failed: ${error.message}`);
+    }
+
+    signInButton.addEventListener("click", () => {
+      signInAsTeacher().catch(error => setStatus(`Teacher sign-in failed: ${error.message}`));
+    });
+    importButton.addEventListener("click", () => {
+      if (!confirm("Import only missing protected content and copy assignment links? Existing protected content and curriculum records will not be overwritten.")) return;
+      importContent().catch(error => {
+        importButton.disabled = !isTeacher(auth && auth.currentUser);
+        setStatus(`Import failed: ${error.message}`);
+      });
+    });
+  </script>
+</body>
+</html>

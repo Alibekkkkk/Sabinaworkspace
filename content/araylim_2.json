@@ -45,130 +45,130 @@
   ],
   "readingHtml": "<h1>The Future of Space Tourism</h1><div class=\"subtitle\">Will you travel to space?</div><p><span class=\"para-label\">A.</span>In the future, traveling to space will not just be for astronauts. Companies are working hard to <b>establish</b> a new industry: space tourism. Next year, they <b>are going to launch</b> the first commercial flights. By 2030, ordinary people <b>will be orbiting</b> the Earth in luxury space hotels.</p><p><span class=\"para-label\">B.</span>However, this type of travel <b>requires</b> strict rules. You <b>have to</b> be in good health. You <b>must not</b> have heart problems. Space is full of <b>hazards</b>, such as space debris. While you <b>are flying</b>, you <b>must</b> wear a special suit. Passengers <b>should</b> also train for a few days before the flight.</p><p><span class=\"para-label\">C.</span>Humans <b>are not adapted</b> to zero gravity. In space, your body <b>will undergo</b> many changes. You might feel <b>isolated</b> or homesick. But most people say they <b>will manage</b> to <b>survive</b> the journey because the view of Earth is unforgettable. Would you <b>be allowed to</b> pay millions of dollars for a ticket? Only time will tell.</p>",
   "readingQ": [
-    { "type": "short", "prompt": "What industry are companies trying to establish?", "answers": ["space tourism"], "exp": "Companies are working to establish space tourism." },
-    { "type": "tfng", "prompt": "You don't need to be in good health to travel to space.", "answer": "False", "exp": "You have to be in good health." },
-    { "type": "mcq", "prompt": "What is an example of a space hazard mentioned in the text?", "options": ["Aliens", "Space debris", "Asteroids"], "correct": "Space debris", "exp": "The text mentions space debris as a hazard." },
-    { "type": "short", "prompt": "What must you wear while flying?", "answers": ["a special suit", "special suit", "suit"], "exp": "You must wear a special suit." },
-    { "type": "tfng", "prompt": "Human bodies are perfectly adapted to zero gravity.", "answer": "False", "exp": "Humans are not adapted to zero gravity." },
-    { "type": "mcq", "prompt": "Why will people manage to survive the journey?", "options": ["Because the food is good", "Because the view of Earth is unforgettable", "Because they sleep all the time"], "correct": "Because the view of Earth is unforgettable", "exp": "The view is unforgettable." },
-    { "type": "long", "prompt": "Explain two rules that passengers must follow for space travel.", "keywordGroups": [["health","good health","heart"],["suit","wear"],["train","training"],["must","have to"]], "minWords": 10, "minGroups": 2, "sample": "Passengers must be in good health and must not have heart problems. They also have to wear a special suit and should train for a few days.", "exp": "Key ideas: health requirements, wearing a suit, training." }
+    { "id": "araylim_2.readingQ.001", "type": "short", "prompt": "What industry are companies trying to establish?", "answers": ["space tourism"], "exp": "Companies are working to establish space tourism." },
+    { "id": "araylim_2.readingQ.002", "type": "tfng", "prompt": "You don't need to be in good health to travel to space.", "answer": "False", "exp": "You have to be in good health." },
+    { "id": "araylim_2.readingQ.003", "type": "mcq", "prompt": "What is an example of a space hazard mentioned in the text?", "options": ["Aliens", "Space debris", "Asteroids"], "correct": "Space debris", "exp": "The text mentions space debris as a hazard." },
+    { "id": "araylim_2.readingQ.004", "type": "short", "prompt": "What must you wear while flying?", "answers": ["a special suit", "special suit", "suit"], "exp": "You must wear a special suit." },
+    { "id": "araylim_2.readingQ.005", "type": "tfng", "prompt": "Human bodies are perfectly adapted to zero gravity.", "answer": "False", "exp": "Humans are not adapted to zero gravity." },
+    { "id": "araylim_2.readingQ.006", "type": "mcq", "prompt": "Why will people manage to survive the journey?", "options": ["Because the food is good", "Because the view of Earth is unforgettable", "Because they sleep all the time"], "correct": "Because the view of Earth is unforgettable", "exp": "The view is unforgettable." },
+    { "id": "araylim_2.readingQ.007", "type": "long", "prompt": "Explain two rules that passengers must follow for space travel.", "keywordGroups": [["health","good health","heart"],["suit","wear"],["train","training"],["must","have to"]], "minWords": 10, "minGroups": 2, "sample": "Passengers must be in good health and must not have heart problems. They also have to wear a special suit and should train for a few days.", "exp": "Key ideas: health requirements, wearing a suit, training." }
   ],
   "contextQ": [
-    { "prompt": "In paragraph B, \"hazards\" means...", "options": ["dangers", "beautiful views", "holidays"], "correct": "dangers", "exp": "Hazards are dangers or risks." },
-    { "prompt": "In paragraph C, \"isolated\" means...", "options": ["separated from other people", "surrounded by aliens", "feeling happy"], "correct": "separated from other people", "exp": "Isolated means alone or separated." }
+    { "id": "araylim_2.contextQ.001", "prompt": "In paragraph B, \"hazards\" means...", "options": ["dangers", "beautiful views", "holidays"], "correct": "dangers", "exp": "Hazards are dangers or risks." },
+    { "id": "araylim_2.contextQ.002", "prompt": "In paragraph C, \"isolated\" means...", "options": ["separated from other people", "surrounded by aliens", "feeling happy"], "correct": "separated from other people", "exp": "Isolated means alone or separated." }
   ],
   "g6": {
     "pos": [
-      { "p": "Next year, they ___ (launch) a new rocket.", "a": "are going to launch", "ex": "Going to: future plan." },
-      { "p": "Look at those clouds! It ___ (rain).", "a": "is going to rain", "ex": "Going to: prediction." },
-      { "p": "I think humans ___ (live) on Mars one day.", "a": "will live", "ex": "Will: prediction." },
-      { "p": "The space shuttle ___ (leave) at 9 AM tomorrow.", "a": "leaves", "ex": "Present Simple: timetable." },
-      { "p": "We ___ (meet) the astronauts tomorrow.", "a": "are meeting", "ex": "Present Continuous: arrangement." }
+      { "id": "araylim_2.g6.pos.001", "p": "Next year, they ___ (launch) a new rocket.", "a": "are going to launch", "ex": "Going to: future plan." },
+      { "id": "araylim_2.g6.pos.002", "p": "Look at those clouds! It ___ (rain).", "a": "is going to rain", "ex": "Going to: prediction." },
+      { "id": "araylim_2.g6.pos.003", "p": "I think humans ___ (live) on Mars one day.", "a": "will live", "ex": "Will: prediction." },
+      { "id": "araylim_2.g6.pos.004", "p": "The space shuttle ___ (leave) at 9 AM tomorrow.", "a": "leaves", "ex": "Present Simple: timetable." },
+      { "id": "araylim_2.g6.pos.005", "p": "We ___ (meet) the astronauts tomorrow.", "a": "are meeting", "ex": "Present Continuous: arrangement." }
     ],
     "neg": [
-      { "p": "I ___ (not / travel) to space next year.", "a": "am not going to travel", "ex": "Going to negative." },
-      { "p": "They ___ (not / arrive) on time.", "a": "will not arrive", "ex": "Will negative." }
+      { "id": "araylim_2.g6.neg.001", "p": "I ___ (not / travel) to space next year.", "a": "am not going to travel", "ex": "Going to negative." },
+      { "id": "araylim_2.g6.neg.002", "p": "They ___ (not / arrive) on time.", "a": "will not arrive", "ex": "Will negative." }
     ],
     "q": [
-      { "p": "___ you ___ (come) to the space museum tomorrow?", "a": "Are you coming", "ex": "Present Continuous future question." },
-      { "p": "___ it ___ (be) cold in space?", "a": "Will it be", "ex": "Will question." }
+      { "id": "araylim_2.g6.q.001", "p": "___ you ___ (come) to the space museum tomorrow?", "a": "Are you coming", "ex": "Present Continuous future question." },
+      { "id": "araylim_2.g6.q.002", "p": "___ it ___ (be) cold in space?", "a": "Will it be", "ex": "Will question." }
     ],
     "shuffled": [
-      { "p": "I ___ (buy) a telescope next week.", "a": "am going to buy" },
-      { "p": "The train ___ (leave) at 8.", "a": "leaves" },
-      { "p": "I ___ (help) you with your project.", "a": "will help" },
-      { "p": "She ___ (have) a baby in May.", "a": "is having" }
+      { "id": "araylim_2.g6.shuffled.001", "p": "I ___ (buy) a telescope next week.", "a": "am going to buy" },
+      { "id": "araylim_2.g6.shuffled.002", "p": "The train ___ (leave) at 8.", "a": "leaves" },
+      { "id": "araylim_2.g6.shuffled.003", "p": "I ___ (help) you with your project.", "a": "will help" },
+      { "id": "araylim_2.g6.shuffled.004", "p": "She ___ (have) a baby in May.", "a": "is having" }
     ]
   },
   "g7": {
     "pos": [
-      { "p": "You ___ (must) wear a helmet on the bike.", "a": "must", "ex": "Obligation." },
-      { "p": "You ___ (should) eat more vegetables.", "a": "should", "ex": "Advice." },
-      { "p": "I ___ (have to) study for the test.", "a": "have to", "ex": "Necessity." },
-      { "p": "Passengers ___ (can) buy food on the plane.", "a": "can", "ex": "Permission/ability." },
-      { "p": "It ___ (might) rain tomorrow.", "a": "might", "ex": "Possibility." }
+      { "id": "araylim_2.g7.pos.001", "p": "You ___ (must) wear a helmet on the bike.", "a": "must", "ex": "Obligation." },
+      { "id": "araylim_2.g7.pos.002", "p": "You ___ (should) eat more vegetables.", "a": "should", "ex": "Advice." },
+      { "id": "araylim_2.g7.pos.003", "p": "I ___ (have to) study for the test.", "a": "have to", "ex": "Necessity." },
+      { "id": "araylim_2.g7.pos.004", "p": "Passengers ___ (can) buy food on the plane.", "a": "can", "ex": "Permission/ability." },
+      { "id": "araylim_2.g7.pos.005", "p": "It ___ (might) rain tomorrow.", "a": "might", "ex": "Possibility." }
     ],
     "neg": [
-      { "p": "You ___ (must not) smoke here.", "a": "must not", "ex": "Prohibition." },
-      { "p": "You ___ (not / have to) come if you are tired.", "a": "do not have to", "ex": "No obligation." },
-      { "p": "You ___ (should not) drink and drive.", "a": "should not", "ex": "Negative advice." }
+      { "id": "araylim_2.g7.neg.001", "p": "You ___ (must not) smoke here.", "a": "must not", "ex": "Prohibition." },
+      { "id": "araylim_2.g7.neg.002", "p": "You ___ (not / have to) come if you are tired.", "a": "do not have to", "ex": "No obligation." },
+      { "id": "araylim_2.g7.neg.003", "p": "You ___ (should not) drink and drive.", "a": "should not", "ex": "Negative advice." }
     ],
     "q": [
-      { "p": "___ I ___ (use) your phone?", "a": "Can I use", "ex": "Permission question." },
-      { "p": "___ we ___ (have to) pay for the tickets?", "a": "Do we have to", "ex": "Necessity question." }
+      { "id": "araylim_2.g7.q.001", "p": "___ I ___ (use) your phone?", "a": "Can I use", "ex": "Permission question." },
+      { "id": "araylim_2.g7.q.002", "p": "___ we ___ (have to) pay for the tickets?", "a": "Do we have to", "ex": "Necessity question." }
     ],
     "shuffled": [
-      { "p": "You ___ (must) be careful.", "a": "must" },
-      { "p": "We ___ (should) leave early.", "a": "should" },
-      { "p": "He ___ (can) speak three languages.", "a": "can" },
-      { "p": "They ___ (might not) come.", "a": "might not" }
+      { "id": "araylim_2.g7.shuffled.001", "p": "You ___ (must) be careful.", "a": "must" },
+      { "id": "araylim_2.g7.shuffled.002", "p": "We ___ (should) leave early.", "a": "should" },
+      { "id": "araylim_2.g7.shuffled.003", "p": "He ___ (can) speak three languages.", "a": "can" },
+      { "id": "araylim_2.g7.shuffled.004", "p": "They ___ (might not) come.", "a": "might not" }
     ]
   },
   "sbPp": {
     "pos": [
-      { "prompt": "Build a Future sentence with 'will'.", "correct": ["I","will","travel","to","space."] }
+      { "id": "araylim_2.sbPp.pos.001", "prompt": "Build a Future sentence with 'will'.", "correct": ["I","will","travel","to","space."] }
     ],
     "neg": [
-      { "prompt": "Build a negative Future sentence with 'going to'.", "correct": ["I","am","not","going","to","take","the","train."] }
+      { "id": "araylim_2.sbPp.neg.001", "prompt": "Build a negative Future sentence with 'going to'.", "correct": ["I","am","not","going","to","take","the","train."] }
     ],
     "q": [
-      { "prompt": "Build a Future question with 'will'.", "correct": ["Will","you","come","with","me?"] }
+      { "id": "araylim_2.sbPp.q.001", "prompt": "Build a Future question with 'will'.", "correct": ["Will","you","come","with","me?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: They are going to launch a rocket.", "correct": ["They","are","going","to","launch","a","rocket."] }
+      { "id": "araylim_2.sbPp.shuffled.001", "prompt": "Build: They are going to launch a rocket.", "correct": ["They","are","going","to","launch","a","rocket."] }
     ]
   },
   "sbPs": {
     "pos": [
-      { "prompt": "Build a sentence with 'must'.", "correct": ["You","must","wear","a","seatbelt."] }
+      { "id": "araylim_2.sbPs.pos.001", "prompt": "Build a sentence with 'must'.", "correct": ["You","must","wear","a","seatbelt."] }
     ],
     "neg": [
-      { "prompt": "Build a sentence with 'must not'.", "correct": ["You","must","not","touch","that","button."] }
+      { "id": "araylim_2.sbPs.neg.001", "prompt": "Build a sentence with 'must not'.", "correct": ["You","must","not","touch","that","button."] }
     ],
     "q": [
-      { "prompt": "Build a question with 'should'.", "correct": ["Should","we","leave","now?"] }
+      { "id": "araylim_2.sbPs.q.001", "prompt": "Build a question with 'should'.", "correct": ["Should","we","leave","now?"] }
     ],
     "shuffled": [
-      { "prompt": "Build: She can play the guitar.", "correct": ["She","can","play","the","guitar."] }
+      { "id": "araylim_2.sbPs.shuffled.001", "prompt": "Build: She can play the guitar.", "correct": ["She","can","play","the","guitar."] }
     ]
   },
   "g10": {
     "pos": [
-      { "p": "I ___ (see) the doctor tomorrow.", "a": "am seeing", "ex": "Future arrangement." },
-      { "p": "The sun ___ (rise) in the east.", "a": "rises", "ex": "General truth." },
-      { "p": "I ___ (call) you when I arrive.", "a": "will call", "ex": "Instant decision/promise." },
-      { "p": "She ___ (study) English for 5 years.", "a": "has studied", "ex": "Present Perfect." },
-      { "p": "They ___ (travel) to Paris last week.", "a": "traveled", "ex": "Past Simple." }
+      { "id": "araylim_2.g10.pos.001", "p": "I ___ (see) the doctor tomorrow.", "a": "am seeing", "ex": "Future arrangement." },
+      { "id": "araylim_2.g10.pos.002", "p": "The sun ___ (rise) in the east.", "a": "rises", "ex": "General truth." },
+      { "id": "araylim_2.g10.pos.003", "p": "I ___ (call) you when I arrive.", "a": "will call", "ex": "Instant decision/promise." },
+      { "id": "araylim_2.g10.pos.004", "p": "She ___ (study) English for 5 years.", "a": "has studied", "ex": "Present Perfect." },
+      { "id": "araylim_2.g10.pos.005", "p": "They ___ (travel) to Paris last week.", "a": "traveled", "ex": "Past Simple." }
     ],
     "neg": [
-      { "p": "I ___ (not / finish) my homework yet.", "a": "have not finished", "ex": "Present Perfect negative." },
-      { "p": "We ___ (not / go) to the party tonight.", "a": "are not going", "ex": "Present Continuous future negative." }
+      { "id": "araylim_2.g10.neg.001", "p": "I ___ (not / finish) my homework yet.", "a": "have not finished", "ex": "Present Perfect negative." },
+      { "id": "araylim_2.g10.neg.002", "p": "We ___ (not / go) to the party tonight.", "a": "are not going", "ex": "Present Continuous future negative." }
     ],
     "q": [
-      { "p": "___ you ever ___ (be) to a concert?", "a": "Have you ever been", "ex": "Present Perfect question." },
-      { "p": "___ she ___ (play) tennis yesterday?", "a": "Did she play", "ex": "Past Simple question." }
+      { "id": "araylim_2.g10.q.001", "p": "___ you ever ___ (be) to a concert?", "a": "Have you ever been", "ex": "Present Perfect question." },
+      { "id": "araylim_2.g10.q.002", "p": "___ she ___ (play) tennis yesterday?", "a": "Did she play", "ex": "Past Simple question." }
     ],
     "shuffled": [
-      { "p": "I ___ (live) here since 2015.", "a": "have lived" },
-      { "p": "We ___ (watch) a movie when the power went out.", "a": "were watching" },
-      { "p": "He ___ (go) to school every day.", "a": "goes" },
-      { "p": "They ___ (just / arrive).", "a": "have just arrived" }
+      { "id": "araylim_2.g10.shuffled.001", "p": "I ___ (live) here since 2015.", "a": "have lived" },
+      { "id": "araylim_2.g10.shuffled.002", "p": "We ___ (watch) a movie when the power went out.", "a": "were watching" },
+      { "id": "araylim_2.g10.shuffled.003", "p": "He ___ (go) to school every day.", "a": "goes" },
+      { "id": "araylim_2.g10.shuffled.004", "p": "They ___ (just / arrive).", "a": "have just arrived" }
     ]
   },
   "testMcq": [
-    { "q": "Which word means 'a danger or risk'?", "options": ["hazard", "orbit", "launch"], "correct": "hazard", "exp": "Hazard means danger." },
-    { "q": "Which word means 'to change to fit a new situation'?", "options": ["to adapt", "to survive", "to isolate"], "correct": "to adapt", "exp": "Adapt means to change to fit." },
-    { "q": "Which word means 'to separate someone from others'?", "options": ["to isolate", "to establish", "to require"], "correct": "to isolate", "exp": "Isolate means to separate." }
+    { "id": "araylim_2.testMcq.001", "q": "Which word means 'a danger or risk'?", "options": ["hazard", "orbit", "launch"], "correct": "hazard", "exp": "Hazard means danger." },
+    { "id": "araylim_2.testMcq.002", "q": "Which word means 'to change to fit a new situation'?", "options": ["to adapt", "to survive", "to isolate"], "correct": "to adapt", "exp": "Adapt means to change to fit." },
+    { "id": "araylim_2.testMcq.003", "q": "Which word means 'to separate someone from others'?", "options": ["to isolate", "to establish", "to require"], "correct": "to isolate", "exp": "Isolate means to separate." }
   ],
   "testShort": [
-    { "q": "What industry are companies trying to establish?", "answers": ["space tourism"], "exp": "Space tourism." }
+    { "id": "araylim_2.testShort.001", "q": "What industry are companies trying to establish?", "answers": ["space tourism"], "exp": "Space tourism." }
   ],
   "testTfng": [
-    { "q": "You don't need to be in good health to travel to space.", "answer": "False", "exp": "You have to be in good health." },
-    { "q": "Space debris is a hazard.", "answer": "True", "exp": "It is mentioned as a hazard." }
+    { "id": "araylim_2.testTfng.001", "q": "You don't need to be in good health to travel to space.", "answer": "False", "exp": "You have to be in good health." },
+    { "id": "araylim_2.testTfng.002", "q": "Space debris is a hazard.", "answer": "True", "exp": "It is mentioned as a hazard." }
   ],
   "testComplete": [
-    { "p": "Next year, they ___ (launch) a new rocket.", "a": "are going to launch" },
-    { "p": "You ___ (must) wear a helmet.", "a": "must" }
+    { "id": "araylim_2.testComplete.001", "p": "Next year, they ___ (launch) a new rocket.", "a": "are going to launch" },
+    { "id": "araylim_2.testComplete.002", "p": "You ___ (must) wear a helmet.", "a": "must" }
   ]
 }

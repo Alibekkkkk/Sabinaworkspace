@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Teacher Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -192,6 +193,7 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
     <div class="header-actions">
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
       <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Switch theme">🌙</button>
+      <a class="btn" href="tools/import-content.html" style="text-decoration:none;" target="_blank">🔐 Import Content</a>
       <a class="btn" href="portal.html" style="text-decoration:none;" target="_blank">🎓 Student Portal</a>
       <button class="btn" onclick="teacherSignOut()">Sign out</button>
       <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
@@ -426,21 +428,13 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 <div class="toast" id="toast"></div>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",
-  authDomain: "sabina-s-workspace.firebaseapp.com",
-  databaseURL: "https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "sabina-s-workspace",
-  storageBucket: "sabina-s-workspace.firebasestorage.app",
-  messagingSenderId: "64645562064",
-  appId: "1:64645562064:web:2c5b5a37b5ab9a685be8d5"
-};
-const TEACHER_EMAIL = 'alibek.alpysbayev@gmail.com';
+let firebaseConfig = null;
+let TEACHER_EMAILS = [];
 
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {};
 let activeCode = null, activeFeedRef = null;
-let editingLessonId = null, lessonVisibility = 'all', lessonType = 'classwork';
+let editingLessonId = null, lessonVisibility = 'some', lessonType = 'classwork';
 let pendingLinkUid = null;
 let currentClassworkId = null, currentClassworkCode = '';
 let currentHomeworkId = null, currentHomeworkCode = '';
@@ -476,8 +470,11 @@ function updateThemeButton() {
   btn.title = cur === 'light' ? 'Switch to dark theme' : 'Switch to light theme';
 }
 
-function initFirebase() {
+async function initFirebase() {
   try {
+    const config=await import('./js/config.js');
+    firebaseConfig=config.firebaseConfig;
+    TEACHER_EMAILS=config.TEACHER_EMAILS;
     fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
     fbAuth = firebase.auth();
     fbDb = firebase.database();
@@ -488,7 +485,7 @@ function initFirebase() {
     });
 
     fbAuth.onAuthStateChanged(function(user) {
-      const allowed = user && user.email && user.email.toLowerCase() === TEACHER_EMAIL;
+      const allowed = user && user.email && TEACHER_EMAILS.includes(user.email.toLowerCase()) && user.emailVerified === true;
       if (!allowed) {
         teacherUid = null;
         document.querySelector('.wrap').style.display = 'none';
@@ -1274,7 +1271,7 @@ function openLessonModal(id) {
   document.getElementById('lessonDue').value = l.homeworkDue || '';
   document.getElementById('lessonParent').value = l.parentId || '';
   document.getElementById('lessonPublished').checked = l.published !== false;
-  lessonVisibility = (l.assignedTo && l.assignedTo.length) ? 'some' : 'all';
+  lessonVisibility = l.audience === 'all' ? 'all' : 'some';
   lessonType = l.homework ? 'homework' : 'classwork';
   setLessonVisibility(lessonVisibility);
   setLessonType(lessonType);
@@ -1329,6 +1326,7 @@ function submitLesson() {
     homeworkDue: lessonType === 'homework' ? (document.getElementById('lessonDue').value || '').trim() : '',
     parentId: lessonType === 'homework' ? document.getElementById('lessonParent').value : '',
     assignedTo: assignedTo,
+    audience: lessonVisibility === 'all' ? 'all' : 'assigned',
     stages: (curriculum[id] && curriculum[id].stages) || STAGE_LIST,
     published: document.getElementById('lessonPublished').checked,
     year: (curriculum[id] && curriculum[id].year) || String(new Date().getFullYear()),

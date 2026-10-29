@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Homework</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -38,6 +39,8 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .progress-pct{font:700 14px 'Fira Code',monospace;color:var(--accent);white-space:nowrap}
 .hw-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px;align-items:start}
 @media(max-width:980px){.hw-split{grid-template-columns:1fr}}
+.identity-banner{display:none;align-items:center;justify-content:space-between;gap:12px;padding:10px 18px;background:var(--panel);border-bottom:1px solid var(--border);font-weight:700}
+.identity-banner button{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:8px;padding:7px 10px;cursor:pointer}
 .reading-pane{position:sticky;top:80px}
 .questions-pane{min-width:0}
 .passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.9;color:var(--ink);box-shadow:var(--shadow-sm);max-height:calc(100vh - 120px);overflow-y:auto;user-select:text;}
@@ -140,6 +143,7 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 </head>
 <body>
 
+<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" onclick="switchStudent()">Not you? Switch student</button></div>
 <div class="hw-top">
   <div class="mark" id="markIcon">📘</div>
   <div class="title-block">
@@ -210,16 +214,17 @@ html.dark .underline:hover { background-color: rgba(255, 255, 255, 0.15); }
 </div>
 
 <script>
-const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
+let firebaseConfig;
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
 
 const params=new URLSearchParams(location.search);
 const variant=params.get('variant')||'';
-const code=(params.get('code')||'').toUpperCase();
+let code=(params.get('code')||'').toUpperCase();
 const homeworkId=params.get('lesson')||('homework_'+variant);
 const homeworkVersion=6;
 const teacherPreviewRequested=params.get('teacher')==='1';
-const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
+let TEACHER_EMAILS=[];
+let studentContext=null,contentFile='',contentHash='',schemaVersion=1;
 
 let lesson = null;
 
@@ -337,6 +342,17 @@ function undoHomeworkQuestion(idx) {
   }
 }
 
+async function switchStudent() {
+  try { await firebase.auth().signOut(); } catch(error) { console.error('Unable to sign out before switching student',error); }
+  for(const storage of [localStorage,sessionStorage]) {
+    for(let index=storage.length-1;index>=0;index--) {
+      const key=storage.key(index);
+      if(key&&(key.startsWith('nd_')||key.startsWith('nd:')))storage.removeItem(key);
+    }
+  }
+  window.location.href='portal.html';
+}
+
 function renderQuestions(){
   const host=document.getElementById('questionsHost');if(!host)return; host.innerHTML='';
   lesson.questions.forEach(function(q,idx){
@@ -379,36 +395,98 @@ function renderQuestions(){
   updateProgress();
 }
 
-function submitAll(){
+async function submitAll(){
   if(submitted)return; const total=lesson.questions.length; if(Object.keys(answers).length<total){ if(!confirm('Some questions are still blank. Submit anyway?'))return; }
   let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[idx]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer])) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
-  submitted=true;
-  
-  if(sessionRef&&!teacherMode){ 
-      sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, score:score, total:total, submitted:true, completed:true, updatedAt:Date.now() }).catch(function(e){console.error(e)}); 
-      
-      // Log submission to history
-      sessionRef.child('history').push({
+  if(!sessionRef||!studentContext)throw new Error('Verified student session is unavailable; your work was not submitted.');
+  try {
+      await sessionRef.child('homework/'+homeworkId).update({
+        version:homeworkVersion,
+        answers:answers,
+        rawAnswers:answers,
+        score:score,
+        total:total,
+        submitted:true,
+        completed:true,
+        submittedAt:firebase.database.ServerValue.TIMESTAMP,
+        submittedBy:{name:studentContext.name,code:studentContext.code},
+        contentFile:contentFile,
+        contentHash:contentHash,
+        schemaVersion:schemaVersion,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      });
+      await sessionRef.child('history').push({
           actor: 'student',
           type: 'homework_submit',
           detail: 'Submitted homework: ' + (lesson.title || homeworkId),
-          ts: Date.now()
-      }).catch(function(e){console.error(e)});
+          ts: firebase.database.ServerValue.TIMESTAMP,
+          contentFile:contentFile,
+          contentHash:contentHash
+      });
+  } catch(error) {
+    console.error('Homework submission failed',error);
+    document.getElementById('submitHint').textContent='Submission failed: '+error.message+'. Your answers are still on this page; please retry.';
+    return;
   }
+  submitted=true;
   
   renderQuestions(); const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
   banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+ '<div class="big">'+score+' / '+total+'</div>'+ '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+ '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>';
+  const receipt=document.createElement('p');
+  receipt.textContent='Submitted as '+studentContext.name+' at '+new Date(submittedAt).toLocaleString();
+  banner.appendChild(receipt);
   host.insertBefore(banner,host.firstChild); window.scrollTo({top:0,behavior:'smooth'}); if(typeof confetti==='function')confetti(); updateProgress();
 }
 
 function confetti(){ const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093']; for(let i=0;i<70;i++){ const c=document.createElement('div');c.className='confetti'; c.style.left=Math.random()*100+'vw';c.style.top='-20px'; c.style.background=colors[Math.floor(Math.random()*colors.length)]; c.style.animationDelay=Math.random()*.5+'s'; c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px'; if(Math.random()>.5)c.style.borderRadius='50%'; document.body.appendChild(c);setTimeout(function(){c.remove()},3600); } }
 
 async function loadHomeworkContent() {
-  let fileName = ''; if (variant) { fileName = variant.startsWith('homework_') ? variant : 'homework_' + variant; } else if (code) { fileName = 'homework_' + code.toLowerCase(); } else { fileName = 'homework_sabina'; }
-  const res = await fetch('content/' + fileName + '.json', { cache: 'no-store' });
-  if (!res.ok) { const fallback = await fetch('content/homework_sabina.json', { cache: 'no-store' }); if(!fallback.ok) throw new Error('content/' + fileName + '.json not found and fallback failed.'); lesson = await fallback.json(); return; }
-  lesson = await res.json();
+  const { resolveStudentContext } = await import('./js/student-context.js');
+  if(teacherPreviewRequested) {
+    const fileName=variant.startsWith('homework_')?variant:'homework_'+variant;
+    if(!/^homework_[a-z0-9_]+$/i.test(fileName))throw new Error('Invalid teacher-preview content selection.');
+    const {loadProtectedContent}=await import('./js/protected-content.js');
+    try {
+      const protectedRecord=await loadProtectedContent(fbDb,homeworkId,'homework');
+      if(protectedRecord.sourceFile&&protectedRecord.sourceFile!==fileName+'.json')throw new Error('Protected homework does not match the selected preview file.');
+      lesson=protectedRecord.content;
+      contentFile='Firebase protected content/'+homeworkId+'/homework';
+    } catch(error) {
+      if(!error.message.includes('has not been imported'))throw error;
+      contentFile='content/'+fileName+'.json';
+      const response=await fetch(contentFile,{cache:'no-store'});
+      if(!response.ok)throw new Error('Content not found. Tell your teacher (lessonId='+homeworkId+', file='+contentFile+').');
+      lesson=await response.json();
+    }
+  } else {
+    studentContext=await resolveStudentContext({auth:fbAuth,db:fbDb,lessonId:homeworkId});
+    code=studentContext.code;
+    const snapshot=await fbDb.ref('studentCurriculum/'+code+'/'+homeworkId).once('value');
+    if(!snapshot.exists())throw new Error('Homework assignment not found. Tell your teacher (lessonId='+homeworkId+').');
+    const assignment=snapshot.val();
+    if(!assignment.homework||assignment.published===false)throw new Error('This homework is not assigned to this student.');
+    const manifestResponse=await fetch('content/manifest.json',{cache:'no-store'});
+    if(!manifestResponse.ok)throw new Error('Content manifest could not be loaded.');
+    const manifest=await manifestResponse.json();
+    const entry=manifest[homeworkId];
+    const contentUrl=String(assignment.contentUrl||'').replace(/^content\//,'');
+    const homeworkUrl=assignment.homeworkContentUrl||
+      (/^homework_[a-z0-9_-]+\.json$/i.test(contentUrl)?contentUrl:null);
+    const requested=homeworkUrl||entry&&entry.homeworkFile;
+    if(!requested||typeof requested!=='string')throw new Error('Content not found. Tell your teacher (lessonId='+homeworkId+', file=unassigned).');
+    const fileName=requested.replace(/^content\//,'');
+    if(fileName.includes('..')||fileName.includes('/')||!/^homework_[a-z0-9_]+\.json$/i.test(fileName))throw new Error('Invalid homework content reference.');
+    const {loadProtectedContent}=await import('./js/protected-content.js');
+    const protectedRecord=await loadProtectedContent(fbDb,homeworkId,'homework');
+    if(protectedRecord.sourceFile&&protectedRecord.sourceFile!==fileName)throw new Error('Protected homework does not match the assigned content file.');
+    lesson=protectedRecord.content;
+    contentFile='Firebase protected content/'+homeworkId+'/homework';
+  }
+  if(!lesson||!Array.isArray(lesson.questions))throw new Error('Homework content has an invalid question set.');
+  schemaVersion=lesson.schemaVersion||1;
+  if(crypto&&crypto.subtle){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(lesson)));contentHash=Array.from(new Uint8Array(bytes)).map(b=>b.toString(16).padStart(2,'0')).join('')}
+  return studentContext;
 }
 
 function resetHomeworkTeacher() {
@@ -416,65 +494,88 @@ function resetHomeworkTeacher() {
   if(sessionRef) { sessionRef.child('homework/'+homeworkId).remove().then(() => { alert('Homework reset successfully. The student can now retake it.'); location.reload(); }).catch(e => alert('Reset failed: ' + e.message)); }
 }
 
-function initFirebase(){
-  try{
-    fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig); fbDb=firebase.database(); fbAuth=firebase.auth();
-    document.title=lesson.title; document.getElementById('hwTitle').textContent=lesson.title; document.getElementById('hwSub').textContent=lesson.sub; document.getElementById('heroEyebrow').textContent=lesson.eyebrow; document.getElementById('heroHeadline').textContent=lesson.headline;
-    document.getElementById('heroIntro').innerHTML=escapeHtml(lesson.intro)+ '<span class="ru">Это одностраничная домашка: прочитайте текст и ответьте на все вопросы. Отправить работу можно только один раз.</span>';
-
-    if(teacherPreviewRequested){
-      fbAuth.onAuthStateChanged(function(user){
-        teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase())); teacherMode=teacherCanEdit;
-        if(teacherCanEdit){ document.getElementById('teacherResetArea').style.display='block'; startHomework(); }
-        else{document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Teacher sign-in required</h2></div>'}
-      });
-      return;
-    }
-
-    // STRICT SECURITY CHECK FOR STUDENTS
-    if (!code) {
-        document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access Denied</h2><p>No student code provided. Please open this homework from your portal.</p></div>';
-        return;
-    }
-
-    fbAuth.onAuthStateChanged(async function(user){
-      fbDb.ref('students/'+code).once('value').then(function(snap){
-        const s=snap.val();
-        if(!s){
-           document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Invalid code</h2><p>This student code does not exist.</p></div>';
-           return;
-        }
-        
-        // Verify Google account matches if linked
-        if (s.uid) {
-            if (!user || s.uid !== user.uid) {
-               document.body.innerHTML='<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Access Denied</h2><p>This account is linked to a Google account. You must sign in with Google on this device first.</p></div>';
-               return;
-            }
-        }
-        
-        startHomework();
-      });
+async function initFirebase(){
+  const config=await import('./js/config.js');
+  firebaseConfig=config.firebaseConfig;
+  TEACHER_EMAILS=config.TEACHER_EMAILS;
+  fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
+  fbDb=firebase.database();
+  fbAuth=firebase.auth();
+  if(teacherPreviewRequested) {
+    const user=await new Promise(function(resolve,reject){
+      let unsubscribe=()=>{};
+      unsubscribe=fbAuth.onAuthStateChanged(function(current){unsubscribe();resolve(current)},function(error){unsubscribe();reject(error)});
     });
-  }catch(e){console.error(e);startHomework()}
+    teacherCanEdit=!!(user&&user.emailVerified&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
+    teacherMode=teacherCanEdit;
+    if(!teacherCanEdit)throw new Error('Teacher sign-in required.');
+    document.getElementById('teacherResetArea').style.display='block';
+    await loadHomeworkContent();
+    document.title=lesson.title;
+    document.getElementById('hwTitle').textContent=lesson.title;
+    document.getElementById('hwSub').textContent=lesson.sub||'';
+    document.getElementById('heroEyebrow').textContent=lesson.eyebrow||'';
+    document.getElementById('heroHeadline').textContent=lesson.headline||lesson.title;
+    document.getElementById('heroIntro').textContent=lesson.intro||'';
+    return;
+  }
+  await loadHomeworkContent();
+  document.title=lesson.title;
+  document.getElementById('hwTitle').textContent=lesson.title;
+  document.getElementById('hwSub').textContent=lesson.sub||'';
+  document.getElementById('heroEyebrow').textContent=lesson.eyebrow||'';
+  document.getElementById('heroHeadline').textContent=lesson.headline||lesson.title;
+  document.getElementById('heroIntro').textContent=lesson.intro||'';
+  const banner=document.getElementById('studentIdentityBanner');
+  document.getElementById('studentIdentityText').textContent='You are working as '+studentContext.name+' ('+studentContext.code+') — '+lesson.title+' · '+contentFile;
+  banner.style.display='flex';
+  if(new URLSearchParams(location.search).get('debug')==='1') {
+    const debug=document.createElement('pre');
+    debug.textContent=JSON.stringify({code:studentContext.code,uid:studentContext.uid,lessonId:studentContext.lessonId,contentFile,contentHash,schemaVersion,storageNamespace:studentContext.storageNamespace},null,2);
+    banner.after(debug);
+  }
 }
 
-function startHomework(){
-  if(fbDb && code){
-    sessionRef=fbDb.ref('sessions/'+code);
-    sessionRef.child('homework/'+homeworkId).once('value').then(function(snap){
-      const data=snap.val()||{};
-      if(Number(data.version)===homeworkVersion){ answers=data.answers||{}; submitted=!!data.submitted; } 
-      else { answers={};submitted=false; if(!teacherMode){ sessionRef.child('homework/'+homeworkId).set({ version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false }).catch(function(){}); } }
-      renderPassage();renderQuestions();
-      if(submitted){ const host=document.getElementById('questionsHost'); const banner=document.createElement('div');banner.className='result-banner'; banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+ '<p>Your teacher has your answers. You can review the feedback below.</p>'; host.insertBefore(banner,host.firstChild); }
-    }).catch(function(e){ console.error(e);renderPassage();renderQuestions(); });
-  }else{ renderPassage();renderQuestions(); }
+async function startHomework(){
+  if(!fbDb||(!studentContext&&!teacherMode))throw new Error('Verified student context is required to start homework.');
+  if(teacherMode&&!code){renderPassage();renderQuestions();return}
+  sessionRef=fbDb.ref('sessions/'+code);
+  const recordRef=sessionRef.child('homework/'+homeworkId);
+  const snapshot=await recordRef.once('value');
+  const data=snapshot.val()||{};
+  if(data.submitted===true) {
+    answers=data.answers||{};
+    submitted=true;
+  } else {
+    if(Number(data.version)===homeworkVersion) {
+      answers=data.answers||{};
+      await recordRef.update({contentFile,contentHash,schemaVersion});
+    }
+    else {
+      if(Object.keys(data).length)await recordRef.child('attempts').push(data);
+      answers={};submitted=false;
+      await recordRef.update({version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false,contentFile,contentHash,schemaVersion});
+    }
+  }
+  renderPassage();renderQuestions();
+  if(submitted){ const host=document.getElementById('questionsHost'); const banner=document.createElement('div');banner.className='result-banner'; banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+ '<p>Your teacher has your answers. You can review the feedback below.</p>'; host.insertBefore(banner,host.firstChild); }
 }
 
 (async function boot() {
-  try { await loadHomeworkContent(); } catch (e) { document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;font-family:serif"><h2>Homework content failed to load</h2><p>' + e.message + '</p></div>'; return; }
-  initFirebase();
+  try {
+    await initFirebase();
+    await startHomework();
+  } catch (error) {
+    console.error('Homework access or content initialization failed',error);
+    const message=document.createElement('main');
+    message.style.cssText='text-align:center;padding:80px 20px;font-family:serif';
+    const title=document.createElement('h2');
+    title.textContent='Homework could not be opened';
+    const detail=document.createElement('p');
+    detail.textContent=error.message;
+    message.append(title,detail);
+    document.body.replaceChildren(message);
+  }
 })();
 </script>
 </body>

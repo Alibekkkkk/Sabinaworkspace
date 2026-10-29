@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Lesson — Vocabulary, Reading & Tenses</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -34,7 +35,7 @@ body{display:flex;flex-direction:column}
 .sync-dot.warn{background:var(--warn);animation:none}
 .sync-dot.off{background:var(--error);animation:none}
 @keyframes syncPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-.session-input{display:flex;align-items:center;gap:6px;background:var(--bg);padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700}
+.session-input{display:none;align-items:center;gap:6px;background:var(--bg);padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700}
 .session-input input{border:none;background:transparent;font-family:'Fira Code',monospace;font-size:13px;font-weight:800;color:var(--accent);outline:none;width:90px;text-transform:uppercase;letter-spacing:.5px}
 .session-input input::placeholder{color:var(--ink-soft);font-weight:600;text-transform:none;letter-spacing:0}
 .session-input .join-code{border:0;border-radius:14px;background:var(--accent);color:#fff;font-size:11px;font-family:inherit;font-weight:700;padding:5px 9px;cursor:pointer}
@@ -295,6 +296,9 @@ html.dark .q-feedback.info{color:#f5c66b}
 @media (max-width:900px){.sidebar{width:220px}.dd-area{grid-template-columns:1fr}.notes-panel{width:90vw;max-width:340px}}
 @media (max-width:640px){.topbar{height:auto;min-height:60px;padding:8px 12px;gap:7px;flex-wrap:wrap;align-content:center}.logo .text{display:none}.session-input{flex:1 1 145px;justify-content:space-between}.topbar>#scorePill,.topbar>#streakPill{display:none}.spacer{display:none}.icon-btn{width:34px;height:34px}.sidebar{position:fixed;left:-240px;top:92px;height:calc(100vh - 92px);z-index:150;transition:left .3s}.sidebar.open{left:0}.fc-modal-img{font-size:90px}.passage{padding:20px 22px;font-size:17px}.quiz-options{grid-template-columns:1fr}}
 ::selection{background:var(--accent);color:#fff}
+.identity-banner{display:none;align-items:center;justify-content:space-between;gap:12px;padding:8px 18px;background:var(--panel);border-bottom:1px solid var(--border);font-weight:700}
+.identity-banner button{border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer}
+.debug-overlay{position:fixed;right:10px;bottom:10px;z-index:10000;max-width:min(420px,95vw);padding:12px;background:#111;color:#fff;border-radius:8px;font:12px/1.5 monospace;white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -314,6 +318,9 @@ html.dark .q-feedback.info{color:#f5c66b}
   <button class="icon-btn" id="darkToggle" onclick="toggleDark()" title="Dark">🌙</button>
   <button class="icon-btn" onclick="toggleNotes()" title="Notes">📝</button>
 </div>
+
+<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" onclick="switchStudent()">Not you? Switch student</button></div>
+<pre class="debug-overlay" id="debugOverlay" hidden></pre>
 
 <div class="layout">
   <aside class="sidebar">
@@ -384,11 +391,12 @@ html.dark .q-feedback.info{color:#f5c66b}
 
 <script>
 /* SCRIPT REMAINS THE SAME EXCEPT FOR THE COLLAPSIBLE LOGIC */
-const firebaseConfig={apiKey:"AIzaSyDL3lnUdhKBqAPEoiJjBnpGqU1ol4Fwa7w",authDomain:"sabina-s-workspace.firebaseapp.com",databaseURL:"https://sabina-s-workspace-default-rtdb.europe-west1.firebasedatabase.app",projectId:"sabina-s-workspace",storageBucket:"sabina-s-workspace.firebasestorage.app",messagingSenderId:"64645562064",appId:"1:64645562064:web:2c5b5a37b5ab9a685be8d5"};
+let firebaseConfig;
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
-const TEACHER_EMAILS=['alibek.alpysbayev@gmail.com'];
+let TEACHER_EMAILS=[];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
+let studentContext=null,studentStorage=null,contentFile='',contentHash='',schemaVersion=1,vocabMode='tracked',identityVerified=false;
 
 let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
 const DEFAULT_STAGES = [
@@ -476,7 +484,7 @@ function debouncedSaveDraft() {
   if (isRemoteUpdate) return;
   clearTimeout(draftSaveTimeout);
   draftSaveTimeout = setTimeout(() => {
-    try { localStorage.setItem('nd_draft_'+state.currentLessonId, JSON.stringify(draftAnswers)); } catch(e) {}
+    try { if(studentStorage)studentStorage.set('draft_'+state.currentLessonId,draftAnswers); } catch(e) { console.error('Unable to persist lesson draft',e); }
     if (fbConnected && sessionRef) {
       sessionRef.child('draft/'+state.currentLessonId).set(draftAnswers).catch(console.error);
     }
@@ -485,10 +493,7 @@ function debouncedSaveDraft() {
 
 function loadDraft() {
   let local = {};
-  try {
-    const l = localStorage.getItem('nd_draft_'+state.currentLessonId);
-    if (l) local = JSON.parse(l) || {};
-  } catch(e) {}
+  try { if(studentStorage)local=studentStorage.get('draft_'+state.currentLessonId)||{}; } catch(e) { console.error('Unable to load lesson draft',e); }
   draftAnswers = local;
   
   if (fbConnected && sessionRef) {
@@ -682,15 +687,46 @@ function editFlashcardImage(){
 }
 function closeImageModal() { document.getElementById('imageUrlModal').classList.remove('open'); }
 function saveImageUrl() {
+  if(!teacherCanEdit){alert('Only a teacher can save a flashcard image.');return}
   const url = document.getElementById('imageUrlInput').value.trim();
   if(url && !/^https?:\/\//i.test(url)) { alert('URL must start with http:// or https://'); return; }
   const w = VOCAB.find(x => x.en === currentEditWord); const meaning = w.meanings[currentEditMeaningIdx];
   const displayWord = meaning.displayEn || w.en; const imgKey = displayWord + '_' + currentEditMeaningIdx;
   const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||'lesson_1';
   fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+imgKey).set(url || null).then(function(){
+    return fbDb.ref('curriculum/'+lessonId).once('value').then(function(snapshot){
+      const assignment=snapshot.val()||{};
+      let codes=Array.isArray(assignment.assignedTo)?assignment.assignedTo:[];
+      if(assignment.audience==='all'){
+        return fbDb.ref('students').once('value').then(function(students){
+          codes=Object.keys(students.val()||{});
+          return codes;
+        });
+      }
+      return codes;
+    }).then(function(codes){
+      return Promise.all(codes.map(function(code){
+        return fbDb.ref('studentCurriculum/'+code+'/'+lessonId+'/flashcardImages/'+imgKey).set(url||null);
+      }));
+    });
+  }).then(function(){
     if(url) customImages[imgKey] = url; else delete customImages[imgKey];
     renderQuizModal(); renderFlashcards(); closeImageModal(); showToast('Image saved for meaning ' + (currentEditMeaningIdx+1));
   }).catch(function(e){alert('Failed: '+e.message)});
+}
+
+function updateCurriculumView(snapshot,code,teacherPreview){
+  curriculumCache=snapshot.val()||{};
+  const fbLessons=Object.keys(curriculumCache).map(function(id){
+    const lesson=curriculumCache[id];
+    if(!lesson||lesson.homework||lesson.published===false)return null;
+    if(teacherPreview&&!(lesson.audience==='all'||(Array.isArray(lesson.assignedTo)&&lesson.assignedTo.includes(code))))return null;
+    return {id:id,title:lesson.title||'Untitled Lesson',stages:lesson.stages||DEFAULT_STAGES,year:lesson.year||'2026',month:lesson.month||'October',order:lesson.order||0,maxScore:lesson.maxScore||130};
+  }).filter(Boolean).sort(function(a,b){return a.order-b.order});
+  CURRICULUM[0].months[0].lessons=fbLessons;
+  if(!state.currentLessonId&&fbLessons.length)state.currentLessonId=fbLessons[0].id;
+  if(state.currentLessonId&&expandedLessons[state.currentLessonId]===undefined)expandedLessons[state.currentLessonId]=true;
+  if(identityVerified||teacherPreviewRequested){renderSidebar();renderStage()}
 }
 
 function initFirebase(){
@@ -718,37 +754,31 @@ function initFirebase(){
              }
           });
        }
-       fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
     }
-    
-    fbDb.ref('curriculum').on('value',function(s){
-      curriculumCache=s.val()||{};
-      const code = getSessionCode();
-      const fbLessons = Object.keys(curriculumCache).map(id => {
-        const l = curriculumCache[id];
-        if (l.homework) return null;
-        if (l.assignedTo && l.assignedTo.length > 0) { if (!code || l.assignedTo.indexOf(code) === -1) return null; }
-        return { id: id, title: l.title || 'Untitled Lesson', stages: DEFAULT_STAGES, year: l.year || '2026', month: l.month || 'October', order: l.order || 0 };
-      }).filter(Boolean).sort((a,b) => a.order - b.order);
-      
-      if (fbLessons.length === 0) { fbLessons.push({ id: state.currentLessonId || 'lesson_1', title: 'Lesson', stages: DEFAULT_STAGES, year: '2026', month: 'October' }); }
-      CURRICULUM[0].months[0].lessons = fbLessons;
-      if (!state.currentLessonId && fbLessons.length > 0) { state.currentLessonId = fbLessons[0].id; }
-      
-      // Initialize expanded state for the active lesson
-      if (state.currentLessonId && expandedLessons[state.currentLessonId] === undefined) {
-          expandedLessons[state.currentLessonId] = true;
-      }
-      
-      renderSidebar(); renderStage(); 
-    });
     
     if(teacherPreviewRequested){
       document.querySelector('.session-input').style.display='none';
-      firebase.auth().onAuthStateChanged(function(user){
-        teacherCanEdit=!!(user&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
+      firebase.auth().onAuthStateChanged(async function(user){
+        teacherCanEdit=!!(user&&user.emailVerified&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
         teacherMode=teacherCanEdit;
         if(teacherCanEdit){
+          try{
+            const {loadProtectedContent}=await import('./js/protected-content.js');
+            try{
+              const record=await loadProtectedContent(fbDb,state.currentLessonId,'classwork');
+              activeContentName=String(record.sourceFile||'').replace(/\.json$/i,'')||activeContentName;
+              await applyLessonContent(record.content,'Firebase protected content/'+state.currentLessonId+'/classwork');
+            }catch(error){
+              if(!error.message.includes('has not been imported'))throw error;
+              await loadContent();
+            }
+          }catch(error){
+            document.getElementById('main').textContent='Teacher preview content failed to load: '+error.message;
+            return;
+          }
+          const lessonId=state.currentLessonId;
+          fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
+          fbDb.ref('curriculum').on('value',function(s){updateCurriculumView(s,getSessionCode(),true)});
           const code = getSessionCode();
           if (code) {
             sessionRef = fbDb.ref('sessions/' + code); activityRef = sessionRef.child('history'); commandRef = sessionRef.child('command'); fbConnected = true;
@@ -770,40 +800,75 @@ function initFirebase(){
       return;
     }
     
-    firebase.auth().onAuthStateChanged(async function(user){
-      const code=getSessionCode();
-      if(!code){
-        document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>No lesson selected</h2><p style="color:var(--ink-soft)">Please open this lesson from your portal.</p></div>';
-        return;
+    (async function() {
+      try {
+        const { resolveStudentContext } = await import('./js/student-context.js');
+        const contentParam=new URLSearchParams(location.search).get('content');
+        const context = await resolveStudentContext({auth:firebase.auth(),db:fbDb,lessonId:state.currentLessonId,contentId:contentParam||state.currentLessonId});
+        studentContext=context;
+        const storageModule=await import('./js/storage.js');
+        studentStorage={
+          get:function(key){return storageModule.readStudentValue(context,key)},
+          set:function(key,value){storageModule.writeStudentValue(context,key,value)}
+        };
+        document.getElementById('workspaceName').textContent=context.name;
+        const banner=document.getElementById('studentIdentityBanner');
+        document.getElementById('studentIdentityText').textContent='You are working as '+context.name+' ('+context.code+')';
+        banner.style.display='flex';
+        const debug=new URLSearchParams(location.search).get('debug')==='1';
+        if(debug){const overlay=document.getElementById('debugOverlay');overlay.textContent=JSON.stringify({code:context.code,uid:context.uid,lessonId:context.lessonId,contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion,storageNamespace:context.storageNamespace},null,2);overlay.hidden=false;}
+        bc=new BroadcastChannel('nd_lesson_live_v4_'+context.code+'_'+context.lessonId);
+        const lessonSnapshot=await fbDb.ref('studentCurriculum/'+context.code+'/'+context.lessonId).once('value');
+        const selected=lessonSnapshot.val();
+        if(!selected)throw new Error('Lesson assignment was not found.');
+        if(selected.published===false)throw new Error('This lesson is not published.');
+        let expectedFile=selected.classworkContentUrl||selected.contentUrl;
+        if(!expectedFile) {
+          const manifestResponse=await fetch('content/manifest.json',{cache:'no-store'});
+          if(!manifestResponse.ok)throw new Error('Content manifest could not be loaded.');
+          const manifest=await manifestResponse.json();
+          const entry=manifest[context.lessonId];
+          if(entry)expectedFile=entry.classworkFile;
+        }
+        if(!expectedFile)throw new Error('No classwork content is configured for this lesson.');
+        const expectedName=String(expectedFile).replace(/^content\//,'').replace(/\.json$/,'');
+        if(contentParam&&expectedName!==contentParam)throw new Error('Lesson content does not match the assigned curriculum file.');
+        if(!/^[a-z0-9_-]+$/i.test(expectedName))throw new Error('Invalid classwork content reference.');
+        activeContentName=expectedName;
+        const {loadProtectedContent}=await import('./js/protected-content.js');
+        const protectedRecord=await loadProtectedContent(fbDb,context.lessonId,'classwork');
+        if(protectedRecord.sourceFile&&protectedRecord.sourceFile!==expectedName+'.json')throw new Error('Protected classwork does not match the assigned curriculum file.');
+        await applyLessonContent(protectedRecord.content,'Firebase protected content/'+context.lessonId+'/classwork');
+        fbDb.ref('studentCurriculum/'+context.code).on('value',function(s){updateCurriculumView(s,context.code,false)});
+        fbDb.ref('studentCurriculum/'+context.code+'/'+context.lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
+        identityVerified=true;
+        storageModule.migrateLegacyValue(context,'state','nd_state_sabina_v6',localStorage.getItem('nd_state_owner_code'));
+        if(!teacherPreviewRequested)loadState();
+        await startStudentSession(context.code);
+        renderSidebar();renderStage();startTimer();updateHUD();
+      } catch(error) {
+        console.error('Student identity verification failed',error);
+        identityVerified=false;
+        document.getElementById('main').textContent='Access verification failed: '+error.message;
+        updateSyncUI('error');
       }
-      
-      fbDb.ref('students/'+code).once('value').then(function(snap){
-        const s=snap.val();
-        if(!s){
-           document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Invalid code</h2><p style="color:var(--ink-soft)">This student code does not exist.</p></div>';
-           return;
-        }
-        
-        // Strict security check for Google linked accounts
-        if (s.uid) {
-            if (!user || s.uid !== user.uid) {
-               document.getElementById('main').innerHTML='<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px"><h2>Access denied</h2><p style="color:var(--ink-soft)">This student account is linked to a Google account. Please sign in via Google.</p></div>';
-               return;
-            }
-        }
-        
-        document.getElementById('workspaceName').textContent = s.name;
-        startStudentSession(code);
-      });
-    });
-  }catch(e){console.error(e);updateSyncUI('error')}
+    }());
+  }catch(e){console.error(e);updateSyncUI('error');document.getElementById('main').textContent='Firebase initialization failed: '+e.message}
 }
-function startStudentSession(code){
+async function startStudentSession(code){
   if(!code){updateSyncUI('nocode');return}
   sessionRef=fbDb.ref('sessions/'+code); activityRef=sessionRef.child('history'); commandRef=sessionRef.child('command');
+  const remoteSnapshot=await sessionRef.child('state').once('value');
+  const remoteState=remoteSnapshot.val()||{};
+  const localState=studentStorage?studentStorage.get('state'):null;
+  state.scores=Object.assign({},remoteState.scores||{},state.scores||{});
+  state.done=Object.assign({},remoteState.done||{},state.done||{});
+  if(!localState&&remoteState.stage)state.currentStage=remoteState.stage;
+  if(!localState&&typeof remoteState.notes==='string')document.getElementById('notesArea').value=remoteState.notes;
+  if(!localState&&remoteState.streak)state.streak=remoteState.streak;
   commandRef.on('value',function(snap){const cmd=snap.val();if(!cmd)return;applyTeacherResetCommand(cmd);if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage)});
   fbConnected=true;updateSyncUI('live');pushFullState();
-  loadDraft(); 
+  await loadDraft();
   
   if (!teacherMode) {
       sessionRef.child('draft/'+state.currentLessonId).on('value', snap => {
@@ -823,10 +888,21 @@ function startStudentSession(code){
       });
   }
 }
-function getSessionCode(){ const u=new URLSearchParams(window.location.search).get('code'); if(u){ if(!teacherPreviewRequested)localStorage.setItem('nd_session_code',u.toUpperCase()); return u.toUpperCase(); } return (localStorage.getItem('nd_session_code')||'').toUpperCase(); }
-function changeSessionCode(){const i=document.getElementById('sessionCodeInput');const c=(i.value||'').toUpperCase().trim();if(!c){localStorage.removeItem('nd_session_code');updateSyncUI('nocode');return}localStorage.setItem('nd_session_code',c);if(!fbDb){initFirebase();return}if(sessionRef)sessionRef.off();if(commandRef)commandRef.off();startStudentSession(c)}
+function getSessionCode(){if(studentContext)return studentContext.code;if(teacherPreviewRequested)return (new URLSearchParams(location.search).get('code')||'').toUpperCase();return ''}
+function changeSessionCode(){document.getElementById('main').textContent='Student codes can only be changed from the portal.'}
+async function switchStudent(){try{await firebase.auth().signOut()}catch(error){console.error('Unable to sign out before switching student',error)}for(const storage of [localStorage,sessionStorage])for(let i=storage.length-1;i>=0;i--){const key=storage.key(i);if(key&&(key.startsWith('nd_')||key.startsWith('nd:')))storage.removeItem(key)}window.location.href='portal.html'}
 function updateSyncUI(s){const d=document.getElementById('syncDot');const t=document.getElementById('syncStatus');d.classList.remove('warn','off');if(s==='live')t.textContent='Live · Connected';else if(s==='teacher')t.textContent='Teacher preview';else if(s==='nocode'){d.classList.add('warn');t.textContent='Set code above'}else if(s==='error'){d.classList.add('off');t.textContent='Error'}}
 function applyTeacherResetCommand(cmd){
+  if(cmd&&cmd.action==='resetStage'&&Number.isInteger(Number(cmd.stage))) {
+    const stageId=Number(cmd.stage);
+    const key=state.currentLessonId+'_'+stageId;
+    state.scores[key]=0;
+    state.done[key]=false;
+    delete draftAnswers['stage_'+stageId];
+    if(sessionRef)sessionRef.child('draft/'+state.currentLessonId).remove().catch(function(error){console.error('Unable to clear stage draft',error)});
+    saveState();renderSidebar();renderStage();updateHUD();
+    return;
+  }
   if(!cmd||cmd.action!=='reset'||!cmd.ts)return;
   const k='nd_teacher_reset_seen_'+getSessionCode()+'_'+cmd.ts;
   if(localStorage.getItem(k))return;
@@ -871,12 +947,12 @@ function resumeTTS(){ if(!('speechSynthesis' in window))return; if(ttsState!=='p
 function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;try{window.speechSynthesis.cancel()}catch(e){}ttsState='idle';ttsCharStart=0;updateTTSButtons()}
 function updateTTSButtons(){ const p=document.getElementById('ttsPlay'); const pa=document.getElementById('ttsPause'); const r=document.getElementById('ttsResume'); const s=document.getElementById('ttsStop'); const setVis=function(el,on){if(!el)return;el.style.display=on?'inline-flex':'none'}; setVis(p,ttsState==='idle'); setVis(pa,ttsState==='playing'); setVis(r,ttsState==='paused'); setVis(s,ttsState!=='idle'); }
 
-const CHANNEL='nd_lesson_live_v4_sabina';let bc=null;try{bc=new BroadcastChannel(CHANNEL)}catch(e){}
+let bc=null;
 function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
-function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)})}
+function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000),contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion})}
 function broadcastAction(type,detail){ state.lastAction=detail; const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor: teacherMode ? 'teacher' : 'student' }; broadcast('action', payload); }
-function saveState(){ if(!teacherMode) { try{localStorage.setItem('nd_state_sabina_v6',JSON.stringify({currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}))}catch(e){} } broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)}); }
-function loadState(){try{const raw=localStorage.getItem('nd_state_sabina_v6');if(!raw)return;const p=JSON.parse(raw);if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){}}
+function saveState(){ if(!teacherMode&&studentStorage) { try { studentStorage.set('state',{currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}); } catch(e) { console.error('Unable to save lesson state',e); } } if(identityVerified)broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)}); }
+function loadState(){try{if(!studentStorage)return;const p=studentStorage.get('state');if(!p)return;if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){console.error('Unable to load lesson state',e)}}
 let customImages={};
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
@@ -893,22 +969,22 @@ function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
 
 let s1Filter='learning', vocabState={}, vocabCloudLoaded=false, s1VisibleList=[], quizWord=null, quizMeanings=[], quizCurrentIdx=0, quizRoundWrongs=0, quizAnswers={}, quizOptionsCache={}, quizHintShown=false, quizRoundFinalized=false, practiceMode=false, practiceQueue=[], practiceIdx=0;
 
-function vocabKey(){return 'nd_vocab_'+state.currentLessonId}
-function loadVocabStateLocal(){try{const r=localStorage.getItem(vocabKey());vocabState=r?JSON.parse(r)||{}:{}}catch(e){vocabState={}}}
-function loadVocabStateCloud(){ if(!fbConnected||!sessionRef)return Promise.resolve(); return sessionRef.child('state/vocabProgress/'+state.currentLessonId).once('value').then(function(snap){ const cloud=snap.val()||{}; Object.keys(cloud).forEach(function(w){vocabState[w]=cloud[w]}); saveVocabStateLocal(); }).catch(function(){}); }
-function saveVocabStateLocal(){try{localStorage.setItem(vocabKey(),JSON.stringify(vocabState))}catch(e){}}
+function vocabKey(){return 'vocab_'+state.currentLessonId}
+function loadVocabStateLocal(){try{vocabState=studentStorage?studentStorage.get(vocabKey())||{}:{}}catch(e){console.error('Unable to load vocabulary state',e);vocabState={}}}
+function loadVocabStateCloud(){ if(!fbConnected||!sessionRef)return Promise.resolve(); return sessionRef.child('state/vocabProgress/'+state.currentLessonId).once('value').then(function(snap){ const cloud=snap.val()||{}; Object.keys(cloud).forEach(function(w){vocabState[w]=cloud[w]}); saveVocabStateLocal(); }).catch(function(error){console.error('Unable to load cloud vocabulary progress',error);throw error}); }
+function saveVocabStateLocal(){try{if(studentStorage)studentStorage.set(vocabKey(),vocabState)}catch(e){console.error('Unable to save vocabulary state',e)}}
 function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(vocabState).catch(function(){})}catch(e){}}
 function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
 
 function getMeaningStatus(word, meaningIdx) {
-   if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return 'learned';
+   if(vocabMode==='preLearned') return 'learned';
    const wordState = vocabState[word]; if(!wordState || !wordState.meanings || !wordState.meanings[meaningIdx]) return 'learning';
    const s = wordState.meanings[meaningIdx]; if(s.perfectStreak >= 2) return 'learned'; if(s.wrongCount >= 2) return 'practice'; return 'learning';
 }
 
 function getWordStatus(word){ const w = VOCAB.find(x => x.en === word); if(!w) return 'learning'; let statuses = w.meanings.map((_, i) => getMeaningStatus(word, i)); if(statuses.every(s => s === 'learned')) return 'learned'; if(statuses.some(s => s === 'practice')) return 'practice'; return 'learning'; }
 function getVocabCounts(){ const c={learning:0,learned:0,practice:0}; VOCAB.forEach(function(w){c[getWordStatus(w.en)]++}); return c; }
-function shouldShowPractice(){ if(document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) return false; if(!Object.keys(vocabState).length)return false; return Object.keys(vocabState).some(function(w){return getWordStatus(w)!=='learned'}); }
+function shouldShowPractice(){ if(vocabMode==='preLearned') return false; if(!Object.keys(vocabState).length)return false; return Object.keys(vocabState).some(function(w){return getWordStatus(w)!=='learned'}); }
 
 function renderStage1(){
   const main=document.getElementById('main'); if(!main)return; main.innerHTML=''; loadVocabStateLocal();
@@ -1760,7 +1836,7 @@ function renderSidebar(){
           const studentCode=getSessionCode();
           if (studentCode) {
             const assignedHW=Object.keys(curriculumCache||{}).map(id=>curriculumCache[id]).filter(it=>{ 
-                return it && it.homework && it.published!==false && Array.isArray(it.assignedTo) && it.assignedTo.includes(studentCode) && it.parentId === lesson.id; 
+                return it && it.homework && it.published!==false && it.parentId === lesson.id; 
             });
             if(assignedHW.length){
               const hwList=document.createElement('div');hwList.className='homework-sub-list'; hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){ const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it}); const url=new URL(it.customUrl||'homework.html',window.location.href); url.searchParams.set('lesson',id); if(studentCode)url.searchParams.set('code',studentCode); const contentFile = (it.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, ''); if (contentFile) url.searchParams.set('variant', contentFile); return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>'; }).join('');
@@ -1770,7 +1846,7 @@ function renderSidebar(){
           const sub=document.createElement('div');sub.className='stage-sub-list';
           DEFAULT_STAGES.forEach(function(st){
             const key=lesson.id+"_"+st.id; const isA=st.id===state.currentStage; let isD = false;
-            if (document.getElementById('workspaceName').textContent.toLowerCase().includes('sabina')) { if (st.id === 1 || st.id === 2) isD = true; }
+            if (vocabMode==='preLearned') { if (st.id === 1 || st.id === 2) isD = true; }
             if (st.id === 1) { const counts = getVocabCounts(); if(counts.learned === VOCAB.length) isD = true; else isD = false; } else { isD = state.done[key]; }
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
             const row = document.createElement('div'); row.style.display = 'flex'; row.style.alignItems = 'stretch'; row.style.gap = '4px';
@@ -1807,32 +1883,40 @@ function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.c
 document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
 function showToast(text){ let t=document.getElementById('toast'); if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:white;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:9999;transition:opacity .3s,transform .3s;max-width:90vw;text-align:center';document.body.appendChild(t)} t.textContent=text;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)'; clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2200); }
 
-async function loadContent() {
-  activeContentName = new URLSearchParams(location.search).get('content') || 'sabina';
-  const res = await fetch('content/' + activeContentName + '.json', { cache: 'no-store' });
-  if (!res.ok) throw new Error('content/' + activeContentName + '.json not found');
-  const c = await res.json();
+async function applyLessonContent(c,sourceFile) {
+  if(!c||typeof c!=='object')throw new Error('Lesson content is invalid.');
+  contentFile=sourceFile;
+  vocabMode=c.vocabMode||'tracked';
+  schemaVersion=c.schemaVersion||1;
+  if(crypto&&crypto.subtle){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(c)));contentHash=Array.from(new Uint8Array(bytes)).map(b=>b.toString(16).padStart(2,'0')).join('')}
   VOCAB         = c.vocab; MATCH_DATA    = c.matchData; READING_HTML  = c.readingHtml; READING_Q     = c.readingQ; CONTEXT_Q     = c.contextQ;
   G6            = c.g6; G7            = c.g7; SB_PP         = c.sbPp; SB_PS         = c.sbPs; G10           = c.g10;
   TEST_MCQ      = c.testMcq; TEST_SHORT    = c.testShort; TEST_TFNG     = c.testTfng; TEST_COMPLETE = c.testComplete;
 }
 
+async function loadContent() {
+  activeContentName = new URLSearchParams(location.search).get('content') || 'sabina';
+  const contentFileName='content/'+activeContentName+'.json';
+  const res = await fetch(contentFileName, { cache: 'no-store' });
+  if (!res.ok) throw new Error(contentFileName+' not found');
+  await applyLessonContent(await res.json(),contentFileName);
+}
+
 (async function boot() {
-  try { await loadContent(); } catch (e) {
+  try {
+    const config=await import('./js/config.js');
+    firebaseConfig=config.firebaseConfig;
+    TEACHER_EMAILS=config.TEACHER_EMAILS;
+  } catch (e) {
     document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' + '<h2>Content failed to load</h2>' + '<p style="color:var(--ink-soft)">' + e.message + '</p>' + '</div>';
     return;
   }
-  if(!teacherPreviewRequested)loadState();
-  if(!teacherPreviewRequested && state.currentStage === 1){
-    for(let i = 1; i <= 9; i++){ if(!state.done[state.currentLessonId + "_" + i]){ state.currentStage = i; break; } }
-  }
   const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
-  if(lessonFromUrl){state.currentLessonId=lessonFromUrl;if(!teacherPreviewRequested)localStorage.setItem('nd_current_lesson',lessonFromUrl)}
+  if(lessonFromUrl)state.currentLessonId=lessonFromUrl;
   const savedCode=teacherPreviewRequested?'':getSessionCode();
   if(savedCode){const sci=document.getElementById('sessionCodeInput');if(sci)sci.value=savedCode}
   if (savedCode) { // Name loading handled in initFirebase
   } else { document.getElementById('workspaceName').textContent = 'Teacher Workspace'; }
-  renderSidebar();renderStage();startTimer();updateHUD();
   if(soundOn){const st=document.getElementById('soundToggle');if(st)st.classList.add('active')}
   if(document.documentElement.classList.contains('dark')){const dt=document.getElementById('darkToggle');if(dt)dt.classList.add('active')}
   initFirebase();

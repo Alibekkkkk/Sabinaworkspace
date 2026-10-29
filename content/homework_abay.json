@@ -76,56 +76,56 @@
     ]}
   ],
   "questions": [
-    { 
+    { "id": "homework_abay.questions.001",
       "type": "short", 
       "prompt": "What do professional esports players train every day to stimulate?", 
       "answers": ["brains", "their brains", "brain"], 
       "exp": "Paragraph A says they train to stimulate their brains." 
     },
-    { 
+    { "id": "homework_abay.questions.002",
       "type": "short", 
       "prompt": "What do players need to optimize to win?", 
       "answers": ["reaction times", "reaction time", "reactions"], 
       "exp": "Paragraph C says they communicate to optimize their reaction times." 
     },
-    { 
+    { "id": "homework_abay.questions.003",
       "type": "tfng", 
       "prompt": "Esports is exactly the same as playing video games alone at home.", 
       "answer": "False", 
       "exp": "Paragraph C says: 'Unlike solo gaming, esports is all about teamwork.'" 
     },
-    { 
+    { "id": "homework_abay.questions.004",
       "type": "tfng", 
       "prompt": "The text says that esports cannot be addictive.", 
       "answer": "False", 
       "exp": "Paragraph D states that the intense training can be highly addictive." 
     },
-    { 
+    { "id": "homework_abay.questions.005",
       "type": "mcq", 
       "prompt": "What is a major difference between esports and casual gaming mentioned in the text?", 
       "options": ["Esports requires teamwork and collaboration", "Casual gaming is much harder", "Esports players never get tired"], 
       "correct": "Esports requires teamwork and collaboration", 
       "exp": "Paragraph C emphasizes that esports is all about teamwork and collaboration." 
     },
-    { 
+    { "id": "homework_abay.questions.006",
       "type": "complete", 
       "prompt": "Players must find a healthy ______ between training, exercise, and rest.", 
       "answers": ["balance"], 
       "exp": "Paragraph D says they must find a healthy balance." 
     },
-    { 
+    { "id": "homework_abay.questions.007",
       "type": "complete", 
       "prompt": "Modern games require players to ______ intensely for long periods.", 
       "answers": ["focus"], 
       "exp": "Paragraph B says they require players to focus intensely." 
     },
-    { 
+    { "id": "homework_abay.questions.008",
       "type": "short", 
       "prompt": "What real-world things do players simulate in their minds?", 
       "answers": ["complex problems", "problems", "complex real-world problems", "real-world problems"], 
       "exp": "Paragraph B says they simulate complex real-world problems." 
     },
-    { 
+    { "id": "homework_abay.questions.009",
       "type": "long", 
       "prompt": "In your own words, explain why teamwork is so important in esports.", 
       "keywordGroups": [["collaborate", "work together", "teamwork"], ["communicate", "talk", "plan"], ["strategy", "win", "success"], ["reaction", "optimize"]], 
@@ -134,7 +134,7 @@
       "sample": "Teamwork is essential because players must collaborate and communicate constantly to execute a strategy, optimize their reaction times, and win the game.", 
       "exp": "Key ideas: collaboration, communication, strategy, winning." 
     },
-    { 
+    { "id": "homework_abay.questions.010",
       "type": "long", 
       "prompt": "Do you agree that esports should be considered a real sport? Why or why not?", 
       "keywordGroups": [["agree", "disagree", "opinion"], ["cognitive", "brain", "mental", "strategy"], ["training", "practice", "teamwork"], ["athlete", "sport"]], 

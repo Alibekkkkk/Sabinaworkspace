@@ -42,14 +42,14 @@
     ]}
   ],
   "questions": [
-    { "type": "short", "prompt": "Which planet do humans want to travel to?", "answers": ["mars", "the red planet"], "exp": "Humans want to travel to Mars." },
-    { "type": "tfng", "prompt": "The journey to Mars takes about seven months.", "answer": "True", "exp": "It takes about seven months." },
-    { "type": "mcq", "prompt": "Why must astronauts wear special suits outside?", "options": ["Because it is raining", "Because there is no oxygen and it is freezing", "Because of the aliens"], "correct": "Because there is no oxygen and it is freezing", "exp": "They must adapt to a planet with almost no oxygen and freezing temperatures." },
-    { "type": "tfng", "prompt": "Scientists think plants can never grow on Mars.", "answer": "False", "exp": "Scientists have discovered some plants can grow in Martian soil." },
-    { "type": "short", "prompt": "Where should colonists build their homes to hide from radiation?", "answers": ["underground", "underground homes"], "exp": "They should build underground homes." },
-    { "type": "complete", "prompt": "By 2050, astronauts ___ (build) the first Martian base.", "answers": ["will have built"] },
-    { "type": "complete", "prompt": "They ___ (might) feel isolated and lonely.", "answers": ["might"] },
-    { "type": "complete", "prompt": "They ___ (have to) wear special suits.", "answers": ["will have to"] },
-    { "type": "long", "prompt": "What are two challenges of living on Mars mentioned in the text?", "keywordGroups": [["radiation","space","journey"],["oxygen","freezing","temperature"],["isolated","lonely"],["food","plants"]], "minWords": 10, "minGroups": 2, "sample": "Two challenges are the long journey where astronauts might feel isolated, and the environment on Mars, which has no oxygen, freezing temperatures, and dangerous radiation.", "exp": "Key ideas: isolation, lack of oxygen, freezing temps, radiation." }
+    { "id": "homework_araylim_2.questions.001", "type": "short", "prompt": "Which planet do humans want to travel to?", "answers": ["mars", "the red planet"], "exp": "Humans want to travel to Mars." },
+    { "id": "homework_araylim_2.questions.002", "type": "tfng", "prompt": "The journey to Mars takes about seven months.", "answer": "True", "exp": "It takes about seven months." },
+    { "id": "homework_araylim_2.questions.003", "type": "mcq", "prompt": "Why must astronauts wear special suits outside?", "options": ["Because it is raining", "Because there is no oxygen and it is freezing", "Because of the aliens"], "correct": "Because there is no oxygen and it is freezing", "exp": "They must adapt to a planet with almost no oxygen and freezing temperatures." },
+    { "id": "homework_araylim_2.questions.004", "type": "tfng", "prompt": "Scientists think plants can never grow on Mars.", "answer": "False", "exp": "Scientists have discovered some plants can grow in Martian soil." },
+    { "id": "homework_araylim_2.questions.005", "type": "short", "prompt": "Where should colonists build their homes to hide from radiation?", "answers": ["underground", "underground homes"], "exp": "They should build underground homes." },
+    { "id": "homework_araylim_2.questions.006", "type": "complete", "prompt": "By 2050, astronauts ___ (build) the first Martian base.", "answers": ["will have built"] },
+    { "id": "homework_araylim_2.questions.007", "type": "complete", "prompt": "They ___ (might) feel isolated and lonely.", "answers": ["might"] },
+    { "id": "homework_araylim_2.questions.008", "type": "complete", "prompt": "They ___ (have to) wear special suits.", "answers": ["will have to"] },
+    { "id": "homework_araylim_2.questions.009", "type": "long", "prompt": "What are two challenges of living on Mars mentioned in the text?", "keywordGroups": [["radiation","space","journey"],["oxygen","freezing","temperature"],["isolated","lonely"],["food","plants"]], "minWords": 10, "minGroups": 2, "sample": "Two challenges are the long journey where astronauts might feel isolated, and the environment on Mars, which has no oxygen, freezing temperatures, and dangerous radiation.", "exp": "Key ideas: isolation, lack of oxygen, freezing temps, radiation." }
   ]
 }

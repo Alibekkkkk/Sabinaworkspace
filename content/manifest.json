@@ -1,0 +1,53 @@
+{
+  "abay": {
+    "classworkFile": "abay.json",
+    "homeworkFile": "homework_abay.json",
+    "assignedTo": []
+  },
+  "araylim_1": {
+    "classworkFile": "araylim_1.json",
+    "homeworkFile": "homework_araylim_1.json",
+    "assignedTo": []
+  },
+  "araylim_2": {
+    "classworkFile": "araylim_2.json",
+    "homeworkFile": "homework_araylim_2.json",
+    "assignedTo": []
+  },
+  "araylim_3": {
+    "classworkFile": "araylim_3.json",
+    "homeworkFile": "homework_araylim_3.json",
+    "assignedTo": []
+  },
+  "gaziz": {
+    "classworkFile": "gaziz.json",
+    "homeworkFile": "homework_gaziz.json",
+    "assignedTo": []
+  },
+  "george": {
+    "classworkFile": "george.json",
+    "homeworkFile": "homework_george.json",
+    "assignedTo": []
+  },
+  "sabina": {
+    "classworkFile": "sabina.json",
+    "homeworkFile": "homework_sabina.json",
+    "assignedTo": []
+  },
+  "lesson_1": {
+    "classworkFile": "gaziz.json",
+    "assignedTo": []
+  },
+  "lesson_1_sabina": {
+    "classworkFile": "sabina.json",
+    "assignedTo": []
+  },
+  "homework_gaziz_sustainable_cities": {
+    "homeworkFile": "homework_gaziz.json",
+    "assignedTo": []
+  },
+  "homework_sabina_natural_disasters": {
+    "homeworkFile": "homework_sabina.json",
+    "assignedTo": []
+  }
+}

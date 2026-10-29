@@ -54,256 +54,256 @@
   ],
   "readingHtml": "<h1>The Science of Memory</h1><div class=\"subtitle\">How does your brain remember?</div><p><span class=\"para-label\">A.</span>Have you ever wondered how you remember your best friend's face, but <b>forget</b> where you put your phone? The human brain is the most complex machine in the known universe. It contains about 86 billion <b>neurons</b> (nerve cells). These neurons <b>connect</b> with each other to form a huge network.</p><p><span class=\"para-label\">B.</span>When you learn something new, your brain <b>processes</b> the information. For example, if you <b>memorize</b> a new English word, the neurons send electrical signals to each other. Over time, this <b>connection</b> becomes stronger. The brain then <b>stores</b> this word in your <b>memory</b>. But memories are not always <b>accurate</b>. Sometimes, a specific smell or sound can <b>trigger</b> a memory you thought you had lost.</p><p><span class=\"para-label\">C.</span>Scientists have discovered that sleep is very important. While you are sleeping, your brain organizes information. It decides what to keep and what to <b>forget</b>. So, if you want to <b>recall</b> what you studied yesterday, make sure you get enough sleep! Learning is a <b>skill</b>, and your brain is the ultimate tool.</p>",
   "readingQ": [
-    { "type": "short", "prompt": "How many neurons are in the human brain?", "answers": ["86 billion", "86 000 000 000"], "exp": "The brain contains about 86 billion neurons." },
-    { "type": "tfng", "prompt": "Memories are always 100% accurate.", "answer": "False", "exp": "The text says memories are not always accurate." },
-    { "type": "mcq", "prompt": "What can trigger a memory?", "options": ["A specific smell or sound", "Only reading a book", "Drinking water"], "correct": "A specific smell or sound", "exp": "A specific smell or sound can trigger a memory." },
-    { "type": "short", "prompt": "What is very important for organizing information in the brain?", "answers": ["sleep", "enough sleep"], "exp": "Sleep is very important." },
-    { "type": "mcq", "prompt": "What happens to the connection between neurons when you learn something?", "options": ["It becomes weaker", "It becomes stronger", "It disappears"], "correct": "It becomes stronger", "exp": "Over time, this connection becomes stronger." },
-    { "type": "tfng", "prompt": "The brain decides what to forget while you sleep.", "answer": "True", "exp": "It decides what to keep and what to forget." },
-    { "type": "short", "prompt": "What do neurons send to each other?", "answers": ["electrical signals", "signals"], "exp": "They send electrical signals to each other." },
-    { "type": "long", "prompt": "Explain in your own words why sleep is important for students.", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["recall","remember"]], "minWords": 10, "minGroups": 2, "sample": "Sleep is important because the brain organizes information and decides what to keep or forget, which helps students recall what they studied.", "exp": "Key ideas: organizing info, deciding what to keep, helping recall." },
-    { "type": "tfng", "prompt": "The human brain is a simple machine.", "answer": "False", "exp": "It is the most complex machine in the known universe." },
-    { "type": "mcq", "prompt": "How many main brains does a human have?", "options": ["1", "3", "8"], "correct": "1", "exp": "Humans have one main brain." },
-    { "type": "short", "prompt": "What becomes stronger over time when you learn?", "answers": ["connection", "the connection"], "exp": "The connection between neurons becomes stronger." },
-    { "type": "long", "prompt": "What happens to the brain while you are sleeping?", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["decide"]], "minWords": 8, "minGroups": 2, "sample": "While sleeping, the brain organizes information and decides what to keep and what to forget.", "exp": "Key ideas: organizes information, decides what to keep/forget." }
+    { "id": "araylim_1.readingQ.001", "type": "short", "prompt": "How many neurons are in the human brain?", "answers": ["86 billion", "86 000 000 000"], "exp": "The brain contains about 86 billion neurons." },
+    { "id": "araylim_1.readingQ.002", "type": "tfng", "prompt": "Memories are always 100% accurate.", "answer": "False", "exp": "The text says memories are not always accurate." },
+    { "id": "araylim_1.readingQ.003", "type": "mcq", "prompt": "What can trigger a memory?", "options": ["A specific smell or sound", "Only reading a book", "Drinking water"], "correct": "A specific smell or sound", "exp": "A specific smell or sound can trigger a memory." },
+    { "id": "araylim_1.readingQ.004", "type": "short", "prompt": "What is very important for organizing information in the brain?", "answers": ["sleep", "enough sleep"], "exp": "Sleep is very important." },
+    { "id": "araylim_1.readingQ.005", "type": "mcq", "prompt": "What happens to the connection between neurons when you learn something?", "options": ["It becomes weaker", "It becomes stronger", "It disappears"], "correct": "It becomes stronger", "exp": "Over time, this connection becomes stronger." },
+    { "id": "araylim_1.readingQ.006", "type": "tfng", "prompt": "The brain decides what to forget while you sleep.", "answer": "True", "exp": "It decides what to keep and what to forget." },
+    { "id": "araylim_1.readingQ.007", "type": "short", "prompt": "What do neurons send to each other?", "answers": ["electrical signals", "signals"], "exp": "They send electrical signals to each other." },
+    { "id": "araylim_1.readingQ.008", "type": "long", "prompt": "Explain in your own words why sleep is important for students.", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["recall","remember"]], "minWords": 10, "minGroups": 2, "sample": "Sleep is important because the brain organizes information and decides what to keep or forget, which helps students recall what they studied.", "exp": "Key ideas: organizing info, deciding what to keep, helping recall." },
+    { "id": "araylim_1.readingQ.009", "type": "tfng", "prompt": "The human brain is a simple machine.", "answer": "False", "exp": "It is the most complex machine in the known universe." },
+    { "id": "araylim_1.readingQ.010", "type": "mcq", "prompt": "How many main brains does a human have?", "options": ["1", "3", "8"], "correct": "1", "exp": "Humans have one main brain." },
+    { "id": "araylim_1.readingQ.011", "type": "short", "prompt": "What becomes stronger over time when you learn?", "answers": ["connection", "the connection"], "exp": "The connection between neurons becomes stronger." },
+    { "id": "araylim_1.readingQ.012", "type": "long", "prompt": "What happens to the brain while you are sleeping?", "keywordGroups": [["organize","process"],["information","memory"],["keep","forget"],["decide"]], "minWords": 8, "minGroups": 2, "sample": "While sleeping, the brain organizes information and decides what to keep and what to forget.", "exp": "Key ideas: organizes information, decides what to keep/forget." }
   ],
   "contextQ": [
-    { "prompt": "In paragraph B, \"trigger\" means...", "options": ["to cause something to happen", "to destroy something", "to write something down"], "correct": "to cause something to happen", "exp": "Trigger means to cause an event or memory to happen." },
-    { "prompt": "In paragraph A, \"complex\" is similar in meaning to...", "options": ["very simple", "difficult to understand", "very small"], "correct": "difficult to understand", "exp": "Complex means not simple; difficult to understand." },
-    { "prompt": "In paragraph B, \"processes\" means...", "options": ["handles and uses information", "eats food", "goes to sleep"], "correct": "handles and uses information", "exp": "In this context, the brain processes (handles) information." },
-    { "prompt": "In paragraph C, \"recall\" means...", "options": ["to forget", "to remember", "to sleep"], "correct": "to remember", "exp": "To recall means to bring back to mind." },
-    { "prompt": "In paragraph A, \"network\" means...", "options": ["a group of connected things", "a single cell", "a television channel"], "correct": "a group of connected things", "exp": "A network is an interconnected system." }
+    { "id": "araylim_1.contextQ.001", "prompt": "In paragraph B, \"trigger\" means...", "options": ["to cause something to happen", "to destroy something", "to write something down"], "correct": "to cause something to happen", "exp": "Trigger means to cause an event or memory to happen." },
+    { "id": "araylim_1.contextQ.002", "prompt": "In paragraph A, \"complex\" is similar in meaning to...", "options": ["very simple", "difficult to understand", "very small"], "correct": "difficult to understand", "exp": "Complex means not simple; difficult to understand." },
+    { "id": "araylim_1.contextQ.003", "prompt": "In paragraph B, \"processes\" means...", "options": ["handles and uses information", "eats food", "goes to sleep"], "correct": "handles and uses information", "exp": "In this context, the brain processes (handles) information." },
+    { "id": "araylim_1.contextQ.004", "prompt": "In paragraph C, \"recall\" means...", "options": ["to forget", "to remember", "to sleep"], "correct": "to remember", "exp": "To recall means to bring back to mind." },
+    { "id": "araylim_1.contextQ.005", "prompt": "In paragraph A, \"network\" means...", "options": ["a group of connected things", "a single cell", "a television channel"], "correct": "a group of connected things", "exp": "A network is an interconnected system." }
   ],
   "g6": {
     "pos": [
-      { "p": "[Simple Present] The brain ___ (process) information very quickly.", "a": "processes" },
-      { "p": "[Simple Present] Neurons ___ (connect) with each other constantly.", "a": "connect" },
-      { "p": "[Simple Present] Water ___ (boil) at 100 degrees.", "a": "boils" },
-      { "p": "[Simple Present] She always ___ (remember) to bring her keys.", "a": "remembers" },
-      { "p": "[Simple Present] The bus ___ (leave) at 8 AM every day.", "a": "leaves" },
-      { "p": "[Simple Present] I usually ___ (forget) my dreams.", "a": "forget" },
-      { "p": "[Simple Present] My brother ___ (wear) a hat every day.", "a": "wears" },
-      { "p": "[Simple Present] They ___ (play) football on Sundays.", "a": "play" }
+      { "id": "araylim_1.g6.pos.001", "p": "[Simple Present] The brain ___ (process) information very quickly.", "a": "processes" },
+      { "id": "araylim_1.g6.pos.002", "p": "[Simple Present] Neurons ___ (connect) with each other constantly.", "a": "connect" },
+      { "id": "araylim_1.g6.pos.003", "p": "[Simple Present] Water ___ (boil) at 100 degrees.", "a": "boils" },
+      { "id": "araylim_1.g6.pos.004", "p": "[Simple Present] She always ___ (remember) to bring her keys.", "a": "remembers" },
+      { "id": "araylim_1.g6.pos.005", "p": "[Simple Present] The bus ___ (leave) at 8 AM every day.", "a": "leaves" },
+      { "id": "araylim_1.g6.pos.006", "p": "[Simple Present] I usually ___ (forget) my dreams.", "a": "forget" },
+      { "id": "araylim_1.g6.pos.007", "p": "[Simple Present] My brother ___ (wear) a hat every day.", "a": "wears" },
+      { "id": "araylim_1.g6.pos.008", "p": "[Simple Present] They ___ (play) football on Sundays.", "a": "play" }
     ],
     "neg": [
-      { "p": "[Simple Present — negative] The brain ___ (not / store) every single detail.", "a": "does not store" },
-      { "p": "[Simple Present — negative] They ___ (not / understand) the science yet.", "a": "do not understand" },
-      { "p": "[Simple Present — negative] We ___ (not / memorize) poems in this class.", "a": "do not memorize" },
-      { "p": "[Simple Present — negative] The cat ___ (not / like) water.", "a": "does not like" },
-      { "p": "[Simple Present — negative] She ___ (not / want) to study tonight.", "a": "does not want" },
-      { "p": "[Simple Present — negative] I ___ (not / remember) his name.", "a": "do not remember" }
+      { "id": "araylim_1.g6.neg.001", "p": "[Simple Present — negative] The brain ___ (not / store) every single detail.", "a": "does not store" },
+      { "id": "araylim_1.g6.neg.002", "p": "[Simple Present — negative] They ___ (not / understand) the science yet.", "a": "do not understand" },
+      { "id": "araylim_1.g6.neg.003", "p": "[Simple Present — negative] We ___ (not / memorize) poems in this class.", "a": "do not memorize" },
+      { "id": "araylim_1.g6.neg.004", "p": "[Simple Present — negative] The cat ___ (not / like) water.", "a": "does not like" },
+      { "id": "araylim_1.g6.neg.005", "p": "[Simple Present — negative] She ___ (not / want) to study tonight.", "a": "does not want" },
+      { "id": "araylim_1.g6.neg.006", "p": "[Simple Present — negative] I ___ (not / remember) his name.", "a": "do not remember" }
     ],
     "q": [
-      { "p": "[Simple Present — question] ___ the brain ___ (need) sleep?", "a": "Does the brain need" },
-      { "p": "[Simple Present — question] ___ she ___ (remember) the password?", "a": "Does she remember" },
-      { "p": "[Simple Present — question] ___ they ___ (study) English every day?", "a": "Do they study" },
-      { "p": "[Simple Present — question] ___ you ___ (understand) the question?", "a": "Do you understand" },
-      { "p": "[Simple Present — question] ___ he ___ (play) tennis every week?", "a": "Does he play" },
-      { "p": "[Simple Present — question] ___ the train ___ (arrive) at 8 AM?", "a": "Does the train arrive" }
+      { "id": "araylim_1.g6.q.001", "p": "[Simple Present — question] ___ the brain ___ (need) sleep?", "a": "Does the brain need" },
+      { "id": "araylim_1.g6.q.002", "p": "[Simple Present — question] ___ she ___ (remember) the password?", "a": "Does she remember" },
+      { "id": "araylim_1.g6.q.003", "p": "[Simple Present — question] ___ they ___ (study) English every day?", "a": "Do they study" },
+      { "id": "araylim_1.g6.q.004", "p": "[Simple Present — question] ___ you ___ (understand) the question?", "a": "Do you understand" },
+      { "id": "araylim_1.g6.q.005", "p": "[Simple Present — question] ___ he ___ (play) tennis every week?", "a": "Does he play" },
+      { "id": "araylim_1.g6.q.006", "p": "[Simple Present — question] ___ the train ___ (arrive) at 8 AM?", "a": "Does the train arrive" }
     ],
     "shuffled": [
-      { "p": "[Simple Present] The sun ___ (rise) in the east.", "a": "rises" },
-      { "p": "[Simple Present] Water ___ (freeze) at 0 degrees.", "a": "freezes" },
-      { "p": "[Simple Present] She ___ (work) at a hospital.", "a": "works" },
-      { "p": "[Simple Present] We ___ (go) to the gym every Monday.", "a": "go" },
-      { "p": "[Simple Present — negative] He ___ (not / eat) meat.", "a": "does not eat" },
-      { "p": "[Simple Present — question] ___ you ___ (like) coffee?", "a": "Do you like" },
-      { "p": "[Simple Present] Tom ___ (walk) to school every day.", "a": "walks" },
-      { "p": "[Simple Present] My parents ___ (live) in Almaty.", "a": "live" },
-      { "p": "[Simple Present] The museum ___ (open) at 10 AM.", "a": "opens" },
-      { "p": "[Simple Present — negative] They ___ (not / speak) French.", "a": "do not speak" },
-      { "p": "[Simple Present — question] What time ___ the shop ___ (close)?", "a": "does the shop close" },
-      { "p": "[Simple Present] She ___ (teach) English at a school.", "a": "teaches" }
+      { "id": "araylim_1.g6.shuffled.001", "p": "[Simple Present] The sun ___ (rise) in the east.", "a": "rises" },
+      { "id": "araylim_1.g6.shuffled.002", "p": "[Simple Present] Water ___ (freeze) at 0 degrees.", "a": "freezes" },
+      { "id": "araylim_1.g6.shuffled.003", "p": "[Simple Present] She ___ (work) at a hospital.", "a": "works" },
+      { "id": "araylim_1.g6.shuffled.004", "p": "[Simple Present] We ___ (go) to the gym every Monday.", "a": "go" },
+      { "id": "araylim_1.g6.shuffled.005", "p": "[Simple Present — negative] He ___ (not / eat) meat.", "a": "does not eat" },
+      { "id": "araylim_1.g6.shuffled.006", "p": "[Simple Present — question] ___ you ___ (like) coffee?", "a": "Do you like" },
+      { "id": "araylim_1.g6.shuffled.007", "p": "[Simple Present] Tom ___ (walk) to school every day.", "a": "walks" },
+      { "id": "araylim_1.g6.shuffled.008", "p": "[Simple Present] My parents ___ (live) in Almaty.", "a": "live" },
+      { "id": "araylim_1.g6.shuffled.009", "p": "[Simple Present] The museum ___ (open) at 10 AM.", "a": "opens" },
+      { "id": "araylim_1.g6.shuffled.010", "p": "[Simple Present — negative] They ___ (not / speak) French.", "a": "do not speak" },
+      { "id": "araylim_1.g6.shuffled.011", "p": "[Simple Present — question] What time ___ the shop ___ (close)?", "a": "does the shop close" },
+      { "id": "araylim_1.g6.shuffled.012", "p": "[Simple Present] She ___ (teach) English at a school.", "a": "teaches" }
     ]
   },
   "g7": {
     "pos": [
-      { "p": "[Present Continuous] Look! She ___ (memorize) new words right now.", "a": "is memorizing" },
-      { "p": "[Present Continuous] They ___ (study) for the test at the moment.", "a": "are studying" },
-      { "p": "[Present Continuous] We ___ (listen) to a podcast right now.", "a": "are listening" },
-      { "p": "[Present Continuous] The baby ___ (sleep) at the moment.", "a": "is sleeping" },
-      { "p": "[Present Continuous] Look! It ___ (snow).", "a": "is snowing" },
-      { "p": "[Present Continuous] I ___ (run) with the ball right now.", "a": "am running" },
-      { "p": "[Present Continuous] The teacher ___ (write) on the board.", "a": "is writing" },
-      { "p": "[Present Continuous] The students ___ (take) an exam right now.", "a": "are taking" }
+      { "id": "araylim_1.g7.pos.001", "p": "[Present Continuous] Look! She ___ (memorize) new words right now.", "a": "is memorizing" },
+      { "id": "araylim_1.g7.pos.002", "p": "[Present Continuous] They ___ (study) for the test at the moment.", "a": "are studying" },
+      { "id": "araylim_1.g7.pos.003", "p": "[Present Continuous] We ___ (listen) to a podcast right now.", "a": "are listening" },
+      { "id": "araylim_1.g7.pos.004", "p": "[Present Continuous] The baby ___ (sleep) at the moment.", "a": "is sleeping" },
+      { "id": "araylim_1.g7.pos.005", "p": "[Present Continuous] Look! It ___ (snow).", "a": "is snowing" },
+      { "id": "araylim_1.g7.pos.006", "p": "[Present Continuous] I ___ (run) with the ball right now.", "a": "am running" },
+      { "id": "araylim_1.g7.pos.007", "p": "[Present Continuous] The teacher ___ (write) on the board.", "a": "is writing" },
+      { "id": "araylim_1.g7.pos.008", "p": "[Present Continuous] The students ___ (take) an exam right now.", "a": "are taking" }
     ],
     "neg": [
-      { "p": "[Present Continuous — negative] I ___ (not / recall) his name at the moment.", "a": "am not recalling" },
-      { "p": "[Present Continuous — negative] He ___ (not / listen) to the teacher right now.", "a": "is not listening" },
-      { "p": "[Present Continuous — negative] The computer ___ (not / work) today.", "a": "is not working" },
-      { "p": "[Present Continuous — negative] They ___ (not / come) to the party tonight.", "a": "are not coming" },
-      { "p": "[Present Continuous — negative] She ___ (not / study) at the moment.", "a": "is not studying" },
-      { "p": "[Present Continuous — negative] We ___ (not / watch) TV right now.", "a": "are not watching" }
+      { "id": "araylim_1.g7.neg.001", "p": "[Present Continuous — negative] I ___ (not / recall) his name at the moment.", "a": "am not recalling" },
+      { "id": "araylim_1.g7.neg.002", "p": "[Present Continuous — negative] He ___ (not / listen) to the teacher right now.", "a": "is not listening" },
+      { "id": "araylim_1.g7.neg.003", "p": "[Present Continuous — negative] The computer ___ (not / work) today.", "a": "is not working" },
+      { "id": "araylim_1.g7.neg.004", "p": "[Present Continuous — negative] They ___ (not / come) to the party tonight.", "a": "are not coming" },
+      { "id": "araylim_1.g7.neg.005", "p": "[Present Continuous — negative] She ___ (not / study) at the moment.", "a": "is not studying" },
+      { "id": "araylim_1.g7.neg.006", "p": "[Present Continuous — negative] We ___ (not / watch) TV right now.", "a": "are not watching" }
     ],
     "q": [
-      { "p": "[Present Continuous — question] ___ you ___ (listen) to me right now?", "a": "Are you listening" },
-      { "p": "[Present Continuous — question] Why ___ he ___ (cry)?", "a": "is he crying" },
-      { "p": "[Present Continuous — question] ___ they ___ (play) football at the moment?", "a": "Are they playing" },
-      { "p": "[Present Continuous — question] ___ the baby ___ (sleep)?", "a": "Is the baby sleeping" },
-      { "p": "[Present Continuous — question] What ___ you ___ (do) right now?", "a": "are you doing" },
-      { "p": "[Present Continuous — question] ___ she ___ (study) for the exam?", "a": "Is she studying" }
+      { "id": "araylim_1.g7.q.001", "p": "[Present Continuous — question] ___ you ___ (listen) to me right now?", "a": "Are you listening" },
+      { "id": "araylim_1.g7.q.002", "p": "[Present Continuous — question] Why ___ he ___ (cry)?", "a": "is he crying" },
+      { "id": "araylim_1.g7.q.003", "p": "[Present Continuous — question] ___ they ___ (play) football at the moment?", "a": "Are they playing" },
+      { "id": "araylim_1.g7.q.004", "p": "[Present Continuous — question] ___ the baby ___ (sleep)?", "a": "Is the baby sleeping" },
+      { "id": "araylim_1.g7.q.005", "p": "[Present Continuous — question] What ___ you ___ (do) right now?", "a": "are you doing" },
+      { "id": "araylim_1.g7.q.006", "p": "[Present Continuous — question] ___ she ___ (study) for the exam?", "a": "Is she studying" }
     ],
     "shuffled": [
-      { "p": "[Present Continuous] Look! The coach ___ (shout) at the players.", "a": "is shouting" },
-      { "p": "[Present Continuous — negative] I ___ (not / watch) TV right now.", "a": "am not watching" },
-      { "p": "[Present Continuous] They ___ (play) football in the park now.", "a": "are playing" },
-      { "p": "[Present Continuous] It ___ (rain) heavily today.", "a": "is raining" },
-      { "p": "[Present Continuous] She ___ (read) a book at the moment.", "a": "is reading" },
-      { "p": "[Present Continuous — negative] He ___ (not / wear) his sports shoes today.", "a": "is not wearing" },
-      { "p": "[Present Continuous — question] What ___ you ___ (do)?", "a": "are you doing" },
-      { "p": "[Present Continuous] The phone ___ (ring) right now.", "a": "is ringing" },
-      { "p": "[Present Continuous — negative] We ___ (not / sleep) — we are studying.", "a": "are not sleeping" },
-      { "p": "[Present Continuous] Look! Someone ___ (knock) on the door.", "a": "is knocking" },
-      { "p": "[Present Continuous] They ___ (have) dinner now.", "a": "are having" },
-      { "p": "[Present Continuous — question] Why ___ you ___ (look) at me like that?", "a": "are you looking" }
+      { "id": "araylim_1.g7.shuffled.001", "p": "[Present Continuous] Look! The coach ___ (shout) at the players.", "a": "is shouting" },
+      { "id": "araylim_1.g7.shuffled.002", "p": "[Present Continuous — negative] I ___ (not / watch) TV right now.", "a": "am not watching" },
+      { "id": "araylim_1.g7.shuffled.003", "p": "[Present Continuous] They ___ (play) football in the park now.", "a": "are playing" },
+      { "id": "araylim_1.g7.shuffled.004", "p": "[Present Continuous] It ___ (rain) heavily today.", "a": "is raining" },
+      { "id": "araylim_1.g7.shuffled.005", "p": "[Present Continuous] She ___ (read) a book at the moment.", "a": "is reading" },
+      { "id": "araylim_1.g7.shuffled.006", "p": "[Present Continuous — negative] He ___ (not / wear) his sports shoes today.", "a": "is not wearing" },
+      { "id": "araylim_1.g7.shuffled.007", "p": "[Present Continuous — question] What ___ you ___ (do)?", "a": "are you doing" },
+      { "id": "araylim_1.g7.shuffled.008", "p": "[Present Continuous] The phone ___ (ring) right now.", "a": "is ringing" },
+      { "id": "araylim_1.g7.shuffled.009", "p": "[Present Continuous — negative] We ___ (not / sleep) — we are studying.", "a": "are not sleeping" },
+      { "id": "araylim_1.g7.shuffled.010", "p": "[Present Continuous] Look! Someone ___ (knock) on the door.", "a": "is knocking" },
+      { "id": "araylim_1.g7.shuffled.011", "p": "[Present Continuous] They ___ (have) dinner now.", "a": "are having" },
+      { "id": "araylim_1.g7.shuffled.012", "p": "[Present Continuous — question] Why ___ you ___ (look) at me like that?", "a": "are you looking" }
     ]
   },
   "sbPp": {
     "pos": [
-      { "prompt": "[Simple Past] Build: a sentence about watching a documentary last night.", "correct": ["I","watched","a","documentary","about","the","brain","last","night."] },
-      { "prompt": "[Simple Past] Build: a sentence about the scientists' discovery in 2020.", "correct": ["Scientists","discovered","a","new","neuron","in","2020."] },
-      { "prompt": "[Simple Past] Build: a sentence about her memorization of the poem.", "correct": ["She","memorized","the","poem","yesterday."] },
-      { "prompt": "[Simple Past] Build: a sentence about visiting grandparents last weekend.", "correct": ["We","visited","our","grandparents","last","weekend."] },
-      { "prompt": "[Simple Past] Build: a sentence about the teacher explaining the rule.", "correct": ["The","teacher","explained","the","rule","yesterday."] }
+      { "id": "araylim_1.sbPp.pos.001", "prompt": "[Simple Past] Build: a sentence about watching a documentary last night.", "correct": ["I","watched","a","documentary","about","the","brain","last","night."] },
+      { "id": "araylim_1.sbPp.pos.002", "prompt": "[Simple Past] Build: a sentence about the scientists' discovery in 2020.", "correct": ["Scientists","discovered","a","new","neuron","in","2020."] },
+      { "id": "araylim_1.sbPp.pos.003", "prompt": "[Simple Past] Build: a sentence about her memorization of the poem.", "correct": ["She","memorized","the","poem","yesterday."] },
+      { "id": "araylim_1.sbPp.pos.004", "prompt": "[Simple Past] Build: a sentence about visiting grandparents last weekend.", "correct": ["We","visited","our","grandparents","last","weekend."] },
+      { "id": "araylim_1.sbPp.pos.005", "prompt": "[Simple Past] Build: a sentence about the teacher explaining the rule.", "correct": ["The","teacher","explained","the","rule","yesterday."] }
     ],
     "neg": [
-      { "prompt": "[Simple Past — negative] Build: a sentence about not recalling the answer.", "correct": ["I","did","not","recall","the","answer."] },
-      { "prompt": "[Simple Past — negative] Build: a sentence about not studying for the test.", "correct": ["He","did","not","study","for","the","test."] },
-      { "prompt": "[Simple Past — negative] Build: a sentence about not hearing the alarm.", "correct": ["She","did","not","hear","the","alarm."] },
-      { "prompt": "[Simple Past — negative] Build: a sentence about not seeing the movie.", "correct": ["We","did","not","see","the","movie."] }
+      { "id": "araylim_1.sbPp.neg.001", "prompt": "[Simple Past — negative] Build: a sentence about not recalling the answer.", "correct": ["I","did","not","recall","the","answer."] },
+      { "id": "araylim_1.sbPp.neg.002", "prompt": "[Simple Past — negative] Build: a sentence about not studying for the test.", "correct": ["He","did","not","study","for","the","test."] },
+      { "id": "araylim_1.sbPp.neg.003", "prompt": "[Simple Past — negative] Build: a sentence about not hearing the alarm.", "correct": ["She","did","not","hear","the","alarm."] },
+      { "id": "araylim_1.sbPp.neg.004", "prompt": "[Simple Past — negative] Build: a sentence about not seeing the movie.", "correct": ["We","did","not","see","the","movie."] }
     ],
     "q": [
-      { "prompt": "[Simple Past — question] Build: a question about remembering to lock the door.", "correct": ["Did","you","remember","to","lock","the","door?"] },
-      { "prompt": "[Simple Past — question] Build: a question about passing the exam.", "correct": ["Did","she","pass","the","exam?"] },
-      { "prompt": "[Simple Past — question] Build: a question about finishing homework.", "correct": ["Did","he","finish","his","homework?"] },
-      { "prompt": "[Simple Past — question] Build: a question about where they went last summer.", "correct": ["Where","did","they","go","last","summer?"] }
+      { "id": "araylim_1.sbPp.q.001", "prompt": "[Simple Past — question] Build: a question about remembering to lock the door.", "correct": ["Did","you","remember","to","lock","the","door?"] },
+      { "id": "araylim_1.sbPp.q.002", "prompt": "[Simple Past — question] Build: a question about passing the exam.", "correct": ["Did","she","pass","the","exam?"] },
+      { "id": "araylim_1.sbPp.q.003", "prompt": "[Simple Past — question] Build: a question about finishing homework.", "correct": ["Did","he","finish","his","homework?"] },
+      { "id": "araylim_1.sbPp.q.004", "prompt": "[Simple Past — question] Build: a question about where they went last summer.", "correct": ["Where","did","they","go","last","summer?"] }
     ],
     "shuffled": [
-      { "prompt": "[Simple Past] Build: a sentence about her forgetting her phone at home.", "correct": ["She","forgot","her","phone","at","home."] },
-      { "prompt": "[Simple Past] Build: a sentence about going to the park yesterday.", "correct": ["I","went","to","the","park","yesterday."] },
-      { "prompt": "[Simple Past — negative] Build: a sentence about not coming to the meeting.", "correct": ["They","did","not","come","to","the","meeting."] },
-      { "prompt": "[Simple Past] Build: a sentence about buying a new car last month.", "correct": ["He","bought","a","new","car","last","month."] },
-      { "prompt": "[Simple Past — question] Build: a question about seeing the news.", "correct": ["Did","you","see","the","news?"] },
-      { "prompt": "[Simple Past] Build: a sentence about the children playing in the garden.", "correct": ["The","children","played","in","the","garden."] },
-      { "prompt": "[Simple Past] Build: a sentence about her cooking dinner for us.", "correct": ["She","cooked","dinner","for","us."] },
-      { "prompt": "[Simple Past — question] Build: a question about where you went.", "correct": ["Where","did","you","go?"] }
+      { "id": "araylim_1.sbPp.shuffled.001", "prompt": "[Simple Past] Build: a sentence about her forgetting her phone at home.", "correct": ["She","forgot","her","phone","at","home."] },
+      { "id": "araylim_1.sbPp.shuffled.002", "prompt": "[Simple Past] Build: a sentence about going to the park yesterday.", "correct": ["I","went","to","the","park","yesterday."] },
+      { "id": "araylim_1.sbPp.shuffled.003", "prompt": "[Simple Past — negative] Build: a sentence about not coming to the meeting.", "correct": ["They","did","not","come","to","the","meeting."] },
+      { "id": "araylim_1.sbPp.shuffled.004", "prompt": "[Simple Past] Build: a sentence about buying a new car last month.", "correct": ["He","bought","a","new","car","last","month."] },
+      { "id": "araylim_1.sbPp.shuffled.005", "prompt": "[Simple Past — question] Build: a question about seeing the news.", "correct": ["Did","you","see","the","news?"] },
+      { "id": "araylim_1.sbPp.shuffled.006", "prompt": "[Simple Past] Build: a sentence about the children playing in the garden.", "correct": ["The","children","played","in","the","garden."] },
+      { "id": "araylim_1.sbPp.shuffled.007", "prompt": "[Simple Past] Build: a sentence about her cooking dinner for us.", "correct": ["She","cooked","dinner","for","us."] },
+      { "id": "araylim_1.sbPp.shuffled.008", "prompt": "[Simple Past — question] Build: a question about where you went.", "correct": ["Where","did","you","go?"] }
     ]
   },
   "sbPs": {
     "pos": [
-      { "prompt": "[Past Continuous] Build: a sentence about sleeping when the phone rang.", "correct": ["I","was","sleeping","when","the","phone","rang."] },
-      { "prompt": "[Past Continuous] Build: a sentence about walking home when it started to rain.", "correct": ["We","were","walking","home","when","it","started","to","rain."] },
-      { "prompt": "[Past Continuous] Build: a sentence about playing tennis at 5 PM yesterday.", "correct": ["They","were","playing","tennis","at","5","PM","yesterday."] },
-      { "prompt": "[Past Continuous] Build: a sentence about the sun shining when we woke up.", "correct": ["The","sun","was","shining","when","we","woke","up."] },
-      { "prompt": "[Past Continuous] Build: a sentence about watching TV when the lights went out.", "correct": ["I","was","watching","TV","when","the","lights","went","out."] }
+      { "id": "araylim_1.sbPs.pos.001", "prompt": "[Past Continuous] Build: a sentence about sleeping when the phone rang.", "correct": ["I","was","sleeping","when","the","phone","rang."] },
+      { "id": "araylim_1.sbPs.pos.002", "prompt": "[Past Continuous] Build: a sentence about walking home when it started to rain.", "correct": ["We","were","walking","home","when","it","started","to","rain."] },
+      { "id": "araylim_1.sbPs.pos.003", "prompt": "[Past Continuous] Build: a sentence about playing tennis at 5 PM yesterday.", "correct": ["They","were","playing","tennis","at","5","PM","yesterday."] },
+      { "id": "araylim_1.sbPs.pos.004", "prompt": "[Past Continuous] Build: a sentence about the sun shining when we woke up.", "correct": ["The","sun","was","shining","when","we","woke","up."] },
+      { "id": "araylim_1.sbPs.pos.005", "prompt": "[Past Continuous] Build: a sentence about watching TV when the lights went out.", "correct": ["I","was","watching","TV","when","the","lights","went","out."] }
     ],
     "neg": [
-      { "prompt": "[Past Continuous — negative] Build: a sentence about not listening when the teacher explained.", "correct": ["He","was","not","listening","when","the","teacher","explained."] },
-      { "prompt": "[Past Continuous — negative] Build: a sentence about not studying when I called.", "correct": ["She","was","not","studying","when","I","called."] },
-      { "prompt": "[Past Continuous — negative] Build: a sentence about not studying when the phone rang.", "correct": ["I","was","not","studying","when","the","phone","rang."] },
-      { "prompt": "[Past Continuous — negative] Build: a sentence about not sleeping when I arrived.", "correct": ["They","were","not","sleeping","when","I","arrived."] }
+      { "id": "araylim_1.sbPs.neg.001", "prompt": "[Past Continuous — negative] Build: a sentence about not listening when the teacher explained.", "correct": ["He","was","not","listening","when","the","teacher","explained."] },
+      { "id": "araylim_1.sbPs.neg.002", "prompt": "[Past Continuous — negative] Build: a sentence about not studying when I called.", "correct": ["She","was","not","studying","when","I","called."] },
+      { "id": "araylim_1.sbPs.neg.003", "prompt": "[Past Continuous — negative] Build: a sentence about not studying when the phone rang.", "correct": ["I","was","not","studying","when","the","phone","rang."] },
+      { "id": "araylim_1.sbPs.neg.004", "prompt": "[Past Continuous — negative] Build: a sentence about not sleeping when I arrived.", "correct": ["They","were","not","sleeping","when","I","arrived."] }
     ],
     "q": [
-      { "prompt": "[Past Continuous — question] Build: a question about playing football at 5 PM yesterday.", "correct": ["Were","they","playing","football","at","5","PM","yesterday?"] },
-      { "prompt": "[Past Continuous — question] Build: a question about what you were doing at 8 PM last night.", "correct": ["What","were","you","doing","at","8","PM","last","night?"] },
-      { "prompt": "[Past Continuous — question] Build: a question about why she was crying yesterday.", "correct": ["Why","was","she","crying","yesterday?"] },
-      { "prompt": "[Past Continuous — question] Build: a question about reading when the phone rang.", "correct": ["Was","she","reading","when","the","phone","rang?"] }
+      { "id": "araylim_1.sbPs.q.001", "prompt": "[Past Continuous — question] Build: a question about playing football at 5 PM yesterday.", "correct": ["Were","they","playing","football","at","5","PM","yesterday?"] },
+      { "id": "araylim_1.sbPs.q.002", "prompt": "[Past Continuous — question] Build: a question about what you were doing at 8 PM last night.", "correct": ["What","were","you","doing","at","8","PM","last","night?"] },
+      { "id": "araylim_1.sbPs.q.003", "prompt": "[Past Continuous — question] Build: a question about why she was crying yesterday.", "correct": ["Why","was","she","crying","yesterday?"] },
+      { "id": "araylim_1.sbPs.q.004", "prompt": "[Past Continuous — question] Build: a question about reading when the phone rang.", "correct": ["Was","she","reading","when","the","phone","rang?"] }
     ],
     "shuffled": [
-      { "prompt": "[Past Continuous] Build: a sentence about the sun shining when we woke up.", "correct": ["The","sun","was","shining","when","we","woke","up."] },
-      { "prompt": "[Past Continuous] Build: a sentence about the dog barking all night.", "correct": ["The","dog","was","barking","all","night."] },
-      { "prompt": "[Past Continuous — negative] Build: a sentence about not listening when the teacher explained.", "correct": ["He","was","not","listening","when","the","teacher","explained."] },
-      { "prompt": "[Past Continuous — question] Build: a question about what you were doing at 10 AM.", "correct": ["What","were","you","doing","at","10","AM?"] },
-      { "prompt": "[Past Continuous — question] Build: a question about playing chess when I arrived.", "correct": ["Were","they","playing","chess","when","I","arrived?"] },
-      { "prompt": "[Past Continuous — negative] Build: a sentence about not hearing the alarm.", "correct": ["I","was","not","hearing","the","alarm."] },
-      { "prompt": "[Past Continuous] Build: a sentence about her running very fast yesterday.", "correct": ["She","was","running","very","fast","yesterday."] },
-      { "prompt": "[Past Continuous] Build: a sentence about the cat sleeping on the sofa.", "correct": ["The","cat","was","sleeping","on","the","sofa."] }
+      { "id": "araylim_1.sbPs.shuffled.001", "prompt": "[Past Continuous] Build: a sentence about the sun shining when we woke up.", "correct": ["The","sun","was","shining","when","we","woke","up."] },
+      { "id": "araylim_1.sbPs.shuffled.002", "prompt": "[Past Continuous] Build: a sentence about the dog barking all night.", "correct": ["The","dog","was","barking","all","night."] },
+      { "id": "araylim_1.sbPs.shuffled.003", "prompt": "[Past Continuous — negative] Build: a sentence about not listening when the teacher explained.", "correct": ["He","was","not","listening","when","the","teacher","explained."] },
+      { "id": "araylim_1.sbPs.shuffled.004", "prompt": "[Past Continuous — question] Build: a question about what you were doing at 10 AM.", "correct": ["What","were","you","doing","at","10","AM?"] },
+      { "id": "araylim_1.sbPs.shuffled.005", "prompt": "[Past Continuous — question] Build: a question about playing chess when I arrived.", "correct": ["Were","they","playing","chess","when","I","arrived?"] },
+      { "id": "araylim_1.sbPs.shuffled.006", "prompt": "[Past Continuous — negative] Build: a sentence about not hearing the alarm.", "correct": ["I","was","not","hearing","the","alarm."] },
+      { "id": "araylim_1.sbPs.shuffled.007", "prompt": "[Past Continuous] Build: a sentence about her running very fast yesterday.", "correct": ["She","was","running","very","fast","yesterday."] },
+      { "id": "araylim_1.sbPs.shuffled.008", "prompt": "[Past Continuous] Build: a sentence about the cat sleeping on the sofa.", "correct": ["The","cat","was","sleeping","on","the","sofa."] }
     ]
   },
   "g10": {
     "pos": [
-      { "p": "[Present Perfect] Scientists ___ (study) memory for decades.", "a": "have studied" },
-      { "p": "[Present Perfect] She ___ (work) here for five years.", "a": "has worked" },
-      { "p": "[Present Perfect] We ___ (know) each other since 2018.", "a": "have known" },
-      { "p": "[Present Perfect] He ___ (just / finish) his homework.", "a": "has just finished" },
-      { "p": "[Present Perfect] They ___ (already / visit) the museum.", "a": "have already visited" },
-      { "p": "[Present Perfect] I ___ (never / see) such a beautiful place.", "a": "have never seen" },
-      { "p": "[Present Perfect] The team ___ (win) three matches this season.", "a": "has won" },
-      { "p": "[Present Perfect] My parents ___ (live) in Almaty for twenty years.", "a": "have lived" }
+      { "id": "araylim_1.g10.pos.001", "p": "[Present Perfect] Scientists ___ (study) memory for decades.", "a": "have studied" },
+      { "id": "araylim_1.g10.pos.002", "p": "[Present Perfect] She ___ (work) here for five years.", "a": "has worked" },
+      { "id": "araylim_1.g10.pos.003", "p": "[Present Perfect] We ___ (know) each other since 2018.", "a": "have known" },
+      { "id": "araylim_1.g10.pos.004", "p": "[Present Perfect] He ___ (just / finish) his homework.", "a": "has just finished" },
+      { "id": "araylim_1.g10.pos.005", "p": "[Present Perfect] They ___ (already / visit) the museum.", "a": "have already visited" },
+      { "id": "araylim_1.g10.pos.006", "p": "[Present Perfect] I ___ (never / see) such a beautiful place.", "a": "have never seen" },
+      { "id": "araylim_1.g10.pos.007", "p": "[Present Perfect] The team ___ (win) three matches this season.", "a": "has won" },
+      { "id": "araylim_1.g10.pos.008", "p": "[Present Perfect] My parents ___ (live) in Almaty for twenty years.", "a": "have lived" }
     ],
     "neg": [
-      { "p": "[Present Perfect — negative] He ___ (not / memorize) the poem yet.", "a": "has not memorized" },
-      { "p": "[Present Perfect — negative] We ___ (not / see) such clean air before.", "a": "have not seen" },
-      { "p": "[Present Perfect — negative] The council ___ (not / decide) yet.", "a": "has not decided" },
-      { "p": "[Present Perfect — negative] I ___ (not / hear) from her since Monday.", "a": "have not heard" },
-      { "p": "[Present Perfect — negative] She ___ (not / try) sushi before.", "a": "has not tried" },
-      { "p": "[Present Perfect — negative] They ___ (not / arrive) yet.", "a": "have not arrived" }
+      { "id": "araylim_1.g10.neg.001", "p": "[Present Perfect — negative] He ___ (not / memorize) the poem yet.", "a": "has not memorized" },
+      { "id": "araylim_1.g10.neg.002", "p": "[Present Perfect — negative] We ___ (not / see) such clean air before.", "a": "have not seen" },
+      { "id": "araylim_1.g10.neg.003", "p": "[Present Perfect — negative] The council ___ (not / decide) yet.", "a": "has not decided" },
+      { "id": "araylim_1.g10.neg.004", "p": "[Present Perfect — negative] I ___ (not / hear) from her since Monday.", "a": "have not heard" },
+      { "id": "araylim_1.g10.neg.005", "p": "[Present Perfect — negative] She ___ (not / try) sushi before.", "a": "has not tried" },
+      { "id": "araylim_1.g10.neg.006", "p": "[Present Perfect — negative] They ___ (not / arrive) yet.", "a": "have not arrived" }
     ],
     "q": [
-      { "p": "[Present Perfect — question] ___ you ever ___ (be) to London?", "a": "Have you ever been" },
-      { "p": "[Present Perfect — question] ___ she ___ (finish) the project?", "a": "Has she finished" },
-      { "p": "[Present Perfect — question] ___ they ___ (see) this movie?", "a": "Have they seen" },
-      { "p": "[Present Perfect — question] How long ___ you ___ (live) here?", "a": "have you lived" },
-      { "p": "[Present Perfect — question] ___ he ___ (call) you back?", "a": "Has he called" },
-      { "p": "[Present Perfect — question] ___ you ___ (read) the report yet?", "a": "Have you read" }
+      { "id": "araylim_1.g10.q.001", "p": "[Present Perfect — question] ___ you ever ___ (be) to London?", "a": "Have you ever been" },
+      { "id": "araylim_1.g10.q.002", "p": "[Present Perfect — question] ___ she ___ (finish) the project?", "a": "Has she finished" },
+      { "id": "araylim_1.g10.q.003", "p": "[Present Perfect — question] ___ they ___ (see) this movie?", "a": "Have they seen" },
+      { "id": "araylim_1.g10.q.004", "p": "[Present Perfect — question] How long ___ you ___ (live) here?", "a": "have you lived" },
+      { "id": "araylim_1.g10.q.005", "p": "[Present Perfect — question] ___ he ___ (call) you back?", "a": "Has he called" },
+      { "id": "araylim_1.g10.q.006", "p": "[Present Perfect — question] ___ you ___ (read) the report yet?", "a": "Have you read" }
     ],
     "shuffled": [
-      { "p": "[Present Perfect] The brain ___ (process) the information scientists have studied.", "a": "has processed" },
-      { "p": "[Present Perfect] I ___ (already / read) that book.", "a": "have already read" },
-      { "p": "[Present Perfect] She ___ (never / try) sushi.", "a": "has never tried" },
-      { "p": "[Present Perfect — negative] They ___ (not / arrive) yet.", "a": "have not arrived" },
-      { "p": "[Present Perfect] He ___ (just / finish) his homework.", "a": "has just finished" },
-      { "p": "[Present Perfect] We ___ (know) each other since primary school.", "a": "have known" },
-      { "p": "[Present Perfect — question] ___ you ever ___ (hear) of a tsunami here?", "a": "Have you ever heard" },
-      { "p": "[Present Perfect] The train ___ (leave) the station.", "a": "has left" },
-      { "p": "[Present Perfect] I ___ (lose) my phone.", "a": "have lost" },
-      { "p": "[Present Perfect] She ___ (already / finish) her work.", "a": "has already finished" },
-      { "p": "[Present Perfect — negative] We ___ (not / see) that film yet.", "a": "have not seen" },
-      { "p": "[Present Perfect — question] ___ he ___ (call) you back?", "a": "Has he called" }
+      { "id": "araylim_1.g10.shuffled.001", "p": "[Present Perfect] The brain ___ (process) the information scientists have studied.", "a": "has processed" },
+      { "id": "araylim_1.g10.shuffled.002", "p": "[Present Perfect] I ___ (already / read) that book.", "a": "have already read" },
+      { "id": "araylim_1.g10.shuffled.003", "p": "[Present Perfect] She ___ (never / try) sushi.", "a": "has never tried" },
+      { "id": "araylim_1.g10.shuffled.004", "p": "[Present Perfect — negative] They ___ (not / arrive) yet.", "a": "have not arrived" },
+      { "id": "araylim_1.g10.shuffled.005", "p": "[Present Perfect] He ___ (just / finish) his homework.", "a": "has just finished" },
+      { "id": "araylim_1.g10.shuffled.006", "p": "[Present Perfect] We ___ (know) each other since primary school.", "a": "have known" },
+      { "id": "araylim_1.g10.shuffled.007", "p": "[Present Perfect — question] ___ you ever ___ (hear) of a tsunami here?", "a": "Have you ever heard" },
+      { "id": "araylim_1.g10.shuffled.008", "p": "[Present Perfect] The train ___ (leave) the station.", "a": "has left" },
+      { "id": "araylim_1.g10.shuffled.009", "p": "[Present Perfect] I ___ (lose) my phone.", "a": "have lost" },
+      { "id": "araylim_1.g10.shuffled.010", "p": "[Present Perfect] She ___ (already / finish) her work.", "a": "has already finished" },
+      { "id": "araylim_1.g10.shuffled.011", "p": "[Present Perfect — negative] We ___ (not / see) that film yet.", "a": "have not seen" },
+      { "id": "araylim_1.g10.shuffled.012", "p": "[Present Perfect — question] ___ he ___ (call) you back?", "a": "Has he called" }
     ]
   },
   "testMcq": [
-    { "q": "Which sentence is in the Simple Present?", "options": ["She studies every day.", "She is studying now.", "She studied yesterday."], "correct": "She studies every day.", "exp": "Simple Present describes habits and facts." },
-    { "q": "Which sentence is in the Present Continuous?", "options": ["She reads a book every night.", "She is reading a book right now.", "She read a book last night."], "correct": "She is reading a book right now.", "exp": "Present Continuous describes actions happening now." },
-    { "q": "Which sentence is in the Simple Past?", "options": ["He walks to school.", "He is walking to school.", "He walked to school yesterday."], "correct": "He walked to school yesterday.", "exp": "Simple Past describes finished actions in the past." },
-    { "q": "Which sentence is in the Past Continuous?", "options": ["They play football.", "They are playing football.", "They were playing football at 5 PM."], "correct": "They were playing football at 5 PM.", "exp": "Past Continuous describes actions in progress in the past." },
-    { "q": "Which sentence is in the Present Perfect?", "options": ["I saw that movie.", "I have seen that movie.", "I am seeing that movie."], "correct": "I have seen that movie.", "exp": "Present Perfect connects the past to now." },
-    { "q": "Which sentence uses \"since\" correctly?", "options": ["I have lived here since 2018.", "I lived here since 2018.", "I am living here since 2018."], "correct": "I have lived here since 2018.", "exp": "\"Since\" pairs with Present Perfect." },
-    { "q": "Which sentence uses \"yesterday\" correctly?", "options": ["I have seen her yesterday.", "I saw her yesterday.", "I see her yesterday."], "correct": "I saw her yesterday.", "exp": "\"Yesterday\" is a finished time → Simple Past." },
-    { "q": "Which sentence uses \"right now\" correctly?", "options": ["I read a book right now.", "I am reading a book right now.", "I have read a book right now."], "correct": "I am reading a book right now.", "exp": "\"Right now\" → Present Continuous." },
-    { "q": "Which sentence uses \"already\" correctly?", "options": ["I already finish my homework.", "I have already finished my homework.", "I was already finishing my homework."], "correct": "I have already finished my homework.", "exp": "\"Already\" pairs with Present Perfect." },
-    { "q": "Which sentence is grammatically WRONG?", "options": ["He doesn't play tennis.", "He isn't playing tennis now.", "He don't play tennis."], "correct": "He don't play tennis.", "exp": "He → does not, not do not." }
+    { "id": "araylim_1.testMcq.001", "q": "Which sentence is in the Simple Present?", "options": ["She studies every day.", "She is studying now.", "She studied yesterday."], "correct": "She studies every day.", "exp": "Simple Present describes habits and facts." },
+    { "id": "araylim_1.testMcq.002", "q": "Which sentence is in the Present Continuous?", "options": ["She reads a book every night.", "She is reading a book right now.", "She read a book last night."], "correct": "She is reading a book right now.", "exp": "Present Continuous describes actions happening now." },
+    { "id": "araylim_1.testMcq.003", "q": "Which sentence is in the Simple Past?", "options": ["He walks to school.", "He is walking to school.", "He walked to school yesterday."], "correct": "He walked to school yesterday.", "exp": "Simple Past describes finished actions in the past." },
+    { "id": "araylim_1.testMcq.004", "q": "Which sentence is in the Past Continuous?", "options": ["They play football.", "They are playing football.", "They were playing football at 5 PM."], "correct": "They were playing football at 5 PM.", "exp": "Past Continuous describes actions in progress in the past." },
+    { "id": "araylim_1.testMcq.005", "q": "Which sentence is in the Present Perfect?", "options": ["I saw that movie.", "I have seen that movie.", "I am seeing that movie."], "correct": "I have seen that movie.", "exp": "Present Perfect connects the past to now." },
+    { "id": "araylim_1.testMcq.006", "q": "Which sentence uses \"since\" correctly?", "options": ["I have lived here since 2018.", "I lived here since 2018.", "I am living here since 2018."], "correct": "I have lived here since 2018.", "exp": "\"Since\" pairs with Present Perfect." },
+    { "id": "araylim_1.testMcq.007", "q": "Which sentence uses \"yesterday\" correctly?", "options": ["I have seen her yesterday.", "I saw her yesterday.", "I see her yesterday."], "correct": "I saw her yesterday.", "exp": "\"Yesterday\" is a finished time → Simple Past." },
+    { "id": "araylim_1.testMcq.008", "q": "Which sentence uses \"right now\" correctly?", "options": ["I read a book right now.", "I am reading a book right now.", "I have read a book right now."], "correct": "I am reading a book right now.", "exp": "\"Right now\" → Present Continuous." },
+    { "id": "araylim_1.testMcq.009", "q": "Which sentence uses \"already\" correctly?", "options": ["I already finish my homework.", "I have already finished my homework.", "I was already finishing my homework."], "correct": "I have already finished my homework.", "exp": "\"Already\" pairs with Present Perfect." },
+    { "id": "araylim_1.testMcq.010", "q": "Which sentence is grammatically WRONG?", "options": ["He doesn't play tennis.", "He isn't playing tennis now.", "He don't play tennis."], "correct": "He don't play tennis.", "exp": "He → does not, not do not." }
   ],
   "testShort": [
-    { "q": "Complete with the correct form of \"work\": \"She ___ at a hospital every day.\"", "answers": ["works"], "exp": "Simple Present: she works." },
-    { "q": "Complete with the Present Continuous: \"Look! The baby ___ (sleep).\"", "answers": ["is sleeping"], "exp": "Present Continuous: is sleeping." },
-    { "q": "Complete with the Simple Past: \"They ___ (play) football yesterday.\"", "answers": ["played"], "exp": "Simple Past: played." },
-    { "q": "Complete with the Past Continuous: \"While I ___ (sleep), the phone rang.\"", "answers": ["was sleeping"], "exp": "Past Continuous: was sleeping." },
-    { "q": "Complete with the Present Perfect: \"I ___ (already / finish) my homework.\"", "answers": ["have already finished"], "exp": "Present Perfect: have already finished." },
-    { "q": "Complete with the Simple Past negative: \"He ___ (not / come) to the party last night.\"", "answers": ["did not come"], "exp": "Simple Past negative: did not come." },
-    { "q": "Complete with the Present Perfect question: \"___ you ever ___ (be) to London?\"", "answers": ["have you ever been"], "exp": "Present Perfect question." },
-    { "q": "Complete with the Present Perfect: \"We ___ (know) each other since primary school.\"", "answers": ["have known"], "exp": "Present Perfect: have known." }
+    { "id": "araylim_1.testShort.001", "q": "Complete with the correct form of \"work\": \"She ___ at a hospital every day.\"", "answers": ["works"], "exp": "Simple Present: she works." },
+    { "id": "araylim_1.testShort.002", "q": "Complete with the Present Continuous: \"Look! The baby ___ (sleep).\"", "answers": ["is sleeping"], "exp": "Present Continuous: is sleeping." },
+    { "id": "araylim_1.testShort.003", "q": "Complete with the Simple Past: \"They ___ (play) football yesterday.\"", "answers": ["played"], "exp": "Simple Past: played." },
+    { "id": "araylim_1.testShort.004", "q": "Complete with the Past Continuous: \"While I ___ (sleep), the phone rang.\"", "answers": ["was sleeping"], "exp": "Past Continuous: was sleeping." },
+    { "id": "araylim_1.testShort.005", "q": "Complete with the Present Perfect: \"I ___ (already / finish) my homework.\"", "answers": ["have already finished"], "exp": "Present Perfect: have already finished." },
+    { "id": "araylim_1.testShort.006", "q": "Complete with the Simple Past negative: \"He ___ (not / come) to the party last night.\"", "answers": ["did not come"], "exp": "Simple Past negative: did not come." },
+    { "id": "araylim_1.testShort.007", "q": "Complete with the Present Perfect question: \"___ you ever ___ (be) to London?\"", "answers": ["have you ever been"], "exp": "Present Perfect question." },
+    { "id": "araylim_1.testShort.008", "q": "Complete with the Present Perfect: \"We ___ (know) each other since primary school.\"", "answers": ["have known"], "exp": "Present Perfect: have known." }
   ],
   "testTfng": [
-    { "q": "The Present Perfect tense is used for actions at a specific finished time.", "answer": "False", "exp": "Present Perfect connects to now — no specific finished time." },
-    { "q": "The Simple Present is used for routines and habits.", "answer": "True", "exp": "Correct — routines and facts." },
-    { "q": "The Past Continuous is used for actions in progress in the past.", "answer": "True", "exp": "Correct — like \"was sleeping when the phone rang\"." },
-    { "q": "We use Present Continuous with \"yesterday\".", "answer": "False", "exp": "\"Yesterday\" is finished time → Simple Past." },
-    { "q": "\"Since\" and \"for\" are both used with the Present Perfect.", "answer": "True", "exp": "Yes — \"since\" (a point) and \"for\" (a duration)." },
-    { "q": "The Simple Past is used for actions connected to now.", "answer": "False", "exp": "Simple Past = finished; Present Perfect = connected to now." }
+    { "id": "araylim_1.testTfng.001", "q": "The Present Perfect tense is used for actions at a specific finished time.", "answer": "False", "exp": "Present Perfect connects to now — no specific finished time." },
+    { "id": "araylim_1.testTfng.002", "q": "The Simple Present is used for routines and habits.", "answer": "True", "exp": "Correct — routines and facts." },
+    { "id": "araylim_1.testTfng.003", "q": "The Past Continuous is used for actions in progress in the past.", "answer": "True", "exp": "Correct — like \"was sleeping when the phone rang\"." },
+    { "id": "araylim_1.testTfng.004", "q": "We use Present Continuous with \"yesterday\".", "answer": "False", "exp": "\"Yesterday\" is finished time → Simple Past." },
+    { "id": "araylim_1.testTfng.005", "q": "\"Since\" and \"for\" are both used with the Present Perfect.", "answer": "True", "exp": "Yes — \"since\" (a point) and \"for\" (a duration)." },
+    { "id": "araylim_1.testTfng.006", "q": "The Simple Past is used for actions connected to now.", "answer": "False", "exp": "Simple Past = finished; Present Perfect = connected to now." }
   ],
   "testComplete": [
-    { "p": "[Simple Present] She usually ___ (eat) healthy food.", "a": "eats" },
-    { "p": "[Present Continuous] Look! The coach ___ (shout) at the players.", "a": "is shouting" },
-    { "p": "[Simple Past] They ___ (play) a match last Saturday.", "a": "played" },
-    { "p": "[Past Continuous] While I ___ (walk) home, it started to rain.", "a": "was walking" },
-    { "p": "[Present Perfect] I ___ (never / see) such a beautiful sunset.", "a": "have never seen" },
-    { "p": "[Simple Present — negative] He ___ (not / understand) this rule.", "a": "does not understand" },
-    { "p": "[Present Perfect] We ___ (study) English since 2020.", "a": "have studied" },
-    { "p": "[Past Continuous] She ___ (read) a book when I arrived.", "a": "was reading" },
-    { "p": "[Simple Past — question] ___ you ___ (watch) the game yesterday?", "a": "Did you watch" },
-    { "p": "[Simple Present] The sun ___ (rise) in the east.", "a": "rises" },
-    { "p": "[Present Perfect] They ___ (already / arrive).", "a": "have already arrived" },
-    { "p": "[Present Continuous] The baby ___ (sleep) in the bedroom right now.", "a": "is sleeping" }
+    { "id": "araylim_1.testComplete.001", "p": "[Simple Present] She usually ___ (eat) healthy food.", "a": "eats" },
+    { "id": "araylim_1.testComplete.002", "p": "[Present Continuous] Look! The coach ___ (shout) at the players.", "a": "is shouting" },
+    { "id": "araylim_1.testComplete.003", "p": "[Simple Past] They ___ (play) a match last Saturday.", "a": "played" },
+    { "id": "araylim_1.testComplete.004", "p": "[Past Continuous] While I ___ (walk) home, it started to rain.", "a": "was walking" },
+    { "id": "araylim_1.testComplete.005", "p": "[Present Perfect] I ___ (never / see) such a beautiful sunset.", "a": "have never seen" },
+    { "id": "araylim_1.testComplete.006", "p": "[Simple Present — negative] He ___ (not / understand) this rule.", "a": "does not understand" },
+    { "id": "araylim_1.testComplete.007", "p": "[Present Perfect] We ___ (study) English since 2020.", "a": "have studied" },
+    { "id": "araylim_1.testComplete.008", "p": "[Past Continuous] She ___ (read) a book when I arrived.", "a": "was reading" },
+    { "id": "araylim_1.testComplete.009", "p": "[Simple Past — question] ___ you ___ (watch) the game yesterday?", "a": "Did you watch" },
+    { "id": "araylim_1.testComplete.010", "p": "[Simple Present] The sun ___ (rise) in the east.", "a": "rises" },
+    { "id": "araylim_1.testComplete.011", "p": "[Present Perfect] They ___ (already / arrive).", "a": "have already arrived" },
+    { "id": "araylim_1.testComplete.012", "p": "[Present Continuous] The baby ___ (sleep) in the bedroom right now.", "a": "is sleeping" }
   ]
 }

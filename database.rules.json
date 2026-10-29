@@ -1,0 +1,92 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "students": {
+      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      "$code": {
+        ".read": "auth != null && (data.child('uid').val() == null || data.child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
+        ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.child('uid').val() == null && newData.child('uid').val() === auth.uid) || (data.child('uid').val() === auth.uid && newData.child('uid').val() === auth.uid) || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+      }
+    },
+    "studentByUid": {
+      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      "$uid": {
+        ".read": "auth != null && ($uid === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
+        ".write": "auth != null && ($uid === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+      }
+    },
+    "pendingStudents": {
+      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      "$uid": {
+        ".write": "auth != null && ($uid === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+      }
+    },
+    "curriculum": {
+      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')"
+    },
+    "studentCurriculum": {
+      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      "$code": {
+        ".read": "auth != null && ((auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')) || root.child('students').child($code).child('uid').val() === auth.uid)",
+        ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')"
+      }
+    },
+    "protectedContent": {
+      "$lessonId": {
+        ".read": "auth != null && ((auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')) || (root.child('studentByUid').child(auth.uid).exists() && root.child('students').child(root.child('studentByUid').child(auth.uid).val()).child('uid').val() === auth.uid && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('published').val() !== false))",
+        ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')"
+      }
+    },
+    "sessions": {
+      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".write": false,
+      "$code": {
+        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
+        "state": {
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+        },
+        "draft": {
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+        },
+        "history": {
+          ".write": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+        },
+        "annotations": {
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+        },
+        "homework_annotations": {
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+        },
+        "reviewQueue": {
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+        },
+        "command": {
+          ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')"
+        },
+        "commands": {
+          ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+          "$commandId": {
+            "ack": {
+              ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+            }
+          }
+        },
+        "homework": {
+          "$homeworkId": {
+            ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid && data.child('submitted').val() !== true",
+            ".validate": "!newData.exists() || !newData.child('score').exists() || (newData.child('score').isNumber() && newData.child('total').isNumber() && newData.child('score').val() <= newData.child('total').val())"
+          }
+        }
+      }
+    },
+    "sessionSummary": {
+      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      "$code": {
+        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
+        ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+      }
+    }
+  }
+}
