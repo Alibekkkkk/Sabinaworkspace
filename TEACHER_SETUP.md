@@ -43,13 +43,13 @@ The dashboard’s **Reset student progress** clears the saved score, stages, not
 
 The Practice page builds game variations from protected classwork data:
 
-- `matchData` entries (`word`, `meaning`) power matching, memory cards, flashcards, hangman, word scramble, dictation and pronunciation practice.
+- `matchData` entries (`word`, `meaning`) power matching, memory cards, vocabulary crosswords and word searches, flashcards, hangman, word scramble, dictation and pronunciation practice. Crossword words use alphabetic entries of 3–12 letters; word-search words use 3–12 letters, and both are capped at eight entries.
 - `testMcq` entries (`q`, `options`, `correct`) power timed quizzes and unit boss rounds.
 - `testComplete` entries (`p` or `prompt`, `a` or `answer`) power gap-fill.
 - `sbPp` and `sbPs` groups with `prompt` and `correct` word arrays power sentence building.
 - Optional `storyChoices` entries use `scene`, `choices`, and `correctChoice` for story-choice practice.
 
-Keep answers in the protected classwork workflow. Static `content/*.json` files are public on the website until the security migration's removal checks pass. The current reader supports up to ten items per generated round (eight memory pairs); crossword and word-search games are not yet available.
+Keep answers in the protected classwork workflow. Static `content/*.json` files are public on the website until the security migration's removal checks pass. The current reader supports up to ten items per generated round (eight memory pairs). Crosswords and word searches are generated from the existing vocabulary; they do not need a separate schema.
 
 ## Author and update Clip Lab content
 

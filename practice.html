@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#141a25">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Practice | Learning Studio</title>
   <script src="js/pwa.js" defer></script>
@@ -33,6 +33,16 @@
     .tile-bank,.memory-board,.letters{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0}
     .memory-card{min-width:6rem;min-height:4rem}
     .memory-card.matched{background:var(--ds-color-success);color:#fff}
+    .puzzle-grid{display:grid;grid-template-columns:repeat(var(--columns),minmax(1.7rem,2rem));gap:.15rem;width:max-content;max-width:100%;margin:1rem 0;overflow:auto}
+    .puzzle-cell{position:relative;display:grid;place-items:center;min-width:1.7rem;min-height:1.7rem;padding:0;border:1px solid var(--ds-color-border);border-radius:.2rem;background:var(--ds-color-background);color:var(--ds-color-text);font:700 .95rem var(--ds-font-mono)}
+    .puzzle-cell input{width:100%;height:100%;min-width:0;padding:0;border:0;border-radius:inherit;background:transparent;color:inherit;text-align:center;text-transform:uppercase;font:inherit}
+    .puzzle-cell.open{background:var(--ds-color-surface)}
+    .puzzle-cell.selected{outline:2px solid var(--ds-color-primary);outline-offset:1px}
+    .puzzle-cell.found{background:var(--ds-color-success);color:#fff}
+    .puzzle-cell.blocked{border:0;background:transparent}
+    .puzzle-number{position:absolute;top:0;left:.12rem;font:500 .5rem var(--ds-font-mono);color:var(--ds-color-muted);pointer-events:none}
+    .puzzle-words{display:grid;gap:.45rem;padding-left:1.5rem;color:var(--ds-color-muted)}
+    .puzzle-words li.found{color:var(--ds-color-success);font-weight:700}
     .timer{font-weight:800;color:var(--ds-color-danger)}
     .question-feedback{min-height:1.5rem;color:var(--ds-color-muted)}
     .result{padding:1rem;background:var(--ds-color-surface-raised);border-radius:var(--ds-radius-md);margin-top:1rem}
@@ -70,6 +80,7 @@
     const stats = document.getElementById("stats");
     let database;
     let context;
+    let activeTimerInterval;
 
     function element(tag, text, className) {
       const node = document.createElement(tag);
@@ -89,6 +100,7 @@
     }
 
     function renderGame(game) {
+      clearInterval(activeTimerInterval);
       gameView.replaceChildren();
       const card = element("article", undefined, "game-card");
       card.append(element("h2", game.title), element("p", game.instructions, "muted"));
@@ -97,7 +109,6 @@
       const answers = {};
       const items = game.pairs || game.questions;
       let submitted = false;
-      let timerInterval;
       const submit = element("button", "Check answers", "button");
       submit.type = "submit";
       if (["memory-cards", "flashcards", "hangman"].includes(game.type)) submit.disabled = true;
@@ -108,7 +119,7 @@
       async function finishGame() {
         if (submitted) return;
         submitted = true;
-        clearInterval(timerInterval);
+        clearInterval(activeTimerInterval);
         submit.disabled = true;
         for (const item of items) {
           const input = answerInputs.get(item.id);
@@ -180,7 +191,7 @@
         timer.setAttribute("aria-live", "off");
         card.append(timer);
         let remaining = game.secondsPerQuestion * items.length;
-        timerInterval = setInterval(() => {
+        activeTimerInterval = setInterval(() => {
           remaining -= 1;
           timer.textContent = `Time remaining: ${Math.max(remaining, 0)}s`;
           if (remaining <= 0) {
@@ -190,7 +201,141 @@
         }, 1000);
       }
 
-      if (game.type === "memory-cards") {
+      if (game.type === "crossword") {
+        const grid = element("div", undefined, "puzzle-grid");
+        grid.style.setProperty("--columns", String(game.grid[0].length));
+        const cellInputs = new Map();
+        const numberedCells = new Map();
+        items.forEach(item => {
+          const first = item.cells[0];
+          numberedCells.set(`${first.row},${first.col}`, item.number);
+          const answer = element("input");
+          answer.type = "hidden";
+          answer.name = item.id;
+          answerInputs.set(item.id, answer);
+        });
+        game.grid.forEach((row, rowIndex) => row.forEach((_, colIndex) => {
+          const key = `${rowIndex},${colIndex}`;
+          const cell = element("div", undefined, "puzzle-cell");
+          if (!items.some(item => item.cells.some(point => point.row === rowIndex && point.col === colIndex))) {
+            cell.classList.add("blocked");
+          } else {
+            cell.classList.add("open");
+            if (numberedCells.has(key)) cell.append(element("span", numberedCells.get(key), "puzzle-number"));
+            const input = element("input");
+            input.type = "text";
+            input.maxLength = 1;
+            input.autocomplete = "off";
+            input.setAttribute("aria-label", `Row ${rowIndex + 1}, column ${colIndex + 1}`);
+            input.addEventListener("input", () => {
+              input.value = input.value.toLocaleUpperCase().replace(/[^A-Z]/g, "").slice(-1);
+              let complete = true;
+              for (const item of items) {
+                const value = item.cells.map(point =>
+                  cellInputs.get(`${point.row},${point.col}`).value).join("");
+                answerInputs.get(item.id).value = value;
+                if (value.length !== item.answer.length) complete = false;
+              }
+              submit.disabled = !complete;
+            });
+            input.addEventListener("keydown", event => {
+              const next = {
+                ArrowUp: [-1, 0],
+                ArrowDown: [1, 0],
+                ArrowLeft: [0, -1],
+                ArrowRight: [0, 1]
+              }[event.key];
+              if (!next) return;
+              const target = cellInputs.get(`${rowIndex + next[0]},${colIndex + next[1]}`);
+              if (target) {
+                event.preventDefault();
+                target.focus();
+              }
+            });
+            cellInputs.set(key, input);
+            cell.append(input);
+          }
+          grid.append(cell);
+        }));
+        const clues = element("ol", undefined, "puzzle-words");
+        for (const item of items) {
+          const clue = element("li", `${item.number} · ${item.direction} · ${item.prompt}`);
+          clues.append(clue);
+        }
+        submit.disabled = true;
+        form.append(grid, clues);
+      } else if (game.type === "word-search") {
+        const grid = element("div", undefined, "puzzle-grid");
+        grid.style.setProperty("--columns", String(game.grid[0].length));
+        const foundWords = new Set();
+        const selected = [];
+        const feedback = element("p", "Select adjacent letters in a straight line.", "question-feedback");
+        feedback.setAttribute("aria-live", "polite");
+        const wordList = element("ol", undefined, "puzzle-words");
+        const wordItems = new Map();
+        items.forEach(item => {
+          const answer = element("input");
+          answer.type = "hidden";
+          answer.name = item.id;
+          answerInputs.set(item.id, answer);
+          const word = element("li", item.prompt);
+          wordItems.set(item.id, word);
+          wordList.append(word);
+        });
+        const cellButtons = new Map();
+        const coordinates = point => `${point.row},${point.col}`;
+        const resetSelection = () => {
+          selected.forEach(point => cellButtons.get(coordinates(point))?.classList.remove("selected"));
+          selected.length = 0;
+        };
+        const addSelection = point => {
+          const prior = selected[selected.length - 1];
+          if (prior) {
+            const rowStep = point.row - prior.row;
+            const colStep = point.col - prior.col;
+            if (Math.abs(rowStep) > 1 || Math.abs(colStep) > 1 ||
+                (!rowStep && !colStep) ||
+                (selected.length > 1 && (point.row - prior.row !== selected[1].row - selected[0].row ||
+                  point.col - prior.col !== selected[1].col - selected[0].col))) {
+              resetSelection();
+            }
+          }
+          selected.push(point);
+          cellButtons.get(coordinates(point)).classList.add("selected");
+          const value = selected.map(cell => game.grid[cell.row][cell.col]).join("");
+          const found = items.find(item =>
+            !foundWords.has(item.id) &&
+            (item.answer === value || [...item.answer].reverse().join("") === value));
+          if (found) {
+            foundWords.add(found.id);
+            answerInputs.get(found.id).value = found.answer;
+            wordItems.get(found.id).classList.add("found");
+            selected.forEach(cell => cellButtons.get(coordinates(cell)).classList.add("found"));
+            feedback.textContent = `Found ${found.answer}!`;
+            resetSelection();
+            submit.disabled = foundWords.size !== items.length;
+          } else if (!items.some(item => !foundWords.has(item.id) &&
+              (item.answer.startsWith(value) || [...item.answer].reverse().join("").startsWith(value)))) {
+            feedback.textContent = "Not a word from this list. Start a new selection.";
+            resetSelection();
+          } else {
+            feedback.textContent = `Selected ${value.length} letter${value.length === 1 ? "" : "s"}.`;
+          }
+        };
+        game.grid.forEach((row, rowIndex) => row.forEach((letter, colIndex) => {
+          const button = element("button", letter, "puzzle-cell open");
+          button.type = "button";
+          button.setAttribute("aria-label", `${letter}, row ${rowIndex + 1}, column ${colIndex + 1}`);
+          button.addEventListener("click", () => addSelection({ row: rowIndex, col: colIndex }));
+          cellButtons.set(`${rowIndex},${colIndex}`, button);
+          grid.append(button);
+        }));
+        const clear = element("button", "Clear selection", "button secondary");
+        clear.type = "button";
+        clear.addEventListener("click", resetSelection);
+        submit.disabled = true;
+        form.append(grid, wordList, feedback, clear);
+      } else if (game.type === "memory-cards") {
         const board = element("div", undefined, "memory-board");
         const cards = items.flatMap(pair => [
           { pairId: pair.id, value: pair.prompt },
@@ -387,7 +532,7 @@
         event.preventDefault();
         await finishGame();
       });
-      if (game.type !== "memory-cards" && game.type !== "flashcards" && game.type !== "hangman") submit.disabled = false;
+      if (!["memory-cards", "flashcards", "hangman", "crossword", "word-search"].includes(game.type)) submit.disabled = false;
       card.append(form);
       gameView.append(card);
     }

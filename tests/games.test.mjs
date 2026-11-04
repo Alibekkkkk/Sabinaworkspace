@@ -30,6 +30,8 @@ test("creates reusable games from the current lesson content format", () => {
     "word-match",
     "memory-cards",
     "flashcards",
+    "crossword",
+    "word-search",
     "hangman",
     "word-scramble",
     "listening-dictation",
@@ -40,6 +42,13 @@ test("creates reusable games from the current lesson content format", () => {
   ]);
   assert.equal(games[0].pairs[0].prompt, "flood");
   games.forEach(validateGame);
+  for (const type of ["crossword", "word-search"]) {
+    const game = games.find(item => item.type === type);
+    for (const question of game.questions) {
+      const puzzleWord = question.cells.map(cell => game.grid[cell.row][cell.col]).join("");
+      assert.equal(puzzleWord, question.answer);
+    }
+  }
 });
 
 test("builds sentence and story games from optional teacher-authored data", () => {
@@ -82,6 +91,12 @@ test("validates game IDs, items, and answer options", () => {
     questions: [{ id: "q", prompt: "Choose", answer: "A", options: ["B", "C"] }]
   }), /options/);
   assert.throws(() => createVocabMatchGame([{ word: "alone" }]), /at least one item/);
+  assert.throws(() => validateGame({
+    id: "crossword",
+    type: "crossword",
+    grid: [["A"], ["B", "C"]],
+    questions: [{ id: "one", prompt: "Clue", answer: "A", cells: [{ row: 0, col: 0 }] }]
+  }), /rectangular/);
 });
 
 test("normalizes punctuation and scores responses with review mistakes", () => {

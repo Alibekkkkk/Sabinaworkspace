@@ -26,5 +26,6 @@ test("application pages apply the shared CSP baseline", () => {
     assert.match(html, /object-src 'none'/, `${path} should block plugin content`);
     assert.match(html, /base-uri 'self'/, `${path} should restrict base URLs`);
     assert.match(html, /https:\/\/www\.gstatic\.com/, `${path} should allow Firebase SDK assets`);
+    assert.match(html, /https:\/\/\*\.firebasedatabase\.app/, `${path} should allow regional Realtime Database connections`);
   }
 });

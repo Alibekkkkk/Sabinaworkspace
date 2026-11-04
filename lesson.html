@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#141a25">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
 <title>Lesson — Vocabulary, Reading & Tenses</title>
 <link rel="manifest" href="manifest.webmanifest">
 <script src="js/pwa.js" defer></script>
@@ -13,6 +13,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="js/sanitize-html.js"></script>
 <script>
   try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
@@ -751,7 +752,7 @@ function initFirebase(){
                     const currentTitleMatch = READING_HTML.match(/<h1>(.*?)<\/h1>/);
                     const currentTitle = currentTitleMatch ? currentTitleMatch[1].trim() : '';
                     if (currentTitle && savedHtml.includes(currentTitle)) {
-                        body.innerHTML = savedHtml;
+                        body.innerHTML = sanitizeRichHtml(savedHtml);
                     } else {
                         fbDb.ref('sessions/'+c+'/annotations/'+lessonId).remove();
                     }
@@ -1410,12 +1411,12 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
       card.innerHTML='<div class="q-num">Question '+idx+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
       const row=document.createElement('div');row.className='q-input-row'; const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type the missing word(s)...';inp.autocomplete='off';inp.spellcheck=false; if(draftAnswers[draftKey]) inp.value = draftAnswers[draftKey];
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check'; const fb=document.createElement('div');fb.className='q-feedback'; let answered=isOk;
-      if(isOk){ inp.classList.add('correct');inp.disabled=true;btn.disabled=true; fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+item.ex+'</span>':''); score++; }
+      if(isOk){ inp.classList.add('correct');inp.disabled=true;btn.disabled=true; fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+sanitizeRichHtml(item.ex)+'</span>':''); score++; }
       
       function submit(){
         if(answered)return; const ok = isAnswerCorrect(inp.value, [item.a]);
         if(ok){
-          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true; fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+item.ex+'</span>':'');
+          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true; fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+sanitizeRichHtml(item.ex)+'</span>':'');
           sCorrect();score++;document.getElementById('p'+stageId+'live').textContent=score; const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length; setScore(stageId,Math.floor(score*10/total)); if(score===total){setScore(stageId,10);markDone(stageId)}
           broadcastAction('answer_correct',item.p.substring(0,40)+' → '+item.a); draftAnswers[draftKey] = inp.value; draftAnswers[okKey] = true; debouncedSaveDraft();
           if (teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; rst.onclick = () => undoQuestion('g'+stageId+'_', idx); card.appendChild(rst); }

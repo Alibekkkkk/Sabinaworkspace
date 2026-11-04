@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#141a25">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
 <title>Homework</title>
 <link rel="manifest" href="manifest.webmanifest">
 <script src="js/pwa.js" defer></script>
@@ -13,6 +13,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="js/sanitize-html.js"></script>
 <script>
   try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 </script>
@@ -309,19 +310,20 @@ function renderPassage(){
   const p=lesson.reading; const body=document.getElementById('passageBody'); if(!body)return;
   let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>'; const vocabWords=lesson.vocab.map(v=>v.en);
   p.paragraphs.forEach(function(par){ let text=escapeHtml(par.text); vocabWords.forEach(function(w){ let matchStr = w; if (w.startsWith('to ')) matchStr = w.substring(3); const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi'); text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>'); }); html+='<p><span class="para-label">'+escapeHtml(par.label)+'</span>'+text+'</p>'; });
-  body.innerHTML=html; body.querySelectorAll('.v-word').forEach(function(el){ el.onclick=function(){openVocab(el.dataset.vocab)}; });
+  body.innerHTML=sanitizeRichHtml(html); body.querySelectorAll('.v-word').forEach(function(el){ el.onclick=function(){openVocab(el.dataset.vocab)}; });
   if(fbDb && code) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).once('value').then(snap => { if(snap.exists()) { 
       const savedHtml = snap.val();
       const currentTitle = p.title;
       if (currentTitle && savedHtml.includes(currentTitle)) {
-          body.innerHTML = savedHtml; 
+          body.innerHTML = sanitizeRichHtml(savedHtml);
+          body.querySelectorAll('.v-word').forEach(function(el){ el.onclick=function(){openVocab(el.dataset.vocab)}; });
           body.querySelectorAll('.user-note').forEach((note, i) => { if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i; }); 
       } else {
           fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).remove();
       }
   } }); }
 }
-function openVocab(word){ const v=lesson.vocab.find(function(x){return x.en===word}); if(!v)return; document.getElementById('vocabEmoji').textContent=v.emoji||'📖'; document.getElementById('vocabWord').textContent=v.en; document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){ const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : ''; const posBadge = m.pos ? `<span class="pos-badge">${escapeHtml(m.pos)}</span>` : ''; return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+' '+posBadge+'</div>'+ '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+ '<div class="example">'+m.ex+'</div></div>'; }).join(''); document.getElementById('vocabBackdrop').classList.add('open'); }
+function openVocab(word){ const v=lesson.vocab.find(function(x){return x.en===word}); if(!v)return; document.getElementById('vocabEmoji').textContent=v.emoji||'📖'; document.getElementById('vocabWord').textContent=v.en; document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){ const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : ''; const posBadge = m.pos ? `<span class="pos-badge">${escapeHtml(m.pos)}</span>` : ''; return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+' '+posBadge+'</div>'+ '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+ '<div class="example">'+sanitizeRichHtml(m.ex)+'</div></div>'; }).join(''); document.getElementById('vocabBackdrop').classList.add('open'); }
 function closeVocab(){document.getElementById('vocabBackdrop').classList.remove('open')}
 
 function updateProgress(){
