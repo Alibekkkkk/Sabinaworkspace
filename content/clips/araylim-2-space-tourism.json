@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "araylim-2-space-tourism",
+  "title": "Private astronauts travel to the space station",
+  "source": {
+    "provider": "youtube",
+    "videoId": "I69Cz4zJJes",
+    "channel": "NASA",
+    "videoTitle": "The Second All-Private Astronaut Mission to the Space Station",
+    "sourceUrl": "https://www.youtube.com/watch?v=I69Cz4zJJes",
+    "rights": "official-embed",
+    "reviewedAt": "2026-11-04"
+  },
+  "startSeconds": 0,
+  "endSeconds": 30,
+  "level": "B1",
+  "genre": ["science news"],
+  "grammarPoints": ["past simple", "compound adjectives"],
+  "vocabularyThemes": ["space travel", "tourism"],
+  "transcriptType": "teacher-created",
+  "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "transcript": [
+    {
+      "id": "private-mission",
+      "startSeconds": 0,
+      "endSeconds": 15,
+      "text": "A team of astronauts travels to a space station.",
+      "translation": "Команда астронавтов отправляется на космическую станцию."
+    }
+  ],
+  "vocabulary": [
+    { "word": "astronauts", "translation": "астронавты", "definition": "People trained to travel and work in space." },
+    { "word": "space station", "translation": "космическая станция", "definition": "A large spacecraft where people can live and work in orbit." }
+  ],
+  "exercises": [
+    {
+      "id": "space-pick",
+      "type": "check-understanding",
+      "prompt": "Where does the team travel?",
+      "options": ["to the space station", "to the Moon's surface", "to an airport"]
+    }
+  ]
+}

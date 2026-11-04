@@ -25,10 +25,22 @@ before(async () => {
       title: "Lesson A",
       contentData: { answerKey: "not for students" }
     });
-    await set(ref(db, "studentCurriculum/A111111/lesson-a"), { title: "Lesson A" });
+    await set(ref(db, "studentCurriculum/A111111/lesson-a"), {
+      title: "Lesson A",
+      features: { mangaReader: true }
+    });
+    await set(ref(db, "studentCurriculum/B222222/lesson-a"), { title: "Lesson A" });
     await set(ref(db, "protectedContent/lesson-a/classwork"), {
       sourceFile: "lesson-a.json",
       content: { title: "Lesson A" }
+    });
+    await set(ref(db, "protectedContent/lesson-a/clip"), {
+      sourceFile: "clips/clip-a.json",
+      content: { id: "clip-a" }
+    });
+    await set(ref(db, "protectedContent/lesson-a/manga"), {
+      sourceFile: "manga/gaziz-demo.json",
+      content: { id: "gaziz-demo" }
     });
     await set(ref(db, "protectedContent/lesson-b/classwork"), {
       sourceFile: "lesson-b.json",
@@ -47,6 +59,27 @@ test("student A cannot read or write student B's session", async () => {
   await assertFails(set(ref(dbA, "sessions/B222222/state"), { score: 1 }));
 });
 
+test("students can only read and write their own game progress", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111"), { xp: 15, level: 1 }));
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/vocabulary/verb"), { word: "verb" }));
+  await assertSucceeds(get(ref(dbA, "studentProgress/A111111")));
+  await assertSucceeds(get(ref(dbA, "studentProgress/A111111/vocabulary/verb")));
+  await assertFails(get(ref(dbA, "studentProgress/B222222")));
+  await assertFails(set(ref(dbA, "studentProgress/B222222"), { xp: 999999 }));
+  await assertFails(set(ref(dbA, "studentProgress/B222222/vocabulary/verb"), { word: "verb" }));
+  await assertFails(get(ref(dbA, "studentProgress")));
+});
+
+test("teachers can read game progress but cannot write student progress", async () => {
+  const teacherDb = testEnv.authenticatedContext("teacher", {
+    email: "alibek.alpysbayev@gmail.com",
+    email_verified: true
+  }).database();
+  await assertSucceeds(get(ref(teacherDb, "studentProgress/A111111")));
+  await assertFails(set(ref(teacherDb, "studentProgress/A111111"), { xp: 100 }));
+});
+
 test("students cannot list student records", async () => {
   const dbA = testEnv.authenticatedContext("student-a").database();
   await assertFails(get(ref(dbA, "students")));
@@ -55,7 +88,17 @@ test("students cannot list student records", async () => {
 test("students can only read protected content assigned to their student code", async () => {
   const dbA = testEnv.authenticatedContext("student-a").database();
   await assertSucceeds(get(ref(dbA, "protectedContent/lesson-a/classwork")));
+  await assertSucceeds(get(ref(dbA, "protectedContent/lesson-a/clip")));
+  await assertSucceeds(get(ref(dbA, "protectedContent/lesson-a/manga")));
   await assertFails(get(ref(dbA, "protectedContent/lesson-b/classwork")));
+  await assertFails(get(ref(dbA, "protectedContent/lesson-b/clip")));
+  await assertFails(get(ref(dbA, "protectedContent/lesson-b/manga")));
+});
+
+test("manga content requires its per-student feature flag", async () => {
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  await assertSucceeds(get(ref(dbB, "protectedContent/lesson-a/classwork")));
+  await assertFails(get(ref(dbB, "protectedContent/lesson-a/manga")));
 });
 
 test("students can only read their own curriculum view", async () => {

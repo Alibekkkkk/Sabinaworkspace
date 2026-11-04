@@ -8,6 +8,14 @@ Making the GitHub repository private does not necessarily make its Pages site pr
 
 The Firebase web configuration in `js/config.js` is public client configuration, not a secret. Firebase Realtime Database Rules must enforce access.
 
+The static pages use a meta-delivered Content Security Policy that limits script, connection, frame, and object sources. Existing pages still contain inline JavaScript and CSS, so the policy currently allows `'unsafe-inline'`; it is defense-in-depth, not a complete XSS mitigation. Before claiming a strict CSP, move inline code into external files and configure nonce/hash-based CSP through the production host's HTTP headers. Continue auditing legacy dynamic rendering sinks for untrusted HTML.
+
+The PWA service worker caches only allowlisted public shell pages and static assets. It does not cache Firebase endpoints, protected lesson records, student sessions, or game progress; protected lessons and sign-in are unavailable offline by design.
+
+Clip Lab has the same public-file constraint. `content/clips/*.json` and `content/manifest.json` are publicly downloadable on a static host, so clip drafts contain prompts and teacher-created study text but no correct answers. The teacher importer accepts answer keys separately and writes the completed clip record under `protectedContent/<lessonId>/clip`, where the existing assignment-based Firebase rules apply. Review the student's authenticated view and verify denied access for an unassigned account before using clips with students.
+
+The Manga Reader follows the same rule: `content/manga/*.json` contains panel metadata and question options but no correct answers. Its SVG panel paths are restricted to original local art under `assets/manga/`; answer keys are added by the teacher tool only when writing `protectedContent/<lessonId>/manga`. The `features.mangaReader` value in the manifest is copied into the student's assigned curriculum view and gates the portal link; it is a user-interface feature flag, not a substitute for Firebase authorization.
+
 ## Migration runbook
 
 Follow these steps in order. Do not delete the source JSON files or start the next application phase until all acceptance checks below pass.

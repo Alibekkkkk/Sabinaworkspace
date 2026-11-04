@@ -1,0 +1,18 @@
+{
+  "name": "Learning Studio",
+  "short_name": "Learn",
+  "description": "A student learning portal for English practice.",
+  "start_url": "portal.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#141a25",
+  "theme_color": "#141a25",
+  "icons": [
+    {
+      "src": "assets/pwa/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -2,44 +2,74 @@
   "abay": {
     "classworkFile": "abay.json",
     "homeworkFile": "homework_abay.json",
+    "clipFile": "clips/abay-gerund-infinitive.json",
+    "clipId": "abay-gerund-infinitive",
     "assignedTo": []
   },
   "araylim_1": {
     "classworkFile": "araylim_1.json",
     "homeworkFile": "homework_araylim_1.json",
+    "clipFile": "clips/araylim-1-memory.json",
+    "clipId": "araylim-1-memory",
     "assignedTo": []
   },
   "araylim_2": {
     "classworkFile": "araylim_2.json",
     "homeworkFile": "homework_araylim_2.json",
+    "clipFile": "clips/araylim-2-space-tourism.json",
+    "clipId": "araylim-2-space-tourism",
     "assignedTo": []
   },
   "araylim_3": {
     "classworkFile": "araylim_3.json",
     "homeworkFile": "homework_araylim_3.json",
+    "clipFile": "clips/araylim-3-ai.json",
+    "clipId": "araylim-3-ai",
     "assignedTo": []
   },
   "gaziz": {
     "classworkFile": "gaziz.json",
     "homeworkFile": "homework_gaziz.json",
+    "clipFile": "clips/gaziz-sustainable-development.json",
+    "clipId": "gaziz-sustainable-development",
+    "mangaFile": "manga/gaziz-demo.json",
+    "mangaId": "gaziz-demo",
+    "mangaFeatureFor": "gaziz",
+    "features": {
+      "mangaReader": true
+    },
     "assignedTo": []
   },
   "george": {
     "classworkFile": "george.json",
     "homeworkFile": "homework_george.json",
+    "clipFile": "clips/george-daily-routines.json",
+    "clipId": "george-daily-routines",
     "assignedTo": []
   },
   "sabina": {
     "classworkFile": "sabina.json",
     "homeworkFile": "homework_sabina.json",
+    "clipFile": "clips/sabina-floods.json",
+    "clipId": "sabina-floods",
     "assignedTo": []
   },
   "lesson_1": {
     "classworkFile": "gaziz.json",
+    "clipFile": "clips/gaziz-sustainable-development.json",
+    "clipId": "gaziz-sustainable-development",
+    "mangaFile": "manga/gaziz-demo.json",
+    "mangaId": "gaziz-demo",
+    "mangaFeatureFor": "gaziz",
+    "features": {
+      "mangaReader": true
+    },
     "assignedTo": []
   },
   "lesson_1_sabina": {
     "classworkFile": "sabina.json",
+    "clipFile": "clips/sabina-floods.json",
+    "clipId": "sabina-floods",
     "assignedTo": []
   },
   "homework_gaziz_sustainable_cities": {

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "gaziz-demo",
+  "title": "The Garden Above the City",
+  "level": "A2",
+  "chapters": [
+    {
+      "id": "first-seeds",
+      "title": "Chapter 1: The first seeds",
+      "panels": [
+        {
+          "id": "rooftop",
+          "imageUrl": "assets/manga/garden-rooftop.svg",
+          "alt": "A student stands on a city rooftop beside an empty garden bed.",
+          "bubbleText": "This roof could become a garden for everyone.",
+          "simplifiedExplanation": "The student has an idea: people can grow plants together on the roof.",
+          "vocabulary": [
+            { "word": "rooftop", "translation": "крыша", "definition": "The outside surface on top of a building." },
+            { "word": "garden", "translation": "сад", "definition": "A place where people grow plants." }
+          ]
+        },
+        {
+          "id": "neighbors",
+          "imageUrl": "assets/manga/garden-neighbors.svg",
+          "alt": "Two neighbors carry small plant pots toward the rooftop garden.",
+          "bubbleText": "We can share the work and the vegetables.",
+          "simplifiedExplanation": "The neighbors agree to help. They will work together and share what they grow.",
+          "vocabulary": [
+            { "word": "share", "translation": "делиться", "definition": "To use or have something together with other people." },
+            { "word": "vegetables", "translation": "овощи", "definition": "Plants that people grow and eat." }
+          ]
+        },
+        {
+          "id": "harvest",
+          "imageUrl": "assets/manga/garden-harvest.svg",
+          "alt": "The neighbors pick vegetables from a thriving rooftop garden.",
+          "bubbleText": "Our small garden has brought the block together.",
+          "simplifiedExplanation": "The garden gives the neighbors food and helps them become a closer community.",
+          "vocabulary": [
+            { "word": "block", "translation": "квартал", "definition": "A group of buildings in a city." },
+            { "word": "community", "translation": "сообщество", "definition": "People who live or work in the same area." }
+          ]
+        }
+      ],
+      "checks": [
+        {
+          "id": "garden-purpose",
+          "type": "comprehension",
+          "prompt": "What do the neighbors grow on the roof?",
+          "options": ["vegetables", "cars", "books"]
+        },
+        {
+          "id": "fill-bubble",
+          "type": "fill-bubble",
+          "prompt": "Complete the bubble: “We can ____ the work.”",
+          "options": ["share", "forget", "hide"]
+        },
+        {
+          "id": "chapter-boss",
+          "type": "boss-quiz",
+          "prompt": "Why did the garden bring the neighbors together?",
+          "options": ["They worked and shared food together.", "They moved to another city.", "They stopped talking."]
+        }
+      ]
+    }
+  ]
+}

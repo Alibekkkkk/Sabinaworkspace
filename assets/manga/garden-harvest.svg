@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img">
+  <rect width="900" height="600" fill="#c4e0fa"/>
+  <circle cx="760" cy="100" r="55" fill="#ffd27a"/>
+  <path d="M0 450h900v150H0z" fill="#3c654f"/>
+  <path d="M80 285h740v180H80z" fill="#8d6949"/>
+  <path d="M110 300h680v140H110z" fill="#603e32"/>
+  <path d="M130 343c40-76 86-76 124 0m55 0c40-88 91-88 130 0m54 0c42-71 86-71 124 0m42 0c35-66 74-66 110 0" fill="none" stroke="#77ba68" stroke-width="24" stroke-linecap="round"/>
+  <g fill="#e76d50"><circle cx="203" cy="318" r="18"/><circle cx="379" cy="303" r="20"/><circle cx="550" cy="320" r="18"/><circle cx="724" cy="317" r="19"/></g>
+  <g fill="#f4cb67"><circle cx="263" cy="355" r="14"/><circle cx="470" cy="350" r="14"/><circle cx="654" cy="350" r="14"/></g>
+  <circle cx="323" cy="215" r="36" fill="#e8b28d"/>
+  <path d="M286 207q36-65 76 0v34h-76z" fill="#47374a"/>
+  <path d="M294 253h58l25 92h-108z" fill="#ed936b"/>
+  <circle cx="575" cy="215" r="36" fill="#bd7d5d"/>
+  <path d="M539 207q36-61 74 0v34h-74z" fill="#312e3a"/>
+  <path d="M546 253h58l25 92H521z" fill="#5d8aad"/>
+  <text x="48" y="72" fill="#243b54" font-family="system-ui,sans-serif" font-size="34" font-weight="700">THE HARVEST BRINGS US TOGETHER</text>
+</svg>

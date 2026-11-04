@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "abay-gerund-infinitive",
+  "title": "Gerunds or infinitives?",
+  "source": {
+    "provider": "youtube",
+    "videoId": "LfDWCcbIjDg",
+    "channel": "BBC Learning English",
+    "videoTitle": "Gerund or infinitive? Ask BBC Learning English",
+    "sourceUrl": "https://www.youtube.com/watch?v=LfDWCcbIjDg",
+    "rights": "official-embed",
+    "reviewedAt": "2026-11-04"
+  },
+  "startSeconds": 0,
+  "endSeconds": 30,
+  "level": "B1",
+  "genre": ["grammar explainer"],
+  "grammarPoints": ["gerund", "infinitive"],
+  "vocabularyThemes": ["learning English"],
+  "transcriptType": "teacher-created",
+  "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "transcript": [
+    {
+      "id": "question",
+      "startSeconds": 0,
+      "endSeconds": 12,
+      "text": "Some English verbs are followed by a gerund, and others by an infinitive.",
+      "translation": "После некоторых английских глаголов используется герундий, а после других — инфинитив."
+    }
+  ],
+  "vocabulary": [
+    { "word": "gerund", "translation": "герундий", "definition": "A verb form ending in -ing that can be used like a noun." },
+    { "word": "infinitive", "translation": "инфинитив", "definition": "The basic form of a verb, often used with to." }
+  ],
+  "exercises": [
+    {
+      "id": "choose-form",
+      "type": "check-understanding",
+      "prompt": "Which form may follow some English verbs?",
+      "options": ["a gerund or an infinitive", "only an adjective", "only a past participle"]
+    }
+  ]
+}

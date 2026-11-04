@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img">
+  <rect width="900" height="600" fill="#17243a"/>
+  <circle cx="720" cy="105" r="52" fill="#ffd27a"/>
+  <path d="M0 430h900v170H0z" fill="#38465c"/>
+  <path d="M35 250h170v180H35zm205-110h190v290H240zm230 70h150v220H470zm190-100h190v320H660z" fill="#50627c"/>
+  <g fill="#91b5c5"><path d="M55 278h36v42H55zm70 0h36v42h-36zm135-98h38v44h-38zm74 0h38v44h-38zm-74 80h38v44h-38zm74 0h38v44h-38zm164-10h35v42h-35zm66 0h35v42h-35zm132-120h42v48h-42zm76 0h42v48h-42zm-118 88h42v48h-42zm76 0h42v48h-42z"/></g>
+  <path d="M330 430v-52h245v52" fill="#6e4b38"/>
+  <path d="M350 380h205v52H350z" fill="#9b704d"/>
+  <path d="M390 379c0-40 24-64 42-76 18 18 30 39 30 76m22 0c0-29 17-49 32-59 13 14 20 31 20 59" fill="none" stroke="#80c776" stroke-width="15"/>
+  <circle cx="295" cy="314" r="36" fill="#f2bc93"/>
+  <path d="M258 307q36-66 78 0v34h-78z" fill="#49384a"/>
+  <path d="M270 354h55l24 76h-95z" fill="#f09b6b"/>
+  <path d="M294 430v58m24-58v58" stroke="#edc99f" stroke-width="18" stroke-linecap="round"/>
+  <text x="48" y="70" fill="#fff" font-family="system-ui,sans-serif" font-size="32" font-weight="700">A GARDEN ABOVE THE CITY</text>
+</svg>

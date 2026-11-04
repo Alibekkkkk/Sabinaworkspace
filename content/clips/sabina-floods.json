@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "sabina-floods",
+  "title": "Floods and their impact",
+  "source": {
+    "provider": "youtube",
+    "videoId": "4PXj7bOD7IY",
+    "channel": "National Geographic",
+    "videoTitle": "Floods 101",
+    "sourceUrl": "https://www.youtube.com/watch?v=4PXj7bOD7IY",
+    "rights": "official-embed",
+    "reviewedAt": "2026-11-04"
+  },
+  "startSeconds": 0,
+  "endSeconds": 30,
+  "level": "B1",
+  "genre": ["science explainer"],
+  "grammarPoints": ["present simple", "comparatives"],
+  "vocabularyThemes": ["floods", "natural disasters"],
+  "transcriptType": "teacher-created",
+  "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "transcript": [
+    {
+      "id": "flood-impact",
+      "startSeconds": 0,
+      "endSeconds": 15,
+      "text": "A flood covers land that is usually dry.",
+      "translation": "Наводнение покрывает землю, которая обычно сухая."
+    }
+  ],
+  "vocabulary": [
+    { "word": "flood", "translation": "наводнение", "definition": "A large amount of water covering land that is usually dry." },
+    { "word": "usually dry", "translation": "обычно сухой", "definition": "Normally not covered by water." }
+  ],
+  "exercises": [
+    {
+      "id": "flood-pick",
+      "type": "check-understanding",
+      "prompt": "What does a flood cover?",
+      "options": ["land", "a space station", "a school timetable"]
+    }
+  ]
+}

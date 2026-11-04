@@ -3,14 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
   <meta name="robots" content="noindex, nofollow">
   <title>Protected Content Migration</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <style>
-    body{max-width:760px;margin:48px auto;padding:0 20px;font:16px/1.5 system-ui,sans-serif;color:#202938}
-    button{padding:10px 16px;margin-right:8px;font:inherit;cursor:pointer}
+    body{max-width:900px;margin:48px auto;padding:0 20px;font:16px/1.5 system-ui,sans-serif;color:#202938}
+    button{padding:10px 16px;margin:8px 8px 8px 0;font:inherit;cursor:pointer}
+    textarea{display:block;width:100%;min-height:180px;margin:8px 0 12px;padding:12px;font:14px/1.5 ui-monospace,monospace}
+    section{margin:28px 0;padding-top:18px;border-top:1px solid #d5dbe5}
     #status{white-space:pre-wrap;padding:14px;background:#f2f4f7;border-radius:8px}
   </style>
 </head>
@@ -20,13 +23,54 @@
   <p>Student access is copied from each existing curriculum assignment. Files remain public until a teacher verifies the imported content and separately approves their removal.</p>
   <button id="signInButton" type="button">Sign in as teacher</button>
   <button id="importButton" type="button" disabled>Import content</button>
+  <button id="updateClipsButton" type="button" disabled>Save Clip Lab changes</button>
+  <button id="updateMangaButton" type="button" disabled>Save Manga Reader changes</button>
+  <section aria-labelledby="clipAuthorTitle">
+    <h2 id="clipAuthorTitle">Create or update a Clip Lab draft</h2>
+    <p>Paste a clip JSON draft, validate it, and download it to <code>content/clips/</code>. Do not put correct answers in this public JSON file.</p>
+    <label for="clipDraft">Clip metadata, study text, vocabulary and prompts (JSON)</label>
+    <textarea id="clipDraft" spellcheck="false" aria-describedby="clipDraftHelp"></textarea>
+    <p id="clipDraftHelp">The source URL must be an official-player link. Mark text as teacher-created unless the transcript and timing have been checked against the video.</p>
+    <button id="validateClipButton" type="button">Validate draft</button>
+    <button id="downloadClipButton" type="button" disabled>Download clip JSON</button>
+    <p id="clipAuthorStatus" role="status">No clip draft loaded.</p>
+    <label for="clipAnswerKeys">Answer keys for protected Firebase import (JSON; keep private)</label>
+    <textarea id="clipAnswerKeys" spellcheck="false" placeholder='{"clip-id":{"exercise-id":"correct answer"}}'></textarea>
+    <p>Answer keys are merged into the protected Firebase record during import and are never added to the downloadable clip JSON.</p>
+  </section>
+  <section aria-labelledby="mangaAuthorTitle">
+    <h2 id="mangaAuthorTitle">Create or update a Manga Reader draft</h2>
+    <p>Use original, teacher-created or openly licensed panels only. Add original panel SVG files under <code>assets/manga/</code>; manga JSON must reference those local SVGs.</p>
+    <label for="mangaDraft">Panel, bubble, vocabulary and question data (JSON)</label>
+    <textarea id="mangaDraft" spellcheck="false"></textarea>
+    <button id="validateMangaButton" type="button">Validate manga draft</button>
+    <button id="downloadMangaButton" type="button" disabled>Download manga JSON</button>
+    <p id="mangaAuthorStatus" role="status">No manga draft loaded.</p>
+    <label for="mangaAnswerKeys">Manga answer keys for protected Firebase import (JSON; keep private)</label>
+    <textarea id="mangaAnswerKeys" spellcheck="false" autocomplete="off" placeholder='{"manga-id":{"question-id":"correct answer"}}'></textarea>
+    <p>Correct answers are merged into the protected Firebase record and are not written to the public manga JSON.</p>
+  </section>
   <p id="status" role="status">Initializing Firebase…</p>
   <script type="module">
     import { firebaseConfig, TEACHER_EMAILS } from "../js/config.js";
+    import { addProtectedClipAnswers, validateClip } from "../js/clips/schema.js";
+    import { addProtectedMangaAnswers, validateManga } from "../js/manga/schema.js";
 
     const status = document.getElementById("status");
     const signInButton = document.getElementById("signInButton");
     const importButton = document.getElementById("importButton");
+    const updateClipsButton = document.getElementById("updateClipsButton");
+    const clipDraft = document.getElementById("clipDraft");
+    const clipAnswerKeys = document.getElementById("clipAnswerKeys");
+    const validateClipButton = document.getElementById("validateClipButton");
+    const downloadClipButton = document.getElementById("downloadClipButton");
+    const clipAuthorStatus = document.getElementById("clipAuthorStatus");
+    const updateMangaButton = document.getElementById("updateMangaButton");
+    const mangaDraft = document.getElementById("mangaDraft");
+    const mangaAnswerKeys = document.getElementById("mangaAnswerKeys");
+    const validateMangaButton = document.getElementById("validateMangaButton");
+    const downloadMangaButton = document.getElementById("downloadMangaButton");
+    const mangaAuthorStatus = document.getElementById("mangaAuthorStatus");
     let database;
     let auth;
 
@@ -34,8 +78,58 @@
       status.textContent = message;
     }
 
+    function safeClipFileName(value) {
+      if (typeof value !== "string") return null;
+      const fileName = value.replace(/^content\//, "");
+      return /^clips\/[a-z0-9_-]+\.json$/i.test(fileName) ? fileName : null;
+    }
+
+    function safeMangaFileName(value) {
+      if (typeof value !== "string") return null;
+      const fileName = value.replace(/^content\//, "");
+      return /^manga\/[a-z0-9_-]+\.json$/i.test(fileName) ? fileName : null;
+    }
+
     function isTeacher(user) {
       return !!user && user.emailVerified && TEACHER_EMAILS.includes(String(user.email || "").toLowerCase());
+    }
+
+    async function readClipFile(fileName) {
+      const file = safeClipFileName(fileName);
+      if (!file) throw new Error(`Invalid clip filename: ${String(fileName)}`);
+      const response = await fetch(`../content/${file.split("/").map(encodeURIComponent).join("/")}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Could not read ../content/${file} (${response.status}).`);
+      const content = await response.json();
+      validateClip(content, { requireAnswers: false });
+      return { file, content };
+    }
+
+    async function readMangaFile(fileName) {
+      const file = safeMangaFileName(fileName);
+      if (!file) throw new Error(`Invalid manga filename: ${String(fileName)}`);
+      const response = await fetch(`../content/${file.split("/").map(encodeURIComponent).join("/")}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Could not read ../content/${file} (${response.status}).`);
+      const content = await response.json();
+      validateManga(content, { requireAnswers: false });
+      return { file, content };
+    }
+
+    function answerKeysFromEditor() {
+      if (!clipAnswerKeys.value.trim()) return {};
+      const answerKeys = JSON.parse(clipAnswerKeys.value);
+      if (!answerKeys || typeof answerKeys !== "object" || Array.isArray(answerKeys)) {
+        throw new Error("Clip answer keys must be a JSON object.");
+      }
+      return answerKeys;
+    }
+
+    function mangaAnswerKeysFromEditor() {
+      if (!mangaAnswerKeys.value.trim()) return {};
+      const answerKeys = JSON.parse(mangaAnswerKeys.value);
+      if (!answerKeys || typeof answerKeys !== "object" || Array.isArray(answerKeys)) {
+        throw new Error("Manga answer keys must be a JSON object.");
+      }
+      return answerKeys;
     }
 
     function safeFileName(value) {
@@ -55,16 +149,24 @@
       return [];
     }
 
-    function studentView(lessonId, assignment, classworkFile, homeworkFile) {
+    function studentView(lessonId, assignment, classworkFile, homeworkFile, student) {
       const fields = [
         "title", "description", "sub", "eyebrow", "headline", "intro", "stages", "maxScore",
         "year", "month", "order", "homework", "homeworkDue", "customUrl",
         "contentUrl", "classworkContentUrl", "homeworkContentUrl", "parentId",
-        "published", "icon", "audience", "flashcardImages"
+        "published", "icon", "audience", "flashcardImages", "clipId", "features", "mangaId"
       ];
       const view = { id: lessonId };
       for (const field of fields) {
         if (Object.prototype.hasOwnProperty.call(assignment, field)) view[field] = assignment[field];
+      }
+      if (view.features && view.features.mangaReader === true) {
+        const target = String(assignment.mangaFeatureFor || "").trim().toLocaleLowerCase();
+        const studentName = String(student && student.name || "").trim().toLocaleLowerCase().split(/\s+/)[0];
+        if (!target || target !== studentName) {
+          view.features = { ...view.features, mangaReader: false };
+          delete view.mangaId;
+        }
       }
       if (classworkFile) view.classworkContentUrl = `content/${classworkFile}`;
       if (homeworkFile) view.homeworkContentUrl = `content/${homeworkFile}`;
@@ -100,6 +202,8 @@
       ]);
       if (!manifestResponse.ok) throw new Error(`Could not load content manifest (${manifestResponse.status}).`);
       const manifest = await manifestResponse.json();
+      const answerKeys = answerKeysFromEditor();
+      const mangaAnswers = mangaAnswerKeysFromEditor();
       const curriculum = curriculumSnapshot.val() || {};
       const students = studentsSnapshot.val() || {};
       const existingViews = existingViewsSnapshot.val() || {};
@@ -135,6 +239,47 @@
           else preserved += 1;
         }
 
+        const clipName = safeClipFileName(entry.clipFile);
+        if (entry.clipFile !== undefined && !clipName) {
+          throw new Error(`Invalid clip filename for ${lessonId}: ${String(entry.clipFile)}`);
+        }
+        if (clipName) {
+          const clipRecord = await readClipFile(clipName);
+          if (entry.clipId !== clipRecord.content.id) {
+            throw new Error(`Clip ID in the manifest does not match ${clipName}.`);
+          }
+          const protectedClip = addProtectedClipAnswers(clipRecord.content, answerKeys[clipRecord.content.id]);
+          const inserted = await writeIfMissing(`protectedContent/${lessonId}/clip`, {
+            sourceFile: clipRecord.file,
+            content: protectedClip,
+            importedAt: new Date().toISOString()
+          });
+          if (inserted) imported += 1;
+          else preserved += 1;
+        }
+
+        const mangaName = safeMangaFileName(entry.mangaFile);
+        if (entry.mangaFile !== undefined && !mangaName) {
+          throw new Error(`Invalid manga filename for ${lessonId}: ${String(entry.mangaFile)}`);
+        }
+        if (mangaName) {
+          const mangaRecord = await readMangaFile(mangaName);
+          if (entry.mangaId !== mangaRecord.content.id) {
+            throw new Error(`Manga ID in the manifest does not match ${mangaName}.`);
+          }
+          const protectedManga = addProtectedMangaAnswers(
+            mangaRecord.content,
+            mangaAnswers[mangaRecord.content.id]
+          );
+          const inserted = await writeIfMissing(`protectedContent/${lessonId}/manga`, {
+            sourceFile: mangaRecord.file,
+            content: protectedManga,
+            importedAt: new Date().toISOString()
+          });
+          if (inserted) imported += 1;
+          else preserved += 1;
+        }
+
         if (!curriculum[lessonId]) continue;
         const assigned = assignment.published === false ? [] : assignment.audience === "all"
           ? Object.keys(students)
@@ -148,7 +293,18 @@
         for (const code of assigned) {
           if (!/^[A-Z0-9]{4,12}$/.test(code)) throw new Error(`Invalid assigned student code for ${lessonId}.`);
           if (!students[code]) throw new Error(`Student record is missing for assigned code ${code}.`);
-          await database.ref(`studentCurriculum/${code}/${lessonId}`).update(studentView(lessonId, assignment, classworkName, safeFileName(homeworkCandidate)));
+          const studentAssignment = {
+            ...entry,
+            ...assignment,
+            features: { ...(entry.features || {}), ...(assignment.features || {}) }
+          };
+          await database.ref(`studentCurriculum/${code}/${lessonId}`).update(studentView(
+            lessonId,
+            studentAssignment,
+            classworkName,
+            safeFileName(homeworkCandidate),
+            students[code]
+          ));
           studentViews += 1;
         }
       }
@@ -162,7 +318,65 @@
       }
 
       setStatus(`Migration finished.\nNew protected records: ${imported}\nExisting protected records preserved: ${preserved}\nStudent lesson views created or refreshed: ${studentViews}\n\nVerify assigned content in the student portal before removing any public JSON files.`);
+      clipAnswerKeys.value = "";
+      mangaAnswerKeys.value = "";
       importButton.disabled = false;
+    }
+
+    async function updateClips() {
+      if (!isTeacher(auth.currentUser)) throw new Error("A verified teacher account is required.");
+      updateClipsButton.disabled = true;
+      const response = await fetch("../content/manifest.json", { cache: "no-store" });
+      if (!response.ok) throw new Error(`Could not load content manifest (${response.status}).`);
+      const manifest = await response.json();
+      const answerKeys = answerKeysFromEditor();
+      let updated = 0;
+      for (const [lessonId, entry] of Object.entries(manifest)) {
+        if (!entry || !entry.clipFile) continue;
+        if (!/^[a-zA-Z0-9_-]+$/.test(lessonId)) throw new Error(`Invalid lesson ID: ${lessonId}`);
+        const clipName = safeClipFileName(entry.clipFile);
+        if (!clipName) throw new Error(`Invalid clip filename for ${lessonId}.`);
+        const record = await readClipFile(clipName);
+        if (entry.clipId !== record.content.id) throw new Error(`Clip ID does not match ${clipName}.`);
+        const content = addProtectedClipAnswers(record.content, answerKeys[record.content.id]);
+        await database.ref(`protectedContent/${lessonId}/clip`).set({
+          sourceFile: record.file,
+          content,
+          updatedAt: new Date().toISOString()
+        });
+        updated += 1;
+      }
+      clipAnswerKeys.value = "";
+      setStatus(`Saved ${updated} Clip Lab record(s). Classwork, homework and student assignments were not changed.`);
+      updateClipsButton.disabled = false;
+    }
+
+    async function updateManga() {
+      if (!isTeacher(auth.currentUser)) throw new Error("A verified teacher account is required.");
+      updateMangaButton.disabled = true;
+      const response = await fetch("../content/manifest.json", { cache: "no-store" });
+      if (!response.ok) throw new Error(`Could not load content manifest (${response.status}).`);
+      const manifest = await response.json();
+      const answerKeys = mangaAnswerKeysFromEditor();
+      let updated = 0;
+      for (const [lessonId, entry] of Object.entries(manifest)) {
+        if (!entry || !entry.mangaFile) continue;
+        if (!/^[a-zA-Z0-9_-]+$/.test(lessonId)) throw new Error(`Invalid lesson ID: ${lessonId}`);
+        const mangaName = safeMangaFileName(entry.mangaFile);
+        if (!mangaName) throw new Error(`Invalid manga filename for ${lessonId}.`);
+        const record = await readMangaFile(mangaName);
+        if (entry.mangaId !== record.content.id) throw new Error(`Manga ID does not match ${mangaName}.`);
+        const content = addProtectedMangaAnswers(record.content, answerKeys[record.content.id]);
+        await database.ref(`protectedContent/${lessonId}/manga`).set({
+          sourceFile: record.file,
+          content,
+          updatedAt: new Date().toISOString()
+        });
+        updated += 1;
+      }
+      mangaAnswerKeys.value = "";
+      setStatus(`Saved ${updated} Manga Reader record(s). Classwork, homework and assignments were not changed.`);
+      updateMangaButton.disabled = false;
     }
 
     async function signInAsTeacher() {
@@ -187,6 +401,8 @@
       auth.onAuthStateChanged(user => {
         const allowed = isTeacher(user);
         importButton.disabled = !allowed;
+        updateClipsButton.disabled = !allowed;
+        updateMangaButton.disabled = !allowed;
         signInButton.disabled = allowed;
         setStatus(allowed ? `Signed in as ${user.email}.` : "Sign in with a verified teacher account.");
       });
@@ -203,6 +419,78 @@
         importButton.disabled = !isTeacher(auth && auth.currentUser);
         setStatus(`Import failed: ${error.message}`);
       });
+    });
+    updateClipsButton.addEventListener("click", () => {
+      if (!confirm("Replace the protected Clip Lab records for the clips listed in the manifest? This does not change classwork, homework, or assignments.")) return;
+      updateClips().catch(error => {
+        updateClipsButton.disabled = !isTeacher(auth && auth.currentUser);
+        setStatus(`Clip update failed: ${error.message}`);
+      });
+      updateMangaButton.addEventListener("click", () => {
+        if (!confirm("Replace the protected Manga Reader records listed in the manifest? This does not change classwork, homework, or assignments.")) return;
+        updateManga().catch(error => {
+          updateMangaButton.disabled = !isTeacher(auth && auth.currentUser);
+          setStatus(`Manga update failed: ${error.message}`);
+        });
+      });
+    });
+
+    validateClipButton.addEventListener("click", () => {
+      try {
+        const draft = JSON.parse(clipDraft.value);
+        validateClip(draft, { requireAnswers: false });
+        downloadClipButton.disabled = false;
+        clipAuthorStatus.textContent = `Valid draft: ${draft.id}. Correct answers are intentionally not stored here.`;
+      } catch (error) {
+        downloadClipButton.disabled = true;
+        clipAuthorStatus.textContent = `Draft invalid: ${error.message}`;
+      }
+    });
+
+    downloadClipButton.addEventListener("click", () => {
+      try {
+        const draft = JSON.parse(clipDraft.value);
+        validateClip(draft, { requireAnswers: false });
+        const blob = new Blob([JSON.stringify(draft, null, 2) + "\n"], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${draft.id}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        downloadClipButton.disabled = true;
+        clipAuthorStatus.textContent = `Could not download draft: ${error.message}`;
+      }
+    });
+
+    validateMangaButton.addEventListener("click", () => {
+      try {
+        const draft = JSON.parse(mangaDraft.value);
+        validateManga(draft, { requireAnswers: false });
+        downloadMangaButton.disabled = false;
+        mangaAuthorStatus.textContent = `Valid manga draft: ${draft.id}. Correct answers are intentionally not stored here.`;
+      } catch (error) {
+        downloadMangaButton.disabled = true;
+        mangaAuthorStatus.textContent = `Manga draft invalid: ${error.message}`;
+      }
+    });
+
+    downloadMangaButton.addEventListener("click", () => {
+      try {
+        const draft = JSON.parse(mangaDraft.value);
+        validateManga(draft, { requireAnswers: false });
+        const blob = new Blob([JSON.stringify(draft, null, 2) + "\n"], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${draft.id}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        downloadMangaButton.disabled = true;
+        mangaAuthorStatus.textContent = `Could not download manga draft: ${error.message}`;
+      }
     });
   </script>
 </body>

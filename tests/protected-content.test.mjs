@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { loadProtectedContent } from "../js/protected-content.js";
 
-function databaseWith(record) {
+function databaseWith(record, kind = "classwork") {
   return {
     ref(path) {
       return {
         async once(event) {
           assert.equal(event, "value");
-          assert.equal(path, "protectedContent/lesson-a/classwork");
+          assert.equal(path, `protectedContent/lesson-a/${kind}`);
           return {
             exists: () => record !== null,
             val: () => record
@@ -22,6 +22,16 @@ function databaseWith(record) {
 test("loads a valid protected content record", async () => {
   const record = { sourceFile: "lesson-a.json", content: { title: "Lesson A" } };
   assert.equal(await loadProtectedContent(databaseWith(record), "lesson-a", "classwork"), record);
+});
+
+test("loads a protected Clip Lab record", async () => {
+  const record = { sourceFile: "clips/clip-a.json", content: { id: "clip-a" } };
+  assert.equal(await loadProtectedContent(databaseWith(record, "clip"), "lesson-a", "clip"), record);
+});
+
+test("loads a protected Manga Reader record", async () => {
+  const record = { sourceFile: "manga/gaziz-demo.json", content: { id: "gaziz-demo" } };
+  assert.equal(await loadProtectedContent(databaseWith(record, "manga"), "lesson-a", "manga"), record);
 });
 
 test("fails explicitly when protected content is missing", async () => {

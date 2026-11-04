@@ -1,4 +1,4 @@
-const CONTENT_KINDS = new Set(["classwork", "homework"]);
+const CONTENT_KINDS = new Set(["classwork", "homework", "clip", "manga"]);
 
 export async function loadProtectedContent(db, lessonId, kind) {
   if (!db) throw new Error("Firebase Database is required.");

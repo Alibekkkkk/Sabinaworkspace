@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#141a25">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
 <title>My Learning Portal</title>
+<link rel="manifest" href="manifest.webmanifest">
+<script src="js/pwa.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -95,6 +99,7 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
 .theme-toggle:hover{transform:scale(1.1);border-color:var(--accent)}
 </style>
 <link rel="stylesheet" href="css/design-system.css">
+<link rel="stylesheet" href="css/portal-redesign.css">
 </head>
 <body class="portal-page">
 
@@ -142,6 +147,19 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
 
   <div id="lessonsScreen" style="display:none;">
     <div class="welcome" id="welcomeBox"></div>
+    <section class="student-summary" id="studentSummary" aria-label="Your learning rewards"></section>
+
+    <section class="practice-hub" id="practiceHub">
+      <h2>✨ Practice and collect XP</h2>
+      <p class="helper">Choose a lesson to review its vocabulary and questions.</p>
+      <div class="practice-links" id="practiceLinks"></div>
+    </section>
+
+    <section class="path-panel" id="learningPath">
+      <h2>🧭 Your learning path</h2>
+      <p class="helper">Move through your assigned lessons at your own pace.</p>
+      <ol class="path-steps" id="pathSteps"></ol>
+    </section>
 
     <div class="lessons-header">
       <h3>📚 Your Lessons</h3>
@@ -160,6 +178,13 @@ body.light .theme-toggle{background:var(--panel-light);border-color:var(--border
     </div>
   </div>
 </div>
+
+<nav class="app-bottom-nav" aria-label="Student navigation">
+  <a href="#lessonsScreen"><span aria-hidden="true">📚</span><span>Lessons</span></a>
+  <a href="#practiceHub"><span aria-hidden="true">🎮</span><span>Practice</span></a>
+  <a href="#learningPath"><span aria-hidden="true">🧭</span><span>Path</span></a>
+  <button type="button" onclick="showCodeInfo()"><span aria-hidden="true">👤</span><span>Profile</span></button>
+</nav>
 
 <script>
 let db = null;
@@ -187,7 +212,8 @@ const state = {
   currentName: storedIdentity().name,
   lessons: {},
   progress: { scores: {}, done: {} },
-  homework: {}
+  homework: {},
+  gameProgress: {}
 };
 
 if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
@@ -352,6 +378,7 @@ async function doGoogleLogin() {
 function enterPortal(){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('lessonsScreen').style.display = 'block';
+  document.body.classList.add('portal-authenticated');
   document.getElementById('welcomeBox').innerHTML =
     '<div class="avatar">' + escapeHtml(state.currentName.charAt(0).toUpperCase()) + '</div>' +
     '<h2>Welcome, ' + escapeHtml(state.currentName) + '! 👋</h2>' +
@@ -388,6 +415,35 @@ function loadLessons(){
   };
   progressRef.on('value',progressListener);
   portalListeners.push({ref:progressRef,event:'value',callback:progressListener});
+  const gameProgressRef=db.ref('studentProgress/' + state.currentCode);
+  const gameProgressListener=progressSnap => {
+    state.gameProgress = progressSnap.val() || {};
+    renderGameStats();
+  };
+  gameProgressRef.on('value',gameProgressListener);
+  portalListeners.push({ref:gameProgressRef,event:'value',callback:gameProgressListener});
+}
+
+function renderGameStats(){
+  const summary=document.getElementById('studentSummary');
+  const progress=state.gameProgress||{};
+  const values=[
+    ['Level',progress.level||1],
+    ['XP',progress.xp||0],
+    ['Gems',progress.gems||0],
+    ['Daily streak',String(progress.streak||0)+' days']
+  ];
+  summary.replaceChildren();
+  values.forEach(([label,value])=>{
+    const item=document.createElement('div');
+    item.className='student-summary-item';
+    const strong=document.createElement('b');
+    strong.textContent=String(value);
+    const caption=document.createElement('span');
+    caption.textContent=label;
+    item.append(strong,caption);
+    summary.append(item);
+  });
 }
 
 function renderLessons(){
@@ -401,11 +457,17 @@ function renderLessons(){
 
   if (!lessons.length) {
     grid.innerHTML = '';
+    document.getElementById('practiceLinks').replaceChildren();
+    document.getElementById('pathSteps').replaceChildren();
     empty.style.display = 'block';
     return;
   }
   empty.style.display = 'none';
   grid.innerHTML = '';
+  const practiceLinks=document.getElementById('practiceLinks');
+  const pathSteps=document.getElementById('pathSteps');
+  practiceLinks.replaceChildren();
+  pathSteps.replaceChildren();
   lessons.forEach(lesson => {
     const lessonId = lesson.id || Object.keys(state.lessons).find(k => state.lessons[k] === lesson);
     const stages = lesson.stages || [];
@@ -435,6 +497,45 @@ function renderLessons(){
         const contentFile = lesson.contentUrl.replace(/^content\//, '').replace(/\.json$/, '');
         targetUrl.searchParams.set('variant', contentFile);
     }
+
+    const isHomework = lesson.customUrl && lesson.customUrl.indexOf('homework.html') !== -1;
+    if (!isHomework) {
+      const practiceUrl=new URL('practice.html',window.location.href);
+      practiceUrl.searchParams.set('code',state.currentCode);
+      practiceUrl.searchParams.set('lesson',lessonId);
+      const practiceLink=document.createElement('a');
+      practiceLink.className='practice-link';
+      practiceLink.href=practiceUrl.href;
+      practiceLink.textContent='🎮 Practice '+(lesson.title||'lesson');
+      practiceLinks.append(practiceLink);
+    }
+    if (lesson.clipId) {
+      const clipUrl=new URL('clip.html',window.location.href);
+      clipUrl.searchParams.set('code',state.currentCode);
+      clipUrl.searchParams.set('lesson',lessonId);
+      const clipLink=document.createElement('a');
+      clipLink.className='practice-link';
+      clipLink.href=clipUrl.href;
+      clipLink.textContent='🎬 Clip Lab '+(lesson.title||'lesson');
+      practiceLinks.append(clipLink);
+    }
+    if (lesson.features && lesson.features.mangaReader === true && lesson.mangaId) {
+      const mangaUrl=new URL('manga.html',window.location.href);
+      mangaUrl.searchParams.set('code',state.currentCode);
+      mangaUrl.searchParams.set('lesson',lessonId);
+      const mangaLink=document.createElement('a');
+      mangaLink.className='practice-link';
+      mangaLink.href=mangaUrl.href;
+      mangaLink.textContent='📖 Manga Reader';
+      practiceLinks.append(mangaLink);
+    }
+
+    const pathItem=document.createElement('li');
+    const pathLink=document.createElement('a');
+    pathLink.href=targetUrl.href;
+    pathLink.textContent=(lesson.icon||'📘')+' '+(lesson.title||'Untitled lesson');
+    pathItem.append(pathLink);
+    pathSteps.append(pathItem);
 
     let card = document.createElement('a');
     card.className = 'lesson-card';

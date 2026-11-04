@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#141a25">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
 <title>Teacher Dashboard</title>
+<link rel="manifest" href="manifest.webmanifest">
+<script src="js/pwa.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -245,6 +249,11 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
             </div>
           </div>
 
+          <section class="card" aria-labelledby="gameAnalyticsTitle">
+            <h2 id="gameAnalyticsTitle">Practice games and weak topics</h2>
+            <div id="gameAnalytics" aria-live="polite">Practice data will appear when the student completes a game.</div>
+          </section>
+
           <!-- UPDATED LAYOUT: Removed useless blocks -->
           <div class="grid-2">
             <div class="card">
@@ -434,7 +443,8 @@ let TEACHER_EMAILS = [];
 
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {};
-let activeCode = null, activeFeedRef = null;
+let activeCode = null, activeFeedRef = null, activeProgressRef = null;
+let activeGameProgress = {};
 let editingLessonId = null, lessonVisibility = 'some', lessonType = 'classwork';
 let pendingLinkUid = null;
 let currentClassworkId = null, currentClassworkCode = '';
@@ -745,12 +755,15 @@ function selectStudent(code) {
   document.getElementById('overviewView').style.display = 'none';
   renderSelectedView();
   attachHistoryListener();
+  attachGameProgressListener();
   renderClassworkTree();
 }
 
 function deselectStudent() {
   activeCode = null;
   if (activeFeedRef) { activeFeedRef.off(); activeFeedRef = null; }
+  if (activeProgressRef) { activeProgressRef.off(); activeProgressRef = null; }
+  activeGameProgress = {};
   document.getElementById('selectedView').style.display = 'none';
   document.getElementById('overviewView').style.display = 'block';
   document.getElementById('studentContextBanner').style.display = 'none';
@@ -779,6 +792,53 @@ function renderSelectedView() {
 
   document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
   renderStudentHomework();
+  renderGameAnalytics();
+}
+
+function attachGameProgressListener() {
+  if (activeProgressRef) activeProgressRef.off();
+  const host = document.getElementById('gameAnalytics');
+  host.textContent = 'Loading practice data…';
+  activeProgressRef = fbDb.ref('studentProgress/' + activeCode);
+  activeProgressRef.on('value', function(snapshot) {
+    activeGameProgress = snapshot.val() || {};
+    renderGameAnalytics();
+  }, function(error) {
+    host.textContent = 'Practice data could not be loaded: ' + error.message;
+  });
+}
+
+function renderGameAnalytics() {
+  const host = document.getElementById('gameAnalytics');
+  if (!host) return;
+  const progress = activeGameProgress || {};
+  const attempts = Array.isArray(progress.attempts) ? progress.attempts : [];
+  const topics = Object.entries(progress.topics || {})
+    .map(([name, stats]) => ({
+      name,
+      accuracy: Number(stats.total) ? Number(stats.score || 0) / Number(stats.total) : 0,
+      time: Number(stats.timeSpentSeconds) || 0,
+      attempts: Number(stats.attempts) || 0
+    }))
+    .sort((a, b) => a.accuracy - b.accuracy);
+  const totalTime = topics.reduce((sum, topic) => sum + topic.time, 0);
+  const summary = document.createElement('p');
+  summary.textContent = attempts.length
+    ? 'Completed ' + attempts.length + ' recent games · ' + (progress.xp || 0) + ' XP · ' +
+      Math.round(totalTime / 60) + ' minutes tracked · ' + (progress.streak || 0) + '-day streak.'
+    : 'No practice games completed yet.';
+  host.replaceChildren(summary);
+  if (!topics.length) return;
+  const heading = document.createElement('h3');
+  heading.textContent = 'Topics to revisit';
+  const list = document.createElement('ul');
+  topics.slice(0, 5).forEach(topic => {
+    const item = document.createElement('li');
+    item.textContent = topic.name + ' · ' + Math.round(topic.accuracy * 100) + '% accuracy · ' +
+      topic.attempts + ' games · ' + Math.round(topic.time / 60) + ' min';
+    list.append(item);
+  });
+  host.append(heading, list);
 }
 
 function attachHistoryListener() {

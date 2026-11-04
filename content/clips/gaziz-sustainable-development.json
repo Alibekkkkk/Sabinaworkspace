@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "gaziz-sustainable-development",
+  "title": "Sustainable development goals",
+  "source": {
+    "provider": "youtube",
+    "videoId": "7V8oFI4GYMY",
+    "channel": "FN-sambandet Norge",
+    "videoTitle": "What is sustainable development?",
+    "sourceUrl": "https://www.youtube.com/watch?v=7V8oFI4GYMY",
+    "rights": "official-embed",
+    "reviewedAt": "2026-11-04"
+  },
+  "startSeconds": 0,
+  "endSeconds": 30,
+  "level": "A2",
+  "genre": ["animated explainer"],
+  "grammarPoints": ["present simple", "infinitive of purpose"],
+  "vocabularyThemes": ["sustainable cities", "environment"],
+  "transcriptType": "teacher-created",
+  "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "transcript": [
+    {
+      "id": "sustainable",
+      "startSeconds": 0,
+      "endSeconds": 15,
+      "text": "Sustainable development helps people protect the future.",
+      "translation": "Устойчивое развитие помогает людям заботиться о будущем."
+    }
+  ],
+  "vocabulary": [
+    { "word": "sustainable", "translation": "устойчивый", "definition": "Able to continue for a long time without harming the future." },
+    { "word": "development", "translation": "развитие", "definition": "Growth or change that makes something better." }
+  ],
+  "exercises": [
+    {
+      "id": "sustainable-pick",
+      "type": "check-understanding",
+      "prompt": "What does sustainable development help people protect?",
+      "options": ["the future", "the price of space travel", "the length of a storm"]
+    }
+  ]
+}
