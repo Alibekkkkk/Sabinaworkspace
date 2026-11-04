@@ -55,6 +55,10 @@ test("lesson and homework encode annotation IDs and teacher-review arguments", (
   assert.match(lesson, /jsArg\(String\(prompt\)\.substring/);
   assert.match(homework, /openExistingNote\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
   assert.match(homework, /deleteNoteById\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
+  assert.doesNotMatch(lesson, /onerror="this\.parentNode/);
+  assert.match(lesson, /escapeHtml\(w\.emoji\|\|'📖'\)/);
+  assert.match(lesson, /lEl\.innerHTML=.*escapeHtml\(title\)/);
+  assert.match(lesson, /escapeHtml\(e\.message\)/);
 });
 
 test("student portal escapes lesson content and coerces scores to numbers", () => {

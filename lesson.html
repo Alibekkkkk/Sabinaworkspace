@@ -1020,7 +1020,9 @@ function renderFlashcards(){
     const card=document.createElement('div');card.className='flashcard';
     const status=getWordStatus(w.en); if(status==='learned')card.classList.add('known'); if(status==='practice')card.classList.add('needs-practice');
     const firstMeaning = w.meanings[0]; const imgKey = (firstMeaning && firstMeaning.displayEn) ? firstMeaning.displayEn + '_0' : w.en + '_0'; const img = customImages[imgKey] || customImages[w.en];
-    card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" loading="lazy" onerror="this.parentNode.textContent=\''+w.emoji+'\'">':w.emoji)+'</div><div class="flashcard-word">'+escapeHtml(w.en)+'</div>';
+    card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" loading="lazy">':escapeHtml(w.emoji||'📖'))+'</div><div class="flashcard-word">'+escapeHtml(w.en)+'</div>';
+    const image=card.querySelector('.flashcard-img img');
+    if(image)image.addEventListener('error',function(){image.parentNode.textContent=w.emoji||'📖'},{once:true});
     card.onclick=function(){openQuiz(idx)}; grid.appendChild(card);
   });
 }
@@ -1054,7 +1056,10 @@ function renderQuizModal(){
   const w=VOCAB.find(function(x){return x.en===quizWord});if(!w)return; const activeMeaningObj = quizMeanings[quizCurrentIdx]; if(!activeMeaningObj) return;
   const meaning = activeMeaningObj.data; const displayWord = meaning.displayEn || w.en; const realMeaningIdx = activeMeaningObj.idx; const imgKey = displayWord + '_' + realMeaningIdx; 
   const img = customImages[imgKey] || customImages[displayWord] || customImages[w.en];
-  document.getElementById('fcModalImg').innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(displayWord)+'" onerror="this.parentNode.innerHTML=\'<div style=&quot;font-size:180px;line-height:1;&quot;>'+w.emoji+'</div>\'">':'<div style="font-size:180px;line-height:1;">'+w.emoji+'</div>')+'<div class="label">WORD</div>';
+  const modalImage=document.getElementById('fcModalImg');
+  modalImage.innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(displayWord)+'">':'<div style="font-size:180px;line-height:1;">'+escapeHtml(w.emoji||'📖')+'</div>')+'<div class="label">WORD</div>';
+  const modalImg=modalImage.querySelector('img');
+  if(modalImg)modalImg.addEventListener('error',function(){const fallback=document.createElement('div');fallback.style.fontSize='180px';fallback.style.lineHeight='1';fallback.textContent=w.emoji||'📖';modalImg.replaceWith(fallback)},{once:true});
   document.getElementById('fcModalWord').textContent=displayWord;
   const q=buildQuizOptions(quizWord,realMeaningIdx); const answered=quizAnswers[quizCurrentIdx];
   let posBadge = ''; if (meaning.pos) { posBadge = `<span class="pos-badge">${escapeHtml(meaning.pos)}</span>`; }
@@ -1790,7 +1795,7 @@ function endTest(timedOut,customReason){
   const total=testState.total||1; const score=Math.round((testState.correct/total)*10);
   try { state.done[state.currentLessonId+"_9"] = true; setScore(9, score); saveState(); } catch(e) { console.error("State save failed", e); }
   const elapsed=getTestTimeLimit()-testState.timeLeft; const mins=Math.floor(elapsed/60),secs=elapsed%60; const root=document.getElementById('testRoot');if(!root)return; const msg=customReason?customReason:(timedOut?'You ran out of time.':'Test complete!');
-  root.innerHTML='<div class="'+(timedOut||customReason?'test-timeout':'test-result')+'">'+ '<div class="icon">'+(timedOut||customReason?'⏰':'🏁')+'</div>'+ '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+ '<div class="big">'+testState.correct+' / '+total+'</div>'+ '<p>'+msg+' You answered <b>'+testState.correct+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+ '<p style="color:var(--accent);font-weight:700;margin-top:10px">This test can only be taken once. You cannot retake it.</p>'+ '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px"><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
+  root.innerHTML='<div class="'+(timedOut||customReason?'test-timeout':'test-result')+'">'+ '<div class="icon">'+(timedOut||customReason?'⏰':'🏁')+'</div>'+ '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+ '<div class="big">'+Number(testState.correct||0)+' / '+Number(total||0)+'</div>'+ '<p>'+escapeHtml(msg)+' You answered <b>'+Number(testState.correct||0)+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+ '<p style="color:var(--accent);font-weight:700;margin-top:10px">This test can only be taken once. You cannot retake it.</p>'+ '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px"><button class="btn ghost" onclick="goToStage(1)">← Back to start</button></div></div>';
   if(!timedOut&&!customReason){sWin();confetti();} broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
@@ -1815,17 +1820,17 @@ function renderSidebar(){
 
   CURRICULUM.forEach(function(yearObj){
     const isY=expandedYears.includes(yearObj.year); const yearEl=document.createElement('div');yearEl.className='year-item'+(isY?' open':'');
-    yearEl.innerHTML='<span>📅 '+yearObj.year+'</span><span class="arrow">▶</span>'; yearEl.onclick=function(){if(isY)expandedYears=expandedYears.filter(function(y){return y!==yearObj.year});else expandedYears.push(yearObj.year);renderSidebar()}; list.appendChild(yearEl);
+    yearEl.innerHTML='<span>📅 '+escapeHtml(yearObj.year)+'</span><span class="arrow">▶</span>'; yearEl.onclick=function(){if(isY)expandedYears=expandedYears.filter(function(y){return y!==yearObj.year});else expandedYears.push(yearObj.year);renderSidebar()}; list.appendChild(yearEl);
     if(isY)yearObj.months.forEach(function(m){
       const isM=expandedMonths.includes(m.month); const mEl=document.createElement('div');mEl.className='month-item'+(isM?' open':'');
-      mEl.innerHTML='<span>📁 '+m.month+'</span><span class="arrow">▶</span>'; mEl.onclick=function(){if(isM)expandedMonths=expandedMonths.filter(function(x){return x!==m.month});else expandedMonths.push(m.month);renderSidebar()}; list.appendChild(mEl);
+      mEl.innerHTML='<span>📁 '+escapeHtml(m.month)+'</span><span class="arrow">▶</span>'; mEl.onclick=function(){if(isM)expandedMonths=expandedMonths.filter(function(x){return x!==m.month});else expandedMonths.push(m.month);renderSidebar()}; list.appendChild(mEl);
       if(isM)m.lessons.forEach(function(lesson){
         const isActive=lesson.id===state.currentLessonId;
         const isOpen = expandedLessons[lesson.id] !== undefined ? expandedLessons[lesson.id] : isActive;
         const fbLesson = curriculumCache[lesson.id]; const title = (fbLesson && fbLesson.title) ? fbLesson.title : lesson.title;
         
         const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':'');
-        lEl.innerHTML='<span style="flex:1;">📘 '+title+'</span><span class="arrow" style="font-size:10px;">'+(isOpen?'▼':'▶')+'</span>';
+        lEl.innerHTML='<span style="flex:1;">📘 '+escapeHtml(title)+'</span><span class="arrow" style="font-size:10px;">'+(isOpen?'▼':'▶')+'</span>';
         lEl.onclick=function(){
             if(state.currentLessonId === lesson.id) {
                 expandedLessons[lesson.id] = !isOpen;
@@ -1915,7 +1920,7 @@ async function loadContent() {
     firebaseConfig=config.firebaseConfig;
     TEACHER_EMAILS=config.TEACHER_EMAILS;
   } catch (e) {
-    document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' + '<h2>Content failed to load</h2>' + '<p style="color:var(--ink-soft)">' + e.message + '</p>' + '</div>';
+    document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' + '<h2>Content failed to load</h2>' + '<p style="color:var(--ink-soft)">' + escapeHtml(e.message) + '</p>' + '</div>';
     return;
   }
   const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');
