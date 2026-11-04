@@ -68,6 +68,21 @@ html body {
   outline-offset: 3px;
 }
 
+.theme-toggle {
+  min-height: 2.75rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--ds-color-border, var(--border));
+  border-radius: var(--ds-radius-pill);
+  background: var(--ds-color-surface, var(--surface));
+  color: var(--ds-color-text, var(--text));
+  font: 700 0.9rem var(--ds-font-body);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--ds-color-primary, var(--accent));
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

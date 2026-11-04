@@ -51,6 +51,8 @@ The Practice page builds game variations from protected classwork data:
 
 Keep answers in the protected classwork workflow. Static `content/*.json` files are public on the website until the security migration's removal checks pass. The current reader supports up to ten items per generated round (eight memory pairs). Crosswords and word searches are generated from the existing vocabulary; they do not need a separate schema.
 
+Practice, Clip Lab, and Manga Reader share a saved light/dark preference. Their theme controls work with keyboard input and follow the system preference until the learner selects a theme.
+
 ## Author and update Clip Lab content
 
 Clip Lab uses official YouTube embeds. Do not download or host copyrighted video or manga files. Use short segments (10–60 seconds), record the official video ID and attribution, and use only teacher-created study text unless you have checked a short transcript excerpt and its timestamps against the source. The supplied examples clearly label their teacher-created text; they are not verbatim video captions.

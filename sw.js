@@ -19,6 +19,7 @@ const SHELL_URLS = [
   "js/protected-content.js",
   "js/sanitize-html.js",
   "js/pwa.js",
+  "js/theme.js",
   "js/games/engine.js",
   "js/games/progress.js",
   "js/clips/schema.js",
