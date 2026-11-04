@@ -10,6 +10,8 @@ The Firebase web configuration in `js/config.js` is public client configuration,
 
 The static pages use a meta-delivered Content Security Policy that limits script, connection, frame, and object sources. Existing pages still contain inline JavaScript and CSS, so the policy currently allows `'unsafe-inline'`; it is defense-in-depth, not a complete XSS mitigation. Before claiming a strict CSP, move inline code into external files and configure nonce/hash-based CSP through the production host's HTTP headers. Continue auditing legacy dynamic rendering sinks for untrusted HTML.
 
+The student portal escapes lesson-card text and numeric progress values before rendering. The teacher dashboard HTML-escapes dynamic labels/codes and JSON-encodes values passed through dynamic inline handlers. These are targeted protections only; the remaining legacy HTML templates still require a complete sink-by-sink audit.
+
 The PWA service worker caches only allowlisted public shell pages and static assets. It does not cache Firebase endpoints, protected lesson records, student sessions, or game progress; protected lessons and sign-in are unavailable offline by design.
 
 Clip Lab has the same public-file constraint. `content/clips/*.json` and `content/manifest.json` are publicly downloadable on a static host, so clip drafts contain prompts and teacher-created study text but no correct answers. The teacher importer accepts answer keys separately and writes the completed clip record under `protectedContent/<lessonId>/clip`, where the existing assignment-based Firebase rules apply. Review the student's authenticated view and verify denied access for an unassigned account before using clips with students.

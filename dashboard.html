@@ -615,9 +615,9 @@ function renderPendingApprovals() {
       '<div><div class="who">' + escapeHtml(p.name || 'Student') + '</div>' +
       '<div class="email">' + escapeHtml(p.email || uid) + '</div></div>' +
       '<div class="actions">' +
-      '<button class="btn small primary" onclick="approvePendingStudent(\'' + uid + '\')">✓ Create new</button>' +
-      '<button class="btn small" onclick="openLinkModal(\'' + uid + '\')">🔗 Link existing</button>' +
-      '<button class="btn small danger" onclick="rejectPendingStudent(\'' + uid + '\')">✕ Reject</button>' +
+      '<button class="btn small primary" onclick="approvePendingStudent(' + jsArg(uid) + ')">✓ Create new</button>' +
+      '<button class="btn small" onclick="openLinkModal(' + jsArg(uid) + ')">🔗 Link existing</button>' +
+      '<button class="btn small danger" onclick="rejectPendingStudent(' + jsArg(uid) + ')">✕ Reject</button>' +
       '</div></div>';
   }).join('');
 }
@@ -647,7 +647,7 @@ function openLinkModal(uid) {
   if (!unlinked.length) { alert('No unlinked students available. Create a new one instead.'); return; }
   document.getElementById('linkCodeSelect').innerHTML = unlinked.map(function(code) {
     const s = studentsMap[code];
-    return '<option value="' + code + '">' + escapeHtml(s.name || code) + ' — ' + code + '</option>';
+    return '<option value="' + escapeHtml(code) + '">' + escapeHtml(s.name || code) + ' — ' + escapeHtml(code) + '</option>';
   }).join('');
   document.getElementById('linkStudentModal').classList.add('open');
 }
@@ -737,10 +737,10 @@ function renderStudentsList() {
     const hwDone = Object.keys(meta.homework || {}).filter(k => meta.homework[k].submitted).length;
     const hwText = hwCount > 0 ? `<span style="color:var(--accent);">HW: ${hwDone}/${hwCount}</span>` : '';
 
-    return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(\'' + code + '\')">' +
+    return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(' + jsArg(code) + ')">' +
       '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
-      '<div class="code">' + linked + ' ' + code + '</div>' +
-      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + (meta.score || 0) + '</b></span><span>📍 Stage ' + (meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
+      '<div class="code">' + linked + ' ' + escapeHtml(code) + '</div>' +
+      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + escapeHtml(meta.score || 0) + '</b></span><span>📍 Stage ' + escapeHtml(meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
       progressBar +
       '</div>';
   }).join('');
@@ -782,8 +782,8 @@ function renderSelectedView() {
   document.getElementById('selectedAdded').textContent = s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—';
 
   document.getElementById('controlGrid').innerHTML = 
-    '<button class="btn" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;" onclick="sendGoto(' + (meta.stage || 1) + ')">' +
-      '🎯 Tell Student to Resume at Stage ' + (meta.stage || 1) +
+    '<button class="btn" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;" onclick="sendGoto(' + (Number(meta.stage) || 1) + ')">' +
+      '🎯 Tell Student to Resume at Stage ' + escapeHtml(meta.stage || 1) +
     '</button>' +
     STAGE_LIST.map(function(st) {
       const isCurrent = (meta.stage || 1) === st.id;
@@ -864,7 +864,7 @@ function attachHistoryListener() {
       <div class="feed-item info" style="align-items:center;">
          <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
          <span class="msg">${escapeHtml(item.detail)}</span>
-         <button class="btn small" onclick="resetStage(${item.stage})" style="padding:2px 6px; font-size:11px;">Reset Stage ${item.stage}</button>
+         <button class="btn small" onclick="resetStage(${jsArg(item.stage)})" style="padding:2px 6px; font-size:11px;">Reset Stage ${escapeHtml(item.stage)}</button>
       </div>
     `).join('') || '<div class="no-data">No student actions.</div>';
     
@@ -872,7 +872,7 @@ function attachHistoryListener() {
       <div class="feed-item action" style="align-items:center;">
          <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
          <span class="msg">${escapeHtml(item.detail)}</span>
-         ${item.undo ? `<button class="btn small danger" onclick="undoTeacherAction('${item.id}', '${item.undo.type}')" style="padding:2px 6px; font-size:11px;">Undo</button>` : ''}
+         ${item.undo ? `<button class="btn small danger" onclick="undoTeacherAction(${jsArg(item.id)}, ${jsArg(item.undo.type)})" style="padding:2px 6px; font-size:11px;">Undo</button>` : ''}
       </div>
     `).join('') || '<div class="no-data">No teacher actions.</div>';
   });
@@ -963,7 +963,7 @@ function renderStudentHomework() {
     url.searchParams.set('code', activeCode);
     url.searchParams.set('lesson', row.id);
     return '<div class="info-row"><span class="k">' + escapeHtml(lesson.title || row.id) + '</span>' +
-      '<span class="v">' + status + (score ? ' · ' + score : '') + ' · <a href="' + url.href + '" target="_blank" style="color:var(--accent);">open</a></span></div>';
+      '<span class="v">' + status + (score ? ' · ' + escapeHtml(score) : '') + ' · <a href="' + escapeHtml(url.href) + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">open</a></span></div>';
   }).join('');
 }
 
@@ -984,7 +984,7 @@ function renderOverview() {
       '<p>Click <b>+ Add Student</b> to create your first student code.</p></div>';
     return;
   }
-  const totalScore = codes.reduce(function(s, c) { return s + ((studentMeta[c] || {}).score || 0); }, 0);
+  const totalScore = codes.reduce(function(s, c) { return s + (Number((studentMeta[c] || {}).score) || 0); }, 0);
   const active = codes.filter(function(c) { return ((studentMeta[c] || {}).lastSeen || 0) > Date.now() - 120000; }).length;
   el.innerHTML =
     '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;">' +
@@ -996,10 +996,10 @@ function renderOverview() {
     codes.map(function(code) {
       const s = studentsMap[code];
       const meta = studentMeta[code] || {};
-      return '<div class="card" style="cursor:pointer;" onclick="selectStudent(\'' + code + '\')">' +
+      return '<div class="card" style="cursor:pointer;" onclick="selectStudent(' + jsArg(code) + ')">' +
         '<div style="font-size:18px;font-weight:800;margin-bottom:4px;">' + escapeHtml(s.name || code) + '</div>' +
-        '<div style="font-size:13px;color:var(--ink-soft);font-family:\'Fira Code\',monospace;letter-spacing:1.5px;margin-bottom:14px;">' + code + ' · ' + (s.uid ? '🔗 linked' : '⚠️ not linked') + '</div>' +
-        '<div style="font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px;">' + (meta.score || 0) + '</div>' +
+        '<div style="font-size:13px;color:var(--ink-soft);font-family:\'Fira Code\',monospace;letter-spacing:1.5px;margin-bottom:14px;">' + escapeHtml(code) + ' · ' + (s.uid ? '🔗 linked' : '⚠️ not linked') + '</div>' +
+        '<div style="font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px;">' + escapeHtml(meta.score || 0) + '</div>' +
         '<div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">points</div>' +
         '</div>';
     }).join('') + '</div>';
@@ -1121,11 +1121,11 @@ function renderClassworkTree() {
   let html = '';
   Object.keys(grouped).sort().reverse().forEach(year => {
     const isY = expandedYears[year] !== false;
-    html += `<div class="tree-year ${isY?'open':''}" onclick="toggleYear('${year}')"><span>📅 ${year}</span><span class="arrow">▶</span></div>`;
+    html += `<div class="tree-year ${isY?'open':''}" onclick="toggleYear(${jsArg(year)})"><span>📅 ${escapeHtml(year)}</span><span class="arrow">▶</span></div>`;
     if (isY) {
       Object.keys(grouped[year]).sort().forEach(month => {
         const isM = expandedMonths[year+'_'+month] !== false;
-        html += `<div class="tree-month ${isM?'open':''}" onclick="toggleMonth('${year}','${month}')"><span>📁 ${month}</span><span class="arrow">▶</span></div>`;
+        html += `<div class="tree-month ${isM?'open':''}" onclick="toggleMonth(${jsArg(year)},${jsArg(month)})"><span>📁 ${escapeHtml(month)}</span><span class="arrow">▶</span></div>`;
         if (isM) {
           grouped[year][month].sort((a,b) => (a.l.order||0) - (b.l.order||0)).forEach(item => {
             const l = item.l;
@@ -1136,17 +1136,17 @@ function renderClassworkTree() {
               // Render as homework
               const prog = (studentMeta[activeCode]?.homework?.[item.id]) || {};
               let progText = "";
-              if (prog.submitted) progText = `<span style="color:var(--success); font-size:11px; margin-left:auto;">✓ ${prog.score || 0}/${prog.total || 16}</span>`;
+              if (prog.submitted) progText = `<span style="color:var(--success); font-size:11px; margin-left:auto;">✓ ${escapeHtml(prog.score || 0)}/${escapeHtml(prog.total || 16)}</span>`;
               else if (prog.updatedAt) progText = `<span style="color:var(--warn); font-size:11px; margin-left:auto;">In progress</span>`;
               else progText = `<span style="color:var(--ink-soft); font-size:11px; margin-left:auto;">Not started</span>`;
               
-              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="openHomework('${item.id}')">
+              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="openHomework(${jsArg(item.id)})">
                   <span>📝 ${escapeHtml(l.title || item.id)}</span>
                   ${progText}
               </div>`;
             } else {
               // Render as classwork
-              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="toggleLessonTree('${item.id}')">
+              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="toggleLessonTree(${jsArg(item.id)})">
                   <span>📘 ${escapeHtml(l.title || item.id)}</span>
                   <span style="margin-left:auto; font-size:10px; opacity:0.6;">${isOpen ? '▼' : '▶'}</span>
               </div>`;
@@ -1154,7 +1154,7 @@ function renderClassworkTree() {
               if (isOpen) {
                   html += `<div style="padding-left: 20px; border-left: 1px solid var(--border); margin-left: 44px; margin-bottom: 8px;">`;
                   STAGE_LIST.forEach(st => {
-                      html += `<div class="tree-lesson" style="padding:4px 10px; font-size:12px;" onclick="openClassworkLesson('${item.id}', '${activeCode || ''}')">${st.label}</div>`;
+                      html += `<div class="tree-lesson" style="padding:4px 10px; font-size:12px;" onclick="openClassworkLesson(${jsArg(item.id)}, ${jsArg(activeCode || '')})">${escapeHtml(st.label)}</div>`;
                   });
                   html += `</div>`;
               }
@@ -1251,9 +1251,9 @@ function renderHomeworkTree() {
   container.innerHTML = groups.map(function(name) {
     const key = 'hw_' + name;
     const open = expandedYears[key] !== false;
-    return '<div class="tree-year' + (open ? ' open' : '') + '" onclick="toggleHwGroup(\'' + name + '\')"><span>👤 ' + escapeHtml(name) + '</span><span class="arrow">▶</span></div>' +
+    return '<div class="tree-year' + (open ? ' open' : '') + '" onclick="toggleHwGroup(' + jsArg(name) + ')"><span>👤 ' + escapeHtml(name) + '</span><span class="arrow">▶</span></div>' +
       (open ? grouped[name].map(function(row) {
-        return '<div class="tree-lesson' + (row.id === currentHomeworkId ? ' active' : '') + '" onclick="openHomework(\'' + row.id + '\')"><span>' + escapeHtml(row.title) + '</span></div>';
+        return '<div class="tree-lesson' + (row.id === currentHomeworkId ? ' active' : '') + '" onclick="openHomework(' + jsArg(row.id) + ')"><span>' + escapeHtml(row.title) + '</span></div>';
       }).join('') : '');
   }).join('');
 }
@@ -1358,7 +1358,7 @@ function setLessonType(type) {
     select.innerHTML = '<option value="">-- None / Independent --</option>';
     Object.keys(curriculum).forEach(id => {
       if (!curriculum[id].homework) {
-        select.innerHTML += `<option value="${id}">${escapeHtml(curriculum[id].title || id)}</option>`;
+        select.innerHTML += `<option value="${escapeHtml(id)}">${escapeHtml(curriculum[id].title || id)}</option>`;
       }
     });
   }
@@ -1367,7 +1367,7 @@ function renderStudentPickList(selected) {
   const list = document.getElementById('studentPickList');
   list.innerHTML = Object.keys(studentsMap).map(function(code) {
     const checked = selected.indexOf(code) !== -1 ? ' checked' : '';
-    return '<label style="display:flex;align-items:center;gap:8px;padding:6px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);margin:0;"><input type="checkbox" value="' + code + '"' + checked + ' style="width:auto;margin:0;"> ' + escapeHtml(studentsMap[code].name || code) + ' (' + code + ')</label>';
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);margin:0;"><input type="checkbox" value="' + escapeHtml(code) + '"' + checked + ' style="width:auto;margin:0;"> ' + escapeHtml(studentsMap[code].name || code) + ' (' + escapeHtml(code) + ')</label>';
   }).join('') || '<div style="color:var(--ink-soft);font-size:14px;">No students yet.</div>';
 }
 function submitLesson() {
@@ -1419,6 +1419,11 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, function(ch) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
   });
+}
+function jsArg(value) {
+  return escapeHtml(JSON.stringify(String(value))
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029'));
 }
 function showToast(text) {
   const t = document.getElementById('toast');

@@ -330,7 +330,7 @@ function doRegister(){
       saveIdentity(code, name, remember);
       const el = document.getElementById('alertBox');
       el.className = 'alert show success';
-      el.innerHTML = '✓ Welcome, <b>' + escapeHtml(name) + '</b>!<br>Your code is: <span class="code-badge">' + code + '</span><br><span style="font-size:14px;">Save this code — you\'ll need it to sign in next time.</span>';
+      el.innerHTML = '✓ Welcome, <b>' + escapeHtml(name) + '</b>!<br>Your code is: <span class="code-badge">' + escapeHtml(code) + '</span><br><span style="font-size:14px;">Save this code — you\'ll need it to sign in next time.</span>';
       setTimeout(() => enterPortal(), 2500);
     });
   }).catch(err => showAlert('Error: ' + err.message, 'error'));
@@ -474,15 +474,15 @@ function renderLessons(){
     let totalStages = stages.length;
     let doneCount = stages.filter(s => state.progress.done[lessonId + '_' + s.id]).length;
     let pct = totalStages ? Math.round((doneCount / totalStages) * 100) : 0;
-    let lessonScore = stages.reduce((sum, s) => sum + (state.progress.scores[lessonId + '_' + s.id] || 0), 0);
-    let maxScore = lesson.maxScore || 80;
+    let lessonScore = stages.reduce((sum, s) => sum + (Number(state.progress.scores[lessonId + '_' + s.id]) || 0), 0);
+    let maxScore = Number(lesson.maxScore) || 80;
     const homeworkResult = (state.homework || {})[lessonId];
     if (lesson.customUrl && lesson.customUrl.indexOf('homework.html') !== -1) {
       totalStages = 1;
       doneCount = homeworkResult && homeworkResult.completed ? 1 : 0;
       pct = doneCount ? 100 : 0;
-      lessonScore = homeworkResult ? (homeworkResult.score || 0) : 0;
-      maxScore = homeworkResult ? (homeworkResult.total || 16) : (lesson.maxScore || 16);
+      lessonScore = homeworkResult ? (Number(homeworkResult.score) || 0) : 0;
+      maxScore = homeworkResult ? (Number(homeworkResult.total) || 16) : (Number(lesson.maxScore) || 16);
     }
 
     const isPrivate = lesson.audience !== 'all';
@@ -543,7 +543,7 @@ function renderLessons(){
     card.innerHTML =
       (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
       (lesson.homework ? '<div class="homework-tag">📌 Homework' + (lesson.homeworkDue ? ' · ' + escapeHtml(lesson.homeworkDue) : '') + '</div>' : '') +
-      '<div class="icon">' + (lesson.icon || '📘') + '</div>' +
+      '<div class="icon">' + escapeHtml(lesson.icon || '📘') + '</div>' +
       '<div class="title">' + escapeHtml(lesson.title || 'Untitled lesson') + '</div>' +
       '<div class="desc">' + escapeHtml(lesson.description || 'No description.') + '</div>' +
       '<div class="meta"><span>📍 ' + doneCount + ' / ' + totalStages + ' stages</span><span>🏆 <b>' + lessonScore + '</b> / ' + maxScore + '</span></div>' +
