@@ -236,6 +236,7 @@ let lesson = null;
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 function escapeAttr(s){return escapeHtml(s)}
+function jsArg(value){return escapeHtml(JSON.stringify(String(value)).replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029'))}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 
 const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
@@ -273,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selection = window.getSelection(); const targetNote = e.target.closest('.user-note'); let node = e.target;
     while (node && node !== document.body) { if (node.nodeType === 1) { if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('hl-purple') || node.classList.contains('hl-pink') || node.classList.contains('underline')) { contextTargetEdit = node; break; } } node = node.parentNode; }
     const safeClick = "event.preventDefault(); event.stopPropagation();";
-    if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); menu.innerHTML = `<div class="context-item" onclick="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div><div class="context-item delete" onclick="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>`; } 
+    if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); menu.innerHTML = `<div class="context-item" onclick="${safeClick} openExistingNote(${jsArg(targetNote.dataset.id)})">📝 Edit Note</div><div class="context-item delete" onclick="${safeClick} deleteNoteById(${jsArg(targetNote.dataset.id)})">🗑️ Delete Note</div>`; }
     else if (contextTargetEdit) { menu.innerHTML = `<div class="context-item delete" onclick="${safeClick} removeExistingEdit()">🗑️ Remove Edit</div>`; } 
     else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 

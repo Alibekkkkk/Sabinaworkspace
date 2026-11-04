@@ -47,6 +47,16 @@ test("dashboard encodes dynamic inline arguments and student codes", () => {
   assert.equal(JSON.parse(decoded), payload);
 });
 
+test("lesson and homework encode annotation IDs and teacher-review arguments", () => {
+  const lesson = read("lesson.html");
+  const homework = read("homework.html");
+  assert.match(lesson, /openExistingNote\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
+  assert.match(lesson, /deleteNoteById\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
+  assert.match(lesson, /jsArg\(String\(prompt\)\.substring/);
+  assert.match(homework, /openExistingNote\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
+  assert.match(homework, /deleteNoteById\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
+});
+
 test("student portal escapes lesson content and coerces scores to numbers", () => {
   const portal = read("portal.html");
   assert.match(portal, /escapeHtml\(lesson\.icon \|\| '📘'\)/);

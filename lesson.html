@@ -563,8 +563,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetNote) {
       if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
       menu.innerHTML = `
-        <div class="context-item" onclick="${safeClick} openExistingNote('${targetNote.dataset.id}')">📝 Edit Note</div>
-        <div class="context-item delete" onclick="${safeClick} deleteNoteById('${targetNote.dataset.id}')">🗑️ Delete Note</div>
+        <div class="context-item" onclick="${safeClick} openExistingNote(${jsArg(targetNote.dataset.id)})">📝 Edit Note</div>
+        <div class="context-item delete" onclick="${safeClick} deleteNoteById(${jsArg(targetNote.dataset.id)})">🗑️ Delete Note</div>
       `;
     } else if (contextTargetEdit) {
       menu.innerHTML = `
@@ -963,6 +963,7 @@ let customImages={};
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
 function escapeAttr(s){return escapeHtml(s)}
+function jsArg(value){return escapeHtml(JSON.stringify(String(value)).replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029'))}
 function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
 function norm(s){return String(s).toLowerCase().replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim()}
 
@@ -1387,7 +1388,7 @@ function renderContextQ(){
   });
 }
 
-function buildFlagRow(qId,prompt,answer,autoResult){ return '<div class="review-btn-row"><button class="btn flag small" onclick="flagForReview(\'s3_'+qId+'\',\''+escapeAttr(prompt).substring(0,120)+'\',\''+escapeAttr(answer).substring(0,300)+'\',\''+autoResult+'\',3)">🚩 Flag for teacher review</button><span class="hint">If you believe your answer is correct, click here.</span></div>'; }
+function buildFlagRow(qId,prompt,answer,autoResult){ return '<div class="review-btn-row"><button class="btn flag small" onclick="flagForReview('+jsArg('s3_'+qId)+','+jsArg(String(prompt).substring(0,120))+','+jsArg(String(answer).substring(0,300))+','+jsArg(autoResult)+',3)">🚩 Flag for teacher review</button><span class="hint">If you believe your answer is correct, click here.</span></div>'; }
 function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=norm(text); const words=t.split(/\s+/).filter(function(w){return w.length>0}); if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0}; let matched=0; keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(norm(k))!==-1}))matched++}); if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length}; return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched}; }
 function checkS4(silent){ const total=READING_Q.length+CONTEXT_Q.length; const c=Object.keys(s4Answers).length; updateS3Progress(); if(c===total){ setScore(3,25); if(!silent) markDone(3); else { state.done[state.currentLessonId+"_3"] = true; renderSidebar(); } }else{ setScore(3,Math.floor(c*25/total)); } }
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
