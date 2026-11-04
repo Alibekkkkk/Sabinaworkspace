@@ -59,6 +59,7 @@ test("lesson and homework encode annotation IDs and teacher-review arguments", (
   assert.match(lesson, /escapeHtml\(w\.emoji\|\|'📖'\)/);
   assert.match(lesson, /lEl\.innerHTML=.*escapeHtml\(title\)/);
   assert.match(lesson, /escapeHtml\(e\.message\)/);
+  assert.match(lesson, /undoVocabWord\('\+jsArg\(quizWord\)/);
 });
 
 test("student portal escapes lesson content and coerces scores to numbers", () => {

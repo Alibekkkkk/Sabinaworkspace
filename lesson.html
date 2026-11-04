@@ -1077,7 +1077,7 @@ function renderQuizModal(){
   document.getElementById('fcRevealArea').innerHTML=html; document.getElementById('fcRevealArea').classList.add('show'); document.getElementById('fcCounter').textContent=(quizCurrentIdx+1)+' / '+quizMeanings.length;
   document.querySelector('.fc-modal-actions').style.display='none';
   const tools=document.querySelector('.fc-modal-tools');
-  if(tools){ tools.innerHTML='<button class="tool" onclick="quizSpeak()">🔊 Listen</button>'+(teacherCanEdit?'<button class="tool" onclick="editFlashcardImage()">🖼️ Set image</button>':'')+(teacherCanEdit?'<button class="tool" onclick="undoVocabWord(\''+quizWord+'\','+realMeaningIdx+')" style="color:var(--error)">↺ Reset Word</button>':''); }
+  if(tools){ tools.innerHTML='<button class="tool" onclick="quizSpeak()">🔊 Listen</button>'+(teacherCanEdit?'<button class="tool" onclick="editFlashcardImage()">🖼️ Set image</button>':'')+(teacherCanEdit?'<button class="tool" onclick="undoVocabWord('+jsArg(quizWord)+','+realMeaningIdx+')" style="color:var(--error)">↺ Reset Word</button>':''); }
   const nav=document.querySelector('.fc-modal-nav');if(nav)nav.style.display='';
   const navBtns=document.querySelectorAll('.fc-modal-nav button');
   if(navBtns.length>=2){ navBtns[0].onclick=function(){quizPrev()}; navBtns[navBtns.length-1].onclick=function(){quizNext()}; navBtns[navBtns.length-1].textContent=(quizCurrentIdx>=quizMeanings.length-1)?'Next Flashcard →':'Next →'; }
