@@ -50,3 +50,15 @@ test("PWA manifest assets and offline page exist", () => {
     assert.match(page, /src="js\/pwa\.js"/, `${path} should register the service worker`);
   }
 });
+
+test("per-student lesson entry points delegate to the shared lesson renderer", () => {
+  for (const [path, contentId] of [
+    ["lesson_abay.html", "abay"],
+    ["lesson_gaziz.html", "gaziz"]
+  ]) {
+    const page = read(path);
+    assert.match(page, /location\.replace\(['"]lesson\.html\?/);
+    assert.match(page, new RegExp(`p\\.set\\(['"]content['"],\\s*['"]${contentId}['"]\\)`));
+    assert.doesNotMatch(page, /<style[\\s>]/i);
+  }
+});

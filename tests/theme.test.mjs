@@ -50,6 +50,17 @@ test("Practice, Clip Lab, and Manga Reader expose accessible theme controls", ()
   assert.match(read("sw.js"), /"js\/theme\.js"/);
 });
 
+test("legacy lesson, homework, and teacher shells use shared responsive accessibility styles", () => {
+  for (const path of ["lesson.html", "homework.html", "dashboard.html"]) {
+    assert.match(read(path), /css\/legacy-pages\.css/, `${path} should use the shared page polish`);
+  }
+  const styles = read("css/legacy-pages.css");
+  assert.match(styles, /:focus-visible/);
+  assert.match(styles, /prefers-reduced-motion:\s*reduce/);
+  assert.match(styles, /max-width:\s*700px/);
+  assert.match(read("sw.js"), /"css\/legacy-pages\.css"/);
+});
+
 test("theme follows the system until selected and then persists the learner choice", () => {
   const { button, document, mediaListeners, storage } = startTheme({ prefersLight: true });
   assert.equal(document.documentElement.dataset.theme, "light");

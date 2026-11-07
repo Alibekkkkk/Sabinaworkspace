@@ -1,0 +1,184 @@
+.lesson-page,
+.homework-page,
+.dashboard-page {
+  font-family: var(--ds-font-body);
+}
+
+.lesson-page {
+  background:
+    radial-gradient(ellipse at 85% 0%, rgb(66 87 178 / 8%), transparent 32rem),
+    var(--bg);
+}
+
+.homework-page,
+.dashboard-page {
+  background:
+    radial-gradient(ellipse at 12% 0%, rgb(44 102 83 / 8%), transparent 34rem),
+    var(--bg);
+}
+
+.lesson-page .topbar,
+.homework-page .hw-top,
+.dashboard-page .header {
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.lesson-page .sidebar,
+.homework-page .passage,
+.homework-page .progress-shell,
+.dashboard-page .students-panel,
+.dashboard-page .card,
+.dashboard-page .tree-panel,
+.dashboard-page .viewer-panel {
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.lesson-page .sidebar,
+.lesson-page .main > .card,
+.homework-page .passage,
+.dashboard-page .header,
+.dashboard-page .card,
+.dashboard-page .tree-panel,
+.dashboard-page .viewer-panel {
+  border-radius: var(--ds-radius-md);
+}
+
+.lesson-page :where(button, input, select, textarea),
+.homework-page :where(button, input, select, textarea),
+.dashboard-page :where(button, input, select, textarea),
+.dashboard-page a.btn,
+.homework-page .hw-top a {
+  font-family: var(--ds-font-body);
+}
+
+.lesson-page :where(button, a, input, select, textarea):focus-visible,
+.homework-page :where(button, a, input, select, textarea):focus-visible,
+.dashboard-page :where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid var(--ds-color-focus);
+  outline-offset: 3px;
+}
+
+.lesson-page .icon-btn,
+.homework-page .hw-top button,
+.homework-page .hw-top a,
+.dashboard-page .btn,
+.dashboard-page .tab,
+.dashboard-page .theme-toggle {
+  min-height: 2.75rem;
+}
+
+.lesson-page .topbar,
+.homework-page .hw-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
+.homework-page .wrap {
+  width: min(100% - 1.5rem, 94rem);
+}
+
+.homework-page .passage,
+.dashboard-page .card,
+.dashboard-page .tree-panel,
+.dashboard-page .viewer-panel {
+  border-color: var(--border);
+}
+
+.dashboard-page .tabs {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.dashboard-page .tab {
+  min-width: max-content;
+}
+
+.dashboard-page .students-search,
+.dashboard-page .modal input,
+.dashboard-page .modal textarea,
+.dashboard-page .modal select,
+.homework-page input,
+.homework-page select,
+.homework-page textarea {
+  font-size: 1rem;
+}
+
+@media (max-width: 700px) {
+  .lesson-page .main {
+    padding: 1.25rem 1rem calc(2rem + env(safe-area-inset-bottom));
+  }
+
+  .lesson-page .topbar {
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+  }
+
+  .homework-page {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .homework-page .hw-top {
+    gap: 0.5rem;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+  }
+
+  .homework-page .wrap {
+    width: min(100% - 1rem, 94rem);
+    margin-top: 0.75rem;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .homework-page .passage {
+    max-height: none;
+    padding: 1.25rem;
+  }
+
+  .dashboard-page {
+    padding: 0.75rem;
+  }
+
+  .dashboard-page .header {
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .dashboard-page .header-actions {
+    width: 100%;
+  }
+
+  .dashboard-page .header-actions > * {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .dashboard-page .students-panel {
+    position: static;
+    max-height: min(38vh, 20rem);
+  }
+
+  .dashboard-page .split-layout {
+    min-height: 0;
+  }
+
+  .dashboard-page .card {
+    padding: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-page *,
+  .homework-page *,
+  .dashboard-page *,
+  .lesson-page *::before,
+  .homework-page *::before,
+  .dashboard-page *::before,
+  .lesson-page *::after,
+  .homework-page *::after,
+  .dashboard-page *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

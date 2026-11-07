@@ -13,6 +13,7 @@ const SHELL_URLS = [
   "offline.html",
   "manifest.webmanifest",
   "css/design-system.css",
+  "css/legacy-pages.css",
   "css/portal-redesign.css",
   "js/config.js",
   "js/student-context.js",
