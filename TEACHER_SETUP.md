@@ -39,6 +39,8 @@ In Gaziz’s Sustainable Cities lesson, teacher preview adds **Edit question** c
 
 The dashboard’s **Reset student progress** clears the saved score, stages, notes, and activity feed. The dashboard’s **Undo** can restore the reset if it is the most recent teacher change.
 
+On a selected student’s dashboard, use **Generate summary** to create a seven-day report from saved practice attempts, homework status, current weak topics, and recent student activity. The report remains in the teacher dashboard until you download it as a text file. Review it before sharing; it contains student-specific information. Reports are not sent automatically and do not create a parent account.
+
 ## Practice games
 
 The Practice page builds game variations from protected classwork data:

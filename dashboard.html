@@ -13,6 +13,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="js/weekly-summary.js"></script>
 <script>
 (function(){
   try {
@@ -294,6 +295,16 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
             <h2>Student's Notes</h2>
             <div class="notes-view" id="notesView">— No notes yet —</div>
           </div>
+
+          <section class="card" aria-labelledby="weeklySummaryTitle">
+            <h2 id="weeklySummaryTitle">Weekly progress summary</h2>
+            <p style="color:var(--ink-soft);margin-bottom:12px;">Generate a private teacher report from the last seven days. Review it before sharing; it contains student-specific learning data.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn" id="generateWeeklySummary" type="button" disabled>Generate summary</button>
+              <button class="btn" id="downloadWeeklySummary" type="button" disabled>Download .txt</button>
+            </div>
+            <textarea id="weeklySummaryOutput" readonly rows="12" aria-label="Weekly progress summary" style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink);font:14px/1.5 monospace;" placeholder="Select a student and wait for the progress data to load."></textarea>
+          </section>
         </div>
         <div id="overviewView"><div id="overviewContent"></div></div>
       </main>
@@ -445,6 +456,7 @@ let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {};
 let activeCode = null, activeFeedRef = null, activeProgressRef = null;
 let activeGameProgress = {};
+let activeHistoryItems = [], weeklyHistoryLoaded = false, weeklyProgressLoaded = false;
 let editingLessonId = null, lessonVisibility = 'some', lessonType = 'classwork';
 let pendingLinkUid = null;
 let currentClassworkId = null, currentClassworkCode = '';
@@ -750,6 +762,13 @@ function selectStudent(code) {
   document.getElementById('studentContextBanner').style.display = 'block';
   document.getElementById('studentContextName').textContent = code ? (studentsMap[code].name || code) : '';
   activeCode = code;
+  activeGameProgress = {};
+  activeHistoryItems = [];
+  weeklyHistoryLoaded = false;
+  weeklyProgressLoaded = false;
+  document.getElementById('weeklySummaryOutput').value = '';
+  document.getElementById('downloadWeeklySummary').disabled = true;
+  updateWeeklySummaryAvailability();
   renderStudentsList();
   document.getElementById('selectedView').style.display = 'block';
   document.getElementById('overviewView').style.display = 'none';
@@ -802,9 +821,13 @@ function attachGameProgressListener() {
   activeProgressRef = fbDb.ref('studentProgress/' + activeCode);
   activeProgressRef.on('value', function(snapshot) {
     activeGameProgress = snapshot.val() || {};
+    weeklyProgressLoaded = true;
+    updateWeeklySummaryAvailability();
     renderGameAnalytics();
   }, function(error) {
     host.textContent = 'Practice data could not be loaded: ' + error.message;
+    weeklyProgressLoaded = false;
+    updateWeeklySummaryAvailability();
   });
 }
 
@@ -855,6 +878,9 @@ function attachHistoryListener() {
   activeFeedRef.on('value', function(snap) {
     const data = snap.val() || {};
     let items = Object.keys(data).map(k => Object.assign({id:k}, data[k]));
+    activeHistoryItems = items;
+    weeklyHistoryLoaded = true;
+    updateWeeklySummaryAvailability();
     items = items.filter(i => i.ts >= cutoff).sort((a,b) => b.ts - a.ts);
     
     const sItems = items.filter(i => i.actor === 'student');
@@ -875,7 +901,49 @@ function attachHistoryListener() {
          ${item.undo ? `<button class="btn small danger" onclick="undoTeacherAction(${jsArg(item.id)}, ${jsArg(item.undo.type)})" style="padding:2px 6px; font-size:11px;">Undo</button>` : ''}
       </div>
     `).join('') || '<div class="no-data">No teacher actions.</div>';
+  }, function(error) {
+    activeHistoryItems = [];
+    weeklyHistoryLoaded = false;
+    sList.textContent = 'Student history could not be loaded: ' + error.message;
+    tList.textContent = 'Teacher history could not be loaded: ' + error.message;
+    updateWeeklySummaryAvailability();
   });
+}
+
+function updateWeeklySummaryAvailability() {
+  const button = document.getElementById('generateWeeklySummary');
+  if (button) button.disabled = !activeCode || !weeklyHistoryLoaded || !weeklyProgressLoaded;
+}
+
+function generateWeeklySummary() {
+  if (!activeCode || !studentsMap[activeCode]) return;
+  try {
+    const student = studentsMap[activeCode];
+    document.getElementById('weeklySummaryOutput').value = window.createWeeklyProgressSummary({
+      studentName: student.name || 'Student',
+      studentCode: activeCode,
+      attempts: activeGameProgress.attempts,
+      topics: activeGameProgress.topics,
+      homework: (studentMeta[activeCode] || {}).homework,
+      history: activeHistoryItems,
+      streak: activeGameProgress.streak
+    });
+    document.getElementById('downloadWeeklySummary').disabled = false;
+  } catch (error) {
+    document.getElementById('weeklySummaryOutput').value = `Summary could not be generated: ${error.message}`;
+    document.getElementById('downloadWeeklySummary').disabled = true;
+  }
+}
+
+function downloadWeeklySummary() {
+  const text = document.getElementById('weeklySummaryOutput').value;
+  if (!text || !activeCode) return;
+  const reportUrl = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = reportUrl;
+  link.download = `weekly-progress-${activeCode}-${new Date().toISOString().slice(0, 10)}.txt`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(reportUrl), 1000);
 }
 
 function resetStage(stageId) {
@@ -1433,6 +1501,8 @@ function showToast(text) {
   window.__toastT = setTimeout(function() { t.classList.remove('show'); }, 2400);
 }
 
+document.getElementById('generateWeeklySummary').addEventListener('click', generateWeeklySummary);
+document.getElementById('downloadWeeklySummary').addEventListener('click', downloadWeeklySummary);
 initFirebase();
 updateThemeButton();
 window.addEventListener('beforeunload', function() { if (activeFeedRef) activeFeedRef.off(); });
