@@ -10,6 +10,7 @@ test("PWA shell caches app pages and public dependencies only", () => {
   const worker = read("sw.js");
   const urls = JSON.parse(worker.match(/const SHELL_URLS = (\[[\s\S]*?\]);/)[1]);
   assert.ok(urls.includes("portal.html"));
+  assert.ok(urls.includes("placement.html"));
   assert.ok(urls.includes("offline.html"));
   assert.ok(urls.includes("js/protected-content.js"));
   assert.ok(urls.includes("js/sanitize-html.js"));
@@ -36,6 +37,7 @@ test("PWA manifest assets and offline page exist", () => {
   for (const path of [
     "index.html",
     "portal.html",
+    "placement.html",
     "dashboard.html",
     "lesson.html",
     "lesson_abay.html",

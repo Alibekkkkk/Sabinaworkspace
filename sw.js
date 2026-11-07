@@ -1,7 +1,8 @@
-const CACHE_NAME = "learning-studio-shell-v1";
+const CACHE_NAME = "learning-studio-shell-v2";
 const SHELL_URLS = [
   "index.html",
   "portal.html",
+  "placement.html",
   "dashboard.html",
   "lesson.html",
   "lesson_abay.html",
@@ -14,6 +15,7 @@ const SHELL_URLS = [
   "manifest.webmanifest",
   "css/design-system.css",
   "css/legacy-pages.css",
+  "css/placement.css",
   "css/portal-redesign.css",
   "js/config.js",
   "js/student-context.js",
@@ -22,6 +24,8 @@ const SHELL_URLS = [
   "js/pwa.js",
   "js/theme.js",
   "js/weekly-summary.js",
+  "js/placement.js",
+  "js/placement-page.js",
   "js/games/engine.js",
   "js/games/progress.js",
   "js/clips/schema.js",
@@ -36,6 +40,7 @@ const SHELL_ASSETS = new Set(SHELL_URLS);
 const SHELL_DOCUMENTS = new Set([
   "index.html",
   "portal.html",
+  "placement.html",
   "dashboard.html",
   "lesson.html",
   "lesson_abay.html",

@@ -29,3 +29,10 @@ test("application pages apply the shared CSP baseline", () => {
     assert.match(html, /https:\/\/\*\.firebasedatabase\.app/, `${path} should allow regional Realtime Database connections`);
   }
 });
+
+test("placement page uses a restrictive standalone CSP", () => {
+  const html = readFileSync(fileURLToPath(new URL("placement.html", root)), "utf8");
+  assert.match(html, /script-src 'self'/);
+  assert.doesNotMatch(html, /unsafe-inline/);
+  assert.match(html, /object-src 'none'/);
+});
