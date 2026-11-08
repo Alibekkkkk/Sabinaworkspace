@@ -1,0 +1,532 @@
+{
+  "version": 1,
+  "note": "Informal placement item bank. Answers are public: this is a rough guide, not an exam.",
+  "items": [
+    {
+      "id": "a1-greeting",
+      "cefr": "A1",
+      "tag": "greetings",
+      "type": "mcq",
+      "prompt": "Choose the correct greeting.",
+      "options": [
+        "Good morning.",
+        "Good mornings.",
+        "A good morning is."
+      ],
+      "answer": 0
+    },
+    {
+      "id": "a1-be",
+      "cefr": "A1",
+      "tag": "be-verbs",
+      "type": "mcq",
+      "prompt": "My sister ___ from Kazakhstan.",
+      "options": [
+        "am",
+        "is",
+        "are"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a1-present-simple",
+      "cefr": "A1",
+      "tag": "present-simple",
+      "type": "gap",
+      "prompt": "We ___ English every Tuesday. (study)",
+      "accepted": [
+        "study"
+      ]
+    },
+    {
+      "id": "a1-there-is",
+      "cefr": "A1",
+      "tag": "there-is-are",
+      "type": "mcq",
+      "prompt": "There ___ two books on the table.",
+      "options": [
+        "is",
+        "are",
+        "be"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a1-order",
+      "cefr": "A1",
+      "tag": "word-order",
+      "type": "order",
+      "prompt": "Put the words in order.",
+      "words": [
+        "I",
+        "like",
+        "green",
+        "apples"
+      ],
+      "answer": "I like green apples"
+    },
+    {
+      "id": "a1-listen",
+      "cefr": "A1",
+      "tag": "listening",
+      "type": "listening",
+      "audioText": "The cat is under the table.",
+      "prompt": "Where is the cat?",
+      "options": [
+        "On the table",
+        "Under the table",
+        "Behind the door"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a1-article",
+      "cefr": "A1",
+      "tag": "articles",
+      "type": "mcq",
+      "prompt": "She has ___ umbrella.",
+      "options": [
+        "a",
+        "an",
+        "the"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a2-past",
+      "cefr": "A2",
+      "tag": "past-simple",
+      "type": "mcq",
+      "prompt": "Yesterday, I ___ my grandmother.",
+      "options": [
+        "visit",
+        "visited",
+        "have visit"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a2-past-irregular",
+      "cefr": "A2",
+      "tag": "past-simple",
+      "type": "gap",
+      "prompt": "She ___ to school by bus yesterday. (go)",
+      "accepted": [
+        "went"
+      ]
+    },
+    {
+      "id": "a2-comparative",
+      "cefr": "A2",
+      "tag": "comparatives",
+      "type": "mcq",
+      "prompt": "This bag is ___ than that one.",
+      "options": [
+        "cheap",
+        "cheaper",
+        "more cheap"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a2-prep-time",
+      "cefr": "A2",
+      "tag": "prepositions",
+      "type": "mcq",
+      "prompt": "I was born ___ 1998.",
+      "options": [
+        "in",
+        "on",
+        "at"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "a2-order",
+      "cefr": "A2",
+      "tag": "future-forms",
+      "type": "order",
+      "prompt": "Put the words in order.",
+      "words": [
+        "We",
+        "are",
+        "going",
+        "to",
+        "visit",
+        "Almaty"
+      ],
+      "answer": "We are going to visit Almaty"
+    },
+    {
+      "id": "a2-listen",
+      "cefr": "A2",
+      "tag": "listening",
+      "type": "listening",
+      "audioText": "I usually get up at seven and have breakfast at half past seven.",
+      "prompt": "When does the speaker have breakfast?",
+      "options": [
+        "At seven",
+        "At half past seven",
+        "At eight"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a2-quantifier",
+      "cefr": "A2",
+      "tag": "quantifiers",
+      "type": "mcq",
+      "prompt": "How ___ money do you have?",
+      "options": [
+        "many",
+        "much",
+        "few"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "a2-present-continuous",
+      "cefr": "A2",
+      "tag": "present-continuous",
+      "type": "gap",
+      "prompt": "Be quiet! The baby ___ . (sleep)",
+      "accepted": [
+        "is sleeping"
+      ]
+    },
+    {
+      "id": "a2-modal",
+      "cefr": "A2",
+      "tag": "modals",
+      "type": "mcq",
+      "prompt": "You ___ wear a seat belt in a car.",
+      "options": [
+        "should",
+        "would",
+        "might to"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b1-present-perfect",
+      "cefr": "B1",
+      "tag": "present-perfect",
+      "type": "mcq",
+      "prompt": "I have lived here ___ 2022.",
+      "options": [
+        "for",
+        "since",
+        "during"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b1-first-conditional",
+      "cefr": "B1",
+      "tag": "conditionals",
+      "type": "mcq",
+      "prompt": "If it rains tomorrow, we ___ at home.",
+      "options": [
+        "stay",
+        "stayed",
+        "will stay"
+      ],
+      "answer": 2
+    },
+    {
+      "id": "b1-participle",
+      "cefr": "B1",
+      "tag": "present-perfect",
+      "type": "gap",
+      "prompt": "She has never ___ sushi. (eat)",
+      "accepted": [
+        "eaten"
+      ]
+    },
+    {
+      "id": "b1-passive",
+      "cefr": "B1",
+      "tag": "passive",
+      "type": "mcq",
+      "prompt": "The report ___ by the class yesterday.",
+      "options": [
+        "finished",
+        "was finished",
+        "has finishing"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b1-order",
+      "cefr": "B1",
+      "tag": "questions",
+      "type": "order",
+      "prompt": "Put the words in order.",
+      "words": [
+        "Where",
+        "did",
+        "you",
+        "buy",
+        "that",
+        "jacket"
+      ],
+      "answer": "Where did you buy that jacket"
+    },
+    {
+      "id": "b1-relative",
+      "cefr": "B1",
+      "tag": "relative-clauses",
+      "type": "mcq",
+      "prompt": "The man ___ lives next door is a doctor.",
+      "options": [
+        "who",
+        "which",
+        "whose"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b1-listen",
+      "cefr": "B1",
+      "tag": "listening",
+      "type": "listening",
+      "audioText": "I'm sorry I'm late. My bus broke down, so I had to walk for twenty minutes.",
+      "prompt": "Why was the speaker late?",
+      "options": [
+        "They missed the train",
+        "Their bus broke down",
+        "They woke up late"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b1-phrasal",
+      "cefr": "B1",
+      "tag": "phrasal-verbs",
+      "type": "mcq",
+      "prompt": "Please ___ your shoes before you enter.",
+      "options": [
+        "take off",
+        "take out",
+        "take in"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b1-used-to",
+      "cefr": "B1",
+      "tag": "used-to",
+      "type": "gap",
+      "prompt": "When I was a child, I ___ play outside every day. (use)",
+      "accepted": [
+        "used to"
+      ]
+    },
+    {
+      "id": "b2-reported",
+      "cefr": "B2",
+      "tag": "reported-speech",
+      "type": "mcq",
+      "prompt": "She asked me where I ___.",
+      "options": [
+        "live",
+        "lived",
+        "do live"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b2-past-perfect",
+      "cefr": "B2",
+      "tag": "past-perfect",
+      "type": "mcq",
+      "prompt": "By the time we arrived, the film ___.",
+      "options": [
+        "had started",
+        "has started",
+        "was start"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b2-second-conditional",
+      "cefr": "B2",
+      "tag": "conditionals",
+      "type": "mcq",
+      "prompt": "If I ___ more time, I would learn Chinese.",
+      "options": [
+        "have",
+        "had",
+        "would have"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b2-future-passive",
+      "cefr": "B2",
+      "tag": "passive",
+      "type": "gap",
+      "prompt": "The old bridge ___ replaced next year.",
+      "accepted": [
+        "will be",
+        "is going to be"
+      ]
+    },
+    {
+      "id": "b2-gerund",
+      "cefr": "B2",
+      "tag": "gerunds-infinitives",
+      "type": "mcq",
+      "prompt": "Despite ___ tired, he finished the assignment.",
+      "options": [
+        "he was",
+        "being",
+        "to be"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "b2-order",
+      "cefr": "B2",
+      "tag": "inversion",
+      "type": "order",
+      "prompt": "Put the words in order.",
+      "words": [
+        "Not",
+        "only",
+        "did",
+        "she",
+        "win",
+        "but",
+        "she",
+        "also",
+        "broke",
+        "the",
+        "record"
+      ],
+      "answer": "Not only did she win but she also broke the record"
+    },
+    {
+      "id": "b2-listen",
+      "cefr": "B2",
+      "tag": "listening",
+      "type": "listening",
+      "audioText": "The meeting has been moved from Tuesday to Thursday because the manager is travelling.",
+      "prompt": "Why was the meeting moved?",
+      "options": [
+        "The manager is travelling",
+        "The room is unavailable",
+        "Too many people are absent"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "b2-word-form",
+      "cefr": "B2",
+      "tag": "word-formation",
+      "type": "mcq",
+      "prompt": "He took full ___ for the mistake.",
+      "options": [
+        "responsibility",
+        "responsible",
+        "responsibly"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "c1-inversion",
+      "cefr": "C1",
+      "tag": "inversion",
+      "type": "mcq",
+      "prompt": "Rarely ___ such a talented young pianist.",
+      "options": [
+        "I have seen",
+        "have I seen",
+        "I saw"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "c1-subjunctive",
+      "cefr": "C1",
+      "tag": "wish-and-subjunctive",
+      "type": "mcq",
+      "prompt": "I'd rather you ___ smoke in here.",
+      "options": [
+        "don't",
+        "didn't",
+        "wouldn't"
+      ],
+      "answer": 1
+    },
+    {
+      "id": "c1-mixed-conditional",
+      "cefr": "C1",
+      "tag": "conditionals",
+      "type": "gap",
+      "prompt": "If she had taken the job, she ___ in Berlin now. (live)",
+      "accepted": [
+        "would be living",
+        "would live"
+      ]
+    },
+    {
+      "id": "c1-participle-clause",
+      "cefr": "C1",
+      "tag": "participle-clauses",
+      "type": "mcq",
+      "prompt": "___ the instructions carefully, he assembled the shelf in minutes.",
+      "options": [
+        "Having read",
+        "Having been read",
+        "To have read"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "c1-cleft",
+      "cefr": "C1",
+      "tag": "cleft-sentences",
+      "type": "order",
+      "prompt": "Put the words in order.",
+      "words": [
+        "What",
+        "surprised",
+        "me",
+        "most",
+        "was",
+        "her",
+        "calm",
+        "reaction"
+      ],
+      "answer": "What surprised me most was her calm reaction"
+    },
+    {
+      "id": "c1-listen",
+      "cefr": "C1",
+      "tag": "listening",
+      "type": "listening",
+      "audioText": "Although the results were promising, the researchers cautioned against drawing firm conclusions from such a small sample.",
+      "prompt": "What did the researchers warn about?",
+      "options": [
+        "The sample was too small for firm conclusions",
+        "The results were negative",
+        "The funding was too low"
+      ],
+      "answer": 0
+    },
+    {
+      "id": "c1-vocabulary",
+      "cefr": "C1",
+      "tag": "vocabulary",
+      "type": "mcq",
+      "prompt": "Despite the setback, she remained ___ about the project's success.",
+      "options": [
+        "sanguine",
+        "sanitary",
+        "sensible"
+      ],
+      "answer": 0
+    }
+  ]
+}

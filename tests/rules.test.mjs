@@ -552,3 +552,41 @@ test("students cannot write teacher-owned nodes and teachers can read every stud
   }
   await assertFails(set(ref(teacher, "students/A111111/uid"), "teacher-hijack-attempt-over-128-chars-".repeat(5)));
 });
+
+test("placement results: server-stamped, own code only, one retake a week, teacher override and reset", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const now = { ".sv": "timestamp" };
+  const result = { takenAt: now, cefr: "B1", confidence: 0.82, durationMs: 420000, answers: [{ id: "a1-be", correct: true }, { id: "b1-passive", correct: false }] };
+  const placement = ref(dbA, "studentProgress/A111111/placement");
+
+  await assertSucceeds(set(placement, result));
+  // wrong owner, client clock, bad shape
+  await assertFails(set(ref(dbA, "studentProgress/B222222/placement"), result));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/placement"), { ...result, cefr: "Z9" }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/placement"), { ...result, confidence: 3 }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/placement"), { ...result, extra: true }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/placement"), { ...result, answers: [{ id: "<img onerror=x>", correct: true }] }));
+  // an immediate retake and any tampering with the stored result are refused
+  await assertFails(set(placement, { ...result, cefr: "C1" }));
+  await assertFails(update(ref(dbA, "studentProgress/A111111/placement"), { cefr: "C1" }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/placement/teacherLevel"), "C1"));
+  await assertFails(set(placement, null));
+  // other progress writes keep working and keep the placement
+  await assertSucceeds(update(ref(dbA, "studentProgress/A111111"), { xp: 20 }));
+  const stored = await get(placement);
+  assert.equal(stored.val().cefr, "B1");
+
+  // teacher: read all, override the level, but cannot forge a result; reset allows a retake
+  await assertSucceeds(get(ref(teacher, "studentProgress/A111111/placement")));
+  await assertSucceeds(set(ref(teacher, "studentProgress/A111111/placement/teacherLevel"), "A2"));
+  await assertFails(set(ref(teacher, "studentProgress/A111111/placement/teacherLevel"), "D9"));
+  await assertSucceeds(set(ref(teacher, "studentProgress/A111111/placement"), null));
+  await assertSucceeds(set(placement, { ...result, cefr: "B2" }));
+
+  // after seven days the student may retake (simulated by backdating the stored timestamp)
+  await testEnv.withSecurityRulesDisabled(async context => {
+    await set(ref(context.database(), "studentProgress/A111111/placement/takenAt"), Date.now() - 8 * 24 * 3600 * 1000);
+  });
+  await assertSucceeds(set(placement, { ...result, cefr: "C1" }));
+});

@@ -91,6 +91,8 @@ export async function saveGameProgress({ db, code, game, result, now = Date.now(
     );
     return {
       ...next,
+      // The placement result is owned by the placement page and teacher; never drop it here.
+      ...(state.placement ? { placement: state.placement } : {}),
       reviewQueue: queuedMistakes,
       attempts,
       topics: boundedTopics

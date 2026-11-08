@@ -277,8 +277,27 @@
     "studentProgress": {
       "$code": {
         ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
-        ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+        ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid && ((newData.child('placement/takenAt').val() === data.child('placement/takenAt').val() && newData.child('placement/cefr').val() === data.child('placement/cefr').val() && newData.child('placement/confidence').val() === data.child('placement/confidence').val() && newData.child('placement/durationMs').val() === data.child('placement/durationMs').val() && newData.child('placement/teacherLevel').val() === data.child('placement/teacherLevel').val()) || ((!data.child('placement/takenAt').exists() || now >= data.child('placement/takenAt').val() + 604800000) && newData.child('placement/takenAt').val() === now && !newData.child('placement/teacherLevel').exists()))",
         ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && newData.hasChildren()",
+        "placement": {
+          ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+          ".validate": "newData.hasChildren(['takenAt', 'cefr', 'confidence', 'durationMs', 'answers'])",
+          "takenAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+          "cefr": { ".validate": "newData.isString() && (newData.val() === 'A1' || newData.val() === 'A2' || newData.val() === 'B1' || newData.val() === 'B2' || newData.val() === 'C1')" },
+          "teacherLevel": { ".validate": "newData.isString() && (newData.val() === 'A1' || newData.val() === 'A2' || newData.val() === 'B1' || newData.val() === 'B2' || newData.val() === 'C1')" },
+          "confidence": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+          "durationMs": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 7200000" },
+          "answers": {
+            ".validate": "newData.hasChildren()",
+            "$index": {
+              ".validate": "$index.matches(/^[0-9]{1,2}$/) && newData.hasChildren(['id', 'correct'])",
+              "id": { ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{3,40}$/)" },
+              "correct": { ".validate": "newData.isBoolean()" },
+              "$other": { ".validate": "false" }
+            }
+          },
+          "$other": { ".validate": "false" }
+        },
         "xp": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
         "level": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 1000000" },
         "gems": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
