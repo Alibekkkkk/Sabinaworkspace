@@ -5,21 +5,35 @@
     "students": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$code": {
+        ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && newData.hasChildren() && newData.child('uid').isString() && newData.child('name').isString() && newData.child('name').val().length <= 80",
         ".read": "auth != null && (data.child('uid').val() == null || data.child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
-        ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.child('uid').val() == null && newData.child('uid').val() === auth.uid) || (data.child('uid').val() === auth.uid && newData.child('uid').val() === auth.uid) || (root.child('admins').child(auth.uid).val() === true))"
+        ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.child('uid').val() == null && newData.child('uid').val() === auth.uid) || (data.child('uid').val() === auth.uid && newData.child('uid').val() === auth.uid) || (root.child('admins').child(auth.uid).val() === true))",
+        "uid": { ".validate": "newData.isString() && newData.val().length <= 128" },
+        "name": { ".validate": "newData.isString() && newData.val().length <= 80" },
+        "code": { ".validate": "newData.isString() && newData.val() === $code" },
+        "createdAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "lastLogin": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "selfRegistered": { ".validate": "newData.isBoolean()" },
+        "$other": { ".validate": "false" }
       }
     },
     "studentByUid": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
+        ".validate": "newData.isString() && newData.val().matches(/^[A-Z0-9]{4,12}$/)",
         ".read": "auth != null && ($uid === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
-        ".write": "auth != null && ($uid === auth.uid || (root.child('admins').child(auth.uid).val() === true))"
+        ".write": "auth != null && (($uid === auth.uid && (!newData.exists() || (root.child('students').child(newData.val()).exists() && (root.child('students').child(newData.val()).child('uid').val() == null || root.child('students').child(newData.val()).child('uid').val() === auth.uid)))) || (root.child('admins').child(auth.uid).val() === true))"
       }
     },
     "pendingStudents": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
-        ".write": "auth != null && ($uid === auth.uid || (root.child('admins').child(auth.uid).val() === true))"
+        ".validate": "newData.hasChildren() && newData.child('name').isString() && newData.child('name').val().length <= 80 && newData.child('ts').isNumber() && (!newData.child('email').exists() || (newData.child('email').isString() && newData.child('email').val().length <= 254))",
+        ".write": "auth != null && ($uid === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
+        "name": { ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 80" },
+        "email": { ".validate": "newData.isString() && newData.val().length <= 254" },
+        "ts": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+        "$other": { ".validate": "false" }
       }
     },
     "curriculum": {
@@ -47,22 +61,65 @@
       "$code": {
         ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
         "state": {
-          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+          ".validate": "newData.hasChildren()",
+          "stage": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 9" },
+          "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+          "streak": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+          "elapsed": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 864000" },
+          "lastUpdate": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+          "notes": { ".validate": "newData.isString() && newData.val().length <= 4000" },
+          "contentFile": { ".validate": "newData.isString() && newData.val().length <= 160" },
+          "contentHash": { ".validate": "newData.isString() && newData.val().length <= 128" },
+          "schemaVersion": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100" },
+          "scores": { ".validate": "newData.hasChildren()" },
+          "done": { ".validate": "newData.hasChildren()" },
+          "vocabProgress": { ".validate": "newData.hasChildren()" },
+          "$other": { ".validate": "newData.hasChildren() || newData.isString() || newData.isNumber() || newData.isBoolean()" }
         },
         "draft": {
-          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+          "$lessonId": {
+            ".validate": "$lessonId.matches(/^[A-Za-z0-9_-]{1,80}$/) && newData.hasChildren()",
+            "$answerId": {
+              ".validate": "newData.isString() ? newData.val().length <= 2000 : (newData.isNumber() || newData.isBoolean() || newData.hasChildren())"
+            }
+          }
         },
         "history": {
-          ".write": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))"
+          ".write": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
+          "$entryId": {
+            ".validate": "newData.hasChildren() && newData.hasChildren(['actor', 'type', 'detail', 'ts'])",
+            "actor": { ".validate": "newData.isString() && (newData.val() === 'student' || newData.val() === 'teacher')" },
+            "type": { ".validate": "newData.isString() && newData.val().length <= 40" },
+            "detail": { ".validate": "newData.isString() && newData.val().length <= 300" },
+            "ts": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "stage": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 9" },
+            "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" },
+            "undo": { ".validate": "newData.hasChildren()" },
+            "$other": { ".validate": "newData.isString() || newData.isNumber() || newData.isBoolean() || newData.hasChildren()" }
+          }
         },
         "annotations": {
-          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+          "$lessonId": { ".validate": "newData.isString() && newData.val().length <= 50000" }
         },
         "homework_annotations": {
-          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+          "$homeworkId": { ".validate": "newData.isString() && newData.val().length <= 50000" }
         },
         "reviewQueue": {
-          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+          ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+          "$reviewId": {
+            ".validate": "newData.hasChildren() && newData.hasChildren(['stage', 'questionId', 'prompt', 'studentAnswer', 'autoResult', 'ts'])",
+            "stage": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 9" },
+            "questionId": { ".validate": "newData.isString() && newData.val().length <= 100" },
+            "prompt": { ".validate": "newData.isString() && newData.val().length <= 120" },
+            "studentAnswer": { ".validate": "newData.isString() && newData.val().length <= 300" },
+            "autoResult": { ".validate": "newData.isBoolean()" },
+            "ts": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "$other": { ".validate": "newData.isString() && newData.val().length <= 300" }
+          }
         },
         "command": {
           ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
@@ -71,14 +128,27 @@
           ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
           "$commandId": {
             "ack": {
-              ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+              ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+              ".validate": "newData.isBoolean() || newData.hasChildren()"
             }
           }
         },
         "homework": {
           "$homeworkId": {
             ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid && data.child('submitted').val() !== true",
-            ".validate": "!newData.exists() || !newData.child('score').exists() || (newData.child('score').isNumber() && newData.child('total').isNumber() && newData.child('score').val() <= newData.child('total').val())"
+            ".validate": "!newData.exists() || (newData.hasChildren() && (!newData.child('score').exists() || (newData.child('score').isNumber() && newData.child('total').isNumber() && newData.child('score').val() >= 0 && newData.child('score').val() <= newData.child('total').val() && newData.child('total').val() <= 500)))",
+            "version": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100" },
+            "answers": {
+              ".validate": "newData.hasChildren()",
+              "$questionId": { ".validate": "newData.isString() ? newData.val().length <= 2000 : (newData.isNumber() || newData.isBoolean())" }
+            },
+            "updatedAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+            "total": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 500" },
+            "submitted": { ".validate": "newData.isBoolean()" },
+            "submittedAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "submittedBy": { ".validate": "newData.hasChildren()" },
+            "$other": { ".validate": "false" }
           }
         }
       }
@@ -87,13 +157,33 @@
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$code": {
         ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
-        ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+        ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+        ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && newData.hasChildren()"
       }
     },
     "studentProgress": {
       "$code": {
         ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
-        ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+        ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",
+        ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && newData.hasChildren()",
+        "xp": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
+        "level": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 1000000" },
+        "gems": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
+        "hearts": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5" },
+        "streak": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
+        "streakFreezes": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000" },
+        "lastActivityDate": { ".validate": "newData.isString() && newData.val().length === 10" },
+        "daily": { ".validate": "newData.hasChildren()" },
+        "weekly": { ".validate": "newData.hasChildren()" },
+        "badges": { ".validate": "newData.hasChildren()" },
+        "attempts": { ".validate": "newData.hasChildren()" },
+        "reviewQueue": { ".validate": "newData.hasChildren()" },
+        "topics": { ".validate": "newData.hasChildren()" },
+        "vocabulary": {
+          ".validate": "newData.hasChildren()",
+          "$wordKey": { ".validate": "newData.hasChildren()" }
+        },
+        "$other": { ".validate": "false" }
       }
     },
     "admins": {
