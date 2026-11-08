@@ -72,10 +72,35 @@
           "contentFile": { ".validate": "newData.isString() && newData.val().length <= 160" },
           "contentHash": { ".validate": "newData.isString() && newData.val().length <= 128" },
           "schemaVersion": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100" },
-          "scores": { ".validate": "newData.hasChildren()" },
-          "done": { ".validate": "newData.hasChildren()" },
-          "vocabProgress": { ".validate": "newData.hasChildren()" },
-          "$other": { ".validate": "newData.hasChildren() || newData.isString() || newData.isNumber() || newData.isBoolean()" }
+          "scores": {
+            ".validate": "newData.hasChildren()",
+            "$stageKey": { ".validate": "$stageKey.matches(/^[A-Za-z0-9_-]{1,100}$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 10000" }
+          },
+          "done": {
+            ".validate": "newData.hasChildren()",
+            "$stageKey": { ".validate": "$stageKey.matches(/^[A-Za-z0-9_-]{1,100}$/) && newData.isBoolean()" }
+          },
+          "vocabProgress": {
+            ".validate": "newData.hasChildren()",
+            "$lessonId": {
+              ".validate": "$lessonId.matches(/^[A-Za-z0-9_-]{1,80}$/) && newData.hasChildren()",
+              "$word": {
+                ".validate": "newData.hasChildren()",
+                "meanings": {
+                  ".validate": "newData.hasChildren()",
+                  "$meaningIndex": {
+                    ".validate": "$meaningIndex.matches(/^[0-9]{1,4}$/) && newData.hasChildren()",
+                    "perfectStreak": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000" },
+                    "wrongCount": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000" },
+                    "meaningsCorrect": { ".validate": "newData.isString() && newData.val() === 'correct'" },
+                    "$other": { ".validate": "false" }
+                  }
+                },
+                "$other": { ".validate": "false" }
+              }
+            }
+          },
+          "$other": { ".validate": "false" }
         },
         "draft": {
           ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid",

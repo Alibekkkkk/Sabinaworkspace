@@ -193,8 +193,17 @@ test("student session writes require valid own-code state, draft, history, and a
     notes: "Started"
   }));
   await assertFails(set(ref(dbA, "sessions/A111111/state"), { stage: "one" }));
+  await assertFails(set(ref(dbA, "sessions/A111111/state"), { unknownField: { data: true } }));
+  await assertFails(set(ref(dbA, "sessions/A111111/state"), { scores: { "lesson_1_1": "high" } }));
   await assertFails(set(ref(dbA, "sessions/A111111/state"), {
     notes: "x".repeat(4001)
+  }));
+  await assertSucceeds(set(ref(dbA, "sessions/A111111/state/vocabProgress/lesson-a/cat/meanings/0"), {
+    perfectStreak: 1,
+    wrongCount: 0
+  }));
+  await assertFails(set(ref(dbA, "sessions/A111111/state/vocabProgress/lesson-a/cat/meanings/1"), {
+    perfectStreak: "one"
   }));
 
   await assertSucceeds(set(ref(dbA, "sessions/A111111/draft/lesson-a/q1"), "answer"));
