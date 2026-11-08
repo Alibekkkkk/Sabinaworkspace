@@ -4,6 +4,7 @@
 
 })();
 
+import { isTeacher } from "../auth.js";
 
 let firebaseConfig;
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
@@ -14,7 +15,6 @@ let code=(params.get('code')||'').toUpperCase();
 const homeworkId=params.get('lesson')||('homework_'+variant);
 const homeworkVersion=6;
 const teacherPreviewRequested=params.get('teacher')==='1';
-let TEACHER_EMAILS=[];
 let studentContext=null,contentFile='',contentHash='',schemaVersion=1;
 
 let lesson = null;
@@ -290,7 +290,6 @@ function resetHomeworkTeacher() {
 async function initFirebase(){
   const config=await import('../config.js');
   firebaseConfig=config.firebaseConfig;
-  TEACHER_EMAILS=config.TEACHER_EMAILS;
   fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
   fbDb=firebase.database();
   fbAuth=firebase.auth();
@@ -299,7 +298,7 @@ async function initFirebase(){
       let unsubscribe=()=>{};
       unsubscribe=fbAuth.onAuthStateChanged(function(current){unsubscribe();resolve(current)},function(error){unsubscribe();reject(error)});
     });
-    teacherCanEdit=!!(user&&user.emailVerified&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
+    teacherCanEdit=await isTeacher(user,fbDb);
     teacherMode=teacherCanEdit;
     if(!teacherCanEdit)throw new Error('Teacher sign-in required.');
     document.getElementById('teacherResetArea').style.display='block';

@@ -1,5 +1,6 @@
 
-    import { firebaseConfig, TEACHER_EMAILS } from "../config.js";
+    import { firebaseConfig } from "../config.js";
+    import { isTeacher } from "../auth.js";
     import { addProtectedClipAnswers, validateClip } from "../clips/schema.js";
     import { addProtectedMangaAnswers, validateManga } from "../manga/schema.js";
 
@@ -20,6 +21,7 @@
     const mangaAuthorStatus = document.getElementById("mangaAuthorStatus");
     let database;
     let auth;
+    let teacherAllowed = false;
 
     function setStatus(message) {
       status.textContent = message;
@@ -35,10 +37,6 @@
       if (typeof value !== "string") return null;
       const fileName = value.replace(/^content\//, "");
       return /^manga\/[a-z0-9_-]+\.json$/i.test(fileName) ? fileName : null;
-    }
-
-    function isTeacher(user) {
-      return !!user && user.emailVerified && TEACHER_EMAILS.includes(String(user.email || "").toLowerCase());
     }
 
     async function readClipFile(fileName) {
@@ -137,7 +135,7 @@
     }
 
     async function importContent() {
-      if (!isTeacher(auth.currentUser)) throw new Error("A verified teacher account is required.");
+      if (!await isTeacher(auth.currentUser, database)) throw new Error("An authorized teacher account is required.");
       importButton.disabled = true;
       setStatus("Reading manifest and current curriculum assignments…");
 
@@ -271,7 +269,7 @@
     }
 
     async function updateClips() {
-      if (!isTeacher(auth.currentUser)) throw new Error("A verified teacher account is required.");
+      if (!await isTeacher(auth.currentUser, database)) throw new Error("An authorized teacher account is required.");
       updateClipsButton.disabled = true;
       const response = await fetch("../content/manifest.json", { cache: "no-store" });
       if (!response.ok) throw new Error(`Could not load content manifest (${response.status}).`);
@@ -299,7 +297,7 @@
     }
 
     async function updateManga() {
-      if (!isTeacher(auth.currentUser)) throw new Error("A verified teacher account is required.");
+      if (!await isTeacher(auth.currentUser, database)) throw new Error("An authorized teacher account is required.");
       updateMangaButton.disabled = true;
       const response = await fetch("../content/manifest.json", { cache: "no-store" });
       if (!response.ok) throw new Error(`Could not load content manifest (${response.status}).`);
@@ -345,13 +343,22 @@
       database = firebase.database();
       auth = firebase.auth();
       await auth.getRedirectResult();
-      auth.onAuthStateChanged(user => {
-        const allowed = isTeacher(user);
-        importButton.disabled = !allowed;
-        updateClipsButton.disabled = !allowed;
-        updateMangaButton.disabled = !allowed;
-        signInButton.disabled = allowed;
-        setStatus(allowed ? `Signed in as ${user.email}.` : "Sign in with a verified teacher account.");
+      auth.onAuthStateChanged(async user => {
+        try {
+          teacherAllowed = await isTeacher(user, database);
+          importButton.disabled = !teacherAllowed;
+          updateClipsButton.disabled = !teacherAllowed;
+          updateMangaButton.disabled = !teacherAllowed;
+          signInButton.disabled = teacherAllowed;
+          setStatus(teacherAllowed ? `Signed in as ${user.email}.` : "Sign in with an authorized teacher account.");
+        } catch (error) {
+          teacherAllowed = false;
+          importButton.disabled = true;
+          updateClipsButton.disabled = true;
+          updateMangaButton.disabled = true;
+          signInButton.disabled = false;
+          setStatus(`Teacher authorization check failed: ${error.message}`);
+        }
       });
     } catch (error) {
       setStatus(`Firebase initialization failed: ${error.message}`);
@@ -363,20 +370,20 @@
     importButton.addEventListener("click", () => {
       if (!confirm("Import only missing protected content and copy assignment links? Existing protected content and curriculum records will not be overwritten.")) return;
       importContent().catch(error => {
-        importButton.disabled = !isTeacher(auth && auth.currentUser);
+        importButton.disabled = !teacherAllowed;
         setStatus(`Import failed: ${error.message}`);
       });
     });
     updateClipsButton.addEventListener("click", () => {
       if (!confirm("Replace the protected Clip Lab records for the clips listed in the manifest? This does not change classwork, homework, or assignments.")) return;
       updateClips().catch(error => {
-        updateClipsButton.disabled = !isTeacher(auth && auth.currentUser);
+        updateClipsButton.disabled = !teacherAllowed;
         setStatus(`Clip update failed: ${error.message}`);
       });
       updateMangaButton.addEventListener("click", () => {
         if (!confirm("Replace the protected Manga Reader records listed in the manifest? This does not change classwork, homework, or assignments.")) return;
         updateManga().catch(error => {
-          updateMangaButton.disabled = !isTeacher(auth && auth.currentUser);
+          updateMangaButton.disabled = !teacherAllowed;
           setStatus(`Manga update failed: ${error.message}`);
         });
       });

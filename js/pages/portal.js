@@ -1,11 +1,9 @@
 
 let db = null;
-let TEACHER_EMAILS = [];
 let configModule = null;
 let portalListeners = [];
 const configReady = import('../config.js').then(function(config) {
   configModule = config;
-  TEACHER_EMAILS = config.TEACHER_EMAILS;
   firebase.initializeApp(config.firebaseConfig);
   db = firebase.database();
 });

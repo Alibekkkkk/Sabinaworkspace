@@ -4,11 +4,11 @@
 
 })();
 
+import { isTeacher } from "../auth.js";
 
 /* SCRIPT REMAINS THE SAME EXCEPT FOR THE COLLAPSIBLE LOGIC */
 let firebaseConfig;
 let fbApp=null,fbDb=null,sessionRef=null,activityRef=null,commandRef=null,fbConnected=false;
-let TEACHER_EMAILS=[];
 const teacherPreviewRequested=new URLSearchParams(window.location.search).get('teacher')==='1';
 let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 let studentContext=null,studentStorage=null,contentFile='',contentHash='',schemaVersion=1,vocabMode='tracked',identityVerified=false;
@@ -374,7 +374,12 @@ function initFirebase(){
     if(teacherPreviewRequested){
       document.querySelector('.session-input').style.display='none';
       firebase.auth().onAuthStateChanged(async function(user){
-        teacherCanEdit=!!(user&&user.emailVerified&&TEACHER_EMAILS.includes(String(user.email||'').toLowerCase()));
+        try {
+          teacherCanEdit=await isTeacher(user,fbDb);
+        } catch(error) {
+          teacherCanEdit=false;
+          console.error('Teacher authorization check failed:',error);
+        }
         teacherMode=teacherCanEdit;
         if(teacherCanEdit){
           try{
@@ -1527,7 +1532,6 @@ async function loadContent() {
   try {
     const config=await import('../config.js');
     firebaseConfig=config.firebaseConfig;
-    TEACHER_EMAILS=config.TEACHER_EMAILS;
   } catch (e) {
     document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' + '<h2>Content failed to load</h2>' + '<p style="color:var(--ink-soft)">' + escapeHtml(e.message) + '</p>' + '</div>';
     return;

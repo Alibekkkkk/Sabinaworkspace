@@ -21,6 +21,7 @@ before(async () => {
     await set(ref(db, "students/B222222"), { uid: "student-b", name: "B" });
     await set(ref(db, "studentByUid/student-a"), "A111111");
     await set(ref(db, "studentByUid/student-b"), "B222222");
+    await set(ref(db, "admins/teacher"), true);
     await set(ref(db, "curriculum/lesson-a"), {
       title: "Lesson A",
       contentData: { answerKey: "not for students" }
@@ -72,12 +73,20 @@ test("students can only read and write their own game progress", async () => {
 });
 
 test("teachers can read game progress but cannot write student progress", async () => {
-  const teacherDb = testEnv.authenticatedContext("teacher", {
-    email: "alibek.alpysbayev@gmail.com",
-    email_verified: true
-  }).database();
+  const teacherDb = testEnv.authenticatedContext("teacher").database();
   await assertSucceeds(get(ref(teacherDb, "studentProgress/A111111")));
+  await assertSucceeds(get(ref(teacherDb, "students")));
+  await assertSucceeds(get(ref(teacherDb, "sessions/B222222/state")));
   await assertFails(set(ref(teacherDb, "studentProgress/A111111"), { xp: 100 }));
+});
+
+test("admin identity is readable by its owner and cannot be changed by clients", async () => {
+  const teacherDb = testEnv.authenticatedContext("teacher").database();
+  const studentDb = testEnv.authenticatedContext("student-a").database();
+  await assertSucceeds(get(ref(teacherDb, "admins/teacher")));
+  await assertFails(get(ref(studentDb, "admins/teacher")));
+  await assertFails(set(ref(studentDb, "admins/student-a"), true));
+  await assertFails(set(ref(teacherDb, "admins/teacher"), false));
 });
 
 test("students cannot list student records", async () => {

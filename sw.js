@@ -18,6 +18,7 @@ const SHELL_URLS = [
   "css/placement.css",
   "css/portal-redesign.css",
   "js/config.js",
+  "js/auth.js",
   "js/student-context.js",
   "js/protected-content.js",
   "js/sanitize-html.js",

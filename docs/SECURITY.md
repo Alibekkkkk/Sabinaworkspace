@@ -8,6 +8,8 @@ Making the GitHub repository private does not necessarily make its Pages site pr
 
 The Firebase web configuration in `js/config.js` is public client configuration, not a secret. Firebase Realtime Database Rules must enforce access.
 
+Teacher authorization uses a console-managed `admins/<Firebase Auth UID>: true` record. Database Rules allow a signed-in user to read only their own admin record and deny all client writes; a user cannot grant themselves teacher access. Before deploying these rules, add the teacher UID in Firebase Console: open **Authentication → Users**, copy the teacher account's UID, then open **Realtime Database → Data**, add a boolean `true` value at `/admins/<UID>`. Repeat for each teacher account. The application reads this one record through `js/auth.js`; do not add email allowlists back into client code or rules.
+
 The static pages use a meta-delivered Content Security Policy that limits script, connection, frame, and object sources. Inline script and style blocks have been moved into external page assets, and static HTML style attributes have been moved into page CSS classes. Inline event handlers and style attributes in generated HTML templates remain, so the policy still allows `'unsafe-inline'`; it is defense-in-depth, not a complete XSS mitigation. Continue removing those handlers and auditing legacy dynamic rendering sinks before claiming a strict CSP. Configure HTTP CSP through the production host as well; `frame-ancestors` in a meta policy is ignored by browsers.
 
 The student portal escapes lesson-card text and numeric progress values before rendering. The teacher dashboard HTML-escapes dynamic labels/codes and JSON-encodes values passed through dynamic inline handlers. These are targeted protections only; the remaining legacy HTML templates still require a complete sink-by-sink audit.
@@ -55,7 +57,7 @@ If `npm run test:rules` fails, stop and resolve the failure before deploying any
 
 1. In Firebase Console, confirm Google sign-in is enabled under **Authentication → Sign-in method**.
 2. Under **Authentication → Settings → Authorized domains**, ensure the domain you will use for the migration tool and student site is authorized.
-3. Use a verified Google account whose email is in `TEACHER_EMAILS` in `js/config.js`. The importer will not enable its import button for an unverified or non-allowlisted account.
+3. Use a Google account whose Firebase Auth UID has been added to `/admins/<UID>` as described above. The importer will not enable its import button for any other account.
 4. Confirm the site deployment and rollback method. Do not deploy application changes to the student site until the local rules tests pass.
 
 ### 5. Deploy and verify the Realtime Database Rules
@@ -131,6 +133,6 @@ By default the portal uses tab-scoped session identity. “Remember me on this d
 
 ## Rules and hosting constraints
 
-`database.rules.json` denies root reads/writes, prevents listing `students/`, scopes session access to the UID bound at `students/<code>/uid`, restricts curriculum and protected content to authorized teachers/student assignments, and validates homework score bounds and write-once submission state. Emulator coverage is in `tests/rules.test.mjs`.
+`database.rules.json` denies root reads/writes, prevents listing `students/`, scopes session access to the UID bound at `students/<code>/uid`, restricts curriculum and protected content to users with a console-managed `/admins/<UID>: true` record or authorized student assignments, and validates homework score bounds and write-once submission state. Client writes to `admins/` are denied. Emulator coverage is in `tests/rules.test.mjs`.
 
 GitHub Pages serves files publicly. Any answer key, student name, static lesson, or homework JSON committed in the repository can be downloaded from a public site. Database Rules protect Firebase paths only; they cannot protect static files.

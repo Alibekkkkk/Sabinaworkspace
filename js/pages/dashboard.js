@@ -9,9 +9,9 @@
 
 })();
 
+import { isTeacher } from "../auth.js";
 
 let firebaseConfig = null;
-let TEACHER_EMAILS = [];
 
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {};
@@ -58,7 +58,6 @@ async function initFirebase() {
   try {
     const config=await import('../config.js');
     firebaseConfig=config.firebaseConfig;
-    TEACHER_EMAILS=config.TEACHER_EMAILS;
     fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
     fbAuth = firebase.auth();
     fbDb = firebase.database();
@@ -68,8 +67,14 @@ async function initFirebase() {
       document.getElementById('authError').textContent = authErrorMessage(err);
     });
 
-    fbAuth.onAuthStateChanged(function(user) {
-      const allowed = user && user.email && TEACHER_EMAILS.includes(user.email.toLowerCase()) && user.emailVerified === true;
+    fbAuth.onAuthStateChanged(async function(user) {
+      let allowed = false;
+      try {
+        allowed = await isTeacher(user, fbDb);
+      } catch (error) {
+        console.error("Teacher authorization check failed:", error);
+        document.getElementById('authError').textContent = 'Could not verify teacher access. Check your connection and try again.';
+      }
       if (!allowed) {
         teacherUid = null;
         document.querySelector('.wrap').style.display = 'none';

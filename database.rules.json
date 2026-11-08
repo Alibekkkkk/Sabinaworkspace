@@ -3,49 +3,49 @@
     ".read": false,
     ".write": false,
     "students": {
-      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$code": {
-        ".read": "auth != null && (data.child('uid').val() == null || data.child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
-        ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.child('uid').val() == null && newData.child('uid').val() === auth.uid) || (data.child('uid').val() === auth.uid && newData.child('uid').val() === auth.uid) || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+        ".read": "auth != null && (data.child('uid').val() == null || data.child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
+        ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.child('uid').val() == null && newData.child('uid').val() === auth.uid) || (data.child('uid').val() === auth.uid && newData.child('uid').val() === auth.uid) || (root.child('admins').child(auth.uid).val() === true))"
       }
     },
     "studentByUid": {
-      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
-        ".read": "auth != null && ($uid === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
-        ".write": "auth != null && ($uid === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+        ".read": "auth != null && ($uid === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
+        ".write": "auth != null && ($uid === auth.uid || (root.child('admins').child(auth.uid).val() === true))"
       }
     },
     "pendingStudents": {
-      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
-        ".write": "auth != null && ($uid === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+        ".write": "auth != null && ($uid === auth.uid || (root.child('admins').child(auth.uid).val() === true))"
       }
     },
     "curriculum": {
-      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
-      ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')"
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
     "studentCurriculum": {
-      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$code": {
-        ".read": "auth != null && ((auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')) || root.child('students').child($code).child('uid').val() === auth.uid)",
-        ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')"
+        ".read": "auth != null && ((root.child('admins').child(auth.uid).val() === true) || root.child('students').child($code).child('uid').val() === auth.uid)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
       }
     },
     "protectedContent": {
       "$lessonId": {
-        ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
         "$kind": {
-          ".read": "auth != null && ((auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')) || (root.child('studentByUid').child(auth.uid).exists() && root.child('students').child(root.child('studentByUid').child(auth.uid).val()).child('uid').val() === auth.uid && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('published').val() !== false && (($kind === 'classwork' || $kind === 'homework' || $kind === 'clip') || ($kind === 'manga' && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('features').child('mangaReader').val() === true))))"
+          ".read": "auth != null && ((root.child('admins').child(auth.uid).val() === true) || (root.child('studentByUid').child(auth.uid).exists() && root.child('students').child(root.child('studentByUid').child(auth.uid).val()).child('uid').val() === auth.uid && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('published').val() !== false && (($kind === 'classwork' || $kind === 'homework' || $kind === 'clip') || ($kind === 'manga' && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('features').child('mangaReader').val() === true))))"
         }
       }
     },
     "sessions": {
-      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".write": false,
       "$code": {
-        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
+        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
         "state": {
           ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
         },
@@ -53,7 +53,7 @@
           ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
         },
         "history": {
-          ".write": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))"
+          ".write": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))"
         },
         "annotations": {
           ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
@@ -65,10 +65,10 @@
           ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
         },
         "command": {
-          ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')"
+          ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
         },
         "commands": {
-          ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+          ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
           "$commandId": {
             "ack": {
               ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
@@ -84,16 +84,23 @@
       }
     },
     "sessionSummary": {
-      ".read": "auth != null && auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$code": {
-        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
+        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
         ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
       }
     },
     "studentProgress": {
       "$code": {
-        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (auth.token.email_verified === true && (auth.token.email === 'alibek.alpysbayev@gmail.com' || auth.token.email === 'alibek.alpysbayev@nu.edu.kz' || auth.token.email === 'aalpysbayev2@gmail.com')))",
+        ".read": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true))",
         ".write": "auth != null && root.child('students').child($code).child('uid').val() === auth.uid"
+      }
+    },
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false,
+        ".validate": "newData.val() === true"
       }
     }
   }
