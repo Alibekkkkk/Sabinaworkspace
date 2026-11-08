@@ -4,6 +4,7 @@ import { clearElement, safeUrl, setHtml } from "../dom.js";
 import { resolveMaxScore } from "../lesson-meta.js";
 import { generateStudentCode } from "../student-code.js";
 import { assessPlacement, canRetake, nextRetakeAt } from "../placement.js";
+import { dueState } from "../schedule.js";
 import { DEFAULT_CLASS_ID, encouragement, isoWeekId, previousWeekId, rankEntries, validateNickname, weeklyXpSince } from "../leaderboard.js";
 
 let db = null;
@@ -528,17 +529,20 @@ function renderLessons(){
     pathItem.append(pathLink);
     pathSteps.append(pathItem);
 
+    const due = dueState(lesson);
     let card = document.createElement('a');
     card.className = 'lesson-card';
     card.href = targetUrl.href;
     setHtml(card, (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
       (lesson.homework ? '<div class="homework-tag">📌 Homework' + (lesson.homeworkDue ? ' · ' + escapeHtml(lesson.homeworkDue) : '') + '</div>' : '') +
+      (due.label ? '<div class="due-tag due-' + escapeHtml(due.state) + '">' + (due.state === 'locked' ? '🔒 ' : due.state === 'overdue' ? '⚠️ ' : '⏰ ') + escapeHtml(due.label) + '</div>' : '') +
       '<div class="icon">' + escapeHtml(lesson.icon || '📘') + '</div>' +
       '<div class="title">' + escapeHtml(lesson.title || 'Untitled lesson') + '</div>' +
       '<div class="desc">' + escapeHtml(lesson.description || 'No description.') + '</div>' +
       '<div class="meta"><span>📍 ' + doneCount + ' / ' + totalStages + ' stages</span><span>🏆 <b>' + lessonScore + '</b> / ' + maxScore + '</span></div>' +
       '<div class="progress-rail"><div class="progress-fill" style="width:' + pct + '%;"></div></div>' +
       '<button class="open-btn">' + (pct === 0 ? '▶ Start lesson' : (pct === 100 ? '✓ Review lesson' : '▶ Continue')) + '</button>');
+    if (due.state === 'locked') { card.removeAttribute('href'); card.setAttribute('aria-disabled', 'true'); card.classList.add('locked'); }
     grid.appendChild(card);
   });
 }

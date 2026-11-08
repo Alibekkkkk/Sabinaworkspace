@@ -99,7 +99,8 @@
         "title", "description", "sub", "eyebrow", "headline", "intro", "stages", "maxScore",
         "year", "month", "order", "homework", "homeworkDue", "customUrl",
         "contentUrl", "classworkContentUrl", "homeworkContentUrl", "parentId",
-        "published", "icon", "audience", "flashcardImages", "clipId", "features", "mangaId"
+        "published", "icon", "audience", "flashcardImages", "clipId", "features", "mangaId",
+        "availableFrom", "dueAt", "closesAt"
       ];
       const view = { id: lessonId };
       for (const field of fields) {
@@ -115,6 +116,10 @@
       }
       if (classworkFile) view.classworkContentUrl = `content/${classworkFile}`;
       if (homeworkFile) view.homeworkContentUrl = `content/${homeworkFile}`;
+      // update() ignores missing keys, so clear schedule fields the teacher removed.
+      for (const field of ["availableFrom", "dueAt", "closesAt"]) {
+        if (!Number.isFinite(Number(view[field])) || view[field] === null || view[field] === "") view[field] = null;
+      }
       if (view.published === undefined) view.published = true;
       return view;
     }

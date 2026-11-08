@@ -648,3 +648,43 @@ test("leaderboard: opt-in only, own uid only, own class only, capped, uid-keyed,
     await set(ref(context.database(), "students/A111111/classId"), null);
   });
 });
+
+test("scheduled assignments: protected content unlocks at availableFrom on the server clock; closed homework cannot be saved", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const hour = 3600 * 1000;
+
+  await testEnv.withSecurityRulesDisabled(async context => {
+    const db = context.database();
+    await set(ref(db, "protectedContent/sched-future/classwork"), { sourceFile: "x.json", content: { title: "Future" } });
+    await set(ref(db, "protectedContent/sched-open/classwork"), { sourceFile: "x.json", content: { title: "Open" } });
+    await set(ref(db, "protectedContent/sched-none/classwork"), { sourceFile: "x.json", content: { title: "No schedule" } });
+    await set(ref(db, "studentCurriculum/A111111/sched-future"), { title: "Future", availableFrom: Date.now() + 2 * hour });
+    await set(ref(db, "studentCurriculum/A111111/sched-open"), { title: "Open", availableFrom: Date.now() - 2 * hour, dueAt: Date.now() + hour });
+    await set(ref(db, "studentCurriculum/A111111/sched-none"), { title: "No schedule" });
+  });
+
+  await assertFails(get(ref(dbA, "protectedContent/sched-future/classwork")));
+  await assertSucceeds(get(ref(dbA, "protectedContent/sched-open/classwork")));
+  await assertSucceeds(get(ref(dbA, "protectedContent/sched-none/classwork")));
+  // the teacher always sees the content, and the student still sees the schedule metadata (to show "Locked until")
+  await assertSucceeds(get(ref(teacher, "protectedContent/sched-future/classwork")));
+  await assertSucceeds(get(ref(dbA, "studentCurriculum/A111111/sched-future")));
+
+  // moving the date into the past unlocks it
+  await assertSucceeds(set(ref(teacher, "studentCurriculum/A111111/sched-future/availableFrom"), Date.now() - 1000));
+  await assertSucceeds(get(ref(dbA, "protectedContent/sched-future/classwork")));
+  // bad schedule values and student edits are rejected
+  await assertFails(set(ref(teacher, "studentCurriculum/A111111/sched-open/dueAt"), "tomorrow"));
+  await assertFails(set(ref(dbA, "studentCurriculum/A111111/sched-future/availableFrom"), 0));
+
+  // homework after closesAt cannot be saved; before it can
+  await testEnv.withSecurityRulesDisabled(async context => {
+    const db = context.database();
+    await set(ref(db, "studentCurriculum/A111111/hw-closed"), { homework: true, closesAt: Date.now() - hour });
+    await set(ref(db, "studentCurriculum/A111111/hw-open"), { homework: true, closesAt: Date.now() + hour });
+  });
+  await assertFails(set(ref(dbA, "sessions/A111111/homework/hw-closed"), { version: 1, answers: { q_one: "late" }, submitted: false }));
+  await assertSucceeds(set(ref(dbA, "sessions/A111111/homework/hw-open"), { version: 1, answers: { q_one: "on time" }, submitted: false }));
+  await assertSucceeds(set(ref(teacher, "sessions/A111111/homework/hw-closed"), { version: 1, submitted: false }));
+});

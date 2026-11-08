@@ -186,3 +186,8 @@ body{font-family:'EB Garamond','Times New Roman',serif;background:var(--bg);colo
 .phase0-inline-35{display:none;max-height:180px;overflow-y:auto;background:var(--bg);border-radius:10px;padding:10px;margin-bottom:14px;border:1px solid var(--border);}
 .phase0-inline-36{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:15px;color:var(--ink);margin-top:8px;}
 .phase0-inline-37{width:auto;margin:0;}
+
+.schedule-fields { border: 1px solid var(--border); border-radius: 10px; margin: 12px 0; padding: 8px 12px; }
+.schedule-row { display: grid; gap: 4px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.schedule-row.schedule-overdue b::after { content: " (overdue)"; color: var(--danger, #c62828); }
+.schedule-row button { margin-right: 6px; }

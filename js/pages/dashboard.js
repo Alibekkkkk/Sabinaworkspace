@@ -15,6 +15,7 @@ import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 import { appendHtml, safeUrl, setHtml } from "../dom.js";
 import { DEFAULT_CLASS_ID, validateNickname } from "../leaderboard.js";
+import { compareByDue, dueState, duplicateScheduleToNextWeek, formatInZone, localInputToTimestamp, localZone, timestampToLocalInput, validateSchedule } from "../schedule.js";
 import { showToast } from "../ui.js";
 
 let firebaseConfig = null;
@@ -176,7 +177,7 @@ function initTeacherData() {
     curriculum = snap.val() || {};
     renderClassworkTree();
     renderHomeworkTree();
-    if (activeCode) renderStudentHomework();
+    if (activeCode) { renderStudentHomework(); renderScheduleList(); }
   });
 }
 
@@ -353,6 +354,7 @@ function selectStudent(code) {
   attachGameProgressListener();
   attachNotesListener();
   loadLeaderboardCard();
+  renderScheduleList();
   renderClassworkTree();
 }
 
@@ -597,6 +599,14 @@ function generateWeeklySummary() {
       attempts: activeGameProgress.attempts,
       topics: activeGameProgress.topics,
       homework: (studentMeta[activeCode] || {}).homework,
+      assignments: Object.keys(curriculum || {}).filter(function(id) {
+        return isLessonVisibleTo(curriculum[id], activeCode);
+      }).map(function(id) {
+        const lesson = curriculum[id] || {};
+        const state = dueState(lesson);
+        const progress = ((studentMeta[activeCode] || {}).homework || {})[id];
+        return { title: lesson.title || id, state: state.state, label: state.label, completed: lesson.homework ? Boolean(progress && progress.submitted) : false };
+      }),
       history: activeHistoryItems,
       streak: activeGameProgress.streak
     });
@@ -1065,6 +1075,52 @@ function openCurrentHomeworkInTab() {
   window.open(url.href, '_blank');
 }
 
+// ---- schedule list for the selected student ----------------------------------------------
+function renderScheduleList() {
+  const host = document.getElementById('scheduleList');
+  if (!host) return;
+  document.getElementById('scheduleCardZone').textContent = localZone();
+  const rows = Object.keys(curriculum || {}).map(function(id) { return Object.assign({ id: id }, curriculum[id]); })
+    .filter(function(lesson) { return activeCode && isLessonVisibleTo(lesson, activeCode) && (lesson.dueAt || lesson.availableFrom || lesson.closesAt); })
+    .sort(compareByDue);
+  if (!rows.length) { host.textContent = 'No scheduled assignments. Open Edit on a lesson to set dates.'; return; }
+  const progress = (studentMeta[activeCode] || {}).homework || {};
+  const table = document.createElement('div');
+  rows.forEach(function(lesson) {
+    const state = dueState(lesson);
+    const row = document.createElement('div');
+    row.className = 'schedule-row schedule-' + state.state;
+    const title = document.createElement('b');
+    title.textContent = (lesson.icon || '') + ' ' + (lesson.title || lesson.id);
+    const meta = document.createElement('span');
+    const done = lesson.homework ? (progress[lesson.id] && progress[lesson.id].submitted ? 'Submitted' : 'Not submitted') : 'Classwork';
+    meta.textContent = [state.label, lesson.dueAt ? 'Due ' + formatInZone(lesson.dueAt) : '', done].filter(Boolean).join(' · ');
+    const actions = document.createElement('span');
+    [['Edit', 'schedule-edit-lesson'], ['Duplicate to next week', 'duplicate-lesson-next-week'], ['Delete', 'schedule-delete-lesson']].forEach(function(entry) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn small' + (entry[0] === 'Delete' ? ' danger' : '');
+      button.textContent = entry[0];
+      button.dataset.action = entry[1];
+      button.dataset.lessonId = lesson.id;
+      actions.append(button);
+    });
+    row.append(title, meta, actions);
+    table.append(row);
+  });
+  host.replaceChildren(table);
+}
+
+function duplicateLessonNextWeek(id) {
+  const lesson = curriculum[id];
+  if (!lesson) return;
+  const copyId = 'lesson_' + Date.now();
+  const copy = Object.assign({}, lesson, duplicateScheduleToNextWeek(lesson), { title: (lesson.title || id) + ' (next week)', order: Date.now(), updatedAt: Date.now() });
+  writeChangesWithUndo([{ path: 'curriculum/' + copyId, value: copy }], 'duplicate ' + (lesson.title || id))
+    .then(function() { showToast('Duplicated to next week'); })
+    .catch(function(error) { alert('Duplicate failed: ' + error.message); });
+}
+
 function openLessonModal(id) {
   editingLessonId = id || null;
   const l = id ? (curriculum[id] || {}) : {};
@@ -1076,6 +1132,11 @@ function openLessonModal(id) {
   document.getElementById('lessonContentUrl').value = (l.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, '');
   document.getElementById('lessonDue').value = l.homeworkDue || '';
   document.getElementById('lessonParent').value = l.parentId || '';
+  document.getElementById('lessonAvailableFrom').value = timestampToLocalInput(l.availableFrom);
+  document.getElementById('lessonDueAt').value = timestampToLocalInput(l.dueAt);
+  document.getElementById('lessonClosesAt').value = timestampToLocalInput(l.closesAt);
+  document.getElementById('scheduleZone').textContent = '(' + localZone() + ')';
+  document.getElementById('scheduleError').textContent = '';
   document.getElementById('lessonPublished').checked = l.published !== false;
   lessonVisibility = l.audience === 'all' ? 'all' : 'some';
   lessonType = l.homework ? 'homework' : 'classwork';
@@ -1123,6 +1184,13 @@ function submitLesson() {
     alert('Enter a secure HTTPS URL or a page on this site.');
     return;
   }
+  const schedule = {
+    availableFrom: localInputToTimestamp(document.getElementById('lessonAvailableFrom').value),
+    dueAt: localInputToTimestamp(document.getElementById('lessonDueAt').value),
+    closesAt: localInputToTimestamp(document.getElementById('lessonClosesAt').value)
+  };
+  const scheduleCheck = validateSchedule(schedule);
+  if (!scheduleCheck.valid) { document.getElementById('scheduleError').textContent = scheduleCheck.errors[0]; return; }
   const id = editingLessonId || ('lesson_' + Date.now());
   const assignedTo = lessonVisibility === 'some'
     ? Array.from(document.querySelectorAll('#studentPickList input:checked')).map(function(x) { return x.value; })
@@ -1142,8 +1210,12 @@ function submitLesson() {
     published: document.getElementById('lessonPublished').checked,
     year: (curriculum[id] && curriculum[id].year) || String(new Date().getFullYear()),
     month: (curriculum[id] && curriculum[id].month) || new Date().toLocaleString('en', { month: 'long' }),
+    availableFrom: schedule.availableFrom,
+    dueAt: schedule.dueAt,
+    closesAt: schedule.closesAt,
     updatedAt: Date.now()
   };
+  for (const field of ['availableFrom', 'dueAt', 'closesAt']) if (payload[field] === null) delete payload[field];
   if (!editingLessonId) payload.order = Date.now();
   writeChangesWithUndo([{ path: 'curriculum/' + id, value: payload }], (editingLessonId ? 'edit ' : 'create ') + title)
     .then(function() {
@@ -1172,6 +1244,9 @@ function escapeHtml(s) {
 }
 const clickAction = run => ({ event: "click", run });
 installDelegatedActions({
+  "schedule-edit-lesson": { event: "click", run: function(element) { const id = readActionParam(element, "lessonId", /^[A-Za-z0-9_-]{1,64}$/); if (id) editLessonMeta(id); } },
+  "schedule-delete-lesson": { event: "click", run: function(element) { const id = readActionParam(element, "lessonId", /^[A-Za-z0-9_-]{1,64}$/); if (id) deleteLesson(id); } },
+  "duplicate-lesson-next-week": { event: "click", run: function(element) { const id = readActionParam(element, "lessonId", /^[A-Za-z0-9_-]{1,64}$/); if (id) duplicateLessonNextWeek(id); } },
   "leaderboard-rename": { event: "click", run: renameLeaderboardNickname },
   "leaderboard-remove": { event: "click", run: removeFromLeaderboard },
   "save-class-id": { event: "click", run: saveClassId },

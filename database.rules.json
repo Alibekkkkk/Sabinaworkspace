@@ -50,14 +50,19 @@
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$code": {
         ".read": "auth != null && ((root.child('admins').child(auth.uid).val() === true) || root.child('students').child($code).child('uid').val() === auth.uid)",
-        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+          "$lessonId": {
+            "availableFrom": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "dueAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "closesAt": { ".validate": "newData.isNumber() && newData.val() >= 0" }
+          }
       }
     },
     "protectedContent": {
       "$lessonId": {
         ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
         "$kind": {
-          ".read": "auth != null && ((root.child('admins').child(auth.uid).val() === true) || (root.child('studentByUid').child(auth.uid).exists() && root.child('students').child(root.child('studentByUid').child(auth.uid).val()).child('uid').val() === auth.uid && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('published').val() !== false && (($kind === 'classwork' || $kind === 'homework' || $kind === 'clip') || ($kind === 'manga' && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('features').child('mangaReader').val() === true))))"
+          ".read": "auth != null && ((root.child('admins').child(auth.uid).val() === true) || (root.child('studentByUid').child(auth.uid).exists() && root.child('students').child(root.child('studentByUid').child(auth.uid).val()).child('uid').val() === auth.uid && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('published').val() !== false && (!root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('availableFrom').exists() || now >= root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('availableFrom').val()) && (($kind === 'classwork' || $kind === 'homework' || $kind === 'clip') || ($kind === 'manga' && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('features').child('mangaReader').val() === true))))"
         }
       }
     },
@@ -186,7 +191,7 @@
         },
         "homework": {
           "$homeworkId": {
-            ".write": "auth != null && ((root.child('students').child($code).child('uid').val() === auth.uid && data.child('submitted').val() !== true) || root.child('admins').child(auth.uid).val() === true)",
+            ".write": "auth != null && ((root.child('students').child($code).child('uid').val() === auth.uid && data.child('submitted').val() !== true && (!root.child('studentCurriculum').child($code).child($homeworkId).child('closesAt').exists() || now <= root.child('studentCurriculum').child($code).child($homeworkId).child('closesAt').val())) || root.child('admins').child(auth.uid).val() === true)",
             ".validate": "$homeworkId.matches(/^[A-Za-z0-9_-]{1,64}$/) && (!newData.exists() || (newData.hasChildren(['version']) && (!newData.child('score').exists() || (newData.child('score').isNumber() && newData.child('total').isNumber() && newData.child('score').val() >= 0 && newData.child('score').val() <= newData.child('total').val() && newData.child('total').val() <= 500))))",
             "version": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100" },
             "answers": {

@@ -135,6 +135,12 @@
             </div>
           </div>
 
+          <div class="card" id="scheduleCard">
+            <h2>Schedule</h2>
+            <p class="hint">Assignments for this student, soonest due first. Times are shown in your time zone (<span id="scheduleCardZone"></span>). After changing dates, run Import Content so students see them.</p>
+            <div id="scheduleList" aria-live="polite"></div>
+          </div>
+
           <div class="card" id="leaderboardCard">
             <h2>Class leaderboard</h2>
             <p id="leaderboardSummary" aria-live="polite">Not joined (students are opted out by default).</p>
@@ -301,6 +307,16 @@
     <label for="lessonContentUrl">Content file (e.g. sabina, gaziz, homework_george)</label>
     <input type="text" id="lessonContentUrl" placeholder="e.g. sabina" class="phase0-inline-30">
     
+    <fieldset class="schedule-fields">
+      <legend>Schedule (optional) <span id="scheduleZone" class="hint"></span></legend>
+      <label for="lessonAvailableFrom">Available from</label>
+      <input type="datetime-local" id="lessonAvailableFrom">
+      <label for="lessonDueAt">Due</label>
+      <input type="datetime-local" id="lessonDueAt">
+      <label for="lessonClosesAt">Closes (students can no longer save homework)</label>
+      <input type="datetime-local" id="lessonClosesAt">
+      <p class="hint" id="scheduleError" role="alert"></p>
+    </fieldset>
     <div id="homeworkExtras" class="phase0-inline-31">
       <label for="lessonDue">Homework due (date or note)</label>
       <input type="text" id="lessonDue" placeholder="e.g. Before our next class" maxlength="80">

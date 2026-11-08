@@ -23,6 +23,7 @@
     homework = {},
     history = [],
     streak = 0,
+    assignments = [],
     now = Date.now()
   }) {
     if (!String(studentCode || "").trim()) throw new Error("Select a student before generating a weekly summary.");
@@ -75,6 +76,16 @@
     } else {
       lines.push("Homework: No homework activity recorded.");
     }
+
+    // `assignments` is [{ title, state, label, completed }] prepared by the dashboard from js/schedule.js.
+    const scheduled = (Array.isArray(assignments) ? assignments : [])
+      .filter(item => item && typeof item === "object" && !item.completed)
+      .map(item => ({ title: cleanText(item.title, 100), state: cleanText(item.state, 20), label: cleanText(item.label, 80) }))
+      .filter(item => item.title && (item.state === "overdue" || item.state === "due-today" || item.state === "due-soon"));
+    const overdue = scheduled.filter(item => item.state === "overdue");
+    const upcoming = scheduled.filter(item => item.state !== "overdue");
+    if (overdue.length) lines.push(`Overdue (${overdue.length}): ${overdue.map(item => `${item.title} - ${item.label}`).join("; ")}.`);
+    if (upcoming.length) lines.push(`Due soon (${upcoming.length}): ${upcoming.map(item => `${item.title} - ${item.label}`).join("; ")}.`);
 
     if (weakTopics.length) {
       lines.push(`Topics to revisit (based on all recorded practice): ${weakTopics.map(topic => `${topic.name} (${Math.round(topic.accuracy * 100)}%)`).join(", ")}.`);

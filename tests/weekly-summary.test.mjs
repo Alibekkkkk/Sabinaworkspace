@@ -74,3 +74,20 @@ test("teacher dashboard exposes and caches the private report workflow", () => {
   assert.match(dashboardScript, /window\.createWeeklyProgressSummary/);
   assert.match(serviceWorker, /"js\/weekly-summary\.js"/);
 });
+
+test("weekly summary lists overdue and upcoming assignments but not finished or unscheduled ones", () => {
+  const summary = createSummary({
+    studentName: "Sabina", studentCode: "A111111", now: Date.UTC(2026, 0, 10),
+    assignments: [
+      { title: "Essay", state: "overdue", label: "Overdue by 2 days", completed: false },
+      { title: "Quiz", state: "due-soon", label: "Due tomorrow", completed: false },
+      { title: "Done task", state: "overdue", label: "Overdue by 5 days", completed: true },
+      { title: "Later", state: "open", label: "Due in 9 days", completed: false },
+      { title: "No date", state: "none", label: "", completed: false },
+      { title: "x\u0007bell", state: "due-today", label: "Due today", completed: false }
+    ]
+  });
+  assert.match(summary, /Overdue \(1\): Essay - Overdue by 2 days\./);
+  assert.match(summary, /Due soon \(2\): Quiz - Due tomorrow; x bell - Due today\./);
+  assert.doesNotMatch(summary, /Done task|Later|No date/);
+});
