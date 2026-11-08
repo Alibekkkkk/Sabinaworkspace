@@ -515,10 +515,18 @@ function downloadWeeklySummary() {
   setTimeout(() => URL.revokeObjectURL(reportUrl), 1000);
 }
 
+// Teacher commands are append-only records under sessions/$code/commands/$id:
+// { type, payload?, createdAt: SERVER_TIMESTAMP }. The student client acknowledges with `ack: true`.
+function sendCommand(type, payload) {
+  const command = { type: type, createdAt: firebase.database.ServerValue.TIMESTAMP };
+  if (payload) command.payload = payload;
+  return fbDb.ref('sessions/' + activeCode + '/commands').push(command);
+}
+
 function resetStage(stageId) {
   if(!confirm('Reset student progress for Stage ' + stageId + '?')) return;
   const ts = Date.now();
-  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'resetStage', stage: stageId, ts: ts })
+  sendCommand('resetStage', { stage: Number(stageId) })
     .then(() => {
       showToast('Sent: reset stage ' + stageId);
       return appendBoundedRealtimeRecord(fbDb.ref('sessions/' + activeCode + '/history'), {
@@ -530,7 +538,7 @@ function resetStage(stageId) {
 
 function undoTeacherAction(id, type) {
   if(type === 'goto') {
-    fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'goto', stage: 1, ts: Date.now() });
+    sendCommand('goto', { stage: 1 }).catch(function(err) { alert('Command failed: ' + err.message); });
   }
   fbDb.ref('sessions/' + activeCode + '/history/' + id).remove();
   showToast('Action reverted');
@@ -554,7 +562,7 @@ function clearHistoryLogs() {
 function sendGoto(stage) {
   if (!activeCode) return;
   const ts = Date.now();
-  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'goto', stage: stage, ts: ts })
+  sendCommand('goto', { stage: Number(stage) })
     .then(function() {
       showToast('Sent: go to stage ' + stage);
       return appendBoundedRealtimeRecord(fbDb.ref('sessions/' + activeCode + '/history'), {
@@ -569,7 +577,7 @@ function sendReset(type) {
   const label = type === 'vocab' ? 'vocabulary progress' : 'all progress';
   if (!confirm('Reset ' + label + ' for this student? You can undo this.')) return;
   const ts = Date.now();
-  fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'reset', type: type || 'all', ts: ts })
+  sendCommand(type === 'vocab' ? 'resetVocab' : 'resetAll')
     .then(function() {
       showToast('Reset command sent');
       return appendBoundedRealtimeRecord(fbDb.ref('sessions/' + activeCode + '/history'), {

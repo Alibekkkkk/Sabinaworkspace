@@ -374,7 +374,7 @@ function initFirebase(){
           fbDb.ref('curriculum').on('value',function(s){updateCurriculumView(s,getSessionCode(),true)});
           const code = getSessionCode();
           if (code) {
-            sessionRef = fbDb.ref('sessions/' + code); activityRef = sessionRef.child('history'); commandRef = sessionRef.child('command'); fbConnected = true;
+            sessionRef = fbDb.ref('sessions/' + code); activityRef = sessionRef.child('history'); commandRef = sessionRef.child('commands'); fbConnected = true;
             sessionRef.child('state').once('value').then(function(snap){
               const st = snap.val() || {};
               if (st.scores) Object.assign(state.scores, st.scores);
@@ -450,7 +450,7 @@ function initFirebase(){
 }
 async function startStudentSession(code){
   if(!code){updateSyncUI('nocode');return}
-  sessionRef=fbDb.ref('sessions/'+code); activityRef=sessionRef.child('history'); commandRef=sessionRef.child('command');
+  sessionRef=fbDb.ref('sessions/'+code); activityRef=sessionRef.child('history'); commandRef=sessionRef.child('commands');
   const remoteSnapshot=await sessionRef.child('state').once('value');
   const remoteState=remoteSnapshot.val()||{};
   const localState=studentStorage?studentStorage.get('state'):null;
@@ -459,7 +459,7 @@ async function startStudentSession(code){
   if(!localState&&remoteState.stage)state.currentStage=remoteState.stage;
   if(!localState&&typeof remoteState.notes==='string')document.getElementById('notesArea').value=remoteState.notes;
   if(!localState&&remoteState.streak)state.streak=remoteState.streak;
-  commandRef.on('value',function(snap){const cmd=snap.val();if(!cmd)return;applyTeacherResetCommand(cmd);if(cmd.action==='goto'&&cmd.stage&&cmd.ts>Date.now()-10000)goToStage(cmd.stage)});
+  listenForTeacherCommands();
   fbConnected=true;updateSyncUI('live');pushFullState();
   await loadDraft();
   
@@ -485,26 +485,41 @@ function getSessionCode(){if(studentContext)return studentContext.code;if(teache
 function changeSessionCode(){document.getElementById('main').textContent='Student codes can only be changed from the portal.'}
 async function switchStudent(){try{await firebase.auth().signOut()}catch(error){console.error('Unable to sign out before switching student',error)}for(const storage of [localStorage,sessionStorage])for(let i=storage.length-1;i>=0;i--){const key=storage.key(i);if(key&&(key.startsWith('nd_')||key.startsWith('nd:')))storage.removeItem(key)}window.location.href='portal.html'}
 function updateSyncUI(s){const d=document.getElementById('syncDot');const t=document.getElementById('syncStatus');d.classList.remove('warn','off');if(s==='live')t.textContent='Live · Connected';else if(s==='teacher')t.textContent='Teacher preview';else if(s==='nocode'){d.classList.add('warn');t.textContent='Set code above'}else if(s==='error'){d.classList.add('off');t.textContent='Error'}}
-function applyTeacherResetCommand(cmd){
-  if(cmd&&cmd.action==='resetStage'&&Number.isInteger(Number(cmd.stage))) {
-    const stageId=Number(cmd.stage);
-    const key=state.currentLessonId+'_'+stageId;
+const COMMAND_MAX_AGE_MS = 60 * 1000;
+let serverTimeOffset = 0;
+
+// Commands are append-only records { type, payload, createdAt (server time), ack }.
+// A student applies each command once: the ack written back marks it as handled, and
+// commands older than a minute (server clock, not the student's) are acknowledged but ignored.
+function listenForTeacherCommands(){
+  fbDb.ref('.info/serverTimeOffset').on('value',function(snap){serverTimeOffset=Number(snap.val())||0});
+  commandRef.orderByKey().limitToLast(20).on('child_added',function(snap){
+    const cmd=snap.val();
+    if(!cmd||cmd.ack===true||typeof cmd.type!=='string')return;
+    const age=Date.now()+serverTimeOffset-Number(cmd.createdAt);
+    if(Number.isFinite(age)&&age<=COMMAND_MAX_AGE_MS)applyTeacherCommand(cmd);
+    snap.ref.child('ack').set(true).catch(function(error){console.error('Unable to acknowledge teacher command',error)});
+  });
+}
+function applyTeacherCommand(cmd){
+  const stage=Number(cmd.payload&&cmd.payload.stage);
+  if(cmd.type==='goto'&&Number.isInteger(stage)){goToStage(stage);return}
+  if(cmd.type==='resetStage'&&Number.isInteger(stage)){
+    const key=state.currentLessonId+'_'+stage;
     state.scores[key]=0;
     state.done[key]=false;
-    delete draftAnswers['stage_'+stageId];
+    delete draftAnswers['stage_'+stage];
     if(sessionRef)sessionRef.child('draft/'+state.currentLessonId).remove().catch(function(error){console.error('Unable to clear stage draft',error)});
     saveState();renderSidebar();renderStage();updateHUD();
     return;
   }
-  if(!cmd||cmd.action!=='reset'||!cmd.ts)return;
-  const k='nd_teacher_reset_seen_'+getSessionCode()+'_'+cmd.ts;
-  if(localStorage.getItem(k))return;
-  try{localStorage.setItem(k,'1')}catch(e){}
-  if(cmd.type === 'vocab'){
+  if(cmd.type==='resetVocab'){
     vocabState={}; saveVocabState(); const key = state.currentLessonId + "_1"; state.done[key] = false; state.scores[key] = 0; saveState();
     if(document.getElementById('fcModal').classList.contains('open')) closeFCModal();
     renderStage(); if(typeof showToast==='function') showToast('Vocabulary progress reset');
-  } else { teacherReset(); }
+    return;
+  }
+  if(cmd.type==='resetAll')teacherReset();
 }
 function teacherReset(){Object.keys(state.scores).forEach(function(k){state.scores[k]=0});Object.keys(state.done).forEach(function(k){state.done[k]=false});state.currentStage=1;state.streak=0;vocabState={};customImages={};draftAnswers={};document.getElementById('notesArea').value='';if(sessionRef)sessionRef.child('draft/'+state.currentLessonId).remove();updateHUD();renderSidebar();renderStage();saveState()}
 
@@ -1725,7 +1740,6 @@ if (typeof getSessionCode === "function") globalThis["getSessionCode"] = getSess
 if (typeof changeSessionCode === "function") globalThis["changeSessionCode"] = changeSessionCode;
 if (typeof switchStudent === "function") globalThis["switchStudent"] = switchStudent;
 if (typeof updateSyncUI === "function") globalThis["updateSyncUI"] = updateSyncUI;
-if (typeof applyTeacherResetCommand === "function") globalThis["applyTeacherResetCommand"] = applyTeacherResetCommand;
 if (typeof teacherReset === "function") globalThis["teacherReset"] = teacherReset;
 if (typeof playTone === "function") globalThis["playTone"] = playTone;
 if (typeof sCorrect === "function") globalThis["sCorrect"] = sCorrect;

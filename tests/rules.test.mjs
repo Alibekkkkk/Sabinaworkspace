@@ -23,6 +23,9 @@ before(async () => {
     await set(ref(db, "studentByUid/student-a"), "A111111");
     await set(ref(db, "studentByUid/student-b"), "B222222");
     await set(ref(db, "admins/teacher"), true);
+    await set(ref(db, "sessions/A111111/commands/cmd-1"), { type: "goto", payload: { stage: 2 }, createdAt: 1 });
+    await set(ref(db, "sessions/A111111/commands/cmd-2"), { type: "resetVocab", createdAt: 2 });
+    await set(ref(db, "sessions/B222222/commands/cmd-1"), { type: "goto", payload: { stage: 2 }, createdAt: 1 });
     await set(ref(db, "curriculum/lesson-a"), {
       title: "Lesson A",
       contentData: { answerKey: "not for students" }
@@ -322,7 +325,10 @@ test("student review, command acknowledgements, and summaries are scoped and val
 
   await assertSucceeds(set(ref(dbA, "sessions/A111111/commands/cmd-1/ack"), true));
   await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-2/ack"), "yes"));
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-2/ack"), false));
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-1/ack"), null));
   await assertFails(set(ref(dbA, "sessions/B222222/commands/cmd-1/ack"), true));
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/ghost/ack"), true));
 
   await assertFails(set(ref(dbA, "sessionSummary/A111111"), { completed: 1 }));
   await assertFails(set(ref(dbA, "sessionSummary/A111111"), "invalid"));
@@ -440,4 +446,32 @@ test("bounded session history and review queue records reject malformed fixed sh
   await assertFails(set(ref(dbA, "sessions/A111111/state/vocabProgress/lesson-a/bad word/meanings/0"), {
     perfectStreak: 1
   }));
+});
+
+test("teacher commands use one versioned schema with a server timestamp", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const serverNow = { ".sv": "timestamp" };
+
+  await assertSucceeds(set(ref(teacher, "sessions/A111111/commands/cmd-new"), { type: "goto", payload: { stage: 3 }, createdAt: serverNow }));
+  await assertSucceeds(set(ref(teacher, "sessions/A111111/commands/cmd-reset"), { type: "resetAll", createdAt: serverNow }));
+  await assertSucceeds(set(ref(teacher, "sessions/A111111/commands/cmd-stage"), { type: "resetStage", payload: { stage: 9 }, createdAt: serverNow }));
+
+  // client clocks are not trusted
+  await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-clock"), { type: "goto", payload: { stage: 3 }, createdAt: Date.now() }));
+  // unknown types, out-of-range stages, extra fields and the legacy shape are rejected
+  await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-bad-type"), { type: "eval", createdAt: serverNow }));
+  await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-bad-stage"), { type: "goto", payload: { stage: 10 }, createdAt: serverNow }));
+  await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-extra"), { type: "goto", payload: { stage: 1, html: "<b>" }, createdAt: serverNow }));
+  await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-legacy"), { action: "goto", stage: 1, ts: Date.now() }));
+  await assertFails(set(ref(teacher, "sessions/A111111/command"), { action: "goto", stage: 1, ts: Date.now() }));
+  // the creation time is immutable
+  await assertFails(update(ref(teacher, "sessions/A111111/commands/cmd-new"), { createdAt: serverNow }));
+
+  // students can never create or edit commands, only acknowledge them
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-student"), { type: "goto", payload: { stage: 3 }, createdAt: serverNow }));
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-1/type"), "resetAll"));
+  await assertSucceeds(set(ref(dbA, "sessions/A111111/commands/cmd-new/ack"), true));
+  await assertSucceeds(get(ref(dbA, "sessions/A111111/commands")));
+  await assertFails(get(ref(dbA, "sessions/B222222/commands")));
 });
