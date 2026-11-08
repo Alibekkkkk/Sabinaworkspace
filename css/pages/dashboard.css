@@ -189,3 +189,10 @@ body{font-family:var(--ds-font-body);background:var(--bg);color:var(--ink);min-h
 .schedule-row { display: grid; gap: 4px; padding: 8px 0; border-bottom: 1px solid var(--border); }
 .schedule-row.schedule-overdue b::after { content: " (overdue)"; color: var(--danger, var(--ds-color-danger)); }
 .schedule-row button { margin-right: 6px; }
+
+.today-strip { margin-bottom: var(--ds-space-5); }
+.today-tiles { display: grid; gap: var(--ds-space-3); grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+.today-strip h3 { margin: var(--ds-space-4) 0 var(--ds-space-2); font-size: var(--ds-text-md); }
+.today-attention { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--ds-space-1); }
+.status-chip { display: inline-flex; align-items: center; gap: 6px; font-size: var(--ds-text-xs); font-weight: 700; color: var(--ds-color-muted); }
+.student-item .dot.stuck { background: var(--ds-color-danger); border-radius: 2px; }

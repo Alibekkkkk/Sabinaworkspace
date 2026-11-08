@@ -15,12 +15,15 @@ import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 import { appendHtml, safeUrl, setHtml } from "../dom.js";
 import { DEFAULT_CLASS_ID, validateNickname } from "../leaderboard.js";
+import { barChart, sparkline } from "../charts.js";
+import { createProgressTracker, STATUS_LABELS, studentStatus, todaySummary, trackProgress } from "../dashboard-status.js";
 import { compareByDue, dueState, duplicateScheduleToNextWeek, formatInZone, localInputToTimestamp, localZone, timestampToLocalInput, validateSchedule } from "../schedule.js";
 import { showToast } from "../ui.js";
 
 let firebaseConfig = null;
 
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
+const progressTracker = createProgressTracker();
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, activeNotesRef = null;
 let activeCode = null, activeFeedRef = null, activeProgressRef = null;
 let activeGameProgress = {};
@@ -168,9 +171,11 @@ function initTeacherData() {
         notes: (previous[code] && previous[code].notes) || ''
       };
     });
+    Object.keys(studentMeta).forEach(function(code) { trackProgress(progressTracker, code, studentMeta[code]); });
     if (activeCode) renderSelectedView();
     else renderOverview();
     renderStudentsList();
+    renderToday();
   }, function(err) { console.error(err); updateConnUI('error'); });
 
   fbDb.ref('curriculum').on('value', function(snap) {
@@ -310,9 +315,8 @@ function renderStudentsList() {
     const meta = studentMeta[code] || {};
     const lastSeen = meta.lastSeen || 0;
     const age = Date.now() - lastSeen;
-    let dotClass = 'off';
-    if (lastSeen && age < 60000) dotClass = 'live';
-    else if (lastSeen && age < 600000) dotClass = 'stale';
+    const status = studentStatus(progressTracker, code, meta);
+    const dotClass = { online: 'live', idle: 'stale', offline: 'off', stuck: 'stuck' }[status];
     const linked = s.uid ? '🔗' : '⚠️';
     
     const doneCount = Number(meta.doneCount) || 0;
@@ -327,7 +331,7 @@ function renderStudentsList() {
     const hwText = hwCount > 0 ? `<span style="color:var(--accent);">HW: ${hwDone}/${hwCount}</span>` : '';
 
     return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" data-action="select-student" data-code="' + escapeHtml(code) + '">' +
-      '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
+      '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="status-chip"><span class="dot ' + dotClass + '" aria-hidden="true"></span><span class="status-text">' + STATUS_LABELS[status] + '</span></div></div>' +
       '<div class="code">' + linked + ' ' + escapeHtml(code) + '</div>' +
       '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + escapeHtml(meta.score || 0) + '</b></span><span>📍 Stage ' + escapeHtml(meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
       progressBar +
@@ -536,6 +540,11 @@ function renderGameAnalytics() {
     list.append(item);
   });
   host.append(heading, list);
+  const bars = barChart(topics.slice(0, 6).map(function(topic) { return { label: topic.name, value: topic.accuracy }; }), { title: 'Accuracy by topic, weakest first' });
+  const trend = sparkline(attempts.map(function(attempt) { return Number(attempt.total) ? Number(attempt.score) / Number(attempt.total) : 0; }), { title: 'Accuracy of recent games, oldest to newest' });
+  const barsHeading = document.createElement('h3'); barsHeading.textContent = 'Weak-topic bars';
+  const trendHeading = document.createElement('h3'); trendHeading.textContent = 'Progress over recent games';
+  host.append(barsHeading, bars, trendHeading, trend);
 }
 
 function attachHistoryListener() {
@@ -739,6 +748,48 @@ function openStudentHomework() {
   if (!activeCode) return;
   switchMainTab('homework');
 }
+
+// ---- Today strip: who is online, who might need help, what is overdue ----------------------
+function renderToday() {
+  const host = document.getElementById('todayStrip');
+  if (!host) return;
+  const codes = Object.keys(studentsMap);
+  if (!codes.length) { host.replaceChildren(); return; }
+  const summary = todaySummary({ codes: codes, metaByCode: studentMeta, tracker: progressTracker, curriculum: curriculum, now: Date.now(), isVisible: isLessonVisibleTo });
+  const tiles = document.createElement('div');
+  tiles.className = 'today-tiles';
+  [['Online now', summary.counts.online], ['Idle', summary.counts.idle], ['Might need help', summary.counts.stuck], ['Overdue homework', summary.counts.overdue]].forEach(function(entry) {
+    const tile = document.createElement('div');
+    tile.className = 'ds-stat';
+    const value = document.createElement('b');
+    value.textContent = String(entry[1]);
+    const label = document.createElement('span');
+    label.textContent = entry[0];
+    tile.append(value, label);
+    tiles.append(tile);
+  });
+  host.replaceChildren(tiles);
+  if (!summary.attention.length) return;
+  const list = document.createElement('ul');
+  list.className = 'today-attention';
+  summary.attention.slice(0, 6).forEach(function(item) {
+    const row = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ds-btn ds-btn--ghost ds-btn--small';
+    button.dataset.action = 'select-student';
+    button.dataset.code = item.code;
+    button.textContent = (studentsMap[item.code] && studentsMap[item.code].name) || item.code;
+    const reason = document.createElement('span');
+    reason.textContent = ' ' + item.reason;
+    row.append(button, reason);
+    list.append(row);
+  });
+  const heading = document.createElement('h3');
+  heading.textContent = 'Needs attention';
+  host.append(heading, list);
+}
+setInterval(renderToday, 30000);
 
 function renderOverview() {
   const el = document.getElementById('overviewContent');

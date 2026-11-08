@@ -89,3 +89,12 @@ body.has-bottom-nav { padding-bottom: 4.5rem; }
 .ds-error-page { max-width: 32rem; text-align: center; }
 .ds-error-page details { margin-top: var(--ds-space-4); text-align: start; }
 .ds-error-page__raw { white-space: pre-wrap; overflow-wrap: anywhere; font: var(--ds-text-sm) var(--ds-font-mono); color: var(--ds-color-muted); }
+
+.ds-chart { display: block; max-width: 28rem; }
+.ds-chart__label, .ds-chart__value { fill: var(--ds-color-text); font: 600 12px var(--ds-font-body); }
+.ds-chart__track { fill: var(--ds-color-border); }
+.ds-chart__bar { fill: var(--ds-color-primary); }
+.ds-chart__bar--low { fill: var(--ds-color-danger); }
+.ds-chart__axis { stroke: var(--ds-color-border-strong); stroke-width: 1; }
+.ds-chart__line { stroke: var(--ds-color-primary); stroke-width: 2.5; stroke-linejoin: round; }
+.ds-chart__dot { fill: var(--ds-color-primary); }

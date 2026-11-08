@@ -109,6 +109,17 @@ export async function seedEmulator({
     await put(`sessionSummary/${student.code}`, { score: [35, 20, 5][index], stage: 3, streak: [2, 1, 0][index], elapsed: 900, doneCount: index === 0 ? 2 : 1, lastUpdate: now - 3600000 });
     await put(`studentProgress/${student.code}`, {
       xp, level: Math.floor(xp / 100) + 1, gems: 5 + index * 3, hearts: 5, streak: [2, 1, 0][index], lastActivityDate: new Date(now).toISOString().slice(0, 10),
+      ...(index === 0 ? {
+        attempts: [0.5, 0.6, 0.55, 0.75, 0.7, 0.9].map((accuracy, position) => ({
+          gameId: `demo-game-${position}`, gameType: "quiz", score: Math.round(accuracy * 10), total: 10, timeSpentSeconds: 120 + position * 15,
+          completedAt: new Date(now - (6 - position) * DAY / 2).toISOString()
+        })),
+        topics: {
+          past_simple: { label: "Past simple", attempts: 4, score: 14, total: 40, timeSpentSeconds: 480, updatedAt: now - DAY },
+          modals: { label: "Modal verbs", attempts: 3, score: 21, total: 30, timeSpentSeconds: 360, updatedAt: now - DAY },
+          vocabulary: { label: "Vocabulary", attempts: 5, score: 44, total: 50, timeSpentSeconds: 600, updatedAt: now - DAY }
+        }
+      } : {}),
       ...(index === 0 ? { placement: { takenAt: now - 2 * DAY, cefr: "B1", confidence: 0.82, durationMs: 540000, answers: placementItems.slice(0, 18).map((item, position) => ({ id: item.id, correct: position % 5 !== 4 })) } } : {})
     });
   }
