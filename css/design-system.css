@@ -1,25 +1,66 @@
-:root {
+/*
+  Design tokens. This is the only stylesheet that may contain raw colour values; everything else
+  uses var(--ds-*). Contrast ratios for every text/background pair are generated into
+  docs/DESIGN_TOKENS.md by `npm run tokens:contrast`.
+*/
+:root,
+.ds-theme-light {
   color-scheme: light;
+
+  /* colour: neutral */
   --ds-color-background: #f5f7fb;
   --ds-color-surface: #ffffff;
   --ds-color-surface-raised: #eef2fa;
+  --ds-color-border: #d9e0eb;
+  --ds-color-border-strong: #7b8aa3;
   --ds-color-text: #1d2738;
   --ds-color-muted: #59677d;
+
+  /* colour: brand */
   --ds-color-primary: #4257b2;
+  --ds-color-primary-strong: #2f4290;
+  --ds-color-primary-soft: #e6eafb;
+  --ds-color-on-primary: #ffffff;
   --ds-color-accent: #b9471e;
-  --ds-color-success: #24744d;
-  --ds-color-danger: #a52e3b;
-  --ds-color-border: #d9e0eb;
+  --ds-color-accent-soft: #fde9df;
   --ds-color-focus: #2548cf;
-  --ds-font-body: Inter, "Segoe UI", system-ui, sans-serif;
-  --ds-font-display: "Avenir Next", Inter, "Segoe UI", system-ui, sans-serif;
+
+  /* colour: status */
+  --ds-color-success: #24744d;
+  --ds-color-success-soft: #dcf3e6;
+  --ds-color-warning: #7a4f00;
+  --ds-color-warning-soft: #fff1cc;
+  --ds-color-danger: #a52e3b;
+  --ds-color-danger-soft: #fde4e7;
+  --ds-color-info-soft: #e0f0fb;
+
+  /* highlighter pens for reading annotations (dark text always sits on these) */
+  --ds-mark-yellow: #fff3a8;
+  --ds-mark-green: #bdecc9;
+  --ds-mark-blue: #bfe0fb;
+  --ds-mark-pink: #fbcbe0;
+  --ds-mark-ink: #1d2738;
+
+  /* typography */
+  --ds-font-body: ui-rounded, "SF Pro Rounded", "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
+  --ds-font-display: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "Segoe UI", system-ui, sans-serif;
+  --ds-font-reading: "Iowan Old Style", "Palatino Linotype", Georgia, "Times New Roman", serif;
   --ds-font-mono: "Cascadia Code", Consolas, monospace;
-  --ds-text-xs: 0.75rem;
-  --ds-text-sm: 0.875rem;
-  --ds-text-md: 1rem;
-  --ds-text-lg: 1.25rem;
-  --ds-text-xl: 1.5rem;
-  --ds-text-2xl: 2rem;
+  --ds-text-xs: clamp(0.75rem, 0.73rem + 0.1vw, 0.8rem);
+  --ds-text-sm: clamp(0.875rem, 0.85rem + 0.12vw, 0.925rem);
+  --ds-text-md: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --ds-text-lg: clamp(1.15rem, 1.08rem + 0.35vw, 1.3rem);
+  --ds-text-xl: clamp(1.4rem, 1.25rem + 0.7vw, 1.75rem);
+  --ds-text-2xl: clamp(1.8rem, 1.5rem + 1.5vw, 2.5rem);
+  --ds-text-3xl: clamp(2.2rem, 1.7rem + 2.4vw, 3.4rem);
+  --ds-leading-tight: 1.2;
+  --ds-leading-normal: 1.5;
+  --ds-leading-reading: 1.75;
+  --ds-reading-size: 1.125rem;
+  --ds-reading-measure: 68ch;
+
+  /* spacing: 4-point grid */
+  --ds-space-0: 0;
   --ds-space-1: 0.25rem;
   --ds-space-2: 0.5rem;
   --ds-space-3: 0.75rem;
@@ -28,6 +69,10 @@
   --ds-space-6: 2rem;
   --ds-space-7: 3rem;
   --ds-space-8: 4rem;
+  --ds-target: 2.75rem; /* 44px minimum touch target */
+
+  /* shape and depth */
+  --ds-radius-xs: 0.375rem;
   --ds-radius-sm: 0.625rem;
   --ds-radius-md: 1rem;
   --ds-radius-lg: 1.5rem;
@@ -35,32 +80,68 @@
   --ds-shadow-sm: 0 2px 8px rgb(22 34 56 / 7%);
   --ds-shadow-md: 0 12px 32px rgb(22 34 56 / 11%);
   --ds-shadow-lg: 0 24px 64px rgb(22 34 56 / 16%);
+  --ds-scrim: rgb(14 20 32 / 55%);
+
+  /* motion */
   --ds-motion-fast: 140ms;
   --ds-motion-base: 220ms;
+  --ds-motion-slow: 360ms;
+  --ds-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ds-ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* layers */
+  --ds-z-base: 0;
+  --ds-z-sticky: 20;
+  --ds-z-nav: 40;
+  --ds-z-drawer: 60;
+  --ds-z-modal: 80;
+  --ds-z-toast: 100;
 }
 
 html.dark,
 html[data-theme="dark"],
+.ds-theme-dark,
 body.portal-page:not(.light) {
   color-scheme: dark;
   --ds-color-background: #141a25;
   --ds-color-surface: #1e2735;
   --ds-color-surface-raised: #293447;
+  --ds-color-border: #3a4659;
+  --ds-color-border-strong: #7587a6;
   --ds-color-text: #f1f4fa;
   --ds-color-muted: #b3bfd0;
+
   --ds-color-primary: #a6b6ff;
+  --ds-color-primary-strong: #c4cfff;
+  --ds-color-primary-soft: #28325a;
+  --ds-color-on-primary: #10162b;
   --ds-color-accent: #ffb18e;
-  --ds-color-success: #75d4a0;
-  --ds-color-danger: #ff9aa3;
-  --ds-color-border: #3a4659;
+  --ds-color-accent-soft: #4a2a1d;
   --ds-color-focus: #b7c5ff;
+
+  --ds-color-success: #75d4a0;
+  --ds-color-success-soft: #173a2a;
+  --ds-color-warning: #f5c451;
+  --ds-color-warning-soft: #3a2d0c;
+  --ds-color-danger: #ff9aa3;
+  --ds-color-danger-soft: #3f1c22;
+  --ds-color-info-soft: #17344a;
+
   --ds-shadow-sm: 0 2px 8px rgb(0 0 0 / 20%);
   --ds-shadow-md: 0 12px 32px rgb(0 0 0 / 28%);
   --ds-shadow-lg: 0 24px 64px rgb(0 0 0 / 38%);
+  --ds-scrim: rgb(0 0 0 / 65%);
 }
 
 html body {
   font-family: var(--ds-font-body);
+}
+
+/* Force a theme on any container (used by styleguide.html to show both themes side by side). */
+.ds-theme-light,
+.ds-theme-dark {
+  background: var(--ds-color-background);
+  color: var(--ds-color-text);
 }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
@@ -69,7 +150,7 @@ html body {
 }
 
 .theme-toggle {
-  min-height: 2.75rem;
+  min-height: var(--ds-target);
   padding: 0.6rem 0.9rem;
   border: 1px solid var(--ds-color-border, var(--border));
   border-radius: var(--ds-radius-pill);
@@ -81,6 +162,14 @@ html body {
 
 .theme-toggle:hover {
   border-color: var(--ds-color-primary, var(--accent));
+}
+
+/* Calm mode: a user preference that removes decorative motion everywhere. */
+html[data-calm="true"] *,
+html[data-calm="true"] *::before,
+html[data-calm="true"] *::after {
+  animation: none !important;
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

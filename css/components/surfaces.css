@@ -1,0 +1,104 @@
+/*
+  Surfaces and feedback: card, chip, badge, banner, toast, tooltip, modal, sheet, drawer, empty state,
+  skeleton, avatar, toolbar.
+
+  Markup
+    <section class="ds-card"><h2>Title</h2>...</section>        variants: .ds-card--raised  .ds-card--interactive
+    <span class="ds-chip">B1</span> <span class="ds-badge ds-badge--success">Done</span>
+    <div class="ds-banner ds-banner--warning" role="status"><span aria-hidden="true">!</span><p>Message</p></div>
+    <div class="ds-toast" role="status">Saved</div>
+    <span class="ds-tooltip-host" tabindex="0">Word<span class="ds-tooltip" role="tooltip">Meaning</span></span>
+    <div class="ds-scrim"><div class="ds-modal" role="dialog" aria-modal="true" aria-labelledby="t">...</div></div>
+    <div class="ds-scrim ds-scrim--sheet"><div class="ds-sheet" role="dialog">...</div></div>
+    <div class="ds-empty"><svg/><h3>Nothing yet</h3><p>Hint</p></div>
+    <div class="ds-skeleton" style="height:1rem"></div>
+*/
+.ds-card {
+  padding: var(--ds-space-5);
+  border: 1px solid var(--ds-color-border);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-surface);
+  color: var(--ds-color-text);
+  box-shadow: var(--ds-shadow-sm);
+}
+.ds-card--raised { background: var(--ds-color-surface-raised); box-shadow: none; }
+.ds-card--interactive { cursor: pointer; transition: transform var(--ds-motion-fast) var(--ds-ease-out), box-shadow var(--ds-motion-fast); }
+.ds-card--interactive:hover { transform: translateY(-2px); box-shadow: var(--ds-shadow-md); }
+
+.ds-chip, .ds-badge {
+  display: inline-flex; align-items: center; gap: var(--ds-space-1); min-height: 1.75rem; padding: 0 var(--ds-space-3);
+  border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-pill);
+  background: var(--ds-color-surface-raised); color: var(--ds-color-text); font: 700 var(--ds-text-sm) var(--ds-font-body);
+}
+.ds-chip--brand, .ds-badge--brand { background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); border-color: transparent; }
+.ds-badge--success { background: var(--ds-color-success-soft); color: var(--ds-color-success); border-color: transparent; }
+.ds-badge--warning { background: var(--ds-color-warning-soft); color: var(--ds-color-warning); border-color: transparent; }
+.ds-badge--danger { background: var(--ds-color-danger-soft); color: var(--ds-color-danger); border-color: transparent; }
+
+.ds-banner {
+  display: flex; align-items: flex-start; gap: var(--ds-space-3); padding: var(--ds-space-3) var(--ds-space-4);
+  border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); background: var(--ds-color-info-soft); color: var(--ds-color-text);
+}
+.ds-banner p { margin: 0; }
+.ds-banner--success { background: var(--ds-color-success-soft); color: var(--ds-color-success); border-color: var(--ds-color-success); }
+.ds-banner--warning { background: var(--ds-color-warning-soft); color: var(--ds-color-warning); border-color: var(--ds-color-warning); }
+.ds-banner--danger { background: var(--ds-color-danger-soft); color: var(--ds-color-danger); border-color: var(--ds-color-danger); }
+
+.ds-toast {
+  position: fixed; bottom: calc(var(--ds-space-5) + env(safe-area-inset-bottom)); left: 50%; z-index: var(--ds-z-toast);
+  transform: translateX(-50%); max-width: min(90vw, 28rem); padding: var(--ds-space-3) var(--ds-space-5);
+  border-radius: var(--ds-radius-pill); background: var(--ds-color-text); color: var(--ds-color-background);
+  font: 700 var(--ds-text-md) var(--ds-font-body); box-shadow: var(--ds-shadow-lg); text-align: center;
+}
+
+.ds-tooltip-host { position: relative; display: inline-block; border-bottom: 2px dotted var(--ds-color-primary); cursor: help; }
+.ds-tooltip {
+  position: absolute; bottom: calc(100% + 0.4rem); left: 50%; z-index: var(--ds-z-toast); transform: translateX(-50%);
+  width: max-content; max-width: 16rem; padding: var(--ds-space-2) var(--ds-space-3); border-radius: var(--ds-radius-xs);
+  background: var(--ds-color-text); color: var(--ds-color-background); font: var(--ds-text-sm) var(--ds-font-body);
+  opacity: 0; pointer-events: none; transition: opacity var(--ds-motion-fast);
+}
+.ds-tooltip-host:hover > .ds-tooltip, .ds-tooltip-host:focus > .ds-tooltip, .ds-tooltip-host:focus-within > .ds-tooltip { opacity: 1; }
+
+.ds-scrim { position: fixed; inset: 0; z-index: var(--ds-z-modal); display: grid; place-items: center; padding: var(--ds-space-4); background: var(--ds-scrim); }
+.ds-scrim[hidden] { display: none; }
+.ds-scrim--sheet { place-items: end center; }
+.ds-modal, .ds-sheet {
+  width: min(100%, 32rem); max-height: 90vh; overflow: auto; padding: var(--ds-space-5);
+  border: 1px solid var(--ds-color-border); background: var(--ds-color-surface); color: var(--ds-color-text); box-shadow: var(--ds-shadow-lg);
+}
+.ds-modal { border-radius: var(--ds-radius-lg); }
+.ds-sheet { border-radius: var(--ds-radius-lg) var(--ds-radius-lg) 0 0; width: min(100%, 40rem); }
+.ds-modal__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--ds-space-3); margin-top: var(--ds-space-5); }
+
+.ds-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: var(--ds-z-drawer); width: min(100%, 24rem); padding: var(--ds-space-5);
+  overflow: auto; border-left: 1px solid var(--ds-color-border); background: var(--ds-color-surface); box-shadow: var(--ds-shadow-lg);
+}
+.ds-drawer[hidden] { display: none; }
+
+.ds-empty { display: grid; justify-items: center; gap: var(--ds-space-2); padding: var(--ds-space-7) var(--ds-space-4); text-align: center; color: var(--ds-color-muted); }
+.ds-empty svg { width: 7rem; height: auto; color: var(--ds-color-primary); }
+.ds-empty h3 { margin: 0; color: var(--ds-color-text); font: 800 var(--ds-text-lg) var(--ds-font-display); }
+
+.ds-skeleton {
+  border-radius: var(--ds-radius-xs);
+  background: linear-gradient(90deg, var(--ds-color-surface-raised) 25%, var(--ds-color-border) 50%, var(--ds-color-surface-raised) 75%);
+  background-size: 200% 100%; animation: ds-shimmer 1.4s linear infinite;
+}
+@keyframes ds-shimmer { to { background-position: -200% 0; } }
+
+.ds-avatar {
+  display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); font: 800 var(--ds-text-md) var(--ds-font-display);
+}
+.ds-avatar--mascot { width: 3rem; height: 3rem; background: var(--ds-color-accent-soft); color: var(--ds-color-accent); }
+
+.ds-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-2); padding: var(--ds-space-2);
+  border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-md); background: var(--ds-color-surface); box-shadow: var(--ds-shadow-sm);
+}
+.ds-toolbar--vertical { flex-direction: column; align-items: stretch; width: max-content; }
+.ds-toolbar__sep { align-self: stretch; width: 1px; background: var(--ds-color-border); }
+
+.ds-card, .ds-modal, .ds-sheet, .ds-drawer, .ds-banner, .ds-feedback { box-sizing: border-box; }

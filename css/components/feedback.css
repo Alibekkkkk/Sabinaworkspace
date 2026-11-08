@@ -1,0 +1,62 @@
+/*
+  Lesson feedback and reading comfort.
+
+  Feedback sheet (bottom of the activity). Never colour alone: icon + heading + text.
+    <div class="ds-feedback ds-feedback--correct" role="status" aria-live="polite">
+      <span class="ds-feedback__icon" aria-hidden="true">✓</span>
+      <div><b class="ds-feedback__title">Correct!</b><p class="ds-feedback__detail">Reason...</p></div>
+    </div>
+    modifiers: --correct | --wrong | --info
+
+  Reading text. Preferences are data attributes on <html>, saved per device by js/reading-prefs.js:
+    data-reading-size="s|m|l|xl"   data-reading-spacing="normal|wide"   data-reading-font="serif|sans|dyslexia"
+*/
+.ds-feedback {
+  display: flex; align-items: flex-start; gap: var(--ds-space-3); padding: var(--ds-space-4); margin-top: var(--ds-space-3);
+  border: 2px solid var(--ds-color-border); border-radius: var(--ds-radius-md); background: var(--ds-color-info-soft); color: var(--ds-color-text);
+}
+.ds-feedback:empty { display: none; }
+.ds-feedback__icon { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; font-weight: 900; background: var(--ds-color-surface); }
+.ds-feedback__title { display: block; font: 800 var(--ds-text-lg) var(--ds-font-display); }
+.ds-feedback__detail { margin: 0.2rem 0 0; }
+.ds-feedback--correct { background: var(--ds-color-success-soft); color: var(--ds-color-success); border-color: var(--ds-color-success); animation: ds-pop var(--ds-motion-base) var(--ds-ease-spring); }
+.ds-feedback--wrong { background: var(--ds-color-danger-soft); color: var(--ds-color-danger); border-color: var(--ds-color-danger); }
+.ds-feedback--wrong .ds-feedback__icon { border-radius: var(--ds-radius-xs); }
+@keyframes ds-pop { from { transform: translateY(0.5rem); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.ds-reading {
+  max-width: var(--ds-reading-measure);
+  font-family: var(--ds-font-reading);
+  font-size: var(--ds-reading-size);
+  line-height: var(--ds-leading-reading);
+  color: var(--ds-color-text);
+  text-align: start;
+  overflow-wrap: break-word;
+}
+.ds-reading p { margin: 0 0 1em; }
+html[data-reading-size="s"] { --ds-reading-size: 1rem; }
+html[data-reading-size="l"] { --ds-reading-size: 1.3rem; }
+html[data-reading-size="xl"] { --ds-reading-size: 1.5rem; }
+html[data-reading-spacing="wide"] { --ds-leading-reading: 2.1; }
+html[data-reading-spacing="wide"] .ds-reading { letter-spacing: 0.03em; word-spacing: 0.12em; }
+html[data-reading-font="sans"] { --ds-font-reading: var(--ds-font-body); }
+html[data-reading-font="dyslexia"] { --ds-font-reading: Verdana, "Trebuchet MS", "Segoe UI", system-ui, sans-serif; --ds-leading-reading: 2; }
+html[data-reading-font="dyslexia"] .ds-reading { letter-spacing: 0.05em; word-spacing: 0.16em; }
+
+.ds-reading mark, .ds-reading .hl-yellow, .ds-reading .hl-green, .ds-reading .hl-blue, .ds-reading .hl-pink { color: var(--ds-mark-ink); border-radius: 0.2em; padding: 0 0.1em; }
+.ds-reading mark, .ds-reading .hl-yellow { background: var(--ds-mark-yellow); }
+.ds-reading .hl-green { background: var(--ds-mark-green); }
+.ds-reading .hl-blue { background: var(--ds-mark-blue); }
+.ds-reading .hl-pink { background: var(--ds-mark-pink); }
+
+.ds-reading-prefs { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-3); }
+.ds-reading-prefs label { font-size: var(--ds-text-sm); font-weight: 700; color: var(--ds-color-muted); }
+
+/* Celebration (stage complete). Hidden entirely for reduced motion and Calm mode. */
+.ds-confetti { position: fixed; inset: 0; z-index: var(--ds-z-toast); overflow: hidden; pointer-events: none; }
+.ds-confetti i { position: absolute; top: -1rem; width: 0.6rem; height: 1rem; border-radius: 2px; background: var(--ds-color-primary); animation: ds-fall 1.6s var(--ds-ease-out) forwards; }
+.ds-confetti i:nth-child(3n) { background: var(--ds-color-accent); }
+.ds-confetti i:nth-child(3n + 1) { background: var(--ds-color-success); }
+@keyframes ds-fall { to { transform: translateY(105vh) rotate(540deg); opacity: 0.9; } }
+@media (prefers-reduced-motion: reduce) { .ds-confetti { display: none; } }
+html[data-calm="true"] .ds-confetti { display: none; }

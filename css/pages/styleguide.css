@@ -1,0 +1,13 @@
+body { margin: 0; background: var(--ds-color-background); color: var(--ds-color-text); font: var(--ds-text-md) / var(--ds-leading-normal) var(--ds-font-body); }
+.sg-page { width: min(100% - 2rem, 90rem); margin: 0 auto; padding: var(--ds-space-5) 0 var(--ds-space-8); }
+.sg-themes { display: grid; gap: var(--ds-space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 34rem), 1fr)); }
+.sg-panel { padding: var(--ds-space-5); border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-lg); }
+.sg-panel h2 { margin-top: 0; }
+.sg-panel h3 { margin: var(--ds-space-6) 0 var(--ds-space-3); font-size: var(--ds-text-lg); }
+.sg-panel h4 { margin: 0 0 var(--ds-space-1); }
+.sg-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-3); }
+.sg-grid { display: grid; gap: var(--ds-space-3); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.sg-stack { display: grid; gap: var(--ds-space-2); }
+.sg-w-60 { width: 60%; }
+.sg-h-1 { height: 1rem; }
+code { padding: 0 0.3em; border-radius: var(--ds-radius-xs); background: var(--ds-color-surface-raised); }

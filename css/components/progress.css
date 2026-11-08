@@ -1,0 +1,79 @@
+/*
+  Progress and navigation: progress bar, ring, stat tile, stepper / learning path, app shell, bottom nav.
+
+  Markup
+    <div class="ds-progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Lesson progress">
+      <span class="ds-progress__fill" style="width:40%"></span></div>
+    <div class="ds-ring" role="img" aria-label="75 percent" data-value="75"><svg viewBox="0 0 36 36">...</svg><b>75%</b></div>
+    <div class="ds-stat"><b>240</b><span>XP</span></div>
+    <ol class="ds-path"><li class="ds-path__step" data-state="done|current|locked|mastered"><span class="ds-path__dot"></span>...</li></ol>
+*/
+.ds-progress { height: 0.75rem; overflow: hidden; border-radius: var(--ds-radius-pill); background: var(--ds-color-border); }
+.ds-progress__fill { display: block; height: 100%; border-radius: inherit; background: var(--ds-color-primary); transition: width var(--ds-motion-base) var(--ds-ease-out); }
+.ds-progress--success .ds-progress__fill { background: var(--ds-color-success); }
+
+.ds-ring { position: relative; display: inline-grid; place-items: center; width: 4.5rem; height: 4.5rem; }
+.ds-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.ds-ring circle { fill: none; stroke-width: 4; }
+.ds-ring .ds-ring__track { stroke: var(--ds-color-border); }
+.ds-ring .ds-ring__value { stroke: var(--ds-color-primary); stroke-linecap: round; transition: stroke-dashoffset var(--ds-motion-slow) var(--ds-ease-out); }
+.ds-ring b { font: 800 var(--ds-text-md) var(--ds-font-display); }
+
+.ds-stat { display: grid; gap: 0.1rem; padding: var(--ds-space-3) var(--ds-space-4); border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); background: var(--ds-color-surface); text-align: center; }
+.ds-stat b { font: 800 var(--ds-text-xl) / 1 var(--ds-font-display); color: var(--ds-color-primary); }
+.ds-stat span { font-size: var(--ds-text-sm); color: var(--ds-color-muted); }
+
+/* Learning path: state is conveyed by icon + text + shape, never colour alone. */
+.ds-path { display: grid; gap: var(--ds-space-1); margin: 0; padding: 0; list-style: none; }
+.ds-path__step {
+  display: flex; align-items: center; gap: var(--ds-space-3); min-height: var(--ds-target); padding: var(--ds-space-2) var(--ds-space-3);
+  border: 2px solid transparent; border-radius: var(--ds-radius-sm); color: var(--ds-color-text); cursor: pointer;
+}
+.ds-path__step:hover { background: var(--ds-color-surface-raised); }
+.ds-path__dot {
+  flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border: 2px solid var(--ds-color-border-strong);
+  border-radius: 50%; background: var(--ds-color-surface); font: 800 var(--ds-text-sm) var(--ds-font-body);
+}
+.ds-path__text { display: grid; line-height: 1.2; }
+.ds-path__sub { font-size: var(--ds-text-xs); color: var(--ds-color-muted); }
+.ds-path__step[data-state="current"] { border-color: var(--ds-color-primary); background: var(--ds-color-primary-soft); }
+.ds-path__step[data-state="current"] .ds-path__dot { background: var(--ds-color-primary); border-color: var(--ds-color-primary); color: var(--ds-color-on-primary); }
+.ds-path__step[data-state="done"] .ds-path__dot { background: var(--ds-color-success-soft); border-color: var(--ds-color-success); color: var(--ds-color-success); }
+.ds-path__step[data-state="mastered"] .ds-path__dot { background: var(--ds-color-warning-soft); border-color: var(--ds-color-warning); color: var(--ds-color-warning); border-radius: var(--ds-radius-xs); }
+.ds-path__step[data-state="locked"] { color: var(--ds-color-muted); }
+.ds-path__step[data-state="locked"] .ds-path__dot { border-style: dashed; }
+
+/* App shell: header, sidebar (>= 1024px), bottom tab bar (mobile), banners and the lesson-bar slot. */
+.ds-shell-header {
+  position: sticky; top: 0; z-index: var(--ds-z-nav); display: flex; align-items: center; gap: var(--ds-space-3);
+  min-height: 3.5rem; padding: var(--ds-space-2) var(--ds-space-4); border-bottom: 1px solid var(--ds-color-border);
+  background: var(--ds-color-surface); box-shadow: var(--ds-shadow-sm);
+}
+.ds-shell-header__brand { display: inline-flex; align-items: center; gap: var(--ds-space-2); color: var(--ds-color-primary); font: 800 var(--ds-text-lg) var(--ds-font-display); text-decoration: none; }
+.ds-shell-header__spacer { flex: 1; }
+.ds-lesson-bar { display: flex; align-items: center; gap: var(--ds-space-3); min-height: 2.5rem; padding: 0 var(--ds-space-4); border-bottom: 1px solid var(--ds-color-border); background: var(--ds-color-surface-raised); font-size: var(--ds-text-sm); }
+.ds-lesson-bar:empty { display: none; }
+
+.ds-nav { display: none; }
+.ds-nav a, .ds-nav button {
+  display: flex; align-items: center; gap: var(--ds-space-3); min-height: var(--ds-target); padding: 0 var(--ds-space-3);
+  border: 0; border-radius: var(--ds-radius-sm); background: transparent; color: var(--ds-color-text);
+  font: 700 var(--ds-text-md) var(--ds-font-body); text-decoration: none; cursor: pointer;
+}
+.ds-nav a:hover, .ds-nav button:hover { background: var(--ds-color-surface-raised); }
+.ds-nav [aria-current="page"] { background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); }
+
+.ds-bottom-nav {
+  position: fixed; inset: auto 0 0 0; z-index: var(--ds-z-nav); display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid var(--ds-color-border); background: var(--ds-color-surface); box-shadow: var(--ds-shadow-md);
+}
+.ds-bottom-nav a {
+  display: grid; justify-items: center; align-content: center; gap: 0.1rem; min-height: 3.5rem; padding: var(--ds-space-1);
+  color: var(--ds-color-muted); font: 700 var(--ds-text-xs) var(--ds-font-body); text-decoration: none;
+}
+.ds-bottom-nav [aria-current="page"] { color: var(--ds-color-primary-strong); background: var(--ds-color-primary-soft); }
+
+@media (min-width: 1024px) {
+  .ds-bottom-nav { display: none; }
+  .ds-nav { display: grid; gap: var(--ds-space-1); align-content: start; }
+}
