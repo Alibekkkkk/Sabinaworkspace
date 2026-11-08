@@ -1,0 +1,7 @@
+
+    body{max-width:900px;margin:48px auto;padding:0 20px;font:16px/1.5 system-ui,sans-serif;color:#202938}
+    button{padding:10px 16px;margin:8px 8px 8px 0;font:inherit;cursor:pointer}
+    textarea{display:block;width:100%;min-height:180px;margin:8px 0 12px;padding:12px;font:14px/1.5 ui-monospace,monospace}
+    section{margin:28px 0;padding-top:18px;border-top:1px solid #d5dbe5}
+    #status{white-space:pre-wrap;padding:14px;background:#f2f4f7;border-radius:8px}
+  

@@ -8,7 +8,7 @@ Making the GitHub repository private does not necessarily make its Pages site pr
 
 The Firebase web configuration in `js/config.js` is public client configuration, not a secret. Firebase Realtime Database Rules must enforce access.
 
-The static pages use a meta-delivered Content Security Policy that limits script, connection, frame, and object sources. Existing pages still contain inline JavaScript and CSS, so the policy currently allows `'unsafe-inline'`; it is defense-in-depth, not a complete XSS mitigation. Before claiming a strict CSP, move inline code into external files and configure nonce/hash-based CSP through the production host's HTTP headers. Continue auditing legacy dynamic rendering sinks for untrusted HTML.
+The static pages use a meta-delivered Content Security Policy that limits script, connection, frame, and object sources. Inline script and style blocks have been moved into external page assets, and static HTML style attributes have been moved into page CSS classes. Inline event handlers and style attributes in generated HTML templates remain, so the policy still allows `'unsafe-inline'`; it is defense-in-depth, not a complete XSS mitigation. Continue removing those handlers and auditing legacy dynamic rendering sinks before claiming a strict CSP. Configure HTTP CSP through the production host as well; `frame-ancestors` in a meta policy is ignored by browsers.
 
 The student portal escapes lesson-card text and numeric progress values before rendering. The teacher dashboard HTML-escapes dynamic labels/codes and JSON-encodes values passed through dynamic inline handlers. These are targeted protections only; the remaining legacy HTML templates still require a complete sink-by-sink audit.
 

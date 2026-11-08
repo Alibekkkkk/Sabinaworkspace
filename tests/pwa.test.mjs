@@ -59,8 +59,34 @@ test("per-student lesson entry points delegate to the shared lesson renderer", (
     ["lesson_gaziz.html", "gaziz"]
   ]) {
     const page = read(path);
-    assert.match(page, /location\.replace\(['"]lesson\.html\?/);
-    assert.match(page, new RegExp(`p\\.set\\(['"]content['"],\\s*['"]${contentId}['"]\\)`));
+    const script = read(`js/pages/${path.replace(".html", ".js")}`);
+    assert.match(script, /location\.replace\(['"]lesson\.html\?/);
+    assert.match(script, new RegExp(`p\\.set\\(['"]content['"],\\s*['"]${contentId}['"]\\)`));
+    assert.match(page, /type="module" src=/);
     assert.doesNotMatch(page, /<style[\\s>]/i);
+  }
+});
+
+test("HTML pages load scripts and styles externally", () => {
+  for (const path of [
+    "index.html",
+    "legacy/index.html",
+    "portal.html",
+    "dashboard.html",
+    "lesson.html",
+    "lesson_abay.html",
+    "lesson_gaziz.html",
+    "homework.html",
+    "practice.html",
+    "clip.html",
+    "manga.html",
+    "offline.html",
+    "placement.html",
+    "tools/import-content.html"
+  ]) {
+    const page = read(path);
+    assert.doesNotMatch(page, /<script\b(?![^>]*\bsrc\s*=)[^>]*>/i, `${path} should not contain inline scripts`);
+    assert.doesNotMatch(page, /<style\b/i, `${path} should not contain inline stylesheets`);
+    assert.doesNotMatch(page, /\sstyle\s*=/i, `${path} should not contain inline styles`);
   }
 });

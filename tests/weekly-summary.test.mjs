@@ -6,6 +6,7 @@ import test from "node:test";
 
 const source = readFileSync(fileURLToPath(new URL("../js/weekly-summary.js", import.meta.url)), "utf8");
 const dashboard = readFileSync(fileURLToPath(new URL("../dashboard.html", import.meta.url)), "utf8");
+const dashboardScript = readFileSync(fileURLToPath(new URL("../js/pages/dashboard.js", import.meta.url)), "utf8");
 const serviceWorker = readFileSync(fileURLToPath(new URL("../sw.js", import.meta.url)), "utf8");
 
 function createSummary(data) {
@@ -70,6 +71,6 @@ test("teacher dashboard exposes and caches the private report workflow", () => {
   assert.match(dashboard, /js\/weekly-summary\.js/);
   assert.match(dashboard, /id="generateWeeklySummary"/);
   assert.match(dashboard, /id="downloadWeeklySummary"/);
-  assert.match(dashboard, /window\.createWeeklyProgressSummary/);
+  assert.match(dashboardScript, /window\.createWeeklyProgressSummary/);
   assert.match(serviceWorker, /"js\/weekly-summary\.js"/);
 });

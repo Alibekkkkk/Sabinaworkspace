@@ -38,9 +38,10 @@ function startTheme({ savedTheme, prefersLight = false }) {
 test("Practice, Clip Lab, and Manga Reader expose accessible theme controls", () => {
   for (const path of ["practice.html", "clip.html", "manga.html"]) {
     const page = read(path);
+    const styles = read(`css/pages/${path.replace(".html", ".css")}`);
     assert.match(page, /data-theme-toggle/, `${path} should expose a theme toggle`);
     assert.match(page, /js\/theme\.js/, `${path} should load the shared theme behavior`);
-    assert.match(page, /data-theme="light"/, `${path} should define its light palette`);
+    assert.match(styles, /data-theme="light"/, `${path} should define its light palette`);
   }
 
   const theme = read("js/theme.js");
