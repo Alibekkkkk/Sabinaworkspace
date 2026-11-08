@@ -498,3 +498,32 @@ test("only an admin can reset a submitted homework record, and the attempt can b
   const attempt = await get(ref(teacher, "sessions/A111111/homework/task-reset/attempts/attempt-1/answers/q_one"));
   assert.equal(attempt.val(), "mine");
 });
+
+test("students write only a bounded compact summary of their own session, and only admins read all of them", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const summary = { score: 40, stage: 3, streak: 2, elapsed: 600, doneCount: 3, lastUpdate: Date.now() };
+
+  await assertSucceeds(set(ref(dbA, "sessionSummary/A111111"), summary));
+  await assertSucceeds(update(ref(dbA, "sessionSummary/A111111"), { score: 55 }));
+  await assertSucceeds(update(ref(dbA, "sessionSummary/A111111/homework/task-1"), { submitted: true, completed: true, score: 4, total: 5, updatedAt: Date.now() }));
+  await assertSucceeds(get(ref(dbA, "sessionSummary/A111111")));
+
+  // other students, bad shapes, oversized values and free-form text are rejected
+  await assertFails(set(ref(dbA, "sessionSummary/B222222"), summary));
+  await assertFails(get(ref(dbA, "sessionSummary/B222222")));
+  await assertFails(get(ref(dbA, "sessionSummary")));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { score: 1e9 }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { stage: 12 }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { doneCount: -1 }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { name: "<img src=x onerror=alert(1)>" }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { notes: "free text does not belong in the summary" }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111/homework/task-1"), { score: 99999 }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111/homework/task-1"), { answers: { q1: "x" } }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111/homework/bad id"), { updatedAt: 1 }));
+
+  // the teacher can read the whole compact tree but cannot forge a student's summary
+  const all = await assertSucceeds(get(ref(teacher, "sessionSummary")));
+  assert.equal(all.val().A111111.score, 55);
+  await assertFails(set(ref(teacher, "sessionSummary/A111111"), summary));
+});

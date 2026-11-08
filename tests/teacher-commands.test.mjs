@@ -22,3 +22,12 @@ test("lesson page applies each command once, acknowledges it, and judges age on 
   assert.match(lesson, /child\('ack'\)\.set\(true\)/);
   assert.match(lesson, /cmd\.ack===true/);
 });
+
+test("dashboard subscribes to the compact sessionSummary, never to the whole sessions tree", () => {
+  const dashboard = read("js/pages/dashboard.js");
+  assert.doesNotMatch(dashboard, /fbDb\.ref\('sessions'\)/, "must not download every student's full session");
+  assert.match(dashboard, /fbDb\.ref\('sessionSummary'\)\.on\('value'/);
+  assert.match(dashboard, /'sessions\/' \+ code \+ '\/state\/notes'/, "notes load on demand for the selected student");
+  assert.match(read("js/pages/lesson.js"), /sessionSummary\/'\+studentContext\.code/, "lesson page maintains the summary");
+  assert.match(read("js/pages/homework.js"), /sessionSummary\/' \+ studentContext\.code/, "homework page maintains the summary");
+});

@@ -19,7 +19,7 @@ import { showToast } from "../ui.js";
 let firebaseConfig = null;
 
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
-let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {};
+let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, activeNotesRef = null;
 let activeCode = null, activeFeedRef = null, activeProgressRef = null;
 let activeGameProgress = {};
 let activeHistoryItems = [], weeklyHistoryLoaded = false, weeklyProgressLoaded = false;
@@ -151,21 +151,25 @@ function initTeacherData() {
     renderPendingApprovals();
   });
 
-  fbDb.ref('sessions').on('value', function(snap) {
+  // Compact per-student summaries only. Notes, drafts and history are fetched for the
+  // selected student on demand (attachNotesListener / attachHistoryListener).
+  fbDb.ref('sessionSummary').on('value', function(snap) {
     const data = snap.val() || {};
+    const previous = studentMeta;
     studentMeta = {};
     Object.keys(data).forEach(function(code) {
-      const st = (data[code] && data[code].state) || {};
+      const summary = data[code] || {};
       studentMeta[code] = {
-        score: st.score || 0, stage: st.stage || 0, done: st.done || {},
-        notes: st.notes || '', elapsed: st.elapsed || 0, streak: st.streak || 0,
-        lastSeen: st.lastUpdate || 0, homework: (data[code] && data[code].homework) || {}
+        score: summary.score || 0, stage: summary.stage || 0, doneCount: summary.doneCount || 0,
+        elapsed: summary.elapsed || 0, streak: summary.streak || 0,
+        lastSeen: summary.lastUpdate || 0, homework: summary.homework || {},
+        notes: (previous[code] && previous[code].notes) || ''
       };
     });
     if (activeCode) renderSelectedView();
     else renderOverview();
     renderStudentsList();
-  });
+  }, function(err) { console.error(err); updateConnUI('error'); });
 
   fbDb.ref('curriculum').on('value', function(snap) {
     curriculum = snap.val() || {};
@@ -309,7 +313,7 @@ function renderStudentsList() {
     else if (lastSeen && age < 600000) dotClass = 'stale';
     const linked = s.uid ? '🔗' : '⚠️';
     
-    const doneCount = Object.keys(meta.done || {}).filter(k => meta.done[k]).length;
+    const doneCount = Number(meta.doneCount) || 0;
     const totalStages = 9; 
     const pct = Math.round((doneCount / totalStages) * 100);
     const barColor = pct === 100 ? 'var(--success)' : (pct > 50 ? 'var(--warn)' : 'var(--accent)');
@@ -346,6 +350,7 @@ function selectStudent(code) {
   renderSelectedView();
   attachHistoryListener();
   attachGameProgressListener();
+  attachNotesListener();
   renderClassworkTree();
 }
 
@@ -353,6 +358,7 @@ function deselectStudent() {
   activeCode = null;
   if (activeFeedRef) { activeFeedRef.off(); activeFeedRef = null; }
   if (activeProgressRef) { activeProgressRef.off(); activeProgressRef = null; }
+  if (activeNotesRef) { activeNotesRef.off(); activeNotesRef = null; }
   activeGameProgress = {};
   document.getElementById('selectedView').style.display = 'none';
   document.getElementById('overviewView').style.display = 'block';
@@ -382,6 +388,18 @@ function renderSelectedView() {
   document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
   renderStudentHomework();
   renderGameAnalytics();
+}
+
+function attachNotesListener() {
+  if (activeNotesRef) activeNotesRef.off();
+  const code = activeCode;
+  activeNotesRef = fbDb.ref('sessions/' + code + '/state/notes');
+  activeNotesRef.on('value', function(snapshot) {
+    if (code !== activeCode) return;
+    const notes = typeof snapshot.val() === 'string' ? snapshot.val() : '';
+    studentMeta[code] = Object.assign({}, studentMeta[code], { notes: notes });
+    document.getElementById('notesView').textContent = notes || '— No notes yet —';
+  }, function(error) { console.error('Unable to load student notes', error); });
 }
 
 function attachGameProgressListener() {

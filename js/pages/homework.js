@@ -74,7 +74,7 @@ let answers={}; let submitted=false; let saveTimeout;
 
 function debouncedSave(){
   if(teacherMode) return;
-  clearTimeout(saveTimeout); saveTimeout=setTimeout(()=>{ if(sessionRef&&!submitted){ sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, updatedAt:Date.now() }).catch(console.error); } },400);
+  clearTimeout(saveTimeout); saveTimeout=setTimeout(()=>{ if(sessionRef&&!submitted){ sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, updatedAt:Date.now() }).catch(console.error); writeHomeworkSummary({ submitted:false, completed:false }); } },400);
 }
 
 function renderPassage(){
@@ -106,6 +106,14 @@ function updateProgress(){
 }
 
 function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=normalizeString(text); const words=t.split(/\s+/).filter(function(w){return w.length>0}); if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0}; let matched=0; keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(normalizeString(k))!==-1}))matched++}); if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length}; return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched}; }
+
+// Compact homework status for the teacher dashboard (sessionSummary), kept apart from the answers.
+function writeHomeworkSummary(fields) {
+  if (teacherMode || !fbDb || !studentContext) return;
+  const summary = Object.assign({ updatedAt: Date.now() }, fields);
+  fbDb.ref('sessionSummary/' + studentContext.code + '/homework/' + homeworkId).update(summary)
+    .catch(function(error) { console.error('Unable to update homework summary', error); });
+}
 
 function undoHomeworkQuestion(idx) {
   if (!teacherCanEdit) return;
@@ -210,6 +218,7 @@ async function submitAll(){
     return;
   }
   submitted=true;
+  writeHomeworkSummary({ submitted:true, completed:true, score:score, total:total });
   
   renderQuestions(); const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';

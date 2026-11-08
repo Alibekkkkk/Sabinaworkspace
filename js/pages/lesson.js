@@ -547,7 +547,22 @@ function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;try{win
 function updateTTSButtons(){ const p=document.getElementById('ttsPlay'); const pa=document.getElementById('ttsPause'); const r=document.getElementById('ttsResume'); const s=document.getElementById('ttsStop'); const setVis=function(el,on){if(!el)return;el.style.display=on?'inline-flex':'none'}; setVis(p,ttsState==='idle'); setVis(pa,ttsState==='playing'); setVis(r,ttsState==='paused'); setVis(s,ttsState!=='idle'); }
 
 let bc=null;
-function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){appendBoundedRealtimeRecord(activityRef,payload).catch(function(error){console.error('Unable to append lesson activity',error)});sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){console.error('Unable to broadcast lesson update',e)}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
+// Compact per-student summary the teacher dashboard subscribes to, so it never has to download
+// every student's full session (drafts, history, annotations) just to draw the overview.
+function writeSessionSummary(payload){
+  if(teacherMode||!studentContext||!fbDb)return;
+  const done=payload.done||{};
+  const summary={
+    score:Number(payload.score)||0,
+    stage:Math.min(9,Math.max(1,Number(payload.stage)||1)),
+    streak:Number(payload.streak)||0,
+    elapsed:Math.min(864000,Math.max(0,Number(payload.elapsed)||0)),
+    doneCount:Object.keys(done).filter(function(key){return done[key]===true}).length,
+    lastUpdate:Date.now()
+  };
+  fbDb.ref('sessionSummary/'+studentContext.code).update(summary).catch(function(error){console.error('Unable to update session summary',error)});
+}
+function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state'){sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));writeSessionSummary(payload)}else if(type==='action'){appendBoundedRealtimeRecord(activityRef,payload).catch(function(error){console.error('Unable to append lesson activity',error)});sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){console.error('Unable to broadcast lesson update',e)}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
 function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000),contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion})}
 function broadcastAction(type,detail){ state.lastAction=detail; const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor: teacherMode ? 'teacher' : 'student' }; broadcast('action', payload); }
 function saveState(){ if(!teacherMode&&studentStorage) { try { studentStorage.set('state',{currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}); } catch(e) { console.error('Unable to save lesson state',e); } } if(identityVerified)broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)}); }
