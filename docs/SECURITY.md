@@ -10,7 +10,13 @@ The Firebase web configuration in `js/config.js` is public client configuration,
 
 Teacher authorization uses a console-managed `admins/<Firebase Auth UID>: true` record. Database Rules allow a signed-in user to read only their own admin record and deny all client writes; a user cannot grant themselves teacher access. Before deploying these rules, add the teacher UID in Firebase Console: open **Authentication → Users**, copy the teacher account's UID, then open **Realtime Database → Data**, add a boolean `true` value at `/admins/<UID>`. Repeat for each teacher account. The application reads this one record through `js/auth.js`; do not add email allowlists back into client code or rules.
 
-The static pages use a meta-delivered Content Security Policy that limits script, connection, frame, and object sources. Inline script and style blocks have been moved into external page assets, and static HTML style attributes have been moved into page CSS classes. Inline event handlers have been removed, but generated HTML still uses style attributes, so the policy continues to allow `'unsafe-inline'` for styles. This is defense-in-depth, not a complete XSS mitigation. Configure HTTP CSP through the production host as well; `frame-ancestors` in a meta policy is ignored by browsers.
+Every page ships a meta-delivered Content Security Policy with **no `'unsafe-inline'` and no `'unsafe-eval'`** in `script-src` or `style-src`. There are no inline `<script>` or `<style>` blocks, no `style=` attributes in the HTML files, and no inline event handlers; behaviour is attached through delegated listeners (`js/delegated-actions.js`). Application-owned markup that carries presentational `style="..."` is parsed by `js/dom.js`, which renames the attribute before parsing and replays the declarations through the CSSOM (`element.style.cssText`), the one route strict `style-src` permits. `tests/security-policy.test.mjs` asserts all of this for every HTML file, and the pages were loaded in a browser with a clean console (no CSP violations).
+
+Not done, and why:
+
+- **`frame-ancestors`, `X-Content-Type-Options`, `Referrer-Policy` and other HTTP headers cannot be set on GitHub Pages**, and `frame-ancestors` is ignored in a `<meta>` policy. Clickjacking protection therefore needs a host that can send headers (Firebase Hosting, Cloudflare, Netlify). When you move, send the same policy as the meta tag plus `frame-ancestors 'none'`, `X-Content-Type-Options: nosniff` and `Referrer-Policy: strict-origin-when-cross-origin`. `firebase.json` deliberately has no `hosting` block so nobody assumes headers are being served.
+- **Trusted Types (`require-trusted-types-for 'script'`) is not enabled.** `js/dom.js` and `js/sanitize-html.js` assign strings to `template.innerHTML`, and the Firebase compat SDK loaded from `gstatic.com` is not Trusted Types ready. Enabling it would require a named policy around those two call sites and testing against the SDK; track it as a follow-up.
+- `innerHTML` is confined to three audited lines: one in `js/dom.js` (inert `<template>` parse of application-owned markup) and two in `js/sanitize-html.js` (the sanitizer itself). Everything else goes through those helpers.
 
 Page renderers centralize application-owned markup parsing in `js/dom.js`. Dynamic text and attribute values must be HTML-escaped before being interpolated into those templates; do not pass untrusted markup to the DOM helpers. Teacher-authored rich content and saved annotations are passed through `js/sanitize-html.js` before rendering, and annotations are sanitized again when loaded. Keep these boundaries covered by injection tests whenever a page adds a dynamic field.
 
@@ -127,9 +133,38 @@ New work is graded in the browser. Each submission stores raw answers, score, de
 
 Client-side grading cannot hide answer keys from a student who can download the content. Trusted server-side grading requires a server component, such as a Cloud Function, and may require Firebase Blaze billing.
 
-Student codes are short bearer identifiers and can be guessed or shared. New registration generates a random 7-character code and claims only `students/<code>` with a Realtime Database transaction. A code is bound to the first authenticated UID; current code-based accounts use anonymous Firebase Auth unless the student signs in with Google. This first claim does not prove that the claimant is the intended student. Deliver codes privately and bind pre-existing accounts under teacher supervision.
+Student codes are short bearer identifiers and can be guessed or shared. New registration generates a random 8-character code (`js/student-code.js`, Web Crypto, 31-symbol alphabet without look-alikes) and claims only `students/<code>` with a Realtime Database transaction; it never lists the students. A code is bound to the first authenticated UID; current code-based accounts use anonymous Firebase Auth unless the student signs in with Google. This first claim does not prove that the claimant is the intended student. Deliver codes privately and bind pre-existing accounts under teacher supervision.
 
 By default the portal uses tab-scoped session identity. “Remember me on this device” opts into persistent browser storage. Signing out or switching students clears legacy and namespaced `nd_*` keys in that browser. Browser-local drafts without a verified owner code are intentionally not migrated based on a guessed identity.
+
+## Teacher commands, summaries and answers (Phase 0a)
+
+- **Commands.** The teacher dashboard appends `sessions/<code>/commands/<id>` records of the form `{ type, payload?, createdAt }` where `type` is one of `goto`, `resetStage`, `resetVocab`, `resetAll` and `createdAt` must equal the **server** timestamp (`ServerValue.TIMESTAMP`; the rules reject a client-supplied time). The student client applies each command once, writes `ack: true` (the only field a student can write there, and it cannot be unset), and ignores commands older than 60 s on the server clock. The old single `command` node and the `Date.now() - 10000` client-clock check are gone.
+- **Compact summaries.** Students maintain `sessionSummary/<code>` (score, stage, streak, elapsed, `doneCount`, `lastUpdate`, and per-homework `submitted/completed/score/total/updatedAt`). Every field is type- and range-validated and unknown fields are rejected, so a student cannot place free text (or HTML) where the dashboard will render it. The dashboard subscribes to `sessionSummary` only and loads a student's notes, history and progress on demand after selection.
+- **Homework.** Answers are stored under the stable question id (dots mapped to `_`, since RTDB keys cannot contain `.`); records written with positional keys are migrated in memory on load. A teacher reset archives the current record into `attempts` (last 10) before clearing it; the rules allow an admin to write the homework record, a student can never modify a submitted one.
+- **Grading.** `js/grading.js` is the single grader. Grammar items are exact after normalisation (case, whitespace, curly quotes, trailing punctuation, UK/US spelling, contractions); reading and short answers additionally allow one typo in words of six or more letters. Negations and auxiliaries are never dropped ("did not go" never matches "did go"), numbers must match exactly, and plural/past slips are not treated as typos. Known limit: `'s` and `'d` are ambiguous and are not expanded, so list both forms in the accepted answers.
+- **Visibility.** A lesson is visible to a student only when `audience` is `"all"` or their code is in `assignedTo`; an empty `assignedTo` means nobody (`js/audience.js`). Lessons saved before this change without an `audience` stay hidden until the teacher re-saves them in the dashboard.
+
+## Firebase console checklist (do these yourself)
+
+The web config in `js/config.js` is public by design: the API key only identifies the project. What protects data is `database.rules.json` plus authentication. Two optional layers reduce abuse:
+
+1. **Restrict the API key by HTTP referrer.** Google Cloud Console → *APIs & Services* → *Credentials* → open the *Browser key* for project `sabina-s-workspace` → *Application restrictions* → *Websites* → add `https://alibekkkkk.github.io/*` (and `http://localhost:8080/*` while developing). Under *API restrictions* keep it to the Firebase APIs the app uses (Identity Toolkit, Token Service, Firebase Realtime Database). Save, wait a few minutes, then sign in from the live site to confirm nothing broke.
+2. **App Check (optional).** Firebase Console → *App Check* → register the web app with *reCAPTCHA Enterprise* (or v3), add the site key to the client, enable monitoring for Realtime Database first, and only switch to enforcement once the metrics show legitimate traffic passing. Enforcing before the client sends tokens locks everyone out.
+3. **Teacher access.** Keep `/admins/<UID>: true` set only for teacher accounts (see above). There are no email allowlists in the code or rules any more.
+4. **Anonymous sign-in.** Students without Google use anonymous auth. In *Authentication → Settings* keep *Authorized domains* limited to the live site and localhost.
+
+## Hardening results
+
+| Metric | Before | After |
+| --- | --- | --- |
+| `innerHTML`/`outerHTML`/`insertAdjacentHTML`/`document.write` in pages and JS | ~128 | 3 (all inside `js/dom.js` and `js/sanitize-html.js`) |
+| Inline `on*=` handlers | ~161 | 0 |
+| Inline `<script>` / `<style>` blocks in HTML | several per page | 0 |
+| `'unsafe-inline'` in CSP | every page | none |
+| Teacher e-mail literals in code and rules | ~25 | 0 (only setup instructions in `TEACHER_SETUP.md`) |
+| Sanitizer XSS corpus | few | 60+ payloads, idempotency (mutation-XSS) check |
+| Dashboard subscription | whole `sessions` tree | `sessionSummary` |
 
 ## Rules and hosting constraints
 

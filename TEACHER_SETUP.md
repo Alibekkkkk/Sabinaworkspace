@@ -5,13 +5,10 @@ The site files in this folder share the existing Firebase project, `sabina-s-wor
 ## Turn on teacher sign-in
 
 1. In Firebase Console, open the `sabina-s-workspace` project.
-2. Open **Authentication** and click **Get started** if Firebase offers it. Then go to **Authentication → Sign-in method** and enable **Google** and **Email/Password**. The dashboard accepts either method for these three addresses:
-   - `alibek.alpysbayev@gmail.com`
-   - `alibek.alpysbayev@nu.edu.kz`
-   - `aalpysbayev2@gmail.com`
-3. Under **Authentication → Users**, make sure those accounts exist. If an account is Google-only, use **Continue with Google** on the dashboard. For an email/password account, use the email and password form.
+2. Open **Authentication** and click **Get started** if Firebase offers it. Then go to **Authentication → Sign-in method** and enable **Google** and **Email/Password**. The dashboard accepts either method for any account that has been marked as a teacher (next step).
+3. Mark each teacher account as an admin. Under **Authentication → Users**, make sure the account exists and copy its **User UID**. Then open **Realtime Database → Data** and add a boolean `true` at `/admins/<UID>`. There is no e-mail allowlist in the code or the rules any more; the `/admins` record is the single source of teacher identity, and browsers cannot write to it. If an account is Google-only, use **Continue with Google** on the dashboard. For an email/password account, use the email and password form.
 4. Under **Authentication → Settings → Authorized domains**, ensure `alibekkkkk.github.io` is listed. Add it if needed so Google sign-in works on the published site.
-5. Go to **Realtime Database → Rules**, replace the current rules with the contents of [`database.rules.json`](database.rules.json), and click **Publish**. The rules let students continue reading the curriculum and using code-based lessons, while only those three authenticated teacher emails can edit curriculum or existing student records. New student codes can still be registered by the portal.
+5. Go to **Realtime Database → Rules**, replace the current rules with the contents of [`database.rules.json`](database.rules.json), and click **Publish**. The rules let students continue reading the curriculum and using code-based lessons, while only accounts listed under `/admins` can edit curriculum or existing student records. New student codes can still be registered by the portal.
 
 ## Put the changes on the website
 

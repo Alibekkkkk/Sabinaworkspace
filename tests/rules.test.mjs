@@ -527,3 +527,28 @@ test("students write only a bounded compact summary of their own session, and on
   assert.equal(all.val().A111111.score, 55);
   await assertFails(set(ref(teacher, "sessionSummary/A111111"), summary));
 });
+
+test("students cannot write teacher-owned nodes and teachers can read every student's data", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+
+  for (const path of [
+    "curriculum/lesson-x",
+    "studentCurriculum/A111111/lesson-x",
+    "protectedContent/lesson-x/classwork",
+    "admins/student-a",
+    "sessions/A111111/commands/cmd-student-made"
+  ]) {
+    await assertFails(set(ref(dbA, path), { type: "goto", title: "x", content: { a: 1 }, createdAt: Date.now() }));
+  }
+  await assertFails(set(ref(dbA, "admins/student-a"), true));
+
+  for (const path of [
+    "sessions/A111111/state", "sessions/B222222/state", "sessions/A111111/history",
+    "sessions/B222222/reviewQueue", "students/A111111", "students/B222222", "studentProgress/B222222",
+    "sessionSummary", "pendingStudents"
+  ]) {
+    await assertSucceeds(get(ref(teacher, path)));
+  }
+  await assertFails(set(ref(teacher, "students/A111111/uid"), "teacher-hijack-attempt-over-128-chars-".repeat(5)));
+});
