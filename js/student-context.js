@@ -46,6 +46,10 @@ export async function bindStudentCode({ auth, db, code } = {}) {
   });
   if (!uidResult.committed) throw new Error("This sign-in is already linked to another student code.");
 
+  // Already linked to this account (every page after the first sign-in): nothing to write, and the
+  // rules do not allow rewriting a record that already has a uid.
+  if (student.uid === user.uid) return { code: normalizedCode, uid: user.uid, student };
+
   let result;
   try {
     result = await studentRef.transaction(current => {

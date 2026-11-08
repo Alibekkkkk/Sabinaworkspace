@@ -34,12 +34,18 @@ if (typeof firebase !== "undefined" && !globalThis.__emulatorsConnected) {
 }
 
 function relaxCsp(html) {
+  const additions = {
+    "connect-src": `http://${DB} ws://${DB} http://${AUTH}`,
+    // The Realtime Database client falls back to JSONP long polling (scripts loaded from the
+    // emulator) when its WebSocket is unavailable.
+    "script-src": `http://${DB}`
+  };
   return html.replace(/(<meta http-equiv="Content-Security-Policy" content=")([^"]*)(")/, (match, start, policy, end) => {
-    const add = directive => {
-      const extra = { "connect-src": `http://${DB} ws://${DB} http://${AUTH}` }[directive];
-      return extra ? policy.replace(new RegExp(`(${directive} [^;]*)`), `$1 ${extra}`) : policy;
-    };
-    return start + add("connect-src") + end;
+    let relaxed = policy;
+    for (const [directive, extra] of Object.entries(additions)) {
+      relaxed = relaxed.replace(new RegExp(`(${directive} [^;]*)`), `$1 ${extra}`);
+    }
+    return start + relaxed + end;
   });
 }
 
