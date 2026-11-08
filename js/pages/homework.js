@@ -12,7 +12,27 @@ import { installDelegatedActions, readActionEnum, readActionInteger, readActionP
 import { clearElement, serializeChildren, setHtml } from "../dom.js";
 import { answerKey, migrateLegacyAnswerKeys } from "../homework-answers.js";
 import { showToast } from "../ui.js";
+import { initReadingPrefs } from "../reading-prefs.js";
+
+initReadingPrefs();
+
+// Feedback boxes are created empty and filled when an answer is checked, so marking them as polite
+// live regions as soon as they appear lets screen readers announce the result.
+new MutationObserver(function(records){
+  records.forEach(function(record){
+    record.addedNodes.forEach(function(node){
+      if(!(node instanceof Element))return;
+      const boxes=node.matches('.q-feedback')?[node]:Array.from(node.querySelectorAll('.q-feedback'));
+      boxes.forEach(function(box){box.setAttribute('role','status');box.setAttribute('aria-live','polite')});
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
 import { confetti } from "../celebrate.js";
+import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+
+mountOfflineBanner();
+mountBottomNav("homework");
 // Keyword matching for long answers ignores punctuation entirely.
 function normalizeString(str) { return expandContractions(String(str).toLowerCase().trim()).replace(/[.,!?;:'"()\[\]{}]/g, '').replace(/\s+/g, ' '); }
 
@@ -557,13 +577,9 @@ async function startHomework(){
   } catch (error) {
     console.error('Homework access or content initialization failed',error);
     const message=document.createElement('main');
-    message.style.cssText='text-align:center;padding:80px 20px;font-family:serif';
-    const title=document.createElement('h2');
-    title.textContent='Homework could not be opened';
-    const detail=document.createElement('p');
-    detail.textContent=error.message;
-    message.append(title,detail);
+    message.className='ds-error-wrap';
     document.body.replaceChildren(message);
+    showErrorPage(message,error,{title:'Homework could not be opened'});
   }
 })();
 

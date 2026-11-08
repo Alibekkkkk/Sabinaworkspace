@@ -37,6 +37,7 @@
   <a class="icon-btn" href="dashboard.html" title="Teacher dashboard">🏫</a>
   <button class="icon-btn" id="soundToggle" data-action="toggle-sound" title="Sound">🔊</button>
   <button class="icon-btn" id="darkToggle" data-action="toggle-dark" title="Dark">🌙</button>
+  <button class="icon-btn" data-action="toggle-reading-prefs" aria-expanded="false" aria-controls="readingPrefs" aria-label="Reading settings" title="Reading settings">Aa</button>
   <button class="icon-btn" data-action="toggle-notes" title="Notes">📝</button>
 </div>
 
@@ -49,7 +50,7 @@
     <div class="progress-rail"><div class="progress-rail-fill" id="progressFill"></div></div>
     <div class="stage-list" id="stageList"></div>
   </aside>
-  <main class="main" id="main"></main>
+  <main class="main" id="main"><div class="ds-skeleton-stack" aria-busy="true" aria-label="Loading your lesson"><div class="ds-skeleton ds-skeleton-row"></div><div class="ds-skeleton ds-skeleton-row"></div><div class="ds-skeleton ds-skeleton-row"></div><div class="ds-skeleton ds-skeleton-row"></div></div></main>
 </div>
 
 <aside class="notes-panel" id="notesPanel">

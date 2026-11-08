@@ -27,10 +27,10 @@ body{font-family:var(--ds-font-body);background:var(--bg);color:var(--ink);min-h
 .identity-banner button{border:1px solid var(--border);background:var(--paper);color:var(--ink);border-radius:8px;padding:7px 10px;cursor:pointer}
 .reading-pane{position:sticky;top:80px}
 .questions-pane{min-width:0}
-.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.9;color:var(--ink);box-shadow:var(--shadow-sm);max-height:calc(100vh - 120px);overflow-y:auto;user-select:text;}
+.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:var(--ds-reading-size);line-height:var(--ds-leading-reading);font-family:var(--ds-font-reading);color:var(--ink);box-shadow:var(--shadow-sm);max-height:calc(100vh - 120px);overflow-y:auto;user-select:text;}
 .passage h2{font-size:26px;color:var(--accent);margin-bottom:6px;font-weight:800;line-height:1.2}
 .passage .subtitle{font-size:14px;color:var(--ink-soft);font-style:italic;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px}
-.passage p{margin-bottom:16px;text-align:justify}
+.passage p{margin-bottom:1em;text-align:start;max-width:var(--ds-reading-measure)}
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
 .v-word{background:color-mix(in srgb, var(--ds-color-accent) 12%, transparent);color:var(--accent-dark);font-weight:700;cursor:pointer;padding:1px 5px;border-radius:5px;border-bottom:2px dotted var(--accent);font-family:inherit;font-size:inherit}
 .v-word:hover{background:var(--accent);color:var(--ds-color-on-primary)}
@@ -126,3 +126,10 @@ html.dark .underline:hover { background-color: color-mix(in srgb, var(--ds-color
 .result-banner .xp-earned { font-weight: 800; color: var(--ds-color-primary); font-size: var(--ds-text-lg); }
 .result-banner .submit-once { font-size: var(--ds-text-sm); color: var(--ds-color-muted); }
 .result-banner .ds-btn { text-decoration: none; }
+
+html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .passage { letter-spacing: 0.04em; word-spacing: 0.14em; }
+.ds-reading-panel { position: fixed; top: 4rem; right: 1rem; z-index: var(--ds-z-drawer); width: min(22rem, calc(100vw - 2rem)); display: grid; gap: var(--ds-space-3); }
+.ds-reading-panel[hidden] { display: none; }
+
+.q-feedback.correct, .q-feedback.wrong { border: 2px solid currentColor; border-left-width: 6px; }
+.q-feedback .exp { color: inherit; opacity: 0.92; }

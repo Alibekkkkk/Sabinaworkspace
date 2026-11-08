@@ -144,10 +144,10 @@ html.dark .fc-modal-img{background:linear-gradient(135deg,var(--ds-color-primary
 .dd-slot .dropped-word.ok{background:var(--success)}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:18px;line-height:1.85;color:var(--ink);box-shadow:var(--shadow-sm);font-family:var(--ds-font-body);user-select:text;}
+.passage{background:var(--paper);border:1px solid var(--border);border-radius:14px;padding:28px 32px;font-size:var(--ds-reading-size);line-height:var(--ds-leading-reading);font-family:var(--ds-font-reading);color:var(--ink);box-shadow:var(--shadow-sm);font-family:var(--ds-font-body);user-select:text;}
 .passage h1{font-size:26px;color:var(--accent);margin-bottom:8px;font-weight:800;line-height:1.2}
 .passage .subtitle{font-size:15px;color:var(--ink-soft);font-style:italic;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:12px}
-.passage p{margin-bottom:16px;text-align:justify}
+.passage p{margin-bottom:1em;text-align:start;max-width:var(--ds-reading-measure)}
 .passage p .para-label{font-weight:800;color:var(--accent);margin-right:6px}
 .hl-yellow{background-color:var(--ds-mark-yellow);color:var(--ds-mark-ink);}
 .hl-green{background-color:var(--ds-mark-green);color:var(--ds-mark-ink);}
@@ -283,3 +283,13 @@ html.dark .q-feedback.info{color:var(--ds-color-warning)}
 /* Phase 0b: contrast fixes found by axe (WCAG AA 4.5:1 on the cream pill background) */
 html:not(.dark) #syncStatus { color: var(--ds-color-muted); }
 html:not(.dark) #timerDisplay { color: var(--ds-color-accent); }
+
+html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .passage { letter-spacing: 0.04em; word-spacing: 0.14em; }
+.ds-reading-panel { position: fixed; top: 4rem; right: 1rem; z-index: var(--ds-z-drawer); width: min(22rem, calc(100vw - 2rem)); display: grid; gap: var(--ds-space-3); }
+.ds-reading-panel[hidden] { display: none; }
+
+/* Feedback sheet: icon + words + reason, never colour alone (the text carries the check or cross). */
+.q-feedback.correct, .q-feedback.wrong { border: 2px solid currentColor; border-left-width: 6px; animation: ds-pop var(--ds-motion-base) var(--ds-ease-spring); }
+.q-feedback .exp { color: inherit; opacity: 0.92; }
+.q-feedback.wrong::before { content: "Not quite. "; font-weight: 800; }
+@media (max-width: 700px) { .q-feedback { font-size: var(--ds-text-md); } }

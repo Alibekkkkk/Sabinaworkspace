@@ -8,6 +8,27 @@ import { isTeacher } from "../auth.js";
 import { isLessonVisibleTo } from "../audience.js";
 import { DEFAULT_STAGES, resolveMaxScore } from "../lesson-meta.js";
 import { showToast } from "../ui.js";
+import { initReadingPrefs } from "../reading-prefs.js";
+import { confetti } from "../celebrate.js";
+import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+
+mountOfflineBanner();
+mountBottomNav("lesson");
+
+initReadingPrefs();
+
+// Feedback boxes are created empty and filled when an answer is checked, so marking them as polite
+// live regions as soon as they appear lets screen readers announce the result.
+new MutationObserver(function(records){
+  records.forEach(function(record){
+    record.addedNodes.forEach(function(node){
+      if(!(node instanceof Element))return;
+      const boxes=node.matches('.q-feedback')?[node]:Array.from(node.querySelectorAll('.q-feedback'));
+      boxes.forEach(function(box){box.setAttribute('role','status');box.setAttribute('aria-live','polite')});
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
 import { isAnswerCorrect } from "../grading.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam, registerDelegatedClick, runRegisteredClick } from "../delegated-actions.js";
@@ -34,6 +55,7 @@ function getCurrentLesson(){
   if(!m)return null;
   return m.lessons.find(function(l){return l.id===state.currentLessonId})||null
 }
+function stagesOf(lesson){ return lesson && Array.isArray(lesson.stages) && lesson.stages.length ? lesson.stages : DEFAULT_STAGES; }
 function totalScore(){
   const l=getCurrentLesson();
   if(!l)return 0;
@@ -433,11 +455,11 @@ function initFirebase(){
       } catch(error) {
         console.error('Student identity verification failed',error);
         identityVerified=false;
-        document.getElementById('main').textContent='Access verification failed: '+error.message;
+        showErrorPage(document.getElementById('main'),error,{title:'We could not open your lesson'});
         updateSyncUI('error');
       }
     }());
-  }catch(e){console.error(e);updateSyncUI('error');document.getElementById('main').textContent='Firebase initialization failed: '+e.message}
+  }catch(e){console.error(e);updateSyncUI('error');showErrorPage(document.getElementById('main'),e,{title:'We could not start the lesson'})}
 }
 async function startStudentSession(code){
   if(!code){updateSyncUI('nocode');return}
@@ -521,7 +543,6 @@ function sWrong(){playTone(180,.25,'sawtooth',.08)}
 function sWin(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){playTone(f,.2)},i*110)})}
 function sFlip(){playTone(500,.08,'sine',.06)}
 function sPop(){playTone(700,.06,'sine',.05)}
-function confetti(){const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093'];for(let i=0;i<70;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.top='-20px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*.5+'s';c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px';if(Math.random()>.5)c.style.borderRadius='50%';document.body.appendChild(c);setTimeout(function(){c.remove()},3600)}};
 
 let ukVoice=null;
 function pickUKVoice(){if(!('speechSynthesis' in window))return null;const v=window.speechSynthesis.getVoices();return v.find(function(x){return x.lang==='en-GB'})||v.find(function(x){return x.lang&&x.lang.toLowerCase().startsWith('en-gb')})||v.find(function(x){return x.name&&/british|uk|england|daniel|kate|serena|oliver|libby|sonia/i.test(x.name)})||null}
@@ -1464,14 +1485,14 @@ function renderSidebar(){
             }
           }
           const sub=document.createElement('div');sub.className='stage-sub-list';
-          DEFAULT_STAGES.forEach(function(st){
+          stagesOf(lesson).forEach(function(st){
             const key=lesson.id+"_"+st.id; const isA=st.id===state.currentStage; let isD = false;
             if (vocabMode==='preLearned') { if (st.id === 1 || st.id === 2) isD = true; }
             if (st.id === 1) { const counts = getVocabCounts(); if(counts.learned === VOCAB.length) isD = true; else isD = false; } else { isD = state.done[key]; }
-            let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
+            const isMastered = Boolean(isD && st.points && (state.scores[key] || 0) >= st.points); let statusIcon = isMastered ? '⭐' : (isD ? '✅' : (isA ? '📍' : '🔒')); const stateWord = isMastered ? 'mastered' : (isD ? 'done' : (isA ? 'current stage' : 'not started'));
             const row = document.createElement('div'); row.style.display = 'flex'; row.style.alignItems = 'stretch'; row.style.gap = '4px';
             const stEl=document.createElement('button'); stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':''); stEl.style.flex = '1'; const displayLabel = customLabels ? customLabels[st.id - 1] : st.label;
-            setHtml(stEl, '<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+escapeHtml(displayLabel)+'</span>'); registerDelegatedClick(stEl,function(){goToStage(st.id)}); row.appendChild(stEl);
+            setHtml(stEl, '<span class="icon" style="font-size:14px; margin-right:8px;" aria-hidden="true">'+statusIcon+'</span> <span>'+escapeHtml(displayLabel)+'</span>'); stEl.setAttribute('aria-label', displayLabel+': '+stateWord); if(isA) stEl.setAttribute('aria-current','step'); stEl.dataset.state = isMastered ? 'mastered' : (isD ? 'done' : (isA ? 'current' : 'todo')); registerDelegatedClick(stEl,function(){goToStage(st.id)}); row.appendChild(stEl);
             if (teacherCanEdit) { const resetBtn = document.createElement('button'); resetBtn.textContent = '🔄'; resetBtn.title = 'Reset this stage (Teacher only)'; resetBtn.style.cssText = 'background:var(--panel-2); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:14px; padding:0 8px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; transition:all 0.15s;'; resetBtn.addEventListener('mouseover', () => { resetBtn.style.color = 'var(--error)'; resetBtn.style.borderColor = 'var(--error)'; }); resetBtn.addEventListener('mouseout', () => { resetBtn.style.color = 'var(--ink-soft)'; resetBtn.style.borderColor = 'var(--border)'; }); registerDelegatedClick(resetBtn, function(e) { e.stopPropagation(); resetStageTeacher(st.id); }); row.appendChild(resetBtn); }
             sub.appendChild(row);
           });

@@ -77,3 +77,15 @@
   .ds-bottom-nav { display: none; }
   .ds-nav { display: grid; gap: var(--ds-space-1); align-content: start; }
 }
+
+body.has-bottom-nav { padding-bottom: 4.5rem; }
+@media (min-width: 1024px) { body.has-bottom-nav { padding-bottom: 0; } }
+.ds-offline-banner { position: sticky; top: 0; z-index: var(--ds-z-toast); border-radius: 0; }
+.ds-offline-banner[hidden] { display: none; }
+.ds-skeleton-stack { display: grid; gap: var(--ds-space-3); padding: var(--ds-space-5); }
+.ds-skeleton-row { height: 1.25rem; }
+.ds-skeleton-row:nth-child(odd) { width: 85%; }
+.ds-error-wrap { display: grid; place-items: center; min-height: 60vh; padding: var(--ds-space-5); }
+.ds-error-page { max-width: 32rem; text-align: center; }
+.ds-error-page details { margin-top: var(--ds-space-4); text-align: start; }
+.ds-error-page__raw { white-space: pre-wrap; overflow-wrap: anywhere; font: var(--ds-text-sm) var(--ds-font-mono); color: var(--ds-color-muted); }
