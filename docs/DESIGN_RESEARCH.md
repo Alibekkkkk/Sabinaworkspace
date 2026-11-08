@@ -25,3 +25,29 @@ Reviewed 2026-11-04. This is a pattern study, not an endorsement or an attempt t
 ## Clip sourcing boundary
 
 Clip Lab should store source metadata and teacher-authored exercises, not downloaded film, television, anime, or cartoon files. A clip can use an official embeddable player with start/end times, or a teacher-supplied asset whose license permits this use. Initially proposed clips must be checked for topic and learner-level fit, embed availability, and reuse/embedding terms before they are added. Source URLs and timestamps remain editable by the teacher.
+
+## Phase 1 research: lesson, dashboard and homework
+
+Written from general knowledge of how these products behave, not from copied assets or text. Each entry lists what we adopt, what we avoid, and why it suits **one-to-one and small-group tutoring** where a teacher is usually watching the same screen.
+
+| Product | Adopt | Avoid | Why it fits |
+| --- | --- | --- | --- |
+| **Duolingo** | A single focused activity per screen with a slim progress bar; a bottom *feedback sheet* that names the right answer and the reason after every check. | Hearts that block progress and streak-loss guilt. | A tutor wants steady flow, not punishment; a wrong answer should become a teaching moment the teacher can discuss. |
+| **Busuu** | A visible learning path with a clear "you are here" and a finish-line summary; short review prompts at the end. | Upsell banners inside the lesson. | The nine stages already form a path; students should always know what is next. |
+| **Kahoot** | Bold, high-contrast answer buttons with large touch targets and shapes/icons as well as colour. | Countdown pressure on every question and public ranking by speed. | Shape + label feedback helps colour-blind learners; speed pressure hurts anxious learners (the timer arrives only in the final test, Phase 2). |
+| **Quizlet** | Flashcards with an obvious flip, a hear-it button and a "still learning / got it" split. | Auto-advancing cards that move before the learner is ready. | Vocabulary is stage 1 of every lesson; the student controls the pace while the teacher sees the review flags. |
+| **LingQ / Language Reactor** | Reader mode: comfortable measure, adjustable size, click-to-save words, side panel for saved words. | Dense, tiny popups that cover the text. | The reading stage is the longest text on screen; readability settings matter more than ornament. |
+| **Webtoon** | Vertical, full-width panels with generous spacing; progress shown by position. | Autoplay and endless scroll into unrelated content. | Reused later for the manga reader; keeps attention on one chapter. |
+| **Khan Academy** | Mastery language ("practising → familiar → mastered") instead of raw percentages. | Locking later skills behind rigid mastery gates. | Gentle states (locked / current / done / mastered) motivate without blocking a teacher who wants to jump ahead. |
+| **Google Classroom / Teams for Education** | Teacher "stream" thinking: a top strip with what needs attention today, then per-student detail. | Deep nesting of assignment pages. | A teacher mid-lesson needs "who is stuck" in one glance, not five clicks. |
+| **Zoom** | Persistent control bar with clear state (live, muted) and a destructive action that always asks first. | Hidden controls that appear only on hover. | Teacher commands (go to stage, reset) must be reachable and unmistakable, and resets must confirm. |
+| **tldraw / Miro** | Compact vertical toolbar with grouped tools and tooltips; the canvas gets the space. | Floating palettes that cover the work. | Reserved now for the Phase 4 whiteboard: the lesson layout keeps a right drawer that a toolbar can reuse. |
+
+### Decisions
+
+1. **One calm palette, tokens only.** Brand, success, warning, danger and neutral scales exist in light and dark (documented with contrast ratios in `docs/DESIGN_TOKENS.md`). Page CSS may not contain hex colours.
+2. **Feedback is never colour alone.** Every correct/incorrect state carries an icon *and* words ("Correct", "Not quite"), and the feedback sheet states the right answer and a short reason.
+3. **Calm mode.** `prefers-reduced-motion` disables confetti, pulses and bounces; a "Calm mode" reading preference also removes decorative motion and raises spacing.
+4. **Reading comfort.** Reading text uses a 62-70ch measure, 18-20px base size, adjustable size and line spacing, and an optional dyslexia-friendly mode (wider spacing, system sans-serif, no justified text). Preferences persist per device.
+5. **Teacher density.** The dashboard prioritises scanning: a Today strip, status dots (online / idle / stuck), and a command panel with 44px targets; destructive actions confirm and, where the data model allows, offer undo.
+6. **Fonts.** No third-party font requests. The UI uses a rounded-friendly system stack (`ui-rounded`, then Segoe UI/Inter-like system faces) for the interface and a serif system stack for long reading text. This removes the Google Fonts dependency and its CSP allowance without shipping font files that would need licence review; self-hosted woff2 files can replace the stack later by changing two tokens.
