@@ -385,7 +385,7 @@ function renderSelectedView() {
   document.getElementById('selectedCode').textContent = activeCode;
   document.getElementById('selectedAdded').textContent = s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—';
 
-  setHtml(document.getElementById('controlGrid'), '<button class="btn" data-action="send-goto" data-stage="' + (Number(meta.stage) || 1) + '" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;">' +
+  setHtml(document.getElementById('controlGrid'), '<button class="btn" data-action="send-goto" data-stage="' + (Number(meta.stage) || 1) + '" style="grid-column: 1 / -1; background:var(--success); color:var(--ds-color-on-primary); border:none; margin-bottom:8px; font-size:15px;">' +
       '🎯 Tell Student to Resume at Stage ' + escapeHtml(meta.stage || 1) +
     '</button>' +
     STAGE_LIST.map(function(st) {

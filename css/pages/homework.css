@@ -132,7 +132,7 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .ds-reading-panel[hidden] { display: none; }
 
 .q-feedback.correct, .q-feedback.wrong { border: 2px solid currentColor; border-left-width: 6px; }
-.q-feedback .exp { color: inherit; opacity: 0.92; }
+.q-feedback .exp { color: inherit; }
 
 /* Phone widths: let the progress row wrap instead of forcing the page wider than the screen. */
 .progress-shell { flex-wrap: wrap; }

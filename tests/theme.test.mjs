@@ -53,6 +53,7 @@ test("Practice, Clip Lab, and Manga Reader expose accessible theme controls", ()
 
 test("lesson, homework and dashboard use the design system, with no legacy shim, web fonts or raw colours", () => {
   const components = ["controls", "surfaces", "progress", "feedback", "page-aliases"];
+  const rawColour = /(?<![\w&])#[0-9a-fA-F]{6}|(?<![\w&])#[0-9a-fA-F]{3}(?![\w-])|rgba?\(/;
   for (const path of ["lesson.html", "homework.html", "dashboard.html"]) {
     const page = read(path);
     assert.doesNotMatch(page, /legacy-pages\.css/, `${path} must not use the removed legacy stylesheet`);
@@ -60,8 +61,10 @@ test("lesson, homework and dashboard use the design system, with no legacy shim,
     for (const component of components) assert.match(page, new RegExp(`css/components/${component}\.css`), `${path} should load ${component}`);
     assert.doesNotMatch(page, /fonts\.googleapis\.com|fonts\.gstatic\.com/, `${path} must not depend on Google Fonts`);
     const style = read(`css/pages/${path.replace(".html", ".css")}`);
-    assert.doesNotMatch(style, /#[0-9a-fA-F]{3,8}|rgba?\(/, `${path} stylesheet must use design tokens, not raw colours`);
+    assert.doesNotMatch(style, /#[0-9a-fA-F]{3,8}|rgba?\(/, `${path} stylesheet must use design tokens, not raw colours`);
     assert.match(style, /max-width:\s*\d+px/, `${path} stylesheet should be responsive`);
+    const script = read(`js/pages/${path.replace(".html", ".js")}`);
+    assert.doesNotMatch(script, rawColour, `${path} script must use design tokens in generated markup, not raw colours`);
   }
   assert.throws(() => read("css/legacy-pages.css"), /ENOENT/);
   const worker = read("sw.js");

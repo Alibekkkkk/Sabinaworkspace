@@ -8,6 +8,7 @@
     "test": "npm run test:unit",
     "audit:web": "node scripts/audit-web.mjs",
     "check:visual": "node scripts/visual-check.mjs",
+    "audit:signed-in": "node scripts/audit-signed-in.mjs",
     "tokens:contrast": "node scripts/design-tokens.mjs",
     "seed": "node scripts/seed-emulator.mjs",
     "dev": "firebase emulators:exec --only database,auth --project sabina-s-workspace \"node scripts/dev.mjs\""

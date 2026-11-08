@@ -24,8 +24,8 @@
 </head>
 <body class="homework-page">
 
-<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" data-action="switch-student">Not you? Switch student</button></div>
-<div class="hw-top">
+<div class="identity-banner" id="studentIdentityBanner" role="region" aria-label="Signed-in student"><span id="studentIdentityText"></span><button type="button" data-action="switch-student">Not you? Switch student</button></div>
+<div class="hw-top" role="banner">
   <div class="mark" id="markIcon">📘</div>
   <div class="title-block">
     <div class="brand" id="hwTitle">Homework</div>
@@ -40,7 +40,7 @@
   <a href="portal.html">← Classwork</a>
 </div>
 
-<div class="wrap">
+<div class="wrap" role="main">
   <section class="hero">
     <div>
       <div class="eyebrow" id="heroEyebrow">Topic · Homework</div>
@@ -59,7 +59,7 @@
 
   <div class="hw-split">
     <section class="reading-pane">
-      <div class="passage" id="passageBody"></div>
+      <div class="passage" id="passageBody" role="region" aria-label="Reading passage" tabindex="0"></div>
     </section>
     <section class="questions-pane" id="questionsHost"></section>
   </div>

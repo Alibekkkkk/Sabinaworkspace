@@ -14,6 +14,12 @@ npm run audit:web
 
 The rules test command requires Java 21 or later for the Firebase emulator. See [Teacher setup](TEACHER_SETUP.md) and the [security migration runbook](docs/SECURITY.md) before deploying rules or importing content.
 
+## Design system
+
+Tokens live in `css/design-system.css` (the only file with raw colours) and components in `css/components/`. Open `styleguide.html` (not linked from the app) to see every component in light and dark. `npm run tokens:contrast` regenerates the contrast table in [docs/DESIGN_TOKENS.md](docs/DESIGN_TOKENS.md). Phase 1 results and what is still open: [docs/PHASE1-REPORT.md](docs/PHASE1-REPORT.md). `lesson_abay.html` and `lesson_gaziz.html` are kept as documented redirects into `lesson.html`.
+
+With `npm run dev` running, `npm run check:visual` screenshots lesson, homework and dashboard in both themes at 320/390/768/1440 px and fails on horizontal scroll, clipped text or overlapping controls; `npm run audit:signed-in` runs Lighthouse and axe on those pages while signed in as the demo users.
+
 ## Try it locally with demo data
 
 ```powershell

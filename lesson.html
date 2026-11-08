@@ -24,7 +24,7 @@
 </head>
 <body class="lesson-page">
 
-<div class="topbar">
+<div class="topbar" role="banner">
   <div class="logo"><div class="mark">🌪️</div><span class="text" id="workspaceName">Workspace</span></div>
   <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
   <div class="session-input"><label class="lbl" for="sessionCodeInput">Code:</label>
@@ -41,11 +41,12 @@
   <button class="icon-btn" data-action="toggle-notes" title="Notes">📝</button>
 </div>
 
-<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" data-action="switch-student">Not you? Switch student</button></div>
+<div class="ds-lesson-bar" id="lessonBarSlot" aria-label="Lesson timer and section progress (reserved)"></div>
+<div class="identity-banner" id="studentIdentityBanner" role="region" aria-label="Signed-in student"><span id="studentIdentityText"></span><button type="button" data-action="switch-student">Not you? Switch student</button></div>
 <pre class="debug-overlay" id="debugOverlay" hidden></pre>
 
 <div class="layout">
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Lesson stages">
     <div class="sidebar-header"><span>Your Curriculum</span><span class="pct" id="progressPct">0%</span></div>
     <div class="progress-rail"><div class="progress-rail-fill" id="progressFill"></div></div>
     <div class="stage-list" id="stageList"></div>
@@ -53,7 +54,7 @@
   <main class="main" id="main"><div class="ds-skeleton-stack" aria-busy="true" aria-label="Loading your lesson"><div class="ds-skeleton ds-skeleton-row"></div><div class="ds-skeleton ds-skeleton-row"></div><div class="ds-skeleton ds-skeleton-row"></div><div class="ds-skeleton ds-skeleton-row"></div></div></main>
 </div>
 
-<aside class="notes-panel" id="notesPanel">
+<aside class="notes-panel" id="notesPanel" aria-label="My notes">
   <button class="close-note" data-action="toggle-notes">×</button>
   <h3>📝 My Notes</h3>
   <p class="sub">Jot down words, questions, or your own examples.</p>
