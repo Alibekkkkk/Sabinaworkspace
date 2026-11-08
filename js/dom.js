@@ -28,9 +28,29 @@ function serializeNode(node) {
   return `${openingTag}${Array.from(node.childNodes, serializeNode).join("")}</${tagName}>`;
 }
 
+// A strict CSP (no style-src 'unsafe-inline') blocks `style="..."` attributes written
+// in markup, but allows the same declarations applied through the CSSOM. App-owned
+// markup may carry presentational inline styles, so move them onto `el.style`.
+// The parser itself raises a CSP violation for `style=` attributes, so the attribute is
+// renamed inside tags (never in text) before parsing and replayed through the CSSOM.
+const STYLE_ATTRIBUTE = /(<[a-z][a-z0-9-]*|["'])(\s+)style(\s*=)/gi;
+const STYLE_PLACEHOLDER = "data-inline-style";
+
+function applyInlineStyles(root) {
+  for (const node of root.querySelectorAll(`[${STYLE_PLACEHOLDER}]`)) {
+    const declarations = node.getAttribute(STYLE_PLACEHOLDER);
+    node.removeAttribute(STYLE_PLACEHOLDER);
+    node.style.cssText = declarations;
+  }
+}
+
 function parseMarkup(markup) {
   const template = document.createElement("template");
-  template.innerHTML = String(markup ?? "");
+  template.innerHTML = String(markup ?? "").replace(
+    STYLE_ATTRIBUTE,
+    (_match, before, space, equals) => `${before}${space}${STYLE_PLACEHOLDER}${equals}`
+  );
+  applyInlineStyles(template.content);
   return template.content;
 }
 
