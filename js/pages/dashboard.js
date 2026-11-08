@@ -9,6 +9,7 @@
 
 })();
 
+import { isLessonVisibleTo } from "../audience.js";
 import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
@@ -745,7 +746,7 @@ function renderClassworkTree() {
   const grouped = {};
   Object.keys(curriculum).forEach(id => {
     const l = curriculum[id];
-    if (activeCode && Array.isArray(l.assignedTo) && l.assignedTo.length > 0 && l.assignedTo.indexOf(activeCode) === -1) return;
+    if (activeCode && !isLessonVisibleTo(l, activeCode)) return;
     
     const year = l.year || '2026';
     const month = l.month || 'October';

@@ -5,6 +5,7 @@
 })();
 
 import { isTeacher } from "../auth.js";
+import { isLessonVisibleTo } from "../audience.js";
 import { isAnswerCorrect } from "../grading.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam, registerDelegatedClick, runRegisteredClick } from "../delegated-actions.js";
@@ -307,7 +308,7 @@ function updateCurriculumView(snapshot,code,teacherPreview){
   const fbLessons=Object.keys(curriculumCache).map(function(id){
     const lesson=curriculumCache[id];
     if(!lesson||lesson.homework||lesson.published===false)return null;
-    if(teacherPreview&&!(lesson.audience==='all'||(Array.isArray(lesson.assignedTo)&&lesson.assignedTo.includes(code))))return null;
+    if(teacherPreview&&!isLessonVisibleTo(lesson,code))return null;
     return {id:id,title:lesson.title||'Untitled Lesson',stages:lesson.stages||DEFAULT_STAGES,year:lesson.year||'2026',month:lesson.month||'October',order:lesson.order||0,maxScore:lesson.maxScore||130};
   }).filter(Boolean).sort(function(a,b){return a.order-b.order});
   CURRICULUM[0].months[0].lessons=fbLessons;
