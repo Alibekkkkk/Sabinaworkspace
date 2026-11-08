@@ -10,6 +10,7 @@
 })();
 
 import { isTeacher } from "../auth.js";
+import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 
 let firebaseConfig = null;
 
@@ -404,7 +405,7 @@ function renderGameAnalytics() {
   const attempts = Array.isArray(progress.attempts) ? progress.attempts : [];
   const topics = Object.entries(progress.topics || {})
     .map(([name, stats]) => ({
-      name,
+      name: stats.label || name,
       accuracy: Number(stats.total) ? Number(stats.score || 0) / Number(stats.total) : 0,
       time: Number(stats.timeSpentSeconds) || 0,
       attempts: Number(stats.attempts) || 0
@@ -518,10 +519,11 @@ function resetStage(stageId) {
   fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'resetStage', stage: stageId, ts: ts })
     .then(() => {
       showToast('Sent: reset stage ' + stageId);
-      fbDb.ref('sessions/' + activeCode + '/history').push({
+      return appendBoundedRealtimeRecord(fbDb.ref('sessions/' + activeCode + '/history'), {
         actor: 'teacher', type: 'resetStage', detail: `Reset Stage ${stageId}`, ts: ts
       });
-    });
+    })
+    .catch(function(error) { alert('Stage reset failed: ' + error.message); });
 }
 
 function undoTeacherAction(id, type) {
@@ -553,7 +555,7 @@ function sendGoto(stage) {
   fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'goto', stage: stage, ts: ts })
     .then(function() {
       showToast('Sent: go to stage ' + stage);
-      fbDb.ref('sessions/' + activeCode + '/history').push({
+      return appendBoundedRealtimeRecord(fbDb.ref('sessions/' + activeCode + '/history'), {
         actor: 'teacher', type: 'goto', detail: `Sent goto Stage ${stage}`, ts: ts, undo: { type: 'goto' }
       });
     })
@@ -568,7 +570,7 @@ function sendReset(type) {
   fbDb.ref('sessions/' + activeCode + '/command').set({ action: 'reset', type: type || 'all', ts: ts })
     .then(function() {
       showToast('Reset command sent');
-      fbDb.ref('sessions/' + activeCode + '/history').push({
+      return appendBoundedRealtimeRecord(fbDb.ref('sessions/' + activeCode + '/history'), {
         actor: 'teacher', type: 'reset', detail: `Reset ${label}`, ts: ts
       });
     })

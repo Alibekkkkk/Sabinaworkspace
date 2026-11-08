@@ -11,7 +11,12 @@ import {
   updateReviewQueue,
   validateGame
 } from "../js/games/engine.js";
-import { progressPath } from "../js/games/progress.js";
+import {
+  progressPath,
+  saveGameProgress,
+  saveVocabularyWord
+} from "../js/games/progress.js";
+import { appendBoundedRealtimeRecord } from "../js/bounded-realtime-list.js";
 
 const content = {
   matchData: [
@@ -155,4 +160,92 @@ test("review games only include due items and reschedule by spaced intervals", (
   const next = updateReviewQueue(queue, result, now);
   assert.equal(next.find(item => item.itemId === "due").intervalDays, 1);
   assert.equal(next.find(item => item.itemId === "later").intervalDays, undefined);
+});
+
+test("game progress bounds attempts, review items, and topic keys in the client write path", async () => {
+  const values = new Map();
+  const db = {
+    ref(path) {
+      return {
+        async transaction(updateCurrent) {
+          const current = values.get(path) || null;
+          const next = updateCurrent(current);
+          if (next === undefined) {
+            return { committed: false, snapshot: { val: () => current } };
+          }
+          values.set(path, next);
+          return { committed: true, snapshot: { val: () => next } };
+        }
+      };
+    }
+  };
+  for (let index = 0; index < 105; index += 1) {
+    await saveGameProgress({
+      db,
+      code: "A111111",
+      game: { id: `game-${index}`, type: "fill-gap", title: `Topic ${index}` },
+      result: {
+        score: 0,
+        total: 1,
+        timeSpentSeconds: 1,
+        mistakes: [{ itemId: `q-${index}`, prompt: "Prompt", answer: "Answer", topic: "Topic" }]
+      },
+      now: Date.UTC(2026, 0, index + 1)
+    });
+  }
+  const progress = values.get("studentProgress/A111111");
+  assert.equal(progress.attempts.length, 50);
+  assert.equal(progress.reviewQueue.length, 100);
+  assert.equal(Object.keys(progress.topics).length, 100);
+});
+
+test("saved vocabulary is capped at 500 entries in the client write path", async () => {
+  const values = new Map();
+  const db = {
+    ref(path) {
+      return {
+        async transaction(updateCurrent) {
+          const current = values.get(path) || null;
+          const next = updateCurrent(current);
+          if (next === undefined) return { committed: false, snapshot: { val: () => current } };
+          values.set(path, next);
+          return { committed: true, snapshot: { val: () => next } };
+        }
+      };
+    }
+  };
+  for (let index = 0; index < 500; index += 1) {
+    await saveVocabularyWord({
+      db,
+      code: "A111111",
+      key: `word-${index}`,
+      entry: { word: `word ${index}` }
+    });
+  }
+  await assert.rejects(saveVocabularyWord({
+    db,
+    code: "A111111",
+    key: "word-500",
+    entry: { word: "word 500" }
+  }), /deck is full/);
+  assert.equal(Object.keys(values.get("studentProgress/A111111/vocabulary")).length, 500);
+});
+
+test("bounded activity append retains no more than the requested entries", async () => {
+  let stored = {};
+  let nextKey = 0;
+  const reference = {
+    push: () => ({ key: `record-${++nextKey}` }),
+    async transaction(updateCurrent) {
+      const next = updateCurrent(stored);
+      if (next === undefined) return { committed: false, snapshot: { val: () => stored } };
+      stored = next;
+      return { committed: true, snapshot: { val: () => stored } };
+    }
+  };
+  for (let index = 0; index < 5; index += 1) {
+    await appendBoundedRealtimeRecord(reference, { ts: index + 1, type: "test" }, 3);
+  }
+  assert.deepEqual(Object.keys(stored), ["record-3", "record-4", "record-5"]);
+  await assert.rejects(appendBoundedRealtimeRecord(reference, { ts: 6 }, 101), /between 1 and 100/);
 });

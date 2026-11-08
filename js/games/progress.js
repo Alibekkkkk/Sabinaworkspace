@@ -1,6 +1,18 @@
 import { applyGamification, updateReviewQueue } from "./engine.js";
 
 const STUDENT_CODE_PATTERN = /^[A-Z0-9]{4,12}$/;
+const MAP_KEY_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
+const MAX_VOCABULARY_ENTRIES = 500;
+const MAX_TOPIC_ENTRIES = 100;
+
+function mapKey(value) {
+  const key = String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+  return MAP_KEY_PATTERN.test(key) ? key : "topic";
+}
 
 export function progressPath(code) {
   const normalizedCode = String(code || "").trim().toUpperCase();
@@ -30,24 +42,88 @@ export async function saveGameProgress({ db, code, game, result, now = Date.now(
       ? updateReviewQueue(state.reviewQueue, result, now)
       : [...(Array.isArray(state.reviewQueue) ? state.reviewQueue : []), ...result.mistakes]
         .slice(-100);
-    const topic = String(game.title || game.type);
-    const topicStats = state.topics && typeof state.topics === "object" ? state.topics : {};
-    const oldTopic = topicStats[topic] || { attempts: 0, score: 0, total: 0, timeSpentSeconds: 0 };
+    const topicLabel = String(game.title || game.type).slice(0, 80);
+    const topic = mapKey(topicLabel);
+    const topicStats = {};
+    for (const [oldKey, oldStats] of Object.entries(
+      state.topics && typeof state.topics === "object" ? state.topics : {}
+    )) {
+      const safeStats = oldStats && typeof oldStats === "object" ? oldStats : {};
+      const oldLabel = String(safeStats.label || oldKey).slice(0, 80);
+      const safeKey = mapKey(oldLabel);
+      const current = topicStats[safeKey] || {
+        label: oldLabel,
+        attempts: 0,
+        score: 0,
+        total: 0,
+        timeSpentSeconds: 0,
+        updatedAt: 0
+      };
+      topicStats[safeKey] = {
+        label: oldLabel,
+        attempts: current.attempts + (Number(safeStats.attempts) || 0),
+        score: current.score + (Number(safeStats.score) || 0),
+        total: current.total + (Number(safeStats.total) || 0),
+        timeSpentSeconds: current.timeSpentSeconds + (Number(safeStats.timeSpentSeconds) || 0),
+        updatedAt: Math.max(current.updatedAt, Number(safeStats.updatedAt) || 0)
+      };
+    }
+    const oldTopic = topicStats[topic] || {
+      label: topicLabel,
+      attempts: 0,
+      score: 0,
+      total: 0,
+      timeSpentSeconds: 0,
+      updatedAt: 0
+    };
+    topicStats[topic] = {
+      label: topicLabel,
+      attempts: oldTopic.attempts + 1,
+      score: oldTopic.score + result.score,
+      total: oldTopic.total + result.total,
+      timeSpentSeconds: oldTopic.timeSpentSeconds + attempt.timeSpentSeconds,
+      updatedAt: now
+    };
+    const boundedTopics = Object.fromEntries(
+      Object.entries(topicStats)
+        .sort((a, b) => b[1].updatedAt - a[1].updatedAt)
+        .slice(0, MAX_TOPIC_ENTRIES)
+    );
     return {
       ...next,
       reviewQueue: queuedMistakes,
       attempts,
-      topics: {
-        ...topicStats,
-        [topic]: {
-          attempts: (Number(oldTopic.attempts) || 0) + 1,
-          score: (Number(oldTopic.score) || 0) + result.score,
-          total: (Number(oldTopic.total) || 0) + result.total,
-          timeSpentSeconds: (Number(oldTopic.timeSpentSeconds) || 0) + attempt.timeSpentSeconds
-        }
-      }
+      topics: boundedTopics
     };
   });
   if (!transaction.committed) throw new Error("Could not save game progress.");
+  return transaction.snapshot.val();
+}
+
+export async function saveVocabularyWord({ db, code, key, entry }) {
+  if (!db) throw new Error("Firebase Database is required.");
+  const normalizedCode = String(code || "").trim().toUpperCase();
+  if (!STUDENT_CODE_PATTERN.test(normalizedCode)) {
+    throw new Error("A verified student code is required to save vocabulary.");
+  }
+  if (!MAP_KEY_PATTERN.test(String(key || ""))) {
+    throw new Error("A valid vocabulary key is required.");
+  }
+  if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+    throw new Error("A vocabulary record is required.");
+  }
+
+  const vocabularyRef = db.ref(`studentProgress/${normalizedCode}/vocabulary`);
+  const transaction = await vocabularyRef.transaction(current => {
+    const words = current && typeof current === "object" && !Array.isArray(current)
+      ? current
+      : {};
+    if (words[key]) return words;
+    if (Object.keys(words).length >= MAX_VOCABULARY_ENTRIES) return;
+    return { ...words, [key]: entry };
+  });
+  if (!transaction.committed) {
+    throw new Error("Your vocabulary deck is full; remove a saved word before adding another.");
+  }
   return transaction.snapshot.val();
 }

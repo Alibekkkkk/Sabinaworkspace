@@ -5,6 +5,7 @@
 })();
 
 import { isTeacher } from "../auth.js";
+import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 
 let firebaseConfig;
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
@@ -208,11 +209,11 @@ async function submitAll(){
         schemaVersion:schemaVersion,
         updatedAt:firebase.database.ServerValue.TIMESTAMP
       });
-      await sessionRef.child('history').push({
+      await appendBoundedRealtimeRecord(sessionRef.child('history'), {
           actor: 'student',
           type: 'homework_submit',
           detail: 'Submitted homework: ' + (lesson.title || homeworkId),
-          ts: firebase.database.ServerValue.TIMESTAMP,
+          ts: Date.now(),
           contentFile:contentFile,
           contentHash:contentHash
       });
@@ -328,6 +329,54 @@ async function initFirebase(){
   }
 }
 
+function archivedHomeworkData(data) {
+  const archived = {
+    version: Number.isInteger(data.version) && data.version >= 1 && data.version <= 100
+      ? data.version
+      : homeworkVersion
+  };
+  for (const field of ["answers", "rawAnswers"]) {
+    const source = data[field];
+    if (!source || typeof source !== "object" || Array.isArray(source)) continue;
+    const safeAnswers = Object.fromEntries(Object.entries(source)
+      .filter(([key, value]) => /^[A-Za-z0-9_-]{1,64}$/.test(key) &&
+        (typeof value === "string" ? value.length <= 2000 :
+          typeof value === "number" ? Number.isFinite(value) : typeof value === "boolean"))
+      .slice(0, 500));
+    if (Object.keys(safeAnswers).length) archived[field] = safeAnswers;
+  }
+  if (Number.isFinite(data.score) && data.score >= 0 && data.score <= 500 &&
+      Number.isFinite(data.total) && data.total >= 1 && data.total <= 500 &&
+      data.score <= data.total) {
+    archived.score = data.score;
+    archived.total = data.total;
+  }
+  for (const field of ["submitted", "completed"]) {
+    if (typeof data[field] === "boolean") archived[field] = data[field];
+  }
+  for (const field of ["submittedAt", "updatedAt"]) {
+    if (Number.isFinite(data[field]) && data[field] >= 0) archived[field] = data[field];
+  }
+  if (data.submittedBy && typeof data.submittedBy === "object" &&
+      typeof data.submittedBy.name === "string" &&
+      typeof data.submittedBy.code === "string" &&
+      /^[A-Z0-9]{4,12}$/.test(data.submittedBy.code)) {
+    archived.submittedBy = {
+      name: data.submittedBy.name.slice(0, 80),
+      code: data.submittedBy.code
+    };
+  }
+  for (const field of ["contentFile", "contentHash"]) {
+    if (typeof data[field] === "string") {
+      archived[field] = data[field].slice(0, field === "contentFile" ? 160 : 128);
+    }
+  }
+  if (Number.isInteger(data.schemaVersion) && data.schemaVersion >= 1 && data.schemaVersion <= 100) {
+    archived.schemaVersion = data.schemaVersion;
+  }
+  return archived;
+}
+
 async function startHomework(){
   if(!fbDb||(!studentContext&&!teacherMode))throw new Error('Verified student context is required to start homework.');
   if(teacherMode&&!code){renderPassage();renderQuestions();return}
@@ -344,7 +393,9 @@ async function startHomework(){
       await recordRef.update({contentFile,contentHash,schemaVersion});
     }
     else {
-      if(Object.keys(data).length)await recordRef.child('attempts').push(data);
+      if(Object.keys(data).length) {
+        await appendBoundedRealtimeRecord(recordRef.child('attempts'),archivedHomeworkData(data),10);
+      }
       answers={};submitted=false;
       await recordRef.update({version:homeworkVersion,answers:{},score:0,total:lesson.questions.length,completed:false,contentFile,contentHash,schemaVersion});
     }

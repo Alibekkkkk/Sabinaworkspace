@@ -4,7 +4,7 @@
     import { loadProtectedContent } from "../protected-content.js";
     import { clipEmbedUrl, validateClip } from "../clips/schema.js";
     import { evaluateGame, normalizeAnswer } from "../games/engine.js";
-    import { saveGameProgress } from "../games/progress.js";
+    import { saveGameProgress, saveVocabularyWord } from "../games/progress.js";
 
     const element = id => document.getElementById(id);
     const params = new URLSearchParams(location.search);
@@ -155,12 +155,16 @@
       if (!selectedVocabulary) return;
       const key = wordKey(selectedVocabulary.word);
       if (!key) throw new Error("This word cannot be saved.");
-      await firebase.database().ref(`studentProgress/${context.code}/vocabulary/${key}`)
-        .transaction(current => current || {
+      await saveVocabularyWord({
+        db: firebase.database(),
+        code: context.code,
+        key: key.slice(0, 64),
+        entry: {
           ...selectedVocabulary,
           savedAt: new Date().toISOString(),
           sourceClipId: clip.id
-        });
+        }
+      });
       savedWords.add(selectedVocabulary.word);
       element("saveWord").disabled = true;
       element("saveWord").textContent = "Saved";

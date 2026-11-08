@@ -3,7 +3,7 @@
     import { resolveStudentContext } from "../student-context.js";
     import { loadProtectedContent } from "../protected-content.js";
     import { evaluateGame, normalizeAnswer } from "../games/engine.js";
-    import { saveGameProgress } from "../games/progress.js";
+    import { saveGameProgress, saveVocabularyWord } from "../games/progress.js";
     import { validateManga } from "../manga/schema.js";
 
     const byId = id => document.getElementById(id);
@@ -139,13 +139,17 @@
       if (!selectedWord) return;
       const key = selectedWord.word.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       if (!key) throw new Error("This word cannot be saved.");
-      await firebase.database().ref(`studentProgress/${context.code}/vocabulary/${key}`)
-        .transaction(current => current || {
+      await saveVocabularyWord({
+        db: firebase.database(),
+        code: context.code,
+        key: key.slice(0, 64),
+        entry: {
           ...selectedWord,
           sourceMangaId: manga.id,
           chapterId: chapter.id,
           savedAt: new Date().toISOString()
-        });
+        }
+      });
       byId("wordStatus").textContent = "Saved to your vocabulary collection.";
       byId("saveWord").textContent = "Saved";
       byId("saveWord").disabled = true;

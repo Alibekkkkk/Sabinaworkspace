@@ -122,19 +122,58 @@ test("students can only read their own curriculum view", async () => {
 test("submitted homework is write-once and score cannot exceed total", async () => {
   const dbA = testEnv.authenticatedContext("student-a").database();
   const record = ref(dbA, "sessions/A111111/homework/task-1");
-  await assertSucceeds(set(record, { score: 4, total: 5, submitted: false }));
+  await assertSucceeds(set(record, {
+    version: 1,
+    answers: { "0": "draft" },
+    score: 4,
+    total: 5,
+    submitted: false
+  }));
   await assertSucceeds(update(record, { submitted: true, score: 5 }));
   await assertFails(update(record, { score: 0 }));
   await assertFails(set(ref(dbA, "sessions/A111111/homework/task-2"), {
+    version: 1,
+    answers: { "0": "answer" },
     score: 6,
     total: 5,
     submitted: false
+  }));
+  await assertFails(set(ref(dbA, "sessions/A111111/homework/task bad"), {
+    version: 1,
+    answers: { "0": "answer" }
+  }));
+  const archiveRecord = ref(dbA, "sessions/A111111/homework/task-archive");
+  await assertSucceeds(set(archiveRecord, {
+    version: 1,
+    answers: { "0": "current answer" },
+    total: 5,
+    submitted: false
+  }));
+  await assertSucceeds(set(ref(dbA, "sessions/A111111/homework/task-archive/attempts/attempt-1"), {
+    version: 1,
+    answers: { "0": "previous answer" },
+    score: 3,
+    total: 5,
+    updatedAt: Date.now(),
+    ts: Date.now()
+  }));
+  await assertFails(set(ref(dbA, "sessions/A111111/homework/task-archive/attempts/attempt-2"), {
+    version: 1,
+    answers: { "0": "previous answer" },
+    score: 3,
+    total: 5,
+    updatedAt: Date.now(),
+    ts: Date.now(),
+    injected: true
   }));
 });
 
 test("students can only update their own identity and registration records", async () => {
   const dbA = testEnv.authenticatedContext("student-a").database();
   await assertSucceeds(set(ref(dbA, "studentByUid/student-a"), "A111111"));
+  await assertSucceeds(set(ref(dbA, "students/A111111/lastLogin"), Date.now()));
+  await assertFails(set(ref(dbA, "students/A111111/name"), "Changed by student"));
+  await assertFails(set(ref(dbA, "students/A111111/approved"), true));
   await assertFails(set(ref(dbA, "studentByUid/student-a"), "B222222"));
   await assertFails(set(ref(dbA, "studentByUid/student-a"), 111111));
   await assertFails(set(ref(dbA, "studentByUid/student-b"), "A111111"));
@@ -222,6 +261,19 @@ test("student session writes require valid own-code state, draft, history, and a
     detail: "x".repeat(301),
     ts: Date.now()
   }));
+  await assertFails(set(ref(dbA, "sessions/A111111/history/bad key"), {
+    actor: "student",
+    type: "answer",
+    detail: "Bad key",
+    ts: Date.now()
+  }));
+  await assertFails(set(ref(dbA, "sessions/A111111/history/extra-field"), {
+    actor: "student",
+    type: "answer",
+    detail: "Extra field",
+    ts: Date.now(),
+    arbitrary: "not allowed"
+  }));
   await assertFails(set(ref(dbA, "sessions/B222222/history/test-entry"), {
     actor: "student",
     type: "answer",
@@ -230,11 +282,13 @@ test("student session writes require valid own-code state, draft, history, and a
   }));
 
   await assertSucceeds(set(ref(dbA, "sessions/A111111/annotations/lesson-a"), "<p>Note</p>"));
+  await assertFails(set(ref(dbA, "sessions/A111111/annotations/bad lesson"), "<p>Note</p>"));
   await assertFails(set(ref(dbA, "sessions/A111111/annotations/lesson-b"), 42));
   await assertFails(set(ref(dbA, "sessions/A111111/annotations/lesson-c"), "x".repeat(50001)));
   await assertFails(set(ref(dbA, "sessions/B222222/annotations/lesson-a"), "<p>Note</p>"));
 
   await assertSucceeds(set(ref(dbA, "sessions/A111111/homework_annotations/task-1"), "<p>Note</p>"));
+  await assertFails(set(ref(dbA, "sessions/A111111/homework_annotations/bad task"), "<p>Note</p>"));
   await assertFails(set(ref(dbA, "sessions/A111111/homework_annotations/task-2"), 42));
   await assertFails(set(ref(dbA, "sessions/A111111/homework_annotations/task-3"), "x".repeat(50001)));
   await assertFails(set(ref(dbA, "sessions/B222222/homework_annotations/task-1"), "<p>Note</p>"));
@@ -259,13 +313,18 @@ test("student review, command acknowledgements, and summaries are scoped and val
     ...review,
     autoResult: "false"
   }));
+  await assertFails(set(ref(dbA, "sessions/A111111/reviewQueue/bad key"), review));
+  await assertFails(set(ref(dbA, "sessions/A111111/reviewQueue/review-extra"), {
+    ...review,
+    unknown: "not allowed"
+  }));
   await assertFails(set(ref(dbA, "sessions/B222222/reviewQueue/review-1"), review));
 
   await assertSucceeds(set(ref(dbA, "sessions/A111111/commands/cmd-1/ack"), true));
   await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-2/ack"), "yes"));
   await assertFails(set(ref(dbA, "sessions/B222222/commands/cmd-1/ack"), true));
 
-  await assertSucceeds(set(ref(dbA, "sessionSummary/A111111"), { completed: 1 }));
+  await assertFails(set(ref(dbA, "sessionSummary/A111111"), { completed: 1 }));
   await assertFails(set(ref(dbA, "sessionSummary/A111111"), "invalid"));
   await assertFails(set(ref(dbA, "sessionSummary/B222222"), { completed: 1 }));
 });
@@ -276,4 +335,109 @@ test("student progress rejects invalid values and writes to other student codes"
   await assertFails(set(ref(dbA, "studentProgress/A111111"), { xp: "15" }));
   await assertFails(set(ref(dbA, "studentProgress/A111111"), { xp: 100000001 }));
   await assertFails(set(ref(dbA, "studentProgress/B222222"), { xp: 15, level: 1 }));
+});
+
+test("student progress validates dynamic keys, record shapes, and bounded values", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/daily"), {
+    date: "2026-11-08",
+    games: 1,
+    correct: 2,
+    questComplete: true
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/daily"), {
+    date: "2026-11-08",
+    games: 1,
+    correct: 2,
+    questComplete: true,
+    unexpected: "extra"
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/daily/games"), "one"));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/topics/bad topic"), {
+    label: "Bad topic",
+    attempts: 1,
+    score: 1,
+    total: 1,
+    timeSpentSeconds: 1,
+    updatedAt: Date.now()
+  }));
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/topics/word-match"), {
+    label: "Word Match",
+    attempts: 1,
+    score: 2,
+    total: 2,
+    timeSpentSeconds: 3,
+    updatedAt: Date.now()
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/topics/extra"), {
+    label: "Extra",
+    attempts: 1,
+    score: 2,
+    total: 2,
+    timeSpentSeconds: 3,
+    updatedAt: Date.now(),
+    unknown: true
+  }));
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/attempts/0"), {
+    gameId: "game-1",
+    gameType: "fill-gap",
+    score: 1,
+    total: 1,
+    timeSpentSeconds: 5,
+    completedAt: new Date().toISOString()
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/attempts/1"), {
+    gameId: "game-1",
+    gameType: "fill-gap",
+    score: 1,
+    total: 1,
+    timeSpentSeconds: 5,
+    completedAt: new Date().toISOString(),
+    injected: true
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/attempts/bad index"), {
+    gameId: "game-1",
+    gameType: "fill-gap",
+    score: 1,
+    total: 1,
+    timeSpentSeconds: 5,
+    completedAt: new Date().toISOString()
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/reviewQueue/0"), {
+    itemId: "q1",
+    prompt: "x".repeat(301),
+    answer: "Answer",
+    topic: "Topic"
+  }));
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/vocabulary/artificial-intelligence"), {
+    word: "artificial intelligence",
+    translation: "translation",
+    definition: "definition",
+    savedAt: new Date().toISOString(),
+    sourceClipId: "ai"
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/vocabulary/artificial intelligence"), {
+    word: "artificial intelligence"
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/vocabulary/extra"), {
+    word: "word",
+    unexpected: "not allowed"
+  }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/vocabulary/oversized"), {
+    word: "x".repeat(101)
+  }));
+});
+
+test("bounded session history and review queue records reject malformed fixed shapes", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/bad key/ack"), true));
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-1/ack"), {
+    ack: true,
+    extra: "not allowed"
+  }));
+  await assertFails(set(ref(dbA, "sessions/A111111/draft/lesson-a/bad answer"), "answer"));
+  await assertFails(set(ref(dbA, "sessions/A111111/state/scores/bad stage"), 1));
+  await assertFails(set(ref(dbA, "sessions/A111111/state/vocabProgress/lesson-a/bad word/meanings/0"), {
+    perfectStreak: 1
+  }));
 });

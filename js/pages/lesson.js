@@ -5,6 +5,7 @@
 })();
 
 import { isTeacher } from "../auth.js";
+import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 
 /* SCRIPT REMAINS THE SAME EXCEPT FOR THE COLLAPSIBLE LOGIC */
 let firebaseConfig;
@@ -568,7 +569,7 @@ function stopTTS(){if(!('speechSynthesis' in window))return;ttsUtterId++;try{win
 function updateTTSButtons(){ const p=document.getElementById('ttsPlay'); const pa=document.getElementById('ttsPause'); const r=document.getElementById('ttsResume'); const s=document.getElementById('ttsStop'); const setVis=function(el,on){if(!el)return;el.style.display=on?'inline-flex':'none'}; setVis(p,ttsState==='idle'); setVis(pa,ttsState==='playing'); setVis(r,ttsState==='paused'); setVis(s,ttsState!=='idle'); }
 
 let bc=null;
-function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){activityRef.push(payload);sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
+function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state')sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));else if(type==='action'){appendBoundedRealtimeRecord(activityRef,payload).catch(function(error){console.error('Unable to append lesson activity',error)});sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){console.error('Unable to broadcast lesson update',e)}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
 function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000),contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion})}
 function broadcastAction(type,detail){ state.lastAction=detail; const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor: teacherMode ? 'teacher' : 'student' }; broadcast('action', payload); }
 function saveState(){ if(!teacherMode&&studentStorage) { try { studentStorage.set('state',{currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}); } catch(e) { console.error('Unable to save lesson state',e); } } if(identityVerified)broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)}); }
@@ -585,16 +586,17 @@ function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   if(teacherMode)return; if(!fbConnected||!sessionRef){alert('Cannot send to teacher — no session connected.');return}
   const payload={stage:stageId,questionId:qId,prompt:prompt,studentAnswer:studentAnswer,autoResult:autoResult,ts:Date.now()};
   if(extra)Object.assign(payload,extra);
-  sessionRef.child('reviewQueue').push(payload).then(function(){ broadcastAction('review_flagged',prompt.substring(0,40)); }).catch(function(e){alert('Failed to send: '+e.message)});
+  appendBoundedRealtimeRecord(sessionRef.child('reviewQueue'),payload).then(function(){ broadcastAction('review_flagged',prompt.substring(0,40)); }).catch(function(e){alert('Failed to send: '+e.message)});
 }
 
 let s1Filter='learning', vocabState={}, vocabCloudLoaded=false, s1VisibleList=[], quizWord=null, quizMeanings=[], quizCurrentIdx=0, quizRoundWrongs=0, quizAnswers={}, quizOptionsCache={}, quizHintShown=false, quizRoundFinalized=false, practiceMode=false, practiceQueue=[], practiceIdx=0;
 
 function vocabKey(){return 'vocab_'+state.currentLessonId}
 function loadVocabStateLocal(){try{vocabState=studentStorage?studentStorage.get(vocabKey())||{}:{}}catch(e){console.error('Unable to load vocabulary state',e);vocabState={}}}
-function loadVocabStateCloud(){ if(!fbConnected||!sessionRef)return Promise.resolve(); return sessionRef.child('state/vocabProgress/'+state.currentLessonId).once('value').then(function(snap){ const cloud=snap.val()||{}; Object.keys(cloud).forEach(function(w){vocabState[w]=cloud[w]}); saveVocabStateLocal(); }).catch(function(error){console.error('Unable to load cloud vocabulary progress',error);throw error}); }
+function cloudVocabKey(word){return String(word).toLowerCase().replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,64)}
+function loadVocabStateCloud(){ if(!fbConnected||!sessionRef)return Promise.resolve(); return sessionRef.child('state/vocabProgress/'+state.currentLessonId).once('value').then(function(snap){ const cloud=snap.val()||{}; Object.keys(cloud).forEach(function(key){ const vocab=VOCAB.find(function(item){return cloudVocabKey(item.en)===key}); if(vocab)vocabState[vocab.en]=cloud[key]; }); saveVocabStateLocal(); }).catch(function(error){console.error('Unable to load cloud vocabulary progress',error);throw error}); }
 function saveVocabStateLocal(){try{if(studentStorage)studentStorage.set(vocabKey(),vocabState)}catch(e){console.error('Unable to save vocabulary state',e)}}
-function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(vocabState).catch(function(){})}catch(e){}}
+function saveVocabStateCloud(){if(!fbConnected||!sessionRef)return;try{ const cloudState={}; Object.keys(vocabState).forEach(function(word){const key=cloudVocabKey(word);if(key)cloudState[key]=vocabState[word]}); sessionRef.child('state/vocabProgress/'+state.currentLessonId).set(cloudState).catch(function(error){console.error('Unable to save cloud vocabulary state',error)}); }catch(error){console.error('Unable to save cloud vocabulary state',error)}}
 function saveVocabState(){saveVocabStateLocal();saveVocabStateCloud()}
 
 function getMeaningStatus(word, meaningIdx) {
