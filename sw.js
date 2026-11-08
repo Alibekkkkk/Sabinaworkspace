@@ -1,4 +1,4 @@
-const CACHE_NAME = "learning-studio-shell-v3";
+const CACHE_NAME = "learning-studio-shell-v4";
 const SHELL_URLS = [
   "index.html",
   "portal.html",
@@ -14,7 +14,11 @@ const SHELL_URLS = [
   "offline.html",
   "manifest.webmanifest",
   "css/design-system.css",
-  "css/legacy-pages.css",
+  "css/components/controls.css",
+  "css/components/surfaces.css",
+  "css/components/progress.css",
+  "css/components/feedback.css",
+  "css/components/page-aliases.css",
   "css/placement.css",
   "css/portal-redesign.css",
   "js/config.js",

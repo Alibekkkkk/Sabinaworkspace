@@ -29,6 +29,8 @@ export const PAIRS = [
   ["mark-ink", "mark-green", 4.5, "Green highlighter"],
   ["mark-ink", "mark-blue", 4.5, "Blue highlighter"],
   ["mark-ink", "mark-pink", 4.5, "Pink highlighter"],
+  ["note-ink", "note-bg", 4.5, "Sticky note text"],
+  ["note-ink", "note-header", 4.5, "Sticky note header"],
   ["focus", "surface", 3, "Focus ring against cards (non-text, 3:1)"],
   ["focus", "background", 3, "Focus ring against the page (non-text, 3:1)"],
   ["border-strong", "surface", 3, "Input borders (non-text, 3:1)"]
@@ -39,7 +41,7 @@ export function readThemes(css = readFileSync(cssPath, "utf8")) {
   const blocks = [...withoutComments.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
   const read = predicate => Object.fromEntries(
     blocks.filter(block => predicate(block[1].trim()))
-      .flatMap(block => [...block[2].matchAll(/--ds-(?:color|mark)-([a-z-]+):\s*(#[0-9a-fA-F]{6})/g)].map(match => [match[0].includes("--ds-mark") ? `mark-${match[1]}` : match[1], match[2]]))
+      .flatMap(block => [...block[2].matchAll(/--ds-(?:color|mark|note)-([a-z-]+):\s*(#[0-9a-fA-F]{6})/g)].map(match => [match[0].includes("--ds-mark") ? `mark-${match[1]}` : match[0].includes("--ds-note") ? `note-${match[1]}` : match[1], match[2]]))
   );
   const light = read(selector => selector.startsWith(":root"));
   const dark = { ...light, ...read(selector => selector.includes('html[data-theme="dark"]')) };

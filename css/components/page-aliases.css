@@ -1,0 +1,30 @@
+/*
+  Maps the short variable names used by the lesson, dashboard and homework stylesheets onto the
+  design tokens, so those pages follow the shared light/dark palette. New code should use var(--ds-*)
+  directly; this file exists only so the page stylesheets can be migrated without renaming every rule.
+*/
+:root,
+.ds-theme-light,
+html.dark,
+html[data-theme="dark"],
+.ds-theme-dark {
+  --bg: var(--ds-color-background);
+  --panel: var(--ds-color-surface);
+  --panel-2: var(--ds-color-surface-raised);
+  --paper: var(--ds-color-surface);
+  --ink: var(--ds-color-text);
+  --ink-soft: var(--ds-color-muted);
+  --primary: var(--ds-color-primary);
+  --primary-dark: var(--ds-color-primary-strong);
+  --accent: var(--ds-color-primary);
+  --accent-dark: var(--ds-color-primary-strong);
+  --success: var(--ds-color-success);
+  --success-soft: var(--ds-color-success-soft);
+  --error: var(--ds-color-danger);
+  --error-soft: var(--ds-color-danger-soft);
+  --warn: var(--ds-color-warning);
+  --border: var(--ds-color-border);
+  --shadow-sm: var(--ds-shadow-sm);
+  --shadow-md: var(--ds-shadow-md);
+  --shadow-lg: var(--ds-shadow-lg);
+}

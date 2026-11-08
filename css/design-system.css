@@ -40,6 +40,12 @@
   --ds-mark-blue: #bfe0fb;
   --ds-mark-pink: #fbcbe0;
   --ds-mark-ink: #1d2738;
+  --ds-note-bg: #fef08a;
+  --ds-note-header: #facc15;
+  --ds-note-border: #ca8a04;
+  --ds-note-ink: #422006;
+  --ds-shadow-ink: #000000;
+  --ds-brand-google: #4285f4;
 
   /* typography */
   --ds-font-body: ui-rounded, "SF Pro Rounded", "Segoe UI", Inter, system-ui, -apple-system, sans-serif;

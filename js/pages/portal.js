@@ -210,7 +210,7 @@ function enterPortal(){
   document.body.classList.add('portal-authenticated');
   setHtml(document.getElementById('welcomeBox'), '<div class="avatar">' + escapeHtml(state.currentName.charAt(0).toUpperCase()) + '</div>' +
     '<h2>Welcome, ' + escapeHtml(state.currentName) + '! 👋</h2>' +
-    '<p>Code: <b style="color:var(--accent);font-family:Fira Code,monospace;letter-spacing:2px;">' + escapeHtml(state.currentCode) + '</b></p>');
+    '<p>Code: <b style="color:var(--accent);font-family:var(--ds-font-mono);letter-spacing:2px;">' + escapeHtml(state.currentCode) + '</b></p>');
   loadLessons();
   startLeaderboard();
 }

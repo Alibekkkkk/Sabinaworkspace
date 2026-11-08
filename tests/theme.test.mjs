@@ -51,15 +51,23 @@ test("Practice, Clip Lab, and Manga Reader expose accessible theme controls", ()
   assert.match(read("sw.js"), /"js\/theme\.js"/);
 });
 
-test("legacy lesson, homework, and teacher shells use shared responsive accessibility styles", () => {
+test("lesson, homework and dashboard use the design system, with no legacy shim, web fonts or raw colours", () => {
+  const components = ["controls", "surfaces", "progress", "feedback", "page-aliases"];
   for (const path of ["lesson.html", "homework.html", "dashboard.html"]) {
-    assert.match(read(path), /css\/legacy-pages\.css/, `${path} should use the shared page polish`);
+    const page = read(path);
+    assert.doesNotMatch(page, /legacy-pages\.css/, `${path} must not use the removed legacy stylesheet`);
+    assert.match(page, /css\/design-system\.css/, `${path} should load the tokens`);
+    for (const component of components) assert.match(page, new RegExp(`css/components/${component}\.css`), `${path} should load ${component}`);
+    assert.doesNotMatch(page, /fonts\.googleapis\.com|fonts\.gstatic\.com/, `${path} must not depend on Google Fonts`);
+    const style = read(`css/pages/${path.replace(".html", ".css")}`);
+    assert.doesNotMatch(style, /#[0-9a-fA-F]{3,8}|rgba?\(/, `${path} stylesheet must use design tokens, not raw colours`);
+    assert.match(style, /max-width:\s*\d+px/, `${path} stylesheet should be responsive`);
   }
-  const styles = read("css/legacy-pages.css");
-  assert.match(styles, /:focus-visible/);
-  assert.match(styles, /prefers-reduced-motion:\s*reduce/);
-  assert.match(styles, /max-width:\s*700px/);
-  assert.match(read("sw.js"), /"css\/legacy-pages\.css"/);
+  assert.throws(() => read("css/legacy-pages.css"), /ENOENT/);
+  const worker = read("sw.js");
+  assert.doesNotMatch(worker, /legacy-pages/);
+  assert.match(worker, /css\/components\/controls\.css/);
+  assert.match(read("css/design-system.css"), /prefers-reduced-motion:\s*reduce/);
 });
 
 test("theme follows the system until selected and then persists the learner choice", () => {
