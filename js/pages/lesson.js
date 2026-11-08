@@ -408,11 +408,13 @@ function initFirebase(){
     
     (async function() {
       try {
-        const { resolveStudentContext } = await import('../student-context.js');
+        const [{ resolveStudentContext }, storageModule, protectedModule] = await Promise.all([import('../student-context.js'), import('../storage.js'), import('../protected-content.js')]);
         const contentParam=new URLSearchParams(location.search).get('content');
         const context = await resolveStudentContext({auth:firebase.auth(),db:fbDb,lessonId:state.currentLessonId,contentId:contentParam||state.currentLessonId});
         studentContext=context;
-        const storageModule=await import('../storage.js');
+        // Start the (slow) protected-content read now; the assignment checks below run while it is in flight.
+        const protectedRecordPromise=protectedModule.loadProtectedContent(fbDb,context.lessonId,'classwork');
+        protectedRecordPromise.catch(function(){});
         studentStorage={
           get:function(key){return storageModule.readStudentValue(context,key)},
           set:function(key,value){storageModule.writeStudentValue(context,key,value)}
@@ -420,7 +422,7 @@ function initFirebase(){
         document.getElementById('workspaceName').textContent=context.name;
         const banner=document.getElementById('studentIdentityBanner');
         document.getElementById('studentIdentityText').textContent='You are working as '+context.name+' ('+context.code+')';
-        banner.style.display='flex';
+        banner.classList.add('ready');
         const debug=new URLSearchParams(location.search).get('debug')==='1';
         if(debug){const overlay=document.getElementById('debugOverlay');overlay.textContent=JSON.stringify({code:context.code,uid:context.uid,lessonId:context.lessonId,contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion,storageNamespace:context.storageNamespace},null,2);overlay.hidden=false;}
         bc=new BroadcastChannel('nd_lesson_live_v4_'+context.code+'_'+context.lessonId);
@@ -441,8 +443,7 @@ function initFirebase(){
         if(contentParam&&expectedName!==contentParam)throw new Error('Lesson content does not match the assigned curriculum file.');
         if(!/^[a-z0-9_-]+$/i.test(expectedName))throw new Error('Invalid classwork content reference.');
         activeContentName=expectedName;
-        const {loadProtectedContent}=await import('../protected-content.js');
-        const protectedRecord=await loadProtectedContent(fbDb,context.lessonId,'classwork');
+        const protectedRecord=await protectedRecordPromise;
         if(protectedRecord.sourceFile&&protectedRecord.sourceFile!==expectedName+'.json')throw new Error('Protected classwork does not match the assigned curriculum file.');
         await applyLessonContent(protectedRecord.content,'Firebase protected content/'+context.lessonId+'/classwork');
         fbDb.ref('studentCurriculum/'+context.code).on('value',function(s){updateCurriculumView(s,context.code,false)});

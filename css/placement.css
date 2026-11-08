@@ -30,7 +30,7 @@ h2 { font-size: clamp(1.35rem, 4.5vw, 1.8rem); line-height: 1.25; }
   margin: 0;
   color: var(--ds-color-primary);
   font-size: 0.8rem;
-  font-weight: 800;
+  font-weight:700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -59,7 +59,7 @@ h2 { font-size: clamp(1.35rem, 4.5vw, 1.8rem); line-height: 1.25; }
 .placement-progress { display: flex; align-items: center; gap: 0.75rem; }
 .placement-progress-bar { flex: 1; height: 0.6rem; overflow: hidden; border-radius: 999px; background: var(--ds-color-border); }
 .placement-progress-fill { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--ds-color-primary); transition: width 0.2s; }
-.placement-progress-text { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.placement-progress-text { font-weight:700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* question */
 .placement-prompt { margin: 1rem 0 0.75rem; font-size: clamp(1.15rem, 4.2vw, 1.4rem); font-weight: 700; line-height: 1.35; }
@@ -84,7 +84,7 @@ fieldset.placement-options legend { padding: 0; }
 .placement-option input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .placement-option .key {
   flex: none; display: grid; place-items: center; width: 1.9rem; height: 1.9rem;
-  border-radius: 0.5rem; border: 1px solid var(--ds-color-border); font-size: 0.85rem; font-weight: 800;
+  border-radius: 0.5rem; border: 1px solid var(--ds-color-border); font-size: 0.85rem; font-weight:700;
 }
 .placement-option:has(input:checked) { border-color: var(--ds-color-primary); background: rgb(87 111 209 / 14%); }
 .placement-option:has(input:checked) .key { background: var(--ds-color-primary); color: #fff; border-color: var(--ds-color-primary); }
@@ -112,7 +112,7 @@ fieldset.placement-options legend { padding: 0; }
 .placement-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
 .placement-submit, .placement-secondary {
   display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0.6rem 1.4rem;
-  border-radius: var(--ds-radius-md, 0.75rem); font: inherit; font-weight: 800; text-decoration: none; cursor: pointer;
+  border-radius: var(--ds-radius-md, 0.75rem); font: inherit; font-weight:700; text-decoration: none; cursor: pointer;
 }
 .placement-submit { border: 2px solid var(--ds-color-primary); background: var(--ds-color-primary); color: #fff; }
 .placement-submit:hover:not([disabled]) { filter: brightness(1.1); }
@@ -122,7 +122,7 @@ fieldset.placement-options legend { padding: 0; }
 .placement-actions .spacer { flex: 1; }
 
 /* result */
-.placement-level { display: inline-block; margin: 0.25rem 0; padding: 0.2rem 1rem; border-radius: 999px; background: var(--ds-color-primary); color: #fff; font-size: 2rem; font-weight: 800; }
+.placement-level { display: inline-block; margin: 0.25rem 0; padding: 0.2rem 1rem; border-radius: 999px; background: var(--ds-color-primary); color: #fff; font-size: 2rem; font-weight:700; }
 .placement-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0; margin: 0.4rem 0 0; list-style: none; }
 .placement-chips li { padding: 0.2rem 0.7rem; border-radius: 999px; border: 1px solid var(--ds-color-border); font-size: 0.9rem; }
 .placement-path { margin: 0.5rem 0 0; padding-left: 1.4rem; }

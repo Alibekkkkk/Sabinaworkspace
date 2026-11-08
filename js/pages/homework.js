@@ -316,11 +316,11 @@ function awardHomeworkXp(xpEarned){
 
 
 async function loadHomeworkContent() {
-  const { resolveStudentContext } = await import('../student-context.js');
+  const [{ resolveStudentContext }, protectedModule] = await Promise.all([import('../student-context.js'), import('../protected-content.js')]);
   if(teacherPreviewRequested) {
     const fileName=variant.startsWith('homework_')?variant:'homework_'+variant;
     if(!/^homework_[a-z0-9_]+$/i.test(fileName))throw new Error('Invalid teacher-preview content selection.');
-    const {loadProtectedContent}=await import('../protected-content.js');
+    const {loadProtectedContent}=protectedModule;
     try {
       const protectedRecord=await loadProtectedContent(fbDb,homeworkId,'homework');
       if(protectedRecord.sourceFile&&protectedRecord.sourceFile!==fileName+'.json')throw new Error('Protected homework does not match the selected preview file.');
@@ -351,7 +351,7 @@ async function loadHomeworkContent() {
     if(!requested||typeof requested!=='string')throw new Error('Content not found. Tell your teacher (lessonId='+homeworkId+', file=unassigned).');
     const fileName=requested.replace(/^content\//,'');
     if(fileName.includes('..')||fileName.includes('/')||!/^homework_[a-z0-9_]+\.json$/i.test(fileName))throw new Error('Invalid homework content reference.');
-    const {loadProtectedContent}=await import('../protected-content.js');
+    const {loadProtectedContent}=protectedModule;
     const protectedRecord=await loadProtectedContent(fbDb,homeworkId,'homework');
     if(protectedRecord.sourceFile&&protectedRecord.sourceFile!==fileName)throw new Error('Protected homework does not match the assigned content file.');
     lesson=protectedRecord.content;
@@ -414,7 +414,7 @@ async function initFirebase(){
   document.getElementById('heroIntro').textContent=lesson.intro||'';
   const banner=document.getElementById('studentIdentityBanner');
   document.getElementById('studentIdentityText').textContent='You are working as '+studentContext.name+' ('+studentContext.code+') — '+lesson.title+' · '+contentFile;
-  banner.style.display='flex';
+  banner.classList.add('ready');
   if(new URLSearchParams(location.search).get('debug')==='1') {
     const debug=document.createElement('pre');
     debug.textContent=JSON.stringify({code:studentContext.code,uid:studentContext.uid,lessonId:studentContext.lessonId,contentFile,contentHash,schemaVersion,storageNamespace:studentContext.storageNamespace},null,2);

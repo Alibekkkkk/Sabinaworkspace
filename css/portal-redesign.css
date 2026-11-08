@@ -147,7 +147,7 @@ body.portal-page.light {
 .student-summary-item b {
   display: block;
   color: var(--accent);
-  font: 800 1.5rem var(--ds-font-display);
+  font: 700 1.5rem var(--ds-font-display);
 }
 
 .student-summary-item span {
@@ -331,7 +331,7 @@ body.portal-page.light .lb-tabs .btn[aria-pressed="true"] { color: #fff; }
 .lb-list li { padding: 0.35rem 0.6rem; border-radius: 0.5rem; }
 .lb-list li > span { margin-right: 0.75rem; }
 .lb-list li.lb-own { background: rgb(166 182 255 / 18%); font-weight: 700; }
-.placement-level-line { font-size: 1.2rem; font-weight: 800; margin: 0.25rem 0; }
+.placement-level-line { font-size: 1.2rem; font-weight:700; margin: 0.25rem 0; }
 
 .due-tag { display: inline-block; margin: 0.25rem 0; padding: 0.15rem 0.6rem; border-radius: 999px; border: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; }
 .due-tag.due-overdue { border-color: #ff8a80; color: #ff8a80; }

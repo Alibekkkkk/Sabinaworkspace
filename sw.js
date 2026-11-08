@@ -1,4 +1,4 @@
-const CACHE_NAME = "learning-studio-shell-v4";
+const CACHE_NAME = "learning-studio-shell-v5";
 const SHELL_URLS = [
   "index.html",
   "portal.html",

@@ -36,16 +36,31 @@ What changed, how it was checked, and what is **not** done. Commands to repeat e
 | No horizontal scroll, clipped text or overlapping controls | 0 problems across lesson, homework, dashboard x light/dark x 320/390/768/1440 px; 24 screenshots in `docs/screenshots/phase1/` | `npm run dev`, then `npm run check:visual` |
 | axe on the three pages, signed in, 390px | 0 serious or critical. Remaining moderate: one heading-order item on the lesson, and Firebase's own emulator warning bar (dev only) | `npm run audit:signed-in` |
 | Lighthouse accessibility (mobile) | lesson 98, homework 100, dashboard 100 (target 95) | `docs/LIGHTHOUSE-SIGNED-IN.md` |
-| Lighthouse performance (mobile) | lesson **61**, homework 72, dashboard 95. **Target of 85 for the lesson is not met.** | `docs/LIGHTHOUSE-SIGNED-IN.md` |
+| Lighthouse performance (mobile) | lesson **86**, homework 96, dashboard 99 (target 85 met; see the performance notes below for run-to-run spread) | `docs/LIGHTHOUSE-SIGNED-IN.md` |
 
 Manual click-throughs on the seeded demo site (real emulator sign-in): student login; lesson opens with its stage path; reading settings change size and font and persist; homework autosave shows Saving then Saved; submit with blanks opens the modal listing "Question 2, Question 3, ..."; submitting records the score, XP and the dashboard summary; teacher dashboard shows the Today strip, status words, placement, schedule, leaderboard and charts for a selected student.
 
 ## Not done (be aware)
 
-- **Lesson performance target.** Mobile score is 61, not 85. Lighthouse points to style/layout and main-thread work after the lesson renders (about 3.7 s style and layout under 4x CPU throttling) and 99 kB of `lesson.js` that is unused at load (the file is 157 kB and still loads all nine stage renderers up front). Next steps: split `lesson.js` so each stage loads on demand, load the Firebase SDK only after the page shell paints, and find the forced layouts in the render path.
 - **Three-column lesson layout.** The stage path lives in the existing curriculum sidebar. There is a notes drawer but no right-hand panel with saved words or teacher messages, and feedback still appears under each question instead of a bottom sheet.
 - **Shell on desktop.** There is no desktop sidebar navigation and no header XP/level chip. Only the mobile tab bar, banners and error/skeleton states exist.
 - **Dashboard layout.** The command panel was not moved into a right-hand column, destructive actions do not all have an undo toast, and the Today strip has no "pending review flags" count (that would need a new summary field written by the student client).
 - **Self-hosted fonts.** The system font stack replaced Google Fonts; no woff2 files were added, to avoid shipping fonts without a licence review.
 - **Keyboard walkthrough test.** There is no automated keyboard-only run of a whole lesson (and the browser automation here is Puppeteer, not Playwright). The controls are native buttons/inputs with visible focus rings.
 - **Lesson stage renderers** still map stage index to a fixed renderer; the lesson's own stage list drives labels and states, not which activity runs.
+
+## Performance work (follow-up)
+
+Lesson mobile performance went from 61 to 86 (homework 72 to 96, dashboard 95 to 99). What mattered, in order:
+
+1. **Scripts no longer block the first paint.** The Firebase SDK scripts, `sanitize-html.js` and `weekly-summary.js` are `defer`red; the page modules still run after them, in order.
+2. **Parallel start-up.** The lesson and homework pages load their modules together and fetch the protected lesson content while the assignment is being checked, instead of one step after another.
+3. **No layout shift.** The signed-in banner and the timer/score pills reserve their space from the first paint (CLS 0.07 down to about 0.02).
+4. **Two font weights (400 and 700) instead of five.** On Windows each extra weight is another system font face to load and shape; one weight alone cut first-layout time by about 30%. Headings that were 800 or 900 are now 700.
+
+How the rest was investigated (so nobody repeats it): the remaining big cost is the browser's **cold first layout of text** (roughly 0.6 s at 4x CPU throttle). It also appears on the style guide and on the static lesson page with JavaScript switched off, and a second load in the same browser costs about 80 ms. It is not caused by the lesson's CSS (dropping the whole stylesheet barely changed it), emoji or Cyrillic fallback fonts, `content-visibility`, shadows, animations, iframes or form controls. Lighthouse always measures cold, so the score understates what returning users see.
+
+Measurement notes:
+- Scores vary between runs by about 10 points (the same build scored 89, 95 and 96 in three consecutive runs and 86 in the official audit). Treat 85+ as "met, with little headroom".
+- The service worker serves cached CSS and JS, which silently defeats request interception when profiling. Profile with the service worker bypassed.
+- Still open for more headroom: split `lesson.js` (157 kB, about 99 kB unused at load) so each stage loads on demand, and load the Firebase SDK pieces only when needed.

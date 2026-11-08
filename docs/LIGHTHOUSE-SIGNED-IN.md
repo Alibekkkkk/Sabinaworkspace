@@ -1,14 +1,14 @@
 # Lighthouse and axe: signed-in pages
 
-Commit: `6701451` + working tree · Generated: 2026-11-08T21:37:50.550Z · Measured against the local demo site (`npm run dev`) as the seeded student / teacher, so performance numbers are indicative (no CDN, no compression).
+Commit: `d5ef916` + working tree · Generated: 2026-11-08T22:35:23.236Z · Measured against the local demo site (`npm run dev`) as the seeded student / teacher, so performance numbers are indicative (no CDN, no compression).
 
 Reproduce: `npm run dev`, then `npm run audit:signed-in`.
 
 | Page | Content loaded | Mobile P | A | BP | SEO | Desktop P | A | BP | SEO | axe serious/critical |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Lesson | yes | 61 | 98 | 93 | 54 | 98 | 93 | 100 | 54 | 0 |
-| Homework | yes | 72 | 100 | 93 | 54 | 99 | 100 | 100 | 54 | 0 |
-| Teacher dashboard | yes | 95 | 100 | 93 | 54 | 100 | 100 | 100 | 54 | 0 |
+| Lesson | yes | 86 | 98 | 93 | 54 | 100 | 93 | 100 | 54 | 0 |
+| Homework | yes | 96 | 100 | 93 | 54 | 100 | 100 | 100 | 54 | 0 |
+| Teacher dashboard | yes | 99 | 100 | 93 | 54 | 100 | 100 | 100 | 54 | 0 |
 
 ## axe-core violations (390px wide, signed in)
 

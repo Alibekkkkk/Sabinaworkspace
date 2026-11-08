@@ -16,8 +16,8 @@
   border: 2px solid var(--ds-color-border); border-radius: var(--ds-radius-md); background: var(--ds-color-info-soft); color: var(--ds-color-text);
 }
 .ds-feedback:empty { display: none; }
-.ds-feedback__icon { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; font-weight: 900; background: var(--ds-color-surface); }
-.ds-feedback__title { display: block; font: 800 var(--ds-text-lg) var(--ds-font-display); }
+.ds-feedback__icon { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; font-weight:700; background: var(--ds-color-surface); }
+.ds-feedback__title { display: block; font: 700 var(--ds-text-lg) var(--ds-font-display); }
 .ds-feedback__detail { margin: 0.2rem 0 0; }
 .ds-feedback--correct { background: var(--ds-color-success-soft); color: var(--ds-color-success); border-color: var(--ds-color-success); animation: ds-pop var(--ds-motion-base) var(--ds-ease-spring); }
 .ds-feedback--wrong { background: var(--ds-color-danger-soft); color: var(--ds-color-danger); border-color: var(--ds-color-danger); }

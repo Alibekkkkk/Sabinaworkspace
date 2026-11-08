@@ -79,7 +79,7 @@
 
 .ds-empty { display: grid; justify-items: center; gap: var(--ds-space-2); padding: var(--ds-space-7) var(--ds-space-4); text-align: center; color: var(--ds-color-muted); }
 .ds-empty svg { width: 7rem; height: auto; color: var(--ds-color-primary); }
-.ds-empty h3 { margin: 0; color: var(--ds-color-text); font: 800 var(--ds-text-lg) var(--ds-font-display); }
+.ds-empty h3 { margin: 0; color: var(--ds-color-text); font: 700 var(--ds-text-lg) var(--ds-font-display); }
 
 .ds-skeleton {
   border-radius: var(--ds-radius-xs);
@@ -90,7 +90,7 @@
 
 .ds-avatar {
   display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%;
-  background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); font: 800 var(--ds-text-md) var(--ds-font-display);
+  background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); font: 700 var(--ds-text-md) var(--ds-font-display);
 }
 .ds-avatar--mascot { width: 3rem; height: 3rem; background: var(--ds-color-accent-soft); color: var(--ds-color-accent); }
 

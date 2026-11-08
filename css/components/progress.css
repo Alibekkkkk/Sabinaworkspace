@@ -17,10 +17,10 @@
 .ds-ring circle { fill: none; stroke-width: 4; }
 .ds-ring .ds-ring__track { stroke: var(--ds-color-border); }
 .ds-ring .ds-ring__value { stroke: var(--ds-color-primary); stroke-linecap: round; transition: stroke-dashoffset var(--ds-motion-slow) var(--ds-ease-out); }
-.ds-ring b { font: 800 var(--ds-text-md) var(--ds-font-display); }
+.ds-ring b { font: 700 var(--ds-text-md) var(--ds-font-display); }
 
 .ds-stat { display: grid; gap: 0.1rem; padding: var(--ds-space-3) var(--ds-space-4); border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); background: var(--ds-color-surface); text-align: center; }
-.ds-stat b { font: 800 var(--ds-text-xl) / 1 var(--ds-font-display); color: var(--ds-color-primary); }
+.ds-stat b { font: 700 var(--ds-text-xl) / 1 var(--ds-font-display); color: var(--ds-color-primary); }
 .ds-stat span { font-size: var(--ds-text-sm); color: var(--ds-color-muted); }
 
 /* Learning path: state is conveyed by icon + text + shape, never colour alone. */
@@ -32,7 +32,7 @@
 .ds-path__step:hover { background: var(--ds-color-surface-raised); }
 .ds-path__dot {
   flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border: 2px solid var(--ds-color-border-strong);
-  border-radius: 50%; background: var(--ds-color-surface); font: 800 var(--ds-text-sm) var(--ds-font-body);
+  border-radius: 50%; background: var(--ds-color-surface); font: 700 var(--ds-text-sm) var(--ds-font-body);
 }
 .ds-path__text { display: grid; line-height: 1.2; }
 .ds-path__sub { font-size: var(--ds-text-xs); color: var(--ds-color-muted); }
@@ -49,7 +49,7 @@
   min-height: 3.5rem; padding: var(--ds-space-2) var(--ds-space-4); border-bottom: 1px solid var(--ds-color-border);
   background: var(--ds-color-surface); box-shadow: var(--ds-shadow-sm);
 }
-.ds-shell-header__brand { display: inline-flex; align-items: center; gap: var(--ds-space-2); color: var(--ds-color-primary); font: 800 var(--ds-text-lg) var(--ds-font-display); text-decoration: none; }
+.ds-shell-header__brand { display: inline-flex; align-items: center; gap: var(--ds-space-2); color: var(--ds-color-primary); font: 700 var(--ds-text-lg) var(--ds-font-display); text-decoration: none; }
 .ds-shell-header__spacer { flex: 1; }
 .ds-lesson-bar { display: flex; align-items: center; gap: var(--ds-space-3); min-height: 2.5rem; padding: 0 var(--ds-space-4); border-bottom: 1px solid var(--ds-color-border); background: var(--ds-color-surface-raised); font-size: var(--ds-text-sm); }
 .ds-lesson-bar:empty { display: none; }
@@ -91,7 +91,7 @@ body.has-bottom-nav { padding-bottom: 4.5rem; }
 .ds-error-page__raw { white-space: pre-wrap; overflow-wrap: anywhere; font: var(--ds-text-sm) var(--ds-font-mono); color: var(--ds-color-muted); }
 
 .ds-chart { display: block; max-width: 28rem; }
-.ds-chart__label, .ds-chart__value { fill: var(--ds-color-text); font: 600 12px var(--ds-font-body); }
+.ds-chart__label, .ds-chart__value { fill: var(--ds-color-text); font: 700 12px var(--ds-font-body); }
 .ds-chart__track { fill: var(--ds-color-border); }
 .ds-chart__bar { fill: var(--ds-color-primary); }
 .ds-chart__bar--low { fill: var(--ds-color-danger); }
