@@ -402,6 +402,41 @@ function attachNotesListener() {
   }, function(error) { console.error('Unable to load student notes', error); });
 }
 
+function renderPlacementCard() {
+  const placement = activeGameProgress && activeGameProgress.placement;
+  const summary = document.getElementById('placementSummary');
+  const select = document.getElementById('placementOverride');
+  if (!summary || !select) return;
+  if (!placement || !placement.cefr) {
+    summary.textContent = 'No result yet.';
+    select.value = '';
+    return;
+  }
+  const confidence = Math.round((Number(placement.confidence) || 0) * 100);
+  const answers = Object.values(placement.answers || {});
+  summary.textContent = 'Estimated ' + placement.cefr + ' (confidence ' + confidence + '%, ' +
+    answers.filter(function(a) { return a.correct; }).length + '/' + answers.length + ' correct) on ' +
+    new Date(Number(placement.takenAt) || 0).toLocaleDateString() +
+    (placement.teacherLevel ? ' — teacher level: ' + placement.teacherLevel : '');
+  select.value = placement.teacherLevel || '';
+}
+
+function savePlacementOverride() {
+  if (!activeCode || !activeGameProgress.placement) { showToast('This student has no placement result yet.'); return; }
+  const level = document.getElementById('placementOverride').value;
+  fbDb.ref('studentProgress/' + activeCode + '/placement/teacherLevel').set(level || null)
+    .then(function() { showToast(level ? 'Level set to ' + level : 'Using the estimate'); })
+    .catch(function(error) { alert('Could not save the level: ' + error.message); });
+}
+
+function resetPlacement() {
+  if (!activeCode || !activeGameProgress.placement) { showToast('Nothing to reset.'); return; }
+  if (!confirm('Remove the saved result so this student can retake the check now?')) return;
+  fbDb.ref('studentProgress/' + activeCode + '/placement').set(null)
+    .then(function() { showToast('The student can retake the check.'); })
+    .catch(function(error) { alert('Reset failed: ' + error.message); });
+}
+
 function attachGameProgressListener() {
   if (activeProgressRef) activeProgressRef.off();
   const host = document.getElementById('gameAnalytics');
@@ -412,6 +447,7 @@ function attachGameProgressListener() {
     weeklyProgressLoaded = true;
     updateWeeklySummaryAvailability();
     renderGameAnalytics();
+    renderPlacementCard();
   }, function(error) {
     host.textContent = 'Practice data could not be loaded: ' + error.message;
     weeklyProgressLoaded = false;
@@ -1088,6 +1124,8 @@ function escapeHtml(s) {
 }
 const clickAction = run => ({ event: "click", run });
 installDelegatedActions({
+  "save-placement-override": { event: "click", run: savePlacementOverride },
+  "reset-placement": { event: "click", run: resetPlacement },
   "teacher-google-sign-in": clickAction(teacherGoogleSignIn),
   "deselect-student": clickAction(deselectStudent),
   "toggle-theme": clickAction(toggleTheme),

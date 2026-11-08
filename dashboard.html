@@ -135,6 +135,21 @@
             </div>
           </div>
 
+          <div class="card" id="placementCard">
+            <h2>English level check</h2>
+            <p id="placementSummary" class="placement-summary" aria-live="polite">No result yet.</p>
+            <p class="hint">A rough guide from an informal check, not an exam. You can override it or allow a retake.</p>
+            <div class="placement-controls">
+              <label for="placementOverride">Teacher level</label>
+              <select id="placementOverride">
+                <option value="">Use the estimate</option>
+                <option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option>
+              </select>
+              <button class="btn small" type="button" data-action="save-placement-override">Save level</button>
+              <button class="btn small danger" type="button" data-action="reset-placement">Allow retake</button>
+            </div>
+          </div>
+
           <div class="card">
             <h2>Student's Notes</h2>
             <div class="notes-view" id="notesView">— No notes yet —</div>

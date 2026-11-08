@@ -3,6 +3,7 @@ import { installDelegatedActions, readActionEnum } from "../delegated-actions.js
 import { clearElement, safeUrl, setHtml } from "../dom.js";
 import { resolveMaxScore } from "../lesson-meta.js";
 import { generateStudentCode } from "../student-code.js";
+import { assessPlacement, canRetake, nextRetakeAt } from "../placement.js";
 
 let db = null;
 let configModule = null;
@@ -241,6 +242,60 @@ function loadLessons(){
   portalListeners.push({ref:gameProgressRef,event:'value',callback:gameProgressListener});
 }
 
+let placementBank = null;
+async function loadPlacementBank() {
+  if (placementBank) return placementBank;
+  try {
+    const response = await fetch('content/placement/items.json', { cache: 'no-cache' });
+    placementBank = response.ok ? (await response.json()).items || [] : [];
+  } catch (error) { placementBank = []; }
+  return placementBank;
+}
+
+// Shows the saved placement level and a practice path rebuilt from the stored answers.
+async function renderPlacement(){
+  const panel=document.getElementById('placementPanel');
+  const placement=(state.gameProgress||{}).placement;
+  if(!panel)return;
+  if(!placement||!placement.cefr){
+    panel.hidden=false;
+    document.getElementById('placementLevel').textContent='Not sure where to start?';
+    document.getElementById('placementHint').textContent='Take the short English level check to get a suggested path.';
+    const steps=document.getElementById('recommendedSteps');
+    steps.replaceChildren();
+    const li=document.createElement('li');const link=document.createElement('a');
+    link.href='placement.html';link.textContent='🧭 Take the English level check';
+    li.append(link);steps.append(li);
+    return;
+  }
+  const level=placement.teacherLevel||placement.cefr;
+  document.getElementById('placementLevel').textContent='Your level: '+level+(placement.teacherLevel?' (set by your teacher)':' (estimated)');
+  panel.hidden=false;
+  const steps=document.getElementById('recommendedSteps');
+  steps.replaceChildren();
+  const bank=await loadPlacementBank();
+  const byId=new Map(bank.map(item=>[item.id,item]));
+  const answered=Object.values(placement.answers||{}).map(answer=>{
+    const item=byId.get(answer.id);
+    return item?{id:item.id,cefr:item.cefr,tag:item.tag,correct:answer.correct===true}:null;
+  }).filter(Boolean);
+  const path=answered.length?assessPlacement(answered).suggestedPath.filter(step=>step.kind==='practice'):[];
+  path.forEach(step=>{
+    const li=document.createElement('li');const link=document.createElement('a');
+    link.href='practice.html';link.textContent='🎯 '+step.label;
+    li.append(link);steps.append(li);
+  });
+  if(canRetake(placement.takenAt)){
+    const li=document.createElement('li');const link=document.createElement('a');
+    link.href='placement.html';link.textContent='🔁 Retake the level check';
+    li.append(link);steps.append(li);
+  } else {
+    const li=document.createElement('li');
+    li.textContent='You can retake the level check after '+new Date(nextRetakeAt(placement.takenAt)).toLocaleDateString()+'.';
+    steps.append(li);
+  }
+}
+
 function renderGameStats(){
   const summary=document.getElementById('studentSummary');
   const progress=state.gameProgress||{};
@@ -261,6 +316,7 @@ function renderGameStats(){
     item.append(strong,caption);
     summary.append(item);
   });
+  renderPlacement();
 }
 
 function renderLessons(){
