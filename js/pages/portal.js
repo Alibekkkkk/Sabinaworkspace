@@ -32,12 +32,20 @@ const state = {
 };
 
 if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
+function applyThemeToggleState(){
+  const toggle = document.getElementById('themeToggle');
+  if (!toggle) return;
+  const isLight = document.body.classList.contains('light');
+  toggle.setAttribute('aria-pressed', String(isLight));
+  toggle.setAttribute('aria-label', isLight ? 'Light theme (switch to dark)' : 'Dark theme (switch to light)');
+  toggle.firstElementChild.textContent = isLight ? '☀️' : '🌙';
+}
 function toggleTheme(){
   document.body.classList.toggle('light');
-  const isLight = document.body.classList.contains('light');
-  localStorage.setItem('nd_theme', isLight ? 'light' : 'dark');
-  document.querySelector('.theme-toggle').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('nd_theme', document.body.classList.contains('light') ? 'light' : 'dark');
+  applyThemeToggleState();
 }
+applyThemeToggleState();
 if (document.body.classList.contains('light')) document.querySelector('.theme-toggle').textContent = '☀️';
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
@@ -58,6 +66,8 @@ function saveIdentity(code, name, remember) {
 function switchTab(which){
   document.getElementById('tabLogin').classList.toggle('active', which === 'login');
   document.getElementById('tabRegister').classList.toggle('active', which === 'register');
+  document.getElementById('tabLogin').setAttribute('aria-pressed', String(which !== 'register'));
+  document.getElementById('tabRegister').setAttribute('aria-pressed', String(which === 'register'));
   document.getElementById('loginForm').style.display = which === 'login' ? 'block' : 'none';
   document.getElementById('registerForm').style.display = which === 'register' ? 'block' : 'none';
   document.getElementById('alertBox').className = 'alert';
@@ -391,6 +401,17 @@ function clearStudentSession() {
   }
 }
 
+// Removes per-student browser data but keeps UI preferences (theme, remember flag).
+function clearLegacyStudentData() {
+  const keep = new Set(['nd_theme', 'nd_remember_student']);
+  for (const storage of [localStorage, sessionStorage]) {
+    for (let index = storage.length - 1; index >= 0; index--) {
+      const key = storage.key(index);
+      if (key && (key.startsWith('nd_') || key.startsWith('nd:')) && !keep.has(key)) storage.removeItem(key);
+    }
+  }
+}
+
 async function switchStudent() {
   try { await firebase.auth().signOut(); } catch(error) { showAlert('Could not end the current sign-in: '+error.message,'error'); return; }
   clearPortalListeners();
@@ -454,6 +475,8 @@ configReady.then(async function() {
       showAlert('Your saved sign-in could not be verified. Please enter your student code or use Google sign-in.', 'error');
     }
   } else {
+    // No saved identity: drop orphaned per-student data (state, drafts, vocab) left by earlier sessions.
+    clearLegacyStudentData();
     setTimeout(() => document.getElementById('loginCode').focus(), 200);
   }
 }).catch(error => showAlert('Firebase could not be initialized: ' + error.message, 'error'));
