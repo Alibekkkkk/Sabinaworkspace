@@ -31,40 +31,35 @@ test("sanitizer allowlists formatting and strips active content and unsafe URLs"
   assert.match(read("sw.js"), /"js\/sanitize-html\.js"/);
 });
 
-test("dashboard encodes dynamic inline arguments and student codes", () => {
+test("dashboard uses delegated actions and validates dynamic parameters", () => {
   const dashboard = read("js/pages/dashboard.js");
-  assert.match(dashboard, /approvePendingStudent\(' \+ jsArg\(uid\)/);
-  assert.match(dashboard, /undoTeacherAction\(\$\{jsArg\(item\.id\)\}, \$\{jsArg\(item\.undo\.type\)\}\)/);
-  assert.match(dashboard, /value="' \+ escapeHtml\(code\) \+ '"'[\s\S]*escapeHtml\(studentsMap\[code\]\.name/);
+  assert.match(dashboard, /data-action="approve-pending-student" data-uid=/);
+  assert.match(dashboard, /data-action="undo-teacher-action" data-id=/);
+  assert.match(dashboard, /readActionParam\(element, "uid", \/\^\[A-Za-z0-9_-\]\{1,128\}\$\/\)/);
+  assert.match(dashboard, /data-action="select-student" data-code="' \+ escapeHtml\(code\)/);
 
   const htmlHelper = dashboard.match(/function escapeHtml\(s\) \{[\s\S]*?\r?\n\}/);
-  const argumentHelper = dashboard.match(/function jsArg\(value\) \{[\s\S]*?\r?\n\}/);
-  assert.ok(htmlHelper && argumentHelper, "dashboard should define HTML-safe JavaScript argument encoding");
+  assert.ok(htmlHelper, "dashboard should define HTML-safe attribute encoding");
   const payload = `');alert(1)//<img src=x onerror="alert(2)">&`;
-  const encoded = runInNewContext(`${htmlHelper[0]}\n${argumentHelper[0]}\njsArg(${JSON.stringify(payload)})`);
+  const encoded = runInNewContext(`${htmlHelper[0]}\nescapeHtml(${JSON.stringify(payload)})`);
   assert.doesNotMatch(encoded, /[<>"']/);
-  const decoded = encoded
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&gt;/g, ">")
-    .replace(/&lt;/g, "<")
-    .replace(/&amp;/g, "&");
-  assert.equal(JSON.parse(decoded), payload);
+  assert.match(encoded, /&#39;/);
 });
 
-test("lesson and homework encode annotation IDs and teacher-review arguments", () => {
+test("lesson and homework use delegated actions for annotations and review", () => {
   const lesson = read("js/pages/lesson.js");
   const homework = read("js/pages/homework.js");
-  assert.match(lesson, /openExistingNote\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
-  assert.match(lesson, /deleteNoteById\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
-  assert.match(lesson, /jsArg\(String\(prompt\)\.substring/);
-  assert.match(homework, /openExistingNote\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
-  assert.match(homework, /deleteNoteById\(\$\{jsArg\(targetNote\.dataset\.id\)\}\)/);
+  assert.match(lesson, /data-action="edit-note" data-note-id=/);
+  assert.match(lesson, /data-action="delete-note" data-note-id=/);
+  assert.match(lesson, /data-action="flag-for-review"/);
+  assert.match(homework, /data-action="edit-note" data-note-id=/);
+  assert.match(homework, /data-action="delete-note" data-note-id=/);
+  assert.match(lesson, /readActionParam\(element, "noteId", \/\^note_/);
+  assert.match(homework, /readActionParam\(element, "noteId", \/\^note_/);
   assert.doesNotMatch(lesson, /onerror="this\.parentNode/);
   assert.match(lesson, /escapeHtml\(w\.emoji\|\|'📖'\)/);
   assert.match(lesson, /lEl\.innerHTML=.*escapeHtml\(title\)/);
   assert.match(lesson, /escapeHtml\(e\.message\)/);
-  assert.match(lesson, /undoVocabWord\('\+jsArg\(quizWord\)/);
 });
 
 test("student portal escapes lesson content and coerces scores to numbers", () => {

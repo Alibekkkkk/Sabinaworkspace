@@ -19,7 +19,7 @@
 </head>
 <body class="portal-page">
 
-<button class="theme-toggle" onclick="toggleTheme()" title="Theme">🌙</button>
+<button class="theme-toggle" data-action="toggle-theme" title="Theme">🌙</button>
 
 <div class="wrap">
   <div id="loginScreen">
@@ -31,32 +31,32 @@
 
     <div class="card">
       <div class="tabs">
-        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign in</button>
-        <button class="tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+        <button class="tab active" id="tabLogin" data-action="switch-tab" data-tab="login">Sign in</button>
+        <button class="tab" id="tabRegister" data-action="switch-tab" data-tab="register">Register</button>
       </div>
 
       <div class="alert" id="alertBox"></div>
 
       <div id="loginForm">
-        <button class="btn google" onclick="doGoogleLogin()">
+        <button class="btn google" data-action="google-login">
           <span class="g-icon">G</span> Continue with Google
         </button>
         <div class="phase0-inline-1">— or use your code —</div>
         <label for="loginCode">Your student code</label>
-        <input type="text" id="loginCode" class="code-input" placeholder="SABIN" maxlength="12" autocomplete="off">
+        <input type="text" id="loginCode" class="code-input" placeholder="SABIN" maxlength="12" autocomplete="off" data-action="login-enter" data-action-event="keydown">
         <label class="remember-label"><input type="checkbox" id="rememberMe"> Remember me on this device</label>
-        <button class="btn" onclick="doLogin()">Enter my lessons →</button>
+        <button class="btn" data-action="login">Enter my lessons →</button>
       </div>
 
       <div id="registerForm" class="phase0-inline-2">
-        <button class="btn google" onclick="doGoogleLogin()">
+        <button class="btn google" data-action="google-login">
           <span class="g-icon">G</span> Register with Google
         </button>
         <div class="phase0-inline-3">— or create a code —</div>
         <label for="regName">What is your name?</label>
-        <input type="text" id="regName" placeholder="e.g. Sabina" maxlength="40" autocomplete="off">
+        <input type="text" id="regName" placeholder="e.g. Sabina" maxlength="40" autocomplete="off" data-action="register-enter" data-action-event="keydown">
         <label class="remember-label"><input type="checkbox" id="rememberRegister"> Remember me on this device</label>
-        <button class="btn" onclick="doRegister()">Create my account</button>
+        <button class="btn" data-action="register">Create my account</button>
       </div>
       <p class="helper phase0-inline-4">Not sure where to start? <a href="placement.html">Try a short English level check</a>. It is informal and will not change your assignments.</p>
     </div>
@@ -80,8 +80,8 @@
 
     <div class="lessons-header">
       <h3>📚 Your Lessons</h3>
-      <div><button class="btn ghost phase0-inline-6" onclick="switchStudent()">Switch student</button>
-      <button class="btn ghost phase0-inline-7" onclick="signOut()">Sign out</button></div>
+      <div><button class="btn ghost phase0-inline-6" data-action="switch-student">Switch student</button>
+      <button class="btn ghost phase0-inline-7" data-action="sign-out">Sign out</button></div>
     </div>
 
     <div class="lessons-grid" id="lessonsGrid"></div>
@@ -91,7 +91,7 @@
     </div>
 
     <div class="actions-bar">
-      <button onclick="showCodeInfo()">🔑 Show my code</button>
+      <button data-action="show-code-info">🔑 Show my code</button>
     </div>
   </div>
 </div>
@@ -100,7 +100,7 @@
   <a href="#lessonsScreen"><span aria-hidden="true">📚</span><span>Lessons</span></a>
   <a href="#practiceHub"><span aria-hidden="true">🎮</span><span>Practice</span></a>
   <a href="#learningPath"><span aria-hidden="true">🧭</span><span>Path</span></a>
-  <button type="button" onclick="showCodeInfo()"><span aria-hidden="true">👤</span><span>Profile</span></button>
+  <button type="button" data-action="show-code-info"><span aria-hidden="true">👤</span><span>Profile</span></button>
 </nav>
 
 <script type="module" src="js/pages/portal.js"></script>

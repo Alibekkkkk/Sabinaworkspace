@@ -11,6 +11,7 @@
 
 import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
+import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 
 let firebaseConfig = null;
 
@@ -194,9 +195,9 @@ function renderPendingApprovals() {
       '<div><div class="who">' + escapeHtml(p.name || 'Student') + '</div>' +
       '<div class="email">' + escapeHtml(p.email || uid) + '</div></div>' +
       '<div class="actions">' +
-      '<button class="btn small primary" onclick="approvePendingStudent(' + jsArg(uid) + ')">✓ Create new</button>' +
-      '<button class="btn small" onclick="openLinkModal(' + jsArg(uid) + ')">🔗 Link existing</button>' +
-      '<button class="btn small danger" onclick="rejectPendingStudent(' + jsArg(uid) + ')">✕ Reject</button>' +
+      '<button class="btn small primary" data-action="approve-pending-student" data-uid="' + escapeHtml(uid) + '">✓ Create new</button>' +
+      '<button class="btn small" data-action="open-link-modal" data-uid="' + escapeHtml(uid) + '">🔗 Link existing</button>' +
+      '<button class="btn small danger" data-action="reject-pending-student" data-uid="' + escapeHtml(uid) + '">✕ Reject</button>' +
       '</div></div>';
   }).join('');
 }
@@ -316,7 +317,7 @@ function renderStudentsList() {
     const hwDone = Object.keys(meta.homework || {}).filter(k => meta.homework[k].submitted).length;
     const hwText = hwCount > 0 ? `<span style="color:var(--accent);">HW: ${hwDone}/${hwCount}</span>` : '';
 
-    return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" onclick="selectStudent(' + jsArg(code) + ')">' +
+    return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" data-action="select-student" data-code="' + escapeHtml(code) + '">' +
       '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="dot ' + dotClass + '"></div></div>' +
       '<div class="code">' + linked + ' ' + escapeHtml(code) + '</div>' +
       '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + escapeHtml(meta.score || 0) + '</b></span><span>📍 Stage ' + escapeHtml(meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
@@ -368,12 +369,12 @@ function renderSelectedView() {
   document.getElementById('selectedAdded').textContent = s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—';
 
   document.getElementById('controlGrid').innerHTML = 
-    '<button class="btn" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;" onclick="sendGoto(' + (Number(meta.stage) || 1) + ')">' +
+    '<button class="btn" data-action="send-goto" data-stage="' + (Number(meta.stage) || 1) + '" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;">' +
       '🎯 Tell Student to Resume at Stage ' + escapeHtml(meta.stage || 1) +
     '</button>' +
     STAGE_LIST.map(function(st) {
       const isCurrent = (meta.stage || 1) === st.id;
-      return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" onclick="sendGoto(' + st.id + ')"><span class="num">' + st.id + '</span>' + st.label + '</button>';
+      return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" data-action="send-goto" data-stage="' + st.id + '"><span class="num">' + st.id + '</span>' + st.label + '</button>';
     }).join('');
 
   document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
@@ -457,7 +458,7 @@ function attachHistoryListener() {
       <div class="feed-item info" style="align-items:center;">
          <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
          <span class="msg">${escapeHtml(item.detail)}</span>
-         <button class="btn small" onclick="resetStage(${jsArg(item.stage)})" style="padding:2px 6px; font-size:11px;">Reset Stage ${escapeHtml(item.stage)}</button>
+         <button class="btn small" data-action="reset-stage" data-stage="${escapeHtml(item.stage)}" style="padding:2px 6px; font-size:11px;">Reset Stage ${escapeHtml(item.stage)}</button>
       </div>
     `).join('') || '<div class="no-data">No student actions.</div>';
     
@@ -465,7 +466,7 @@ function attachHistoryListener() {
       <div class="feed-item action" style="align-items:center;">
          <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
          <span class="msg">${escapeHtml(item.detail)}</span>
-         ${item.undo ? `<button class="btn small danger" onclick="undoTeacherAction(${jsArg(item.id)}, ${jsArg(item.undo.type)})" style="padding:2px 6px; font-size:11px;">Undo</button>` : ''}
+         ${item.undo ? `<button class="btn small danger" data-action="undo-teacher-action" data-id="${escapeHtml(item.id)}" data-undo-type="${escapeHtml(item.undo.type)}" style="padding:2px 6px; font-size:11px;">Undo</button>` : ''}
       </div>
     `).join('') || '<div class="no-data">No teacher actions.</div>';
   }, function(error) {
@@ -632,7 +633,7 @@ function renderOverview() {
     codes.map(function(code) {
       const s = studentsMap[code];
       const meta = studentMeta[code] || {};
-      return '<div class="card" style="cursor:pointer;" onclick="selectStudent(' + jsArg(code) + ')">' +
+      return '<div class="card" style="cursor:pointer;" data-action="select-student" data-code="' + escapeHtml(code) + '">' +
         '<div style="font-size:18px;font-weight:800;margin-bottom:4px;">' + escapeHtml(s.name || code) + '</div>' +
         '<div style="font-size:13px;color:var(--ink-soft);font-family:\'Fira Code\',monospace;letter-spacing:1.5px;margin-bottom:14px;">' + escapeHtml(code) + ' · ' + (s.uid ? '🔗 linked' : '⚠️ not linked') + '</div>' +
         '<div style="font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px;">' + escapeHtml(meta.score || 0) + '</div>' +
@@ -750,18 +751,18 @@ function renderClassworkTree() {
   });
 
   if (Object.keys(grouped).length === 0) {
-    container.innerHTML = '<div class="tree-empty">No items yet.<br><br><button class="btn small primary" onclick="openLessonModal()">+ New Item</button></div>';
+    container.innerHTML = '<div class="tree-empty">No items yet.<br><br><button class="btn small primary" data-action="open-lesson-modal">+ New Item</button></div>';
     return;
   }
 
   let html = '';
   Object.keys(grouped).sort().reverse().forEach(year => {
     const isY = expandedYears[year] !== false;
-    html += `<div class="tree-year ${isY?'open':''}" onclick="toggleYear(${jsArg(year)})"><span>📅 ${escapeHtml(year)}</span><span class="arrow">▶</span></div>`;
+    html += `<div class="tree-year ${isY?'open':''}" data-action="toggle-year" data-year="${escapeHtml(year)}"><span>📅 ${escapeHtml(year)}</span><span class="arrow">▶</span></div>`;
     if (isY) {
       Object.keys(grouped[year]).sort().forEach(month => {
         const isM = expandedMonths[year+'_'+month] !== false;
-        html += `<div class="tree-month ${isM?'open':''}" onclick="toggleMonth(${jsArg(year)},${jsArg(month)})"><span>📁 ${escapeHtml(month)}</span><span class="arrow">▶</span></div>`;
+        html += `<div class="tree-month ${isM?'open':''}" data-action="toggle-month" data-year="${escapeHtml(year)}" data-month="${escapeHtml(month)}"><span>📁 ${escapeHtml(month)}</span><span class="arrow">▶</span></div>`;
         if (isM) {
           grouped[year][month].sort((a,b) => (a.l.order||0) - (b.l.order||0)).forEach(item => {
             const l = item.l;
@@ -776,13 +777,13 @@ function renderClassworkTree() {
               else if (prog.updatedAt) progText = `<span style="color:var(--warn); font-size:11px; margin-left:auto;">In progress</span>`;
               else progText = `<span style="color:var(--ink-soft); font-size:11px; margin-left:auto;">Not started</span>`;
               
-              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="openHomework(${jsArg(item.id)})">
+              html += `<div class="tree-lesson ${isActive?'active':''}" data-action="open-homework" data-lesson-id="${escapeHtml(item.id)}">
                   <span>📝 ${escapeHtml(l.title || item.id)}</span>
                   ${progText}
               </div>`;
             } else {
               // Render as classwork
-              html += `<div class="tree-lesson ${isActive?'active':''}" onclick="toggleLessonTree(${jsArg(item.id)})">
+              html += `<div class="tree-lesson ${isActive?'active':''}" data-action="toggle-lesson-tree" data-lesson-id="${escapeHtml(item.id)}">
                   <span>📘 ${escapeHtml(l.title || item.id)}</span>
                   <span style="margin-left:auto; font-size:10px; opacity:0.6;">${isOpen ? '▼' : '▶'}</span>
               </div>`;
@@ -790,7 +791,7 @@ function renderClassworkTree() {
               if (isOpen) {
                   html += `<div style="padding-left: 20px; border-left: 1px solid var(--border); margin-left: 44px; margin-bottom: 8px;">`;
                   STAGE_LIST.forEach(st => {
-                      html += `<div class="tree-lesson" style="padding:4px 10px; font-size:12px;" onclick="openClassworkLesson(${jsArg(item.id)}, ${jsArg(activeCode || '')})">${escapeHtml(st.label)}</div>`;
+                      html += `<div class="tree-lesson" style="padding:4px 10px; font-size:12px;" data-action="open-classwork-lesson" data-lesson-id="${escapeHtml(item.id)}" data-code="${escapeHtml(activeCode || '')}">${escapeHtml(st.label)}</div>`;
                   });
                   html += `</div>`;
               }
@@ -887,9 +888,9 @@ function renderHomeworkTree() {
   container.innerHTML = groups.map(function(name) {
     const key = 'hw_' + name;
     const open = expandedYears[key] !== false;
-    return '<div class="tree-year' + (open ? ' open' : '') + '" onclick="toggleHwGroup(' + jsArg(name) + ')"><span>👤 ' + escapeHtml(name) + '</span><span class="arrow">▶</span></div>' +
+    return '<div class="tree-year' + (open ? ' open' : '') + '" data-action="toggle-homework-group" data-group-name="' + escapeHtml(name) + '"><span>👤 ' + escapeHtml(name) + '</span><span class="arrow">▶</span></div>' +
       (open ? grouped[name].map(function(row) {
-        return '<div class="tree-lesson' + (row.id === currentHomeworkId ? ' active' : '') + '" onclick="openHomework(' + jsArg(row.id) + ')"><span>' + escapeHtml(row.title) + '</span></div>';
+        return '<div class="tree-lesson' + (row.id === currentHomeworkId ? ' active' : '') + '" data-action="open-homework" data-lesson-id="' + escapeHtml(row.id) + '"><span>' + escapeHtml(row.title) + '</span></div>';
       }).join('') : '');
   }).join('');
 }
@@ -1056,11 +1057,6 @@ function escapeHtml(s) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
   });
 }
-function jsArg(value) {
-  return escapeHtml(JSON.stringify(String(value))
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029'));
-}
 function showToast(text) {
   const t = document.getElementById('toast');
   t.textContent = text;
@@ -1069,8 +1065,117 @@ function showToast(text) {
   window.__toastT = setTimeout(function() { t.classList.remove('show'); }, 2400);
 }
 
-document.getElementById('generateWeeklySummary').addEventListener('click', generateWeeklySummary);
-document.getElementById('downloadWeeklySummary').addEventListener('click', downloadWeeklySummary);
+const clickAction = run => ({ event: "click", run });
+installDelegatedActions({
+  "teacher-google-sign-in": clickAction(teacherGoogleSignIn),
+  "deselect-student": clickAction(deselectStudent),
+  "toggle-theme": clickAction(toggleTheme),
+  "teacher-sign-out": clickAction(teacherSignOut),
+  "open-add-student": clickAction(openAddStudent),
+  "switch-main-tab": clickAction(element => {
+    const tab = readActionEnum(element, "tab", ["students", "classwork", "homework"]);
+    if (tab) switchMainTab(tab);
+  }),
+  "render-students-list": { event: "input", run: renderStudentsList },
+  "open-student-classwork": clickAction(openStudentClasswork),
+  "open-student-homework": clickAction(openStudentHomework),
+  "rename-student": clickAction(renameStudent),
+  "delete-student": clickAction(deleteStudent),
+  "send-reset": clickAction(element => {
+    const type = readActionEnum(element, "resetType", ["all", "vocab"]);
+    if (type) sendReset(type);
+  }),
+  "attach-history-listener": { event: "change", run: attachHistoryListener },
+  "clear-history-logs": clickAction(clearHistoryLogs),
+  "generate-weekly-summary": clickAction(generateWeeklySummary),
+  "download-weekly-summary": clickAction(downloadWeeklySummary),
+  "clear-classwork-filter": clickAction(clearClassworkFilter),
+  "open-lesson-modal": clickAction(openLessonModal),
+  "open-current-classwork": clickAction(openCurrentClassworkInTab),
+  "edit-current-classwork": clickAction(() => editLessonMeta(currentClassworkId)),
+  "delete-current-classwork": clickAction(() => deleteLesson(currentClassworkId)),
+  "open-current-homework": clickAction(openCurrentHomeworkInTab),
+  "edit-current-homework": clickAction(() => editLessonMeta(currentHomeworkId)),
+  "close-add-student": clickAction(closeAddStudent),
+  "submit-add-student": clickAction(submitAddStudent),
+  "close-link-modal": clickAction(closeLinkModal),
+  "confirm-link-student": clickAction(confirmLinkStudent),
+  "set-lesson-type": clickAction(element => {
+    const type = readActionEnum(element, "lessonType", ["classwork", "homework"]);
+    if (type) setLessonType(type);
+  }),
+  "set-lesson-visibility": clickAction(element => {
+    const visibility = readActionEnum(element, "visibility", ["all", "some"]);
+    if (visibility) setLessonVisibility(visibility);
+  }),
+  "close-lesson-modal": clickAction(closeLessonModal),
+  "submit-lesson": clickAction(submitLesson),
+  "approve-pending-student": clickAction(element => {
+    const uid = readActionParam(element, "uid", /^[A-Za-z0-9_-]{1,128}$/);
+    if (uid) approvePendingStudent(uid);
+  }),
+  "open-link-modal": clickAction(element => {
+    const uid = readActionParam(element, "uid", /^[A-Za-z0-9_-]{1,128}$/);
+    if (uid) openLinkModal(uid);
+  }),
+  "reject-pending-student": clickAction(element => {
+    const uid = readActionParam(element, "uid", /^[A-Za-z0-9_-]{1,128}$/);
+    if (uid) rejectPendingStudent(uid);
+  }),
+  "select-student": clickAction(element => {
+    const code = readActionParam(element, "code", /^[A-Za-z0-9_-]{1,64}$/);
+    if (code && studentsMap[code]) selectStudent(code);
+  }),
+  "send-goto": clickAction(element => {
+    const stage = readActionInteger(element, "stage", 1, STAGE_LIST.length);
+    if (stage) sendGoto(stage);
+  }),
+  "reset-stage": clickAction(element => {
+    const stage = readActionInteger(element, "stage", 1, STAGE_LIST.length);
+    if (stage) resetStage(stage);
+  }),
+  "undo-teacher-action": clickAction(element => {
+    const id = readActionParam(element, "id", /^[A-Za-z0-9_-]{1,128}$/);
+    const type = readActionParam(element, "undoType", /^[A-Za-z0-9_-]{1,64}$/);
+    if (id && type) undoTeacherAction(id, type);
+  }),
+  "toggle-year": clickAction(element => {
+    const year = readActionParam(element, "year", /^[^\u0000-\u001F\u007F]{1,32}$/u);
+    if (year && Object.values(curriculum).some(item => String(item.year || "2026") === year)) {
+      toggleYear(year);
+    }
+  }),
+  "toggle-month": clickAction(element => {
+    const year = readActionParam(element, "year", /^[^\u0000-\u001F\u007F]{1,32}$/u);
+    const month = readActionParam(element, "month", /^[^\u0000-\u001F\u007F]{1,32}$/u);
+    if (year && month && Object.values(curriculum).some(item =>
+      String(item.year || "2026") === year && String(item.month || "October") === month
+    )) {
+      toggleMonth(year, month);
+    }
+  }),
+  "open-homework": clickAction(element => {
+    const id = readActionParam(element, "lessonId", /^[A-Za-z0-9_-]{1,64}$/);
+    if (id && curriculum[id]) openHomework(id);
+  }),
+  "toggle-lesson-tree": clickAction(element => {
+    const id = readActionParam(element, "lessonId", /^[A-Za-z0-9_-]{1,64}$/);
+    if (id && curriculum[id]) toggleLessonTree(id);
+  }),
+  "open-classwork-lesson": clickAction(element => {
+    const id = readActionParam(element, "lessonId", /^[A-Za-z0-9_-]{1,64}$/);
+    const code = readActionParam(element, "code", /^[A-Za-z0-9_-]{1,64}$/);
+    if (id && curriculum[id] && code && studentsMap[code]) openClassworkLesson(id, code);
+  }),
+  "toggle-homework-group": clickAction(element => {
+    const name = readActionParam(element, "groupName", /^[^\u0000-\u001F\u007F]{1,80}$/u);
+    const groupExists = name && Array.from(
+      document.querySelectorAll("#homeworkTree [data-action='toggle-homework-group']")
+    ).some(group => group.dataset.groupName === name);
+    if (groupExists) toggleHwGroup(name);
+  })
+});
+
 initFirebase();
 updateThemeButton();
 window.addEventListener('beforeunload', function() { if (activeFeedRef) activeFeedRef.off(); });
@@ -1143,6 +1248,5 @@ if (typeof renderStudentPickList === "function") globalThis["renderStudentPickLi
 if (typeof submitLesson === "function") globalThis["submitLesson"] = submitLesson;
 if (typeof deleteLesson === "function") globalThis["deleteLesson"] = deleteLesson;
 if (typeof escapeHtml === "function") globalThis["escapeHtml"] = escapeHtml;
-if (typeof jsArg === "function") globalThis["jsArg"] = jsArg;
 if (typeof showToast === "function") globalThis["showToast"] = showToast;
 if (typeof Number === "function") globalThis["Number"] = Number;

@@ -1,4 +1,6 @@
 
+import { installDelegatedActions, readActionEnum } from "../delegated-actions.js";
+
 let db = null;
 let configModule = null;
 let portalListeners = [];
@@ -409,6 +411,33 @@ function showCodeInfo(){
   alert('Your student code is:\n\n  ' + state.currentCode + '\n\nWrite it down! You\'ll need it to sign in from another device or after clearing your browser data.');
 }
 
+const clickAction = run => ({ event: "click", run });
+installDelegatedActions({
+  "toggle-theme": clickAction(toggleTheme),
+  "switch-tab": clickAction(element => {
+    const tab = readActionEnum(element, "tab", ["login", "register"]);
+    if (tab) switchTab(tab);
+  }),
+  "google-login": clickAction(doGoogleLogin),
+  "login": clickAction(doLogin),
+  "register": clickAction(doRegister),
+  "switch-student": clickAction(switchStudent),
+  "sign-out": clickAction(signOut),
+  "show-code-info": clickAction(showCodeInfo),
+  "login-enter": {
+    event: "keydown",
+    run: (_element, event) => {
+      if (event.key === "Enter") doLogin();
+    }
+  },
+  "register-enter": {
+    event: "keydown",
+    run: (_element, event) => {
+      if (event.key === "Enter") doRegister();
+    }
+  }
+});
+
 configReady.then(async function() {
   await firebase.auth().setPersistence(localStorage.getItem('nd_remember_student') === 'true'
     ? firebase.auth.Auth.Persistence.LOCAL
@@ -429,10 +458,6 @@ configReady.then(async function() {
     setTimeout(() => document.getElementById('loginCode').focus(), 200);
   }
 }).catch(error => showAlert('Firebase could not be initialized: ' + error.message, 'error'));
-
-document.getElementById('loginCode').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-document.getElementById('regName').addEventListener('keydown', e => { if (e.key === 'Enter') doRegister(); });
-
 
 if (typeof storedIdentity === "function") globalThis["storedIdentity"] = storedIdentity;
 if (typeof toggleTheme === "function") globalThis["toggleTheme"] = toggleTheme;

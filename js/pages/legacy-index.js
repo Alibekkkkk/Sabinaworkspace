@@ -1,3 +1,4 @@
+import { installDelegatedActions, readActionInteger, readActionParam, registerDelegatedClick, runRegisteredClick } from "../delegated-actions.js";
 
 const stages=[{name:'Warm-up',tag:'01',title:'What do you notice?'},{name:'New words',tag:'02',title:'Meet the vocabulary'},{name:'Read',tag:'03',title:'Follow the weather'},{name:'Understand',tag:'04',title:'Reading detectives'},{name:'Passive voice',tag:'05',title:'Notice the hidden doer'},{name:'Present perfect',tag:'06',title:'Connect then to now'}];
 const hazards=[['🌨️','blizzard'],['🏜️','drought'],['🌎','earthquake'],['🌧️','flood'],['🌡️','heat wave'],['🌀','hurricane'],['⛈️','thunderstorm'],['🌪️','tornado'],['🌊','tsunami'],['🔥','wildfire']];
@@ -14,7 +15,7 @@ const defs=Object.fromEntries(vocab.map(v=>[v[1],v[2]]));
 const readingHTML={blizzard:'a long snowstorm',drought:'a long time with very little rain',deforestation:'the removal of many trees',crust:'the Earth’s hard outer layer',tremors:'small shaking movements',magnitude:'the size or strength',overflow:'spill over the edge',region:'an area or part of a country',humid:'warm and wet in the air',surges:'moves forward suddenly and powerfully',spread:'move over a larger area'};
 function markWords(text){return text.replace(/\b(blizzard|drought|deforestation|crust|tremors|magnitude|overflow|region|humid|surges|spread)\b/gi,w=>`<button class="gloss" data-gloss="${w.toLowerCase()}">${w}</button>`)}
 let state={stage:0,done:new Set(),matches:0,selected:null,checked:new Set(),grammarRight:0,ppChecked:false,ppBuiltCorrect:false,builder:[]};
-function nav(){const el=document.getElementById('stepNav');el.innerHTML=stages.map((s,i)=>`<button class="step-button ${i===state.stage?'active':''} ${state.done.has(i)?'done':''}" data-stage="${i}"><span class="step-index">${s.tag} ${state.done.has(i)?'✓':''}</span><span class="step-title">${s.name}</span></button>`).join('');el.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>go(+b.dataset.stage));document.getElementById('progressText').textContent=`TODAY'S JOURNEY · ${state.done.size} OF 6`;document.getElementById('progressPct').textContent=Math.round(state.done.size/6*100)+'%';document.getElementById('progressFill').style.width=(state.done.size/6*100)+'%'}
+function nav(){const el=document.getElementById('stepNav');el.innerHTML=stages.map((s,i)=>`<button class="step-button ${i===state.stage?'active':''} ${state.done.has(i)?'done':''}" data-action="go-to-stage" data-stage="${i}"><span class="step-index">${s.tag} ${state.done.has(i)?'✓':''}</span><span class="step-title">${s.name}</span></button>`).join('');document.getElementById('progressText').textContent=`TODAY'S JOURNEY · ${state.done.size} OF 6`;document.getElementById('progressPct').textContent=Math.round(state.done.size/6*100)+'%';document.getElementById('progressFill').style.width=(state.done.size/6*100)+'%'}
 function go(n){state.stage=n;nav();render();window.scrollTo({top:0,behavior:'smooth'})}
 function doneNext(){state.done.add(state.stage);if(state.stage<5)go(state.stage+1);else{nav();render()}}
 function render(){const w=document.getElementById('workspace');const s=stages[state.stage];w.innerHTML=`<section class="stage active"><div class="stage-head"><div><div class="eyebrow">${s.tag} / 06 · ${s.title}</div><h2>${stageTitles[state.stage]}</h2></div><p>${stageSubs[state.stage]}</p></div>${renderStage(state.stage)}</section>`;bindStage()}
@@ -45,17 +46,146 @@ function presentPerfect(){return `<div class="grid two-col"><article class="pane
   ['No exact time: “I ___ a tsunami in a documentary.”',['have seen','saw'],0],['Finished time: “We ___ about floods yesterday.”',['have learned','learned'],1],['Life experience: “___ you ever heard thunder?”',['Have','Did'],0]
 ].map((q,i)=>`<article class="q-card"><div class="q-text">${q[0]}</div><div class="q-options">${q[1].map((o,j)=>`<button class="option" data-ppq="${i}" data-opt="${j}" ${state.ppAnswers?.has(i)?'disabled':''}>${o}</button>`).join('')}</div><div class="q-feedback" id="ppqfb${i}"></div></article>`).join('')}</div><div class="feedback" id="ppTotal"></div><div class="actions"><span class="progress-label">Finish by asking and answering one “Have you ever…?” question</span><button class="btn" id="finish" ${!state.ppChecked?'disabled':''}>Finish today’s lesson ✓</button></div></article>`}
 function bindStage(){
-  if(state.stage===0){let reveal=new Set();document.querySelectorAll('[data-reveal]').forEach(b=>b.onclick=()=>{let i=+b.dataset.reveal;reveal.add(i);b.classList.add('revealed');b.querySelector('.answer').textContent=hazards[i][1];if(reveal.size>=5){document.getElementById('continue').disabled=false;document.getElementById('warmFeedback').textContent='Nice noticing! Continue when you are ready.'}});document.getElementById('continue').onclick=doneNext}
-  if(state.stage===1){document.querySelectorAll('[data-vocab]').forEach(b=>b.onclick=()=>b.classList.toggle('open'));document.getElementById('sayVocab').onclick=()=>speak(vocab.map(v=>v[1]).join('. '));document.querySelectorAll('.word-match').forEach(b=>b.onclick=()=>selectMatch(b,'word'));document.querySelectorAll('.def-match').forEach(b=>b.onclick=()=>selectMatch(b,'def'));document.getElementById('continue').onclick=doneNext}
-  if(state.stage===2){document.querySelectorAll('.gloss').forEach(b=>b.onclick=()=>{const card=b.closest('.passage-card'),tip=card.querySelector('.passage-tip');tip.textContent=b.dataset.gloss+': '+(readingHTML[b.dataset.gloss]||defs[b.dataset.gloss]||'a useful new word');tip.classList.add('show')});document.getElementById('readAloud').onclick=()=>speak(passage.map(p=>p.title+'. '+p.text).join(' '));document.getElementById('continue').onclick=doneNext}
-  if(state.stage===3){document.querySelectorAll('[data-comp]').forEach(b=>b.onclick=()=>{const i=+b.dataset.comp,j=+b.dataset.opt,q=compQs[i],fb=document.getElementById('compfb'+i);if(j===q.a){state.checked.add(i);document.querySelectorAll(`[data-comp="${i}"]`).forEach(x=>{x.disabled=true;if(+x.dataset.opt===q.a)x.classList.add('correct')});fb.textContent='Yes. '+q.why;fb.style.color='var(--green)'}else{b.classList.add('wrong');b.disabled=true;fb.textContent='Look back at the passage and try one more choice.';fb.style.color='#bd5739'}document.getElementById('compTotal').textContent=state.checked.size===6?'Excellent evidence finding! You’re ready to look at the grammar.':`${state.checked.size} of 6 clues solved. Keep looking for evidence.`;document.getElementById('continue').disabled=state.checked.size<6});document.getElementById('continue').onclick=doneNext}
-  if(state.stage===4){document.querySelectorAll('[data-passive]').forEach(b=>b.onclick=()=>{const i=+b.dataset.passive,j=+b.dataset.opt,q=passiveQs[i];state.passiveDone??=new Set();if(j===q.a){state.passiveDone.add(i);state.grammarRight=state.passiveDone.size;document.querySelectorAll(`[data-passive="${i}"]`).forEach(x=>{x.disabled=true;if(+x.dataset.opt===q.a)x.classList.add('correct')});document.getElementById('passfb'+i).textContent=q.ex;document.getElementById('passfb'+i).style.color='var(--green)'}else{b.disabled=true;b.classList.add('wrong');document.getElementById('passfb'+i).textContent='Check the time clue and try again.'}document.getElementById('passTotal').textContent=`${state.grammarRight} of 4 correct.`;document.getElementById('continue').disabled=state.grammarRight<4});document.querySelectorAll('[data-token]').forEach(b=>b.onclick=()=>{let i=+b.dataset.token;if(state.builder.includes(i)){state.builder=state.builder.filter(x=>x!==i);b.classList.remove('selected')}else{state.builder.push(i);b.classList.add('selected')}const words=['Tsunamis','are','caused','by','underwater','earthquakes.'];document.getElementById('builtSentence').textContent=state.builder.length?state.builder.map(x=>words[x]).join(' '):'Your sentence will appear here…';if(state.builder.length===6){const ok=state.builder.join(',')==='0,1,2,3,4,5';document.getElementById('builderFeedback').textContent=ok?'Great: affected thing + are + V3 + by + cause.':'Check the order: thing affected, be, V3, then by + cause.';document.getElementById('builderFeedback').className='feedback '+(ok?'good':'try')}});document.getElementById('resetBuild').onclick=()=>{state.builder=[];document.querySelectorAll('[data-token]').forEach(b=>b.classList.remove('selected'));document.getElementById('builtSentence').textContent='Your sentence will appear here…';document.getElementById('builderFeedback').textContent=''};document.getElementById('continue').onclick=doneNext}
-  if(state.stage===5){document.querySelectorAll('[data-pp]').forEach(b=>b.onclick=()=>{let i=+b.dataset.pp;if(state.builder.includes(i)){state.builder=state.builder.filter(x=>x!==i);b.classList.remove('selected')}else{state.builder.push(i);b.classList.add('selected')}let words=['Have','you','ever','experienced','a','heat','wave?'];document.getElementById('ppBuilt').textContent=state.builder.length?state.builder.map(x=>words[x]).join(' '):'Tap the words to build the question…';state.ppBuiltCorrect=false;updateFinalLock();if(state.builder.length===7){let ok=state.builder.join(',')==='0,1,2,3,4,5,6';document.getElementById('ppFeedback').textContent=ok?'Excellent! Have + subject + ever + past participle.':'Try again: Have + you + ever + past participle + the experience.';document.getElementById('ppFeedback').className='feedback '+(ok?'good':'try');if(ok){state.ppBuiltCorrect=true;updateFinalLock()}}});document.getElementById('ppReset').onclick=()=>{state.builder=[];document.querySelectorAll('[data-pp]').forEach(b=>b.classList.remove('selected'));document.getElementById('ppBuilt').textContent='Tap the words to build the question…';document.getElementById('ppFeedback').textContent='';state.ppBuiltCorrect=false;updateFinalLock()};document.querySelectorAll('[data-ppq]').forEach(b=>b.onclick=()=>{const i=+b.dataset.ppq,j=+b.dataset.opt,ans=[0,1,0],ex=['“Have you ever…” asks about experience at any time up to now.','“Yesterday” is a finished time, so use past simple.','Use Have + you + ever + past participle for an experience question.'];state.ppAnswers??=new Set();if(j===ans[i]){state.ppAnswers.add(i);document.querySelectorAll(`[data-ppq="${i}"]`).forEach(x=>{x.disabled=true;if(+x.dataset.opt===j)x.classList.add('correct')});document.getElementById('ppqfb'+i).textContent=ex[i];document.getElementById('ppqfb'+i).style.color='var(--green)'}else{b.disabled=true;b.classList.add('wrong');document.getElementById('ppqfb'+i).textContent='Check whether the time is finished or the experience connects to now.'}document.getElementById('ppTotal').textContent=`${state.ppAnswers.size} of 3 quick checks solved.`;updateFinalLock()});document.getElementById('finish').onclick=()=>{state.done.add(5);nav();document.querySelector('.stage-head h2').textContent='Lesson complete — what a journey!';document.querySelector('.stage-head p').textContent='You explored new vocabulary, read for meaning, revised passive voice, and used present perfect to talk about experience.';document.getElementById('workspace').insertAdjacentHTML('beforeend',`<div class="panel" style="text-align:center;background:var(--mint);padding:32px"><div style="font-size:42px">🌟</div><h2 style="font:600 27px 'Fraunces',serif;margin:10px">You connected past and present.</h2><p style="font-size:12px;color:var(--muted)">Finish by asking each other: “Have you ever experienced a heat wave?”</p><button class="btn secondary" onclick="resetLesson()">Start the lesson again ↻</button></div>`);document.getElementById('progressText').textContent="TODAY'S JOURNEY · 6 OF 6";document.getElementById('progressPct').textContent='100%';document.getElementById('progressFill').style.width='100%'} }
+  if(state.stage===0){
+    const reveal=new Set();
+    document.querySelectorAll('[data-reveal]').forEach(button=>registerDelegatedClick(button,()=>{
+      const index=readActionInteger(button,'reveal',0,hazards.length-1);
+      if(index===null)return;
+      reveal.add(index);button.classList.add('revealed');
+      button.querySelector('.answer').textContent=hazards[index][1];
+      if(reveal.size>=5){document.getElementById('continue').disabled=false;document.getElementById('warmFeedback').textContent='Nice noticing! Continue when you are ready.'}
+    }));
+    registerDelegatedClick(document.getElementById('continue'),doneNext);
+  }
+  if(state.stage===1){
+    document.querySelectorAll('[data-vocab]').forEach(button=>registerDelegatedClick(button,()=>button.classList.toggle('open')));
+    registerDelegatedClick(document.getElementById('sayVocab'),()=>speak(vocab.map(word=>word[1]).join('. ')));
+    document.querySelectorAll('.word-match').forEach(button=>registerDelegatedClick(button,()=>{
+      if(readActionParam(button,'word',/^[a-z ]{1,32}$/)&&matching.some(item=>item.w===button.dataset.word))selectMatch(button,'word');
+    }));
+    document.querySelectorAll('.def-match').forEach(button=>registerDelegatedClick(button,()=>{
+      if(readActionParam(button,'def',/^[a-z ]{1,32}$/)&&matching.some(item=>item.w===button.dataset.def))selectMatch(button,'def');
+    }));
+    registerDelegatedClick(document.getElementById('continue'),doneNext);
+  }
+  if(state.stage===2){
+    document.querySelectorAll('.gloss').forEach(button=>registerDelegatedClick(button,()=>{
+      const word=readActionParam(button,'gloss',/^[a-z ]{1,32}$/);
+      if(!word||(!Object.hasOwn(readingHTML,word)&&!Object.hasOwn(defs,word)))return;
+      const card=button.closest('.passage-card'),tip=card?.querySelector('.passage-tip');
+      if(tip){tip.textContent=word+': '+(readingHTML[word]||defs[word]||'a useful new word');tip.classList.add('show')}
+    }));
+    registerDelegatedClick(document.getElementById('readAloud'),()=>speak(passage.map(item=>item.title+'. '+item.text).join(' ')));
+    registerDelegatedClick(document.getElementById('continue'),doneNext);
+  }
+  if(state.stage===3){
+    document.querySelectorAll('[data-comp]').forEach(button=>registerDelegatedClick(button,()=>{
+      const index=readActionInteger(button,'comp',0,compQs.length-1);
+      const option=readActionInteger(button,'opt',0,2);
+      const question=index===null?null:compQs[index];
+      if(!question||option===null||option>=question.opts.length)return;
+      const feedback=document.getElementById('compfb'+index);
+      if(option===question.a){
+        state.checked.add(index);
+        document.querySelectorAll(`[data-comp="${index}"]`).forEach(item=>{item.disabled=true;if(+item.dataset.opt===question.a)item.classList.add('correct')});
+        feedback.textContent='Yes. '+question.why;feedback.style.color='var(--green)';
+      }else{
+        button.classList.add('wrong');button.disabled=true;feedback.textContent='Look back at the passage and try one more choice.';feedback.style.color='#bd5739';
+      }
+      document.getElementById('compTotal').textContent=state.checked.size===6?'Excellent evidence finding! You’re ready to look at the grammar.':`${state.checked.size} of 6 clues solved. Keep looking for evidence.`;
+      document.getElementById('continue').disabled=state.checked.size<6;
+    }));
+    registerDelegatedClick(document.getElementById('continue'),doneNext);
+  }
+  if(state.stage===4){
+    document.querySelectorAll('[data-passive]').forEach(button=>registerDelegatedClick(button,()=>{
+      const index=readActionInteger(button,'passive',0,passiveQs.length-1);
+      const option=readActionInteger(button,'opt',0,1);
+      const question=index===null?null:passiveQs[index];
+      if(!question||option===null)return;
+      state.passiveDone??=new Set();
+      if(option===question.a){
+        state.passiveDone.add(index);state.grammarRight=state.passiveDone.size;
+        document.querySelectorAll(`[data-passive="${index}"]`).forEach(item=>{item.disabled=true;if(+item.dataset.opt===question.a)item.classList.add('correct')});
+        document.getElementById('passfb'+index).textContent=question.ex;document.getElementById('passfb'+index).style.color='var(--green)';
+      }else{
+        button.disabled=true;button.classList.add('wrong');document.getElementById('passfb'+index).textContent='Check the time clue and try again.';
+      }
+      document.getElementById('passTotal').textContent=`${state.grammarRight} of 4 correct.`;document.getElementById('continue').disabled=state.grammarRight<4;
+    }));
+    document.querySelectorAll('[data-token]').forEach(button=>registerDelegatedClick(button,()=>{
+      const index=readActionInteger(button,'token',0,5);
+      if(index===null)return;
+      if(state.builder.includes(index)){state.builder=state.builder.filter(item=>item!==index);button.classList.remove('selected')}
+      else{state.builder.push(index);button.classList.add('selected')}
+      const words=['Tsunamis','are','caused','by','underwater','earthquakes.'];
+      document.getElementById('builtSentence').textContent=state.builder.length?state.builder.map(item=>words[item]).join(' '):'Your sentence will appear here…';
+      if(state.builder.length===6){
+        const correct=state.builder.join(',')==='0,1,2,3,4,5';
+        document.getElementById('builderFeedback').textContent=correct?'Great: affected thing + are + V3 + by + cause.':'Check the order: thing affected, be, V3, then by + cause.';
+        document.getElementById('builderFeedback').className='feedback '+(correct?'good':'try');
+      }
+    }));
+    registerDelegatedClick(document.getElementById('resetBuild'),()=>{
+      state.builder=[];document.querySelectorAll('[data-token]').forEach(button=>button.classList.remove('selected'));
+      document.getElementById('builtSentence').textContent='Your sentence will appear here…';document.getElementById('builderFeedback').textContent='';
+    });
+    registerDelegatedClick(document.getElementById('continue'),doneNext);
+  }
+  if(state.stage===5){
+    document.querySelectorAll('[data-pp]').forEach(button=>registerDelegatedClick(button,()=>{
+      const index=readActionInteger(button,'pp',0,6);
+      if(index===null)return;
+      if(state.builder.includes(index)){state.builder=state.builder.filter(item=>item!==index);button.classList.remove('selected')}
+      else{state.builder.push(index);button.classList.add('selected')}
+      const words=['Have','you','ever','experienced','a','heat','wave?'];
+      document.getElementById('ppBuilt').textContent=state.builder.length?state.builder.map(item=>words[item]).join(' '):'Tap the words to build the question…';
+      state.ppBuiltCorrect=false;updateFinalLock();
+      if(state.builder.length===7){
+        const correct=state.builder.join(',')==='0,1,2,3,4,5,6';
+        document.getElementById('ppFeedback').textContent=correct?'Excellent! Have + subject + ever + past participle.':'Try again: Have + you + ever + past participle + the experience.';
+        document.getElementById('ppFeedback').className='feedback '+(correct?'good':'try');
+        if(correct){state.ppBuiltCorrect=true;updateFinalLock()}
+      }
+    }));
+    registerDelegatedClick(document.getElementById('ppReset'),()=>{
+      state.builder=[];document.querySelectorAll('[data-pp]').forEach(button=>button.classList.remove('selected'));
+      document.getElementById('ppBuilt').textContent='Tap the words to build the question…';document.getElementById('ppFeedback').textContent='';
+      state.ppBuiltCorrect=false;updateFinalLock();
+    });
+    document.querySelectorAll('[data-ppq]').forEach(button=>registerDelegatedClick(button,()=>{
+      const index=readActionInteger(button,'ppq',0,2),option=readActionInteger(button,'opt',0,1);
+      if(index===null||option===null)return;
+      const answers=[0,1,0],explanations=['“Have you ever…” asks about experience at any time up to now.','“Yesterday” is a finished time, so use past simple.','Use Have + you + ever + past participle for an experience question.'];
+      state.ppAnswers??=new Set();
+      if(option===answers[index]){
+        state.ppAnswers.add(index);
+        document.querySelectorAll(`[data-ppq="${index}"]`).forEach(item=>{item.disabled=true;if(+item.dataset.opt===option)item.classList.add('correct')});
+        document.getElementById('ppqfb'+index).textContent=explanations[index];document.getElementById('ppqfb'+index).style.color='var(--green)';
+      }else{
+        button.disabled=true;button.classList.add('wrong');document.getElementById('ppqfb'+index).textContent='Check whether the time is finished or the experience connects to now.';
+      }
+      document.getElementById('ppTotal').textContent=`${state.ppAnswers.size} of 3 quick checks solved.`;updateFinalLock();
+    }));
+    registerDelegatedClick(document.getElementById('finish'),()=>{
+      state.done.add(5);nav();
+      document.querySelector('.stage-head h2').textContent='Lesson complete — what a journey!';
+      document.querySelector('.stage-head p').textContent='You explored new vocabulary, read for meaning, revised passive voice, and used present perfect to talk about experience.';
+      document.getElementById('workspace').insertAdjacentHTML('beforeend',`<div class="panel" style="text-align:center;background:var(--mint);padding:32px"><div style="font-size:42px">🌟</div><h2 style="font:600 27px 'Fraunces',serif;margin:10px">You connected past and present.</h2><p style="font-size:12px;color:var(--muted)">Finish by asking each other: “Have you ever experienced a heat wave?”</p><button class="btn secondary" data-action="reset-lesson">Start the lesson again ↻</button></div>`);
+      document.getElementById('progressText').textContent="TODAY'S JOURNEY · 6 OF 6";
+      document.getElementById('progressPct').textContent='100%';document.getElementById('progressFill').style.width='100%';
+    });
+  }
 }
 function selectMatch(b,type){if(b.classList.contains('matched'))return;if(!state.selected){state.selected={b,type};b.classList.add('selected');return}if(state.selected.type===type){state.selected.b.classList.remove('selected');state.selected={b,type};b.classList.add('selected');return}let word=type==='word'?b.dataset.word:state.selected.b.dataset.word,def=type==='def'?b.dataset.def:state.selected.b.dataset.def,first=state.selected.b;first.classList.remove('selected');state.selected=null;if(word===def){first.classList.add('matched');b.classList.add('matched');first.disabled=b.disabled=true;state.matches++;document.getElementById('matchFeedback').textContent=`Matched: ${word}. ${state.matches===6?'All done — lovely work!':'Find another pair.'}`;document.getElementById('matchFeedback').className='feedback good';if(state.matches===6)document.getElementById('continue').disabled=false}else{first.classList.add('miss');b.classList.add('miss');setTimeout(()=>{first.classList.remove('miss');b.classList.remove('miss')},300);document.getElementById('matchFeedback').textContent='Not that pair. Read each meaning closely and try again.';document.getElementById('matchFeedback').className='feedback try'}}
 function speak(t){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.86;speechSynthesis.speak(u)}
 function updateFinalLock(){state.ppChecked=state.ppBuiltCorrect&&state.ppAnswers?.size===3;const finish=document.getElementById('finish');if(finish)finish.disabled=!state.ppChecked}
 function resetLesson(){state={stage:0,done:new Set(),matches:0,selected:null,checked:new Set(),grammarRight:0,ppChecked:false,ppBuiltCorrect:false,builder:[]};render();nav()}
+installDelegatedActions({
+  'go-to-stage':{event:'click',run:element=>{const stage=readActionInteger(element,'stage',0,stages.length-1);if(stage!==null)go(stage)}},
+  'reset-lesson':{event:'click',run:resetLesson},
+  'registered-click':{event:'click',run:runRegisteredClick}
+});
 nav();render();
 
 

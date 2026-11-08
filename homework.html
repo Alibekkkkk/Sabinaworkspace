@@ -21,7 +21,7 @@
 </head>
 <body class="homework-page">
 
-<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" onclick="switchStudent()">Not you? Switch student</button></div>
+<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" data-action="switch-student">Not you? Switch student</button></div>
 <div class="hw-top">
   <div class="mark" id="markIcon">📘</div>
   <div class="title-block">
@@ -30,9 +30,9 @@
   </div>
   <div class="spacer"></div>
   <div id="teacherResetArea" class="phase0-inline-1">
-    <button onclick="resetHomeworkTeacher()" class="phase0-inline-2">🔄 Reset Whole Homework</button>
+    <button data-action="reset-homework-teacher" class="phase0-inline-2">🔄 Reset Whole Homework</button>
   </div>
-  <button onclick="toggleTheme()" id="themeButton">🌙 Theme</button>
+  <button data-action="toggle-theme" id="themeButton">🌙 Theme</button>
   <a href="portal.html">← Classwork</a>
 </div>
 
@@ -61,7 +61,7 @@
 
   <div class="submit-bar" id="submitBar">
     <div class="hint" id="submitHint">Answer every question to unlock submission. <b>0 remaining.</b></div>
-    <button class="btn submit-btn" id="submitBtn" onclick="submitAll()" disabled>✓ Submit homework</button>
+    <button class="btn submit-btn" id="submitBtn" data-action="submit-homework" disabled>✓ Submit homework</button>
   </div>
 </div>
 
@@ -71,8 +71,8 @@
   <div class="sticky-header" id="stickyDragHandle">
     <span class="sticky-title">📝 My Note</span>
     <div class="sticky-actions">
-      <button class="sticky-btn delete" onclick="deleteCurrentNote()" title="Delete Note">🗑️</button>
-      <button class="sticky-btn" onclick="closeStickyNote()" title="Close">✕</button>
+      <button class="sticky-btn delete" data-action="delete-current-note" title="Delete Note">🗑️</button>
+      <button class="sticky-btn" data-action="close-sticky-note" title="Close">✕</button>
     </div>
   </div>
   <div class="sticky-body">
@@ -80,9 +80,9 @@
   </div>
 </div>
 
-<div class="vocab-backdrop" id="vocabBackdrop" onclick="if(event.target===this)closeVocab()">
+<div class="vocab-backdrop" id="vocabBackdrop" data-action="close-vocab-backdrop">
   <div class="vocab-card">
-    <button class="close-x" onclick="closeVocab()">×</button>
+    <button class="close-x" data-action="close-vocab">×</button>
     <div class="head">
       <div class="emoji" id="vocabEmoji">📖</div>
       <div class="word" id="vocabWord"></div>

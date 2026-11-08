@@ -6,6 +6,7 @@
 
 import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
+import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 
 let firebaseConfig;
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
@@ -22,7 +23,6 @@ let lesson = null;
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 function escapeAttr(s){return escapeHtml(s)}
-function jsArg(value){return escapeHtml(JSON.stringify(String(value)).replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029'))}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
 
 const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
@@ -59,12 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if(!e.target.closest('#passageBody')) return; e.preventDefault(); menu.innerHTML = ''; contextTargetEdit = null;
     const selection = window.getSelection(); const targetNote = e.target.closest('.user-note'); let node = e.target;
     while (node && node !== document.body) { if (node.nodeType === 1) { if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('hl-purple') || node.classList.contains('hl-pink') || node.classList.contains('underline')) { contextTargetEdit = node; break; } } node = node.parentNode; }
-    const safeClick = "event.preventDefault(); event.stopPropagation();";
-    if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); menu.innerHTML = `<div class="context-item" onclick="${safeClick} openExistingNote(${jsArg(targetNote.dataset.id)})">📝 Edit Note</div><div class="context-item delete" onclick="${safeClick} deleteNoteById(${jsArg(targetNote.dataset.id)})">🗑️ Delete Note</div>`; }
-    else if (contextTargetEdit) { menu.innerHTML = `<div class="context-item delete" onclick="${safeClick} removeExistingEdit()">🗑️ Remove Edit</div>`; } 
+    if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); menu.innerHTML = `<div class="context-item" data-action="edit-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">📝 Edit Note</div><div class="context-item delete" data-action="delete-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">🗑️ Delete Note</div>`; }
+    else if (contextTargetEdit) { menu.innerHTML = `<div class="context-item delete" data-action="remove-existing-edit">🗑️ Remove Edit</div>`; }
     else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
-      menu.innerHTML = `<div class="context-item has-submenu">🖍️ Highlight<div class="submenu"><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-yellow')"><span class="color-swatch" style="background:#fce883"></span> Yellow</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-green')"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-blue')"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-purple')"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div><div class="submenu-item" onclick="${safeClick} applyAnnotation('hl-pink')"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div></div></div><div class="context-item" onclick="${safeClick} applyAnnotation('underline')">U̲ Underline</div><div class="context-item" onclick="${safeClick} createNewNote()">💬 Add Note</div>`;
+      menu.innerHTML = `<div class="context-item has-submenu">🖍️ Highlight<div class="submenu"><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-yellow"><span class="color-swatch" style="background:#fce883"></span> Yellow</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-green"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-blue"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-purple"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-pink"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div></div></div><div class="context-item" data-action="apply-annotation" data-annotation="underline">U̲ Underline</div><div class="context-item" data-action="create-note">💬 Add Note</div>`;
     } else { return; }
     let x = e.pageX; let y = e.pageY; if (x + 160 > window.innerWidth) x -= 160; if (y + 200 > window.innerHeight) y -= 200; menu.style.left = x + 'px'; menu.style.top = y + 'px'; menu.classList.add('show');
   });
@@ -97,13 +96,13 @@ function renderPassage(){
   const p=lesson.reading; const body=document.getElementById('passageBody'); if(!body)return;
   let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>'; const vocabWords=lesson.vocab.map(v=>v.en);
   p.paragraphs.forEach(function(par){ let text=escapeHtml(par.text); vocabWords.forEach(function(w){ let matchStr = w; if (w.startsWith('to ')) matchStr = w.substring(3); const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi'); text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>'); }); html+='<p><span class="para-label">'+escapeHtml(par.label)+'</span>'+text+'</p>'; });
-  body.innerHTML=sanitizeRichHtml(html); body.querySelectorAll('.v-word').forEach(function(el){ el.onclick=function(){openVocab(el.dataset.vocab)}; });
+  body.innerHTML=sanitizeRichHtml(html); body.querySelectorAll('.v-word').forEach(function(el){ el.dataset.action = "open-vocab"; });
   if(fbDb && code) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).once('value').then(snap => { if(snap.exists()) { 
       const savedHtml = snap.val();
       const currentTitle = p.title;
       if (currentTitle && savedHtml.includes(currentTitle)) {
           body.innerHTML = sanitizeRichHtml(savedHtml);
-          body.querySelectorAll('.v-word').forEach(function(el){ el.onclick=function(){openVocab(el.dataset.vocab)}; });
+          body.querySelectorAll('.v-word').forEach(function(el){ el.dataset.action = "open-vocab"; });
           body.querySelectorAll('.user-note').forEach((note, i) => { if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i; }); 
       } else {
           fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).remove();
@@ -162,12 +161,12 @@ function renderQuestions(){
       if(submitted){ const ok = isAnswerCorrect(inp.value, q.answers || [q.answer]); if(ok)inp.classList.add('correct'); else inp.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (ok ? 'correct' : 'wrong'); fb.innerHTML=(ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='tfng'){
       const opts=document.createElement('div');opts.className='q-opts';
-      ['True','False','Not Given'].forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.answer)b.classList.add('correct'); if(answers[idx]===o && o!==q.answer)b.classList.add('wrong'); } else { if(answers[idx]===o) b.classList.add('selected'); b.onclick=function(){ opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')}); b.classList.add('selected'); answers[idx]=o;updateProgress();debouncedSave(); }; } opts.appendChild(b); });
+      ['True','False','Not Given'].forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.answer)b.classList.add('correct'); if(answers[idx]===o && o!==q.answer)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[idx]===o) b.classList.add('selected'); } opts.appendChild(b); });
       body.appendChild(opts);
       if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.answer ? 'correct' : 'wrong'); fb.innerHTML=(answers[idx]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
-      shuffle(q.options).forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.correct)b.classList.add('correct'); if(answers[idx]===o && o!==q.correct)b.classList.add('wrong'); } else { if(answers[idx]===o) b.classList.add('selected'); b.onclick=function(){ opts.querySelectorAll('button').forEach(function(x){x.classList.remove('selected')}); b.classList.add('selected'); answers[idx]=o;updateProgress();debouncedSave(); }; } opts.appendChild(b); });
+      shuffle(q.options).forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.correct)b.classList.add('correct'); if(answers[idx]===o && o!==q.correct)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[idx]===o) b.classList.add('selected'); } opts.appendChild(b); });
       body.appendChild(opts);
       if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.correct ? 'correct' : 'wrong'); fb.innerHTML=(answers[idx]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='long'){
@@ -180,7 +179,8 @@ function renderQuestions(){
     if(submitted && teacherCanEdit) {
         const rst = document.createElement('button');
         rst.className = 'btn danger small'; rst.textContent = '↺ Undo Question'; rst.style.marginTop = '10px';
-        rst.onclick = () => undoHomeworkQuestion(idx);
+        rst.dataset.action = "undo-homework-question";
+        rst.dataset.questionIndex = String(idx);
         card.appendChild(rst);
     }
 
@@ -377,6 +377,77 @@ function archivedHomeworkData(data) {
   return archived;
 }
 
+const clickAction = run => ({ event: "click", run });
+installDelegatedActions({
+  "switch-student": clickAction(switchStudent),
+  "reset-homework-teacher": clickAction(resetHomeworkTeacher),
+  "toggle-theme": clickAction(toggleTheme),
+  "submit-homework": clickAction(submitAll),
+  "delete-current-note": clickAction(deleteCurrentNote),
+  "close-sticky-note": clickAction(closeStickyNote),
+  "close-vocab-backdrop": clickAction((element, event) => {
+    if (event.target === element) closeVocab();
+  }),
+  "close-vocab": clickAction(closeVocab),
+  "edit-note": clickAction((element, event) => {
+    const id = readActionParam(element, "noteId", /^note_[A-Za-z0-9_-]{1,64}$/);
+    if (!id) return;
+    event.preventDefault();
+    openExistingNote(id);
+  }),
+  "delete-note": clickAction((element, event) => {
+    const id = readActionParam(element, "noteId", /^note_[A-Za-z0-9_-]{1,64}$/);
+    if (!id) return;
+    event.preventDefault();
+    deleteNoteById(id);
+  }),
+  "remove-existing-edit": clickAction((element, event) => {
+    event.preventDefault();
+    removeExistingEdit();
+  }),
+  "apply-annotation": clickAction((element, event) => {
+    const annotation = readActionEnum(element, "annotation", [
+      "hl-yellow", "hl-green", "hl-blue", "hl-purple", "hl-pink", "underline"
+    ]);
+    if (!annotation) return;
+    event.preventDefault();
+    applyAnnotation(annotation);
+  }),
+  "create-note": clickAction((element, event) => {
+    event.preventDefault();
+    createNewNote();
+  }),
+  "open-vocab": clickAction(element => {
+    const word = readActionParam(element, "vocab", /^[\s\S]{1,100}$/);
+    if (word && lesson?.vocab?.some(item => item.en === word)) openVocab(word);
+  }),
+  "choose-answer": clickAction(element => {
+    if (submitted || !Array.isArray(lesson?.questions)) return;
+    const index = readActionInteger(element, "questionIndex", 0, lesson.questions.length - 1);
+    const answer = readActionParam(element, "answer", /^[\s\S]{1,500}$/);
+    const question = index === null ? null : lesson.questions[index];
+    if (!question || !answer) return;
+    const validAnswers = question.type === "tfng"
+      ? ["True", "False", "Not Given"]
+      : question.type === "mcq" && Array.isArray(question.options)
+        ? question.options
+        : [];
+    if (!validAnswers.includes(answer)) return;
+    const options = element.closest(".q-opts");
+    if (!options) return;
+    options.querySelectorAll("button").forEach(button => button.classList.remove("selected"));
+    element.classList.add("selected");
+    answers[index] = answer;
+    updateProgress();
+    debouncedSave();
+  }),
+  "undo-homework-question": clickAction(element => {
+    if (!Array.isArray(lesson?.questions)) return;
+    const index = readActionInteger(element, "questionIndex", 0, lesson.questions.length - 1);
+    if (index !== null && submitted && teacherCanEdit) undoHomeworkQuestion(index);
+  })
+});
+
 async function startHomework(){
   if(!fbDb||(!studentContext&&!teacherMode))throw new Error('Verified student context is required to start homework.');
   if(teacherMode&&!code){renderPassage();renderQuestions();return}
@@ -424,7 +495,6 @@ async function startHomework(){
 
 if (typeof escapeHtml === "function") globalThis["escapeHtml"] = escapeHtml;
 if (typeof escapeAttr === "function") globalThis["escapeAttr"] = escapeAttr;
-if (typeof jsArg === "function") globalThis["jsArg"] = jsArg;
 if (typeof shuffle === "function") globalThis["shuffle"] = shuffle;
 if (typeof expandContractions === "function") globalThis["expandContractions"] = expandContractions;
 if (typeof normalizeString === "function") globalThis["normalizeString"] = normalizeString;

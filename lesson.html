@@ -25,19 +25,19 @@
   <div class="logo"><div class="mark">🌪️</div><span class="text" id="workspaceName">Workspace</span></div>
   <div class="stat-pill" id="syncPill"><span class="sync-dot warn" id="syncDot"></span><span id="syncStatus">Set code</span></div>
   <div class="session-input"><label class="lbl" for="sessionCodeInput">Code:</label>
-    <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" autocapitalize="characters" autocomplete="off" onkeydown="if(event.key==='Enter')changeSessionCode()">
-    <button type="button" class="join-code" onclick="changeSessionCode()">Open</button></div>
+    <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" autocapitalize="characters" autocomplete="off" data-action="change-session-code-enter" data-action-event="keydown">
+    <button type="button" class="join-code" data-action="change-session-code">Open</button></div>
   <div class="stat-pill" id="timerPill">⏱ <span class="val" id="timerDisplay">00:00</span></div>
   <div class="stat-pill" id="scorePill">🏆 <span class="val" id="scoreDisplay">0</span><span class="phase0-inline-1"> / 130</span></div>
   <div class="stat-pill" id="streakPill"><span id="streakDisplay" class="val green">0</span> 🔥</div>
   <div class="spacer"></div>
   <a class="icon-btn" href="dashboard.html" title="Teacher dashboard">🏫</a>
-  <button class="icon-btn" id="soundToggle" onclick="toggleSound()" title="Sound">🔊</button>
-  <button class="icon-btn" id="darkToggle" onclick="toggleDark()" title="Dark">🌙</button>
-  <button class="icon-btn" onclick="toggleNotes()" title="Notes">📝</button>
+  <button class="icon-btn" id="soundToggle" data-action="toggle-sound" title="Sound">🔊</button>
+  <button class="icon-btn" id="darkToggle" data-action="toggle-dark" title="Dark">🌙</button>
+  <button class="icon-btn" data-action="toggle-notes" title="Notes">📝</button>
 </div>
 
-<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" onclick="switchStudent()">Not you? Switch student</button></div>
+<div class="identity-banner" id="studentIdentityBanner"><span id="studentIdentityText"></span><button type="button" data-action="switch-student">Not you? Switch student</button></div>
 <pre class="debug-overlay" id="debugOverlay" hidden></pre>
 
 <div class="layout">
@@ -50,7 +50,7 @@
 </div>
 
 <aside class="notes-panel" id="notesPanel">
-  <button class="close-note" onclick="toggleNotes()">×</button>
+  <button class="close-note" data-action="toggle-notes">×</button>
   <h3>📝 My Notes</h3>
   <p class="sub">Jot down words, questions, or your own examples.</p>
   <textarea id="notesArea" placeholder="Type your notes here..."></textarea>
@@ -62,8 +62,8 @@
   <div class="sticky-header" id="stickyDragHandle">
     <span class="sticky-title">📝 My Note</span>
     <div class="sticky-actions">
-      <button class="sticky-btn delete" onclick="deleteCurrentNote()" title="Delete Note">🗑️</button>
-      <button class="sticky-btn" onclick="closeStickyNote()" title="Close">✕</button>
+      <button class="sticky-btn delete" data-action="delete-current-note" title="Delete Note">🗑️</button>
+      <button class="sticky-btn" data-action="close-sticky-note" title="Close">✕</button>
     </div>
   </div>
   <div class="sticky-body">
@@ -71,37 +71,37 @@
   </div>
 </div>
 
-<div id="imageUrlModal" onclick="if(event.target===this)closeImageModal()">
+<div id="imageUrlModal" data-action="close-image-backdrop">
   <div class="image-modal-content">
     <h3>Set Custom Image</h3>
     <p class="phase0-inline-2">Paste a public `https://` image URL below. Leave blank to remove.</p>
     <input type="text" id="imageUrlInput" placeholder="https://example.com/image.jpg">
     <div class="actions">
-      <button class="btn ghost" onclick="closeImageModal()">Cancel</button>
-      <button class="btn success" onclick="saveImageUrl()">Save Image</button>
+      <button class="btn ghost" data-action="close-image-modal">Cancel</button>
+      <button class="btn success" data-action="save-image-url">Save Image</button>
     </div>
   </div>
 </div>
 
-<div class="fc-modal-backdrop" id="fcModal" onclick="if(event.target===this)closeFCModal()">
+<div class="fc-modal-backdrop" id="fcModal" data-action="close-flashcard-backdrop">
   <div class="fc-modal">
-    <button class="fc-modal-close" onclick="closeFCModal()">×</button>
+    <button class="fc-modal-close" data-action="close-flashcard-modal">×</button>
     <div class="fc-modal-img" id="fcModalImg"></div>
     <div class="fc-modal-body">
       <div class="fc-modal-word" id="fcModalWord"></div>
       <div class="fc-reveal-area" id="fcRevealArea"></div>
       <div class="fc-modal-actions">
-        <button class="btn success" onclick="fcMarkKnow()">✓ I know it</button>
-        <button class="btn ghost" onclick="fcMarkAgain()">↻ Practise again</button>
+        <button class="btn success" data-action="flashcard-mark-known">✓ I know it</button>
+        <button class="btn ghost" data-action="flashcard-mark-again">↻ Practise again</button>
       </div>
       <div class="fc-modal-tools">
-        <button class="tool" onclick="quizSpeak()">🔊 Listen</button>
-        <button class="tool" onclick="editFlashcardImage()">🖼️ Set image</button>
+        <button class="tool" data-action="flashcard-speak">🔊 Listen</button>
+        <button class="tool" data-action="edit-flashcard-image">🖼️ Set image</button>
       </div>
       <div class="fc-modal-nav">
-        <button onclick="fcPrev()">← Previous</button>
+        <button data-action="flashcard-previous">← Previous</button>
         <span class="counter" id="fcCounter">1 / 20</span>
-        <button onclick="fcNext()">Next Flashcard →</button>
+        <button data-action="flashcard-next">Next Flashcard →</button>
       </div>
     </div>
   </div>

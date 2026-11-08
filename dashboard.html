@@ -24,7 +24,7 @@
 <div id="teacherLogin" class="phase0-inline-1">
   <h1>Teacher sign in</h1>
   <p>Sign in with the teacher Google account to manage students and lessons.</p>
-  <button class="btn primary" id="googleBtn" onclick="teacherGoogleSignIn()">
+  <button class="btn primary" id="googleBtn" data-action="teacher-google-sign-in">
     <span class="g-google-icon">G</span>
     Continue with Google
   </button>
@@ -33,7 +33,7 @@
 
 <div class="wrap phase0-inline-2">
   <div class="header">
-    <div class="header-left" onclick="deselectStudent()" title="Return to Overview">
+    <div class="header-left" data-action="deselect-student" title="Return to Overview">
       <div class="mark">📊</div>
       <div>
         <h1>Teacher Dashboard</h1>
@@ -42,11 +42,11 @@
     </div>
     <div class="header-actions">
       <div class="connection" id="conn"><div class="dot"></div><span id="connText">Connecting…</span></div>
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Switch theme">🌙</button>
+      <button class="theme-toggle" id="themeToggle" data-action="toggle-theme" title="Switch theme">🌙</button>
       <a class="btn phase0-inline-4" href="tools/import-content.html" target="_blank">🔐 Import Content</a>
       <a class="btn phase0-inline-5" href="portal.html" target="_blank">🎓 Student Portal</a>
-      <button class="btn" onclick="teacherSignOut()">Sign out</button>
-      <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
+      <button class="btn" data-action="teacher-sign-out">Sign out</button>
+      <button class="btn primary" data-action="open-add-student">+ Add Student</button>
     </div>
   </div>
 
@@ -55,9 +55,9 @@
   </div>
   
   <div class="tabs">
-    <button class="tab active" id="tabStudents" onclick="switchMainTab('students')">👥 Students</button>
-    <button class="tab" id="tabClasswork" onclick="switchMainTab('classwork')">📚 Classwork Lessons</button>
-    <button class="tab" id="tabHomework" onclick="switchMainTab('homework')">📌 Homework Assignments</button>
+    <button class="tab active" id="tabStudents" data-action="switch-main-tab" data-tab="students">👥 Students</button>
+    <button class="tab" id="tabClasswork" data-action="switch-main-tab" data-tab="classwork">📚 Classwork Lessons</button>
+    <button class="tab" id="tabHomework" data-action="switch-main-tab" data-tab="homework">📌 Homework Assignments</button>
   </div>
 
   <!-- ================= STUDENTS TAB ================= -->
@@ -72,11 +72,11 @@
       <aside class="students-panel">
         <div class="students-header">
           <h2><span>Students</span><span class="count" id="studentsCount">0</span></h2>
-          <input type="text" class="students-search" id="studentSearch" placeholder="Search by name or code…" oninput="renderStudentsList()">
+          <input type="text" class="students-search" id="studentSearch" placeholder="Search by name or code…" data-action="render-students-list" data-action-event="input">
         </div>
         <div class="students-list" id="studentsList"></div>
         <div class="students-footer">
-          <button class="btn primary" onclick="openAddStudent()">+ Add Student</button>
+          <button class="btn primary" data-action="open-add-student">+ Add Student</button>
         </div>
       </aside>
       <main class="main-area">
@@ -87,10 +87,10 @@
               <div class="meta">Code: <b id="selectedCode">—</b> · Added: <span id="selectedAdded">—</span></div>
             </div>
             <div class="selected-actions">
-              <button class="btn small" onclick="openStudentClasswork()">📚 View classwork</button>
-              <button class="btn small" onclick="openStudentHomework()">📌 View homework</button>
-              <button class="btn small" onclick="renameStudent()">✏️ Rename</button>
-              <button class="btn small danger" onclick="deleteStudent()">🗑 Delete</button>
+              <button class="btn small" data-action="open-student-classwork">📚 View classwork</button>
+              <button class="btn small" data-action="open-student-homework">📌 View homework</button>
+              <button class="btn small" data-action="rename-student">✏️ Rename</button>
+              <button class="btn small danger" data-action="delete-student">🗑 Delete</button>
             </div>
           </div>
 
@@ -110,8 +110,8 @@
               <p class="phase0-inline-12">If the student's lesson page is open, these commands fire immediately.</p>
               <div class="control-grid" id="controlGrid"></div>
               <div class="phase0-inline-13">
-                <button class="btn" onclick="sendReset('all')">🔄 Reset ALL progress</button>
-                <button class="btn phase0-inline-14" onclick="sendReset('vocab')">🔄 Reset Vocab Only</button>
+                <button class="btn" data-action="send-reset" data-reset-type="all">🔄 Reset ALL progress</button>
+                <button class="btn phase0-inline-14" data-action="send-reset" data-reset-type="vocab">🔄 Reset Vocab Only</button>
               </div>
             </div>
           </div>
@@ -124,12 +124,12 @@
             <div class="card">
               <h2>Teacher History</h2>
               <div class="phase0-inline-15">
-                <select id="historyTimeframe" class="students-search phase0-inline-16" onchange="attachHistoryListener()">
+                <select id="historyTimeframe" class="students-search phase0-inline-16" data-action="attach-history-listener" data-action-event="change">
                   <option value="all">All time</option>
                   <option value="3600000">Last hour</option>
                   <option value="86400000">Last day</option>
                 </select>
-                <button class="btn small danger" onclick="clearHistoryLogs()">Clear Logs</button>
+                <button class="btn small danger" data-action="clear-history-logs">Clear Logs</button>
               </div>
               <div class="activity-feed" id="teacherHistoryList"></div>
             </div>
@@ -144,8 +144,8 @@
             <h2 id="weeklySummaryTitle">Weekly progress summary</h2>
             <p class="phase0-inline-17">Generate a private teacher report from the last seven days. Review it before sharing; it contains student-specific learning data.</p>
             <div class="phase0-inline-18">
-              <button class="btn" id="generateWeeklySummary" type="button" disabled>Generate summary</button>
-              <button class="btn" id="downloadWeeklySummary" type="button" disabled>Download .txt</button>
+              <button class="btn" id="generateWeeklySummary" data-action="generate-weekly-summary" type="button" disabled>Generate summary</button>
+              <button class="btn" id="downloadWeeklySummary" data-action="download-weekly-summary" type="button" disabled>Download .txt</button>
             </div>
             <textarea id="weeklySummaryOutput" readonly rows="12" aria-label="Weekly progress summary" placeholder="Select a student and wait for the progress data to load." class="phase0-inline-19"></textarea>
           </section>
@@ -159,13 +159,13 @@
   <div class="tab-view" id="viewClasswork">
     <div class="filter-banner" id="classworkFilter">
       <span id="classworkFilterText"></span>
-      <button class="x" onclick="clearClassworkFilter()">✕ Clear filter</button>
+      <button class="x" data-action="clear-classwork-filter">✕ Clear filter</button>
     </div>
     <div class="split-layout">
       <aside class="tree-panel">
         <div class="tree-header">
           <h2>📚 Curriculum</h2>
-          <button class="btn small primary" onclick="openLessonModal()">+ New</button>
+          <button class="btn small primary" data-action="open-lesson-modal">+ New</button>
         </div>
         <div class="tree-body" id="classworkTree"></div>
       </aside>
@@ -173,9 +173,9 @@
         <div class="viewer-bar phase0-inline-20" id="classworkBar">
           <div class="title" id="classworkTitle">Lesson</div>
           <div class="actions">
-            <button class="btn small" onclick="openCurrentClassworkInTab()">↗ Open in tab</button>
-            <button class="btn small" onclick="editLessonMeta(currentClassworkId)">✏️ Edit info</button>
-            <button class="btn small danger" onclick="deleteLesson(currentClassworkId)">🗑 Delete</button>
+            <button class="btn small" data-action="open-current-classwork">↗ Open in tab</button>
+            <button class="btn small" data-action="edit-current-classwork">✏️ Edit info</button>
+            <button class="btn small danger" data-action="delete-current-classwork">🗑 Delete</button>
           </div>
         </div>
         <div class="viewer-placeholder" id="classworkPlaceholder">
@@ -202,8 +202,8 @@
         <div class="viewer-bar phase0-inline-22" id="homeworkBar">
           <div class="title" id="homeworkTitle">Homework</div>
           <div class="actions">
-            <button class="btn small" onclick="openCurrentHomeworkInTab()">↗ Open in tab</button>
-            <button class="btn small" onclick="editLessonMeta(currentHomeworkId)">✏️ Edit info</button>
+            <button class="btn small" data-action="open-current-homework">↗ Open in tab</button>
+            <button class="btn small" data-action="edit-current-homework">✏️ Edit info</button>
           </div>
         </div>
         <div class="viewer-placeholder" id="homeworkPlaceholder">
@@ -228,8 +228,8 @@
     <label for="newStudentCode">Session code (optional)</label>
     <input type="text" id="newStudentCode" placeholder="AUTO" maxlength="12" autocomplete="off" class="phase0-inline-24">
     <div class="modal-actions">
-      <button class="btn" onclick="closeAddStudent()">Cancel</button>
-      <button class="btn primary" onclick="submitAddStudent()">Create student</button>
+      <button class="btn" data-action="close-add-student">Cancel</button>
+      <button class="btn primary" data-action="submit-add-student">Create student</button>
     </div>
   </div>
 </div>
@@ -241,8 +241,8 @@
     <label for="linkCodeSelect">Existing code</label>
     <select id="linkCodeSelect"></select>
     <div class="modal-actions">
-      <button class="btn" onclick="closeLinkModal()">Cancel</button>
-      <button class="btn primary" onclick="confirmLinkStudent()">Link account</button>
+      <button class="btn" data-action="close-link-modal">Cancel</button>
+      <button class="btn primary" data-action="confirm-link-student">Link account</button>
     </div>
   </div>
 </div>
@@ -259,8 +259,8 @@
     <input type="text" id="lessonIcon" placeholder="📘" maxlength="4" class="phase0-inline-25">
     <label>Type</label>
     <div class="phase0-inline-26">
-      <button type="button" class="btn phase0-inline-27" id="typeClassworkBtn" onclick="setLessonType('classwork')">📚 Classwork</button>
-      <button type="button" class="btn phase0-inline-28" id="typeHomeworkBtn" onclick="setLessonType('homework')">📌 Homework</button>
+      <button type="button" class="btn phase0-inline-27" id="typeClassworkBtn" data-action="set-lesson-type" data-lesson-type="classwork">📚 Classwork</button>
+      <button type="button" class="btn phase0-inline-28" id="typeHomeworkBtn" data-action="set-lesson-type" data-lesson-type="homework">📌 Homework</button>
     </div>
     
     <label for="lessonCustomUrl">Custom URL (optional — leave blank for default)</label>
@@ -278,14 +278,14 @@
     </div>
     <label>Visibility</label>
     <div class="phase0-inline-32">
-      <button type="button" class="btn phase0-inline-33" id="visAllBtn" onclick="setLessonVisibility('all')">👥 All</button>
-      <button type="button" class="btn phase0-inline-34" id="visSomeBtn" onclick="setLessonVisibility('some')">🔒 Selected</button>
+      <button type="button" class="btn phase0-inline-33" id="visAllBtn" data-action="set-lesson-visibility" data-visibility="all">👥 All</button>
+      <button type="button" class="btn phase0-inline-34" id="visSomeBtn" data-action="set-lesson-visibility" data-visibility="some">🔒 Selected</button>
     </div>
     <div id="studentPickList" class="phase0-inline-35"></div>
     <label class="phase0-inline-36"><input type="checkbox" id="lessonPublished" checked class="phase0-inline-37"> Published (visible to students)</label>
     <div class="modal-actions">
-      <button class="btn" onclick="closeLessonModal()">Cancel</button>
-      <button class="btn primary" onclick="submitLesson()">Save</button>
+      <button class="btn" data-action="close-lesson-modal">Cancel</button>
+      <button class="btn primary" data-action="submit-lesson">Save</button>
     </div>
   </div>
 </div>
