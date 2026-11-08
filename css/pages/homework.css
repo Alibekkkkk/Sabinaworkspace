@@ -133,3 +133,11 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 
 .q-feedback.correct, .q-feedback.wrong { border: 2px solid currentColor; border-left-width: 6px; }
 .q-feedback .exp { color: inherit; opacity: 0.92; }
+
+/* Phone widths: let the progress row wrap instead of forcing the page wider than the screen. */
+.progress-shell { flex-wrap: wrap; }
+.save-state { min-width: 0; }
+@media (max-width: 600px) { .hw-top { padding-inline: 12px; } .progress-shell .progress-track { flex-basis: 100%; order: 5; } }
+.identity-banner > span { min-width: 0; overflow-wrap: anywhere; }
+.identity-banner > button { flex: none; }
+@media (max-width: 480px) { .identity-banner { flex-wrap: wrap; } }

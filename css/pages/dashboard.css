@@ -196,3 +196,5 @@ body{font-family:var(--ds-font-body);background:var(--bg);color:var(--ink);min-h
 .today-attention { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--ds-space-1); }
 .status-chip { display: inline-flex; align-items: center; gap: 6px; font-size: var(--ds-text-xs); font-weight: 700; color: var(--ds-color-muted); }
 .student-item .dot.stuck { background: var(--ds-color-danger); border-radius: 2px; }
+.tab { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 420px) { .tab { padding: 10px 6px; font-size: 13px; } .tabs { gap: 4px; padding: 4px; } }
