@@ -5,9 +5,13 @@
 })();
 
 import { isTeacher } from "../auth.js";
+import { expandContractions, isAnswerCorrect } from "../grading.js";
+
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 import { clearElement, serializeChildren, setHtml } from "../dom.js";
+// Keyword matching for long answers ignores punctuation entirely.
+function normalizeString(str) { return expandContractions(String(str).toLowerCase().trim()).replace(/[.,!?;:'"()\[\]{}]/g, '').replace(/\s+/g, ' '); }
 
 let firebaseConfig;
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
@@ -25,28 +29,6 @@ let lesson = null;
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 function escapeAttr(s){return escapeHtml(s)}
 function shuffle(a){const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
-
-const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
-function expandContractions(str) { return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would'); }
-function normalizeString(str) { let s = String(str).toLowerCase().trim(); s = expandContractions(s); s = s.replace(/[.,!?;:'"()\[\]{}]/g, ''); s = s.replace(/\s+/g, ' '); return s; }
-function getCoreWords(str) { const norm = normalizeString(str); return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w)); }
-function levenshtein(a, b) { const matrix = []; for (let i = 0; i <= b.length; i++) matrix[i] = [i]; for (let j = 0; j <= a.length; j++) matrix[0][j] = j; for (let i = 1; i <= b.length; i++) { for (let j = 1; j <= a.length; j++) { if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1]; else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)); } } return matrix[b.length][a.length]; }
-function isAnswerCorrect(userStr, expectedArr) {
-  if(!userStr) return false; let user = normalizeString(userStr); if(!user) return false;
-  for (let exp of expectedArr) {
-    let target = normalizeString(exp); if (user === target) return true;
-    const userNums = user.match(/\d+/g) || []; const targetNums = target.match(/\d+/g) || [];
-    if (targetNums.length > 0) { const numMatch = targetNums.every(tn => userNums.includes(tn)); if (numMatch) return true; }
-    const userCores = getCoreWords(user); const targetCores = getCoreWords(target);
-    if (userCores.length > 0 && targetCores.length > 0) {
-        const userCoreStr = userCores.join(' '); const targetCoreStr = targetCores.join(' ');
-        if (userCoreStr === targetCoreStr) return true; if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true; if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
-    }
-    if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
-    if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) { const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length); if(['', 'ing', 'ed', 's'].includes(suffix)) return true; }
-    if (target.length > 4) { const maxAllowedDist = target.length > 8 ? 2 : 1; if (levenshtein(user, target) <= maxAllowedDist) return true; }
-  } return false;
-}
 
 /* ================== ANNOTATION & NOTES LOGIC ================== */
 let activeNoteId = null; let savedRange = null; let contextTargetEdit = null;
@@ -159,7 +141,7 @@ function renderQuestions(){
       const row=document.createElement('div');row.className='q-input-row'; const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';
       if(submitted){inp.value=answers[idx]||'';inp.disabled=true} else { inp.value=answers[idx]||''; inp.addEventListener('input',function(){ if(inp.value.trim().length>0){answers[idx]=inp.value;} else{delete answers[idx];} updateProgress(); debouncedSave(); }); }
       row.appendChild(inp);body.appendChild(row);
-      if(submitted){ const ok = isAnswerCorrect(inp.value, q.answers || [q.answer]); if(ok)inp.classList.add('correct'); else inp.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (ok ? 'correct' : 'wrong'); setHtml(fb, (ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const ok = isAnswerCorrect(inp.value, q.answers || [q.answer], { mode: q.type === "short" ? "fuzzy" : "exact" }); if(ok)inp.classList.add('correct'); else inp.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (ok ? 'correct' : 'wrong'); setHtml(fb, (ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='tfng'){
       const opts=document.createElement('div');opts.className='q-opts';
       ['True','False','Not Given'].forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.answer)b.classList.add('correct'); if(answers[idx]===o && o!==q.answer)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[idx]===o) b.classList.add('selected'); } opts.appendChild(b); });
@@ -192,7 +174,7 @@ function renderQuestions(){
 
 async function submitAll(){
   if(submitted)return; const total=lesson.questions.length; if(Object.keys(answers).length<total){ if(!confirm('Some questions are still blank. Submit anyway?'))return; }
-  let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[idx]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer])) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
+  let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[idx]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer], { mode: q.type === "short" ? "fuzzy" : "exact" })) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
   if(!sessionRef||!studentContext)throw new Error('Verified student session is unavailable; your work was not submitted.');
   try {
       await sessionRef.child('homework/'+homeworkId).update({
@@ -497,11 +479,6 @@ async function startHomework(){
 if (typeof escapeHtml === "function") globalThis["escapeHtml"] = escapeHtml;
 if (typeof escapeAttr === "function") globalThis["escapeAttr"] = escapeAttr;
 if (typeof shuffle === "function") globalThis["shuffle"] = shuffle;
-if (typeof expandContractions === "function") globalThis["expandContractions"] = expandContractions;
-if (typeof normalizeString === "function") globalThis["normalizeString"] = normalizeString;
-if (typeof getCoreWords === "function") globalThis["getCoreWords"] = getCoreWords;
-if (typeof levenshtein === "function") globalThis["levenshtein"] = levenshtein;
-if (typeof isAnswerCorrect === "function") globalThis["isAnswerCorrect"] = isAnswerCorrect;
 if (typeof applyAnnotation === "function") globalThis["applyAnnotation"] = applyAnnotation;
 if (typeof createNewNote === "function") globalThis["createNewNote"] = createNewNote;
 if (typeof removeExistingEdit === "function") globalThis["removeExistingEdit"] = removeExistingEdit;

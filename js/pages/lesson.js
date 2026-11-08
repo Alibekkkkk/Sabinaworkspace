@@ -5,6 +5,7 @@
 })();
 
 import { isTeacher } from "../auth.js";
+import { isAnswerCorrect } from "../grading.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam, registerDelegatedClick, runRegisteredClick } from "../delegated-actions.js";
 import { appendHtml, clearElement, insertHtmlAfter, safeUrl, serializeChildren, setHtml } from "../dom.js";
@@ -62,37 +63,6 @@ let TEST_MCQ = [];
 let TEST_SHORT = [];
 let TEST_TFNG = [];
 let TEST_COMPLETE = [];
-
-const FILLER_WORDS = ['in', 'on', 'at', 'for', 'to', 'the', 'a', 'an', 'of', 'is', 'are', 'was', 'were', 'by', 'with'];
-function expandContractions(str) { return str.replace(/\bcan't\b/g, 'cannot').replace(/\bwon't\b/g, 'will not').replace(/\bshan't\b/g, 'shall not').replace(/\bain't\b/g, 'is not').replace(/n't\b/g, ' not').replace(/'re\b/g, ' are').replace(/'m\b/g, ' am').replace(/'ll\b/g, ' will').replace(/'ve\b/g, ' have').replace(/'s\b/g, ' is').replace(/'d\b/g, ' would'); }
-function normalizeString(str) { let s = String(str).toLowerCase().trim(); s = expandContractions(s); s = s.replace(/[.,!?;:'"()\[\]{}]/g, ''); s = s.replace(/\s+/g, ' '); return s; }
-function getCoreWords(str) { const norm = normalizeString(str); return norm.split(' ').filter(w => w.length > 0 && !FILLER_WORDS.includes(w)); }
-function levenshtein(a, b) { const matrix = []; for (let i = 0; i <= b.length; i++) matrix[i] = [i]; for (let j = 0; j <= a.length; j++) matrix[0][j] = j; for (let i = 1; i <= b.length; i++) { for (let j = 1; j <= a.length; j++) { if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1]; else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)); } } return matrix[b.length][a.length]; }
-function isAnswerCorrect(userStr, expectedArr) {
-  if(!userStr) return false;
-  let user = normalizeString(userStr);
-  if(!user) return false;
-  for (let exp of expectedArr) {
-    let target = normalizeString(exp);
-    if (user === target) return true;
-    const userNums = user.match(/\d+/g) || [];
-    const targetNums = target.match(/\d+/g) || [];
-    if (targetNums.length > 0) { const numMatch = targetNums.every(tn => userNums.includes(tn)); if (numMatch) return true; }
-    const userCores = getCoreWords(user);
-    const targetCores = getCoreWords(target);
-    if (userCores.length > 0 && targetCores.length > 0) {
-        const userCoreStr = userCores.join(' ');
-        const targetCoreStr = targetCores.join(' ');
-        if (userCoreStr === targetCoreStr) return true;
-        if (userCoreStr.includes(targetCoreStr) && targetCoreStr.length > 2) return true;
-        if (targetCoreStr.includes(userCoreStr) && userCoreStr.length > 2) return true;
-    }
-    if (user.includes(target) && target.length > 2 && user.length > target.length + 3) return true;
-    if (target.length > 3 && (user.startsWith(target) || target.startsWith(user))) { const suffix = user.startsWith(target) ? user.substring(target.length) : target.substring(user.length); if(['', 'ing', 'ed', 's'].includes(suffix)) return true; }
-    if (target.length > 4) { const maxAllowedDist = target.length > 8 ? 2 : 1; if (levenshtein(user, target) <= maxAllowedDist) return true; }
-  }
-  return false;
-}
 
 let draftAnswers = {};
 let draftSaveTimeout = null;
@@ -890,7 +860,7 @@ function renderReadingQuestions(){
       }
 
       function submit(){
-        if(done)return; const ok=isAnswerCorrect(inp.value, item.answers);
+        if(done)return; const ok=isAnswerCorrect(inp.value, item.answers, { mode: "fuzzy" });
         if(ok){
           inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;
           fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>');
@@ -1403,7 +1373,7 @@ function showTestFeedback(ok,exp){ const fb=document.getElementById('testFeedbac
 function showTestNext(){ const area=document.getElementById('testNextArea');if(!area)return; const isLast=testState.idx>=testState.total-1; setHtml(area, '<div style="margin-top:18px;text-align:right"><button class="btn" data-action="next-test-question">'+(isLast?'Finish test →':'Next question →')+'</button></div>'); }
 function answerTestMCQ(btn){ const q=testState.questions[testState.idx];if(!q)return; const opt=btn.dataset.opt;const ok=opt===q.correct; if(ok)testState.correct++; lockTestOptions(); document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){ if(b.dataset.opt===q.correct)b.classList.add('correct'); else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong'); }); showTestFeedback(ok,q.exp); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
 function answerTestTFNG(btn){ const q=testState.questions[testState.idx];if(!q)return; const opt=btn.dataset.opt;const ok=opt===q.answer; if(ok)testState.correct++; lockTestOptions(); document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){ if(b.dataset.opt===q.answer)b.classList.add('correct'); else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong'); }); showTestFeedback(ok,q.exp); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
-function answerTestShort(){ const q=testState.questions[testState.idx];if(!q)return; const inp=document.getElementById('testInput');if(!inp)return; const ok=isAnswerCorrect(inp.value, q.answers); if(ok)testState.correct++; inp.disabled=true; if(ok)inp.classList.add('correct');else inp.classList.add('wrong'); showTestFeedback(ok,q.exp); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
+function answerTestShort(){ const q=testState.questions[testState.idx];if(!q)return; const inp=document.getElementById('testInput');if(!inp)return; const ok=isAnswerCorrect(inp.value, q.answers, { mode: "fuzzy" }); if(ok)testState.correct++; inp.disabled=true; if(ok)inp.classList.add('correct');else inp.classList.add('wrong'); showTestFeedback(ok,q.exp); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
 function answerTestComplete(){ const q=testState.questions[testState.idx];if(!q)return; const inp=document.getElementById('testInput');if(!inp)return; const ok=isAnswerCorrect(inp.value, [q.answer]); if(ok)testState.correct++; inp.disabled=true; if(ok)inp.classList.add('correct');else inp.classList.add('wrong'); showTestFeedback(ok,'Expected: '+q.answer); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
 function nextTestQuestion(){ testState.idx++; if(testState.idx>=testState.total){endTest(false);return} renderTestQuestion(); }
 function endTest(timedOut,customReason){
@@ -1733,11 +1703,6 @@ window.addEventListener('beforeunload', function(e) { if (testState.active) { e.
 
 if (typeof getCurrentLesson === "function") globalThis["getCurrentLesson"] = getCurrentLesson;
 if (typeof totalScore === "function") globalThis["totalScore"] = totalScore;
-if (typeof expandContractions === "function") globalThis["expandContractions"] = expandContractions;
-if (typeof normalizeString === "function") globalThis["normalizeString"] = normalizeString;
-if (typeof getCoreWords === "function") globalThis["getCoreWords"] = getCoreWords;
-if (typeof levenshtein === "function") globalThis["levenshtein"] = levenshtein;
-if (typeof isAnswerCorrect === "function") globalThis["isAnswerCorrect"] = isAnswerCorrect;
 if (typeof debouncedSaveDraft === "function") globalThis["debouncedSaveDraft"] = debouncedSaveDraft;
 if (typeof loadDraft === "function") globalThis["loadDraft"] = loadDraft;
 if (typeof undoQuestion === "function") globalThis["undoQuestion"] = undoQuestion;
