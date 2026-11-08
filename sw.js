@@ -21,6 +21,7 @@ const SHELL_URLS = [
   "js/auth.js",
   "js/student-context.js",
   "js/bounded-realtime-list.js",
+  "js/dom.js",
   "js/protected-content.js",
   "js/sanitize-html.js",
   "js/pwa.js",

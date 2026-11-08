@@ -14,6 +14,7 @@ test("PWA shell caches app pages and public dependencies only", () => {
   assert.ok(urls.includes("offline.html"));
   assert.ok(urls.includes("js/protected-content.js"));
   assert.ok(urls.includes("js/sanitize-html.js"));
+  assert.ok(urls.includes("js/dom.js"));
   assert.ok(!urls.some(path => /protectedContent|studentProgress|sessions\//i.test(path)));
   assert.match(worker, /url\.origin !== scope\.origin/);
   assert.match(worker, /request\.method !== "GET"/);

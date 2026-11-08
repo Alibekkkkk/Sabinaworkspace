@@ -7,6 +7,7 @@
 import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
+import { clearElement, serializeChildren, setHtml } from "../dom.js";
 
 let firebaseConfig;
 let fbApp=null,fbDb=null,fbAuth=null,sessionRef=null,teacherMode=false,teacherCanEdit=false;
@@ -56,14 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetNote = e.target.closest('.user-note'); if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); openExistingNote(targetNote.dataset.id); return; } closeStickyNote();
   });
   document.addEventListener('contextmenu', function(e) {
-    if(!e.target.closest('#passageBody')) return; e.preventDefault(); menu.innerHTML = ''; contextTargetEdit = null;
+    if(!e.target.closest('#passageBody')) return; e.preventDefault(); clearElement(menu); contextTargetEdit = null;
     const selection = window.getSelection(); const targetNote = e.target.closest('.user-note'); let node = e.target;
     while (node && node !== document.body) { if (node.nodeType === 1) { if (node.classList.contains('hl-yellow') || node.classList.contains('hl-green') || node.classList.contains('hl-blue') || node.classList.contains('hl-purple') || node.classList.contains('hl-pink') || node.classList.contains('underline')) { contextTargetEdit = node; break; } } node = node.parentNode; }
-    if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); menu.innerHTML = `<div class="context-item" data-action="edit-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">📝 Edit Note</div><div class="context-item delete" data-action="delete-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">🗑️ Delete Note</div>`; }
-    else if (contextTargetEdit) { menu.innerHTML = `<div class="context-item delete" data-action="remove-existing-edit">🗑️ Remove Edit</div>`; }
+    if (targetNote) { if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now(); setHtml(menu, `<div class="context-item" data-action="edit-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">📝 Edit Note</div><div class="context-item delete" data-action="delete-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">🗑️ Delete Note</div>`); }
+    else if (contextTargetEdit) { setHtml(menu, `<div class="context-item delete" data-action="remove-existing-edit">🗑️ Remove Edit</div>`); }
     else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
-      menu.innerHTML = `<div class="context-item has-submenu">🖍️ Highlight<div class="submenu"><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-yellow"><span class="color-swatch" style="background:#fce883"></span> Yellow</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-green"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-blue"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-purple"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-pink"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div></div></div><div class="context-item" data-action="apply-annotation" data-annotation="underline">U̲ Underline</div><div class="context-item" data-action="create-note">💬 Add Note</div>`;
+      setHtml(menu, `<div class="context-item has-submenu">🖍️ Highlight<div class="submenu"><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-yellow"><span class="color-swatch" style="background:#fce883"></span> Yellow</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-green"><span class="color-swatch" style="background:#b5e8c5"></span> Green</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-blue"><span class="color-swatch" style="background:#c5e1f5"></span> Blue</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-purple"><span class="color-swatch" style="background:#e9d5ff"></span> Purple</div><div class="submenu-item" data-action="apply-annotation" data-annotation="hl-pink"><span class="color-swatch" style="background:#fbcfe8"></span> Pink</div></div></div><div class="context-item" data-action="apply-annotation" data-annotation="underline">U̲ Underline</div><div class="context-item" data-action="create-note">💬 Add Note</div>`);
     } else { return; }
     let x = e.pageX; let y = e.pageY; if (x + 160 > window.innerWidth) x -= 160; if (y + 200 > window.innerHeight) y -= 200; menu.style.left = x + 'px'; menu.style.top = y + 'px'; menu.classList.add('show');
   });
@@ -79,7 +80,7 @@ function openExistingNote(id) { const span = document.querySelector(`.user-note[
 function closeStickyNote() { const sticky = document.getElementById('stickyNote'); if(!sticky.classList.contains('show')) return; if (activeNoteId) { const span = document.querySelector(`.user-note[data-id="${activeNoteId}"]`); if(span) { span.dataset.note = document.getElementById('stickyText').value; saveAnnotations(); } } sticky.classList.remove('show'); activeNoteId = null; }
 function deleteNoteById(id) { const span = document.querySelector(`.user-note[data-id="${id}"]`); if(!span) return; const parent = span.parentNode; while (span.firstChild) parent.insertBefore(span.firstChild, span); parent.removeChild(span); if(activeNoteId === id) closeStickyNote(); document.getElementById('customContextMenu').classList.remove('show'); saveAnnotations(); showToast('Note deleted'); }
 function deleteCurrentNote() { if(activeNoteId) deleteNoteById(activeNoteId); }
-function saveAnnotations() { if(fbDb && code && !teacherMode) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(document.getElementById('passageBody').innerHTML).then(()=>{ if(typeof showToast === 'function') showToast('Annotations saved'); }); } }
+function saveAnnotations() { if(fbDb && code && !teacherMode) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(serializeChildren(document.getElementById('passageBody'))).then(()=>{ if(typeof showToast === 'function') showToast('Annotations saved'); }); } }
 
 /* ================== FIREBASE ================== */
 function toggleTheme(){ document.documentElement.classList.toggle('dark'); const dark=document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){} const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme'; }
@@ -96,12 +97,12 @@ function renderPassage(){
   const p=lesson.reading; const body=document.getElementById('passageBody'); if(!body)return;
   let html='<h2>'+escapeHtml(p.title)+'</h2><div class="subtitle">'+escapeHtml(p.subtitle)+'</div>'; const vocabWords=lesson.vocab.map(v=>v.en);
   p.paragraphs.forEach(function(par){ let text=escapeHtml(par.text); vocabWords.forEach(function(w){ let matchStr = w; if (w.startsWith('to ')) matchStr = w.substring(3); const escW=matchStr.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); const re=new RegExp('\\b('+escW+'[a-z]*)\\b','gi'); text=text.replace(re,'<span class="v-word" data-vocab="'+escapeAttr(w)+'">$1</span>'); }); html+='<p><span class="para-label">'+escapeHtml(par.label)+'</span>'+text+'</p>'; });
-  body.innerHTML=sanitizeRichHtml(html); body.querySelectorAll('.v-word').forEach(function(el){ el.dataset.action = "open-vocab"; });
+  setHtml(body, sanitizeRichHtml(html)); body.querySelectorAll('.v-word').forEach(function(el){ el.dataset.action = "open-vocab"; });
   if(fbDb && code) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).once('value').then(snap => { if(snap.exists()) { 
       const savedHtml = snap.val();
       const currentTitle = p.title;
       if (currentTitle && savedHtml.includes(currentTitle)) {
-          body.innerHTML = sanitizeRichHtml(savedHtml);
+          setHtml(body, sanitizeRichHtml(savedHtml));
           body.querySelectorAll('.v-word').forEach(function(el){ el.dataset.action = "open-vocab"; });
           body.querySelectorAll('.user-note').forEach((note, i) => { if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i; }); 
       } else {
@@ -109,15 +110,15 @@ function renderPassage(){
       }
   } }); }
 }
-function openVocab(word){ const v=lesson.vocab.find(function(x){return x.en===word}); if(!v)return; document.getElementById('vocabEmoji').textContent=v.emoji||'📖'; document.getElementById('vocabWord').textContent=v.en; document.getElementById('vocabMeanings').innerHTML=v.meanings.map(function(m){ const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : ''; const posBadge = m.pos ? `<span class="pos-badge">${escapeHtml(m.pos)}</span>` : ''; return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+' '+posBadge+'</div>'+ '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+ '<div class="example">'+sanitizeRichHtml(m.ex)+'</div></div>'; }).join(''); document.getElementById('vocabBackdrop').classList.add('open'); }
+function openVocab(word){ const v=lesson.vocab.find(function(x){return x.en===word}); if(!v)return; document.getElementById('vocabEmoji').textContent=v.emoji||'📖'; document.getElementById('vocabWord').textContent=v.en; setHtml(document.getElementById('vocabMeanings'), v.meanings.map(function(m){ const head = m.displayEn ? `<b>${escapeHtml(m.displayEn)}</b><br>` : ''; const posBadge = m.pos ? `<span class="pos-badge">${escapeHtml(m.pos)}</span>` : ''; return '<div class="fc-meaning"><div class="context">'+escapeHtml(m.context)+' '+posBadge+'</div>'+ '<div class="translation">'+head+escapeHtml(m.ru)+'</div>'+ '<div class="example">'+sanitizeRichHtml(m.ex)+'</div></div>'; }).join('')); document.getElementById('vocabBackdrop').classList.add('open'); }
 function closeVocab(){document.getElementById('vocabBackdrop').classList.remove('open')}
 
 function updateProgress(){
   const total=lesson.questions.length; const answered=Object.keys(answers).length; const pct=total?Math.round(answered/total*100):0;
   const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pc=document.getElementById('progressCount');if(pc)pc.textContent=answered+' / '+total+' answered';
   const remaining=total-answered; const hint=document.getElementById('submitHint'); const btn=document.getElementById('submitBtn');
-  if(submitted){ if(btn){btn.disabled=true;btn.textContent='✓ Submitted'} if(hint)hint.innerHTML='Homework already submitted.'; return; }
-  if(remaining===0){ if(hint)hint.innerHTML='All questions answered. Ready to submit!'; if(btn)btn.disabled=false; } else { if(hint)hint.innerHTML='Answer every question to unlock submission. <b>'+remaining+' remaining.</b>'; if(btn)btn.disabled=true; }
+  if(submitted){ if(btn){btn.disabled=true;btn.textContent='✓ Submitted'} if(hint)setHtml(hint, 'Homework already submitted.'); return; }
+  if(remaining===0){ if(hint)setHtml(hint, 'All questions answered. Ready to submit!'); if(btn)btn.disabled=false; } else { if(hint)setHtml(hint, 'Answer every question to unlock submission. <b>'+remaining+' remaining.</b>'); if(btn)btn.disabled=true; }
 }
 
 function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=normalizeString(text); const words=t.split(/\s+/).filter(function(w){return w.length>0}); if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0}; let matched=0; keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(normalizeString(k))!==-1}))matched++}); if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length}; return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched}; }
@@ -147,33 +148,33 @@ async function switchStudent() {
 }
 
 function renderQuestions(){
-  const host=document.getElementById('questionsHost');if(!host)return; host.innerHTML='';
+  const host=document.getElementById('questionsHost');if(!host)return; clearElement(host);
   lesson.questions.forEach(function(q,idx){
     const card=document.createElement('div');card.className='q-card';
     const typeLabel={short:'Short answer',tfng:'True / False / Not Given',mcq:'Multiple choice',long:'Long answer',complete:'Complete the sentence'}[q.type]||'';
-    card.innerHTML='<div class="q-num">Question '+(idx+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(q.prompt).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
+    setHtml(card, '<div class="q-num">Question '+(idx+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(q.prompt).replace('___','<b style="color:var(--accent)">___</b>')+'</div>');
     const body=document.createElement('div'); card.appendChild(body);
     
     if(q.type==='short'||q.type==='complete'){
       const row=document.createElement('div');row.className='q-input-row'; const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';
       if(submitted){inp.value=answers[idx]||'';inp.disabled=true} else { inp.value=answers[idx]||''; inp.addEventListener('input',function(){ if(inp.value.trim().length>0){answers[idx]=inp.value;} else{delete answers[idx];} updateProgress(); debouncedSave(); }); }
       row.appendChild(inp);body.appendChild(row);
-      if(submitted){ const ok = isAnswerCorrect(inp.value, q.answers || [q.answer]); if(ok)inp.classList.add('correct'); else inp.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (ok ? 'correct' : 'wrong'); fb.innerHTML=(ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const ok = isAnswerCorrect(inp.value, q.answers || [q.answer]); if(ok)inp.classList.add('correct'); else inp.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (ok ? 'correct' : 'wrong'); setHtml(fb, (ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='tfng'){
       const opts=document.createElement('div');opts.className='q-opts';
       ['True','False','Not Given'].forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.answer)b.classList.add('correct'); if(answers[idx]===o && o!==q.answer)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[idx]===o) b.classList.add('selected'); } opts.appendChild(b); });
       body.appendChild(opts);
-      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.answer ? 'correct' : 'wrong'); fb.innerHTML=(answers[idx]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.answer ? 'correct' : 'wrong'); setHtml(fb, (answers[idx]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
       shuffle(q.options).forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.correct)b.classList.add('correct'); if(answers[idx]===o && o!==q.correct)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[idx]===o) b.classList.add('selected'); } opts.appendChild(b); });
       body.appendChild(opts);
-      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.correct ? 'correct' : 'wrong'); fb.innerHTML=(answers[idx]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'; fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.correct ? 'correct' : 'wrong'); setHtml(fb, (answers[idx]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
       if(submitted){ta.value=answers[idx]||'';ta.disabled=true} else { ta.value=answers[idx]||''; ta.addEventListener('input',function(){ if(ta.value.trim().length>0){answers[idx]=ta.value;} else{delete answers[idx];} updateProgress();debouncedSave(); }); }
       body.appendChild(ta);
-      if(submitted){ const res=checkLongAnswer(answers[idx]||'',q.keywordGroups,q.minWords,q.minGroups); if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong'); fb.innerHTML=(res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>'; fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const res=checkLongAnswer(answers[idx]||'',q.keywordGroups,q.minWords,q.minGroups); if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong'); setHtml(fb, (res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }
 
     if(submitted && teacherCanEdit) {
@@ -226,7 +227,7 @@ async function submitAll(){
   
   renderQuestions(); const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
-  banner.innerHTML='<div class="icon">🎉</div><h3>Homework complete!</h3>'+ '<div class="big">'+score+' / '+total+'</div>'+ '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+ '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>';
+  setHtml(banner, '<div class="icon">🎉</div><h3>Homework complete!</h3>'+ '<div class="big">'+score+' / '+total+'</div>'+ '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+ '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>');
   const receipt=document.createElement('p');
   receipt.textContent='Submitted as '+studentContext.name+' at '+new Date(submittedAt).toLocaleString();
   banner.appendChild(receipt);
@@ -390,13 +391,13 @@ installDelegatedActions({
   }),
   "close-vocab": clickAction(closeVocab),
   "edit-note": clickAction((element, event) => {
-    const id = readActionParam(element, "noteId", /^note_[A-Za-z0-9_-]{1,64}$/);
+    const id = readActionParam(element, "noteId", /^(?:note|legacy)_[A-Za-z0-9_-]{1,64}$/);
     if (!id) return;
     event.preventDefault();
     openExistingNote(id);
   }),
   "delete-note": clickAction((element, event) => {
-    const id = readActionParam(element, "noteId", /^note_[A-Za-z0-9_-]{1,64}$/);
+    const id = readActionParam(element, "noteId", /^(?:note|legacy)_[A-Za-z0-9_-]{1,64}$/);
     if (!id) return;
     event.preventDefault();
     deleteNoteById(id);
@@ -472,7 +473,7 @@ async function startHomework(){
     }
   }
   renderPassage();renderQuestions();
-  if(submitted){ const host=document.getElementById('questionsHost'); const banner=document.createElement('div');banner.className='result-banner'; banner.innerHTML='<div class="icon">✓</div><h3>Homework already submitted</h3>'+ '<p>Your teacher has your answers. You can review the feedback below.</p>'; host.insertBefore(banner,host.firstChild); }
+  if(submitted){ const host=document.getElementById('questionsHost'); const banner=document.createElement('div');banner.className='result-banner'; setHtml(banner, '<div class="icon">✓</div><h3>Homework already submitted</h3>'+ '<p>Your teacher has your answers. You can review the feedback below.</p>'); host.insertBefore(banner,host.firstChild); }
 }
 
 (async function boot() {

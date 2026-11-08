@@ -7,6 +7,7 @@
 import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam, registerDelegatedClick, runRegisteredClick } from "../delegated-actions.js";
+import { appendHtml, clearElement, insertHtmlAfter, safeUrl, serializeChildren, setHtml } from "../dom.js";
 
 /* SCRIPT REMAINS THE SAME EXCEPT FOR THE COLLAPSIBLE LOGIC */
 let firebaseConfig;
@@ -156,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('contextmenu', function(e) {
     if(!e.target.closest('#passageBody')) return;
     e.preventDefault();
-    menu.innerHTML = ''; 
+    clearElement(menu);
     contextTargetEdit = null;
     const selection = window.getSelection();
     const targetNote = e.target.closest('.user-note');
@@ -172,17 +173,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (targetNote) {
       if(!targetNote.dataset.id) targetNote.dataset.id = 'note_legacy_' + Date.now();
-      menu.innerHTML = `
+      setHtml(menu, `
         <div class="context-item" data-action="edit-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">📝 Edit Note</div>
         <div class="context-item delete" data-action="delete-note" data-note-id="${escapeAttr(targetNote.dataset.id)}">🗑️ Delete Note</div>
-      `;
+      `);
     } else if (contextTargetEdit) {
-      menu.innerHTML = `
+      setHtml(menu, `
         <div class="context-item delete" data-action="remove-existing-edit">🗑️ Remove Edit</div>
-      `;
+      `);
     } else if (!selection.isCollapsed && selection.toString().trim().length > 0) {
       savedRange = selection.getRangeAt(0).cloneRange(); 
-      menu.innerHTML = `
+      setHtml(menu, `
         <div class="context-item has-submenu">
             🖍️ Highlight
             <div class="submenu">
@@ -195,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="context-item" data-action="apply-annotation" data-annotation="underline">U̲ Underline</div>
         <div class="context-item" data-action="create-note">💬 Add Note</div>
-      `;
+      `);
     } else {
       return; 
     }
@@ -286,7 +287,7 @@ function deleteCurrentNote() { if(activeNoteId) deleteNoteById(activeNoteId); }
 
 function saveAnnotations() {
   if(fbConnected && sessionRef) {
-    sessionRef.child('annotations/'+state.currentLessonId).set(document.getElementById('passageBody').innerHTML).then(()=>{ if(typeof showToast === 'function') showToast('Annotations saved'); });
+    sessionRef.child('annotations/'+state.currentLessonId).set(serializeChildren(document.getElementById('passageBody'))).then(()=>{ if(typeof showToast === 'function') showToast('Annotations saved'); });
   }
 }
 
@@ -362,7 +363,7 @@ function initFirebase(){
                     const currentTitleMatch = READING_HTML.match(/<h1>(.*?)<\/h1>/);
                     const currentTitle = currentTitleMatch ? currentTitleMatch[1].trim() : '';
                     if (currentTitle && savedHtml.includes(currentTitle)) {
-                        body.innerHTML = sanitizeRichHtml(savedHtml);
+                        setHtml(body, sanitizeRichHtml(savedHtml));
                     } else {
                         fbDb.ref('sessions/'+c+'/annotations/'+lessonId).remove();
                     }
@@ -416,7 +417,7 @@ function initFirebase(){
           document.getElementById('timerPill').style.display='none'; document.getElementById('scorePill').style.display='none'; document.getElementById('streakPill').style.display='none';
           renderStage();
         }
-        else{teacherMode=true;updateSyncUI('error');document.getElementById('main').innerHTML='<div class="card"><h2>Teacher sign-in required</h2></div>'}
+        else{teacherMode=true;updateSyncUI('error');setHtml(document.getElementById('main'), '<div class="card"><h2>Teacher sign-in required</h2></div>')}
       });
       return;
     }
@@ -609,33 +610,33 @@ function getVocabCounts(){ const c={learning:0,learned:0,practice:0}; VOCAB.forE
 function shouldShowPractice(){ if(vocabMode==='preLearned') return false; if(!Object.keys(vocabState).length)return false; return Object.keys(vocabState).some(function(w){return getWordStatus(w)!=='learned'}); }
 
 function renderStage1(){
-  const main=document.getElementById('main'); if(!main)return; main.innerHTML=''; loadVocabStateLocal();
+  const main=document.getElementById('main'); if(!main)return; clearElement(main); loadVocabStateLocal();
   const v=document.createElement('div');v.className='stage-view active'; const counts=getVocabCounts(); const showPractice=shouldShowPractice();
-  v.innerHTML='<div class="eyebrow">Stage 1 — Vocabulary Quiz</div><h2>🌪️ Adaptive Vocabulary</h2>'+
+  setHtml(v, '<div class="eyebrow">Stage 1 — Vocabulary Quiz</div><h2>🌪️ Adaptive Vocabulary</h2>'+
   '<div class="lead">Every card is a small quiz. Choose the correct translation for each meaning of the word. Your answers automatically sort cards into three sections — <b>Learning</b>, <b>Learned</b>, and <b>Need Practice</b>.<span class="ru">Каждая карточка — небольшой тест. Ваши ответы автоматически сортируют карточки по трём разделам.</span></div>'+
   '<div class="flash-toolbar">'+
   '<button class="filt '+(s1Filter==='learning'?'active':'')+'" data-action="set-vocab-filter" data-filter="learning">📖 Learning ('+counts.learning+')</button>'+
   '<button class="filt '+(s1Filter==='learned'?'active':'')+'" data-action="set-vocab-filter" data-filter="learned">✓ Learned ('+counts.learned+')</button>'+
   '<button class="filt '+(s1Filter==='practice'?'active':'')+'" data-action="set-vocab-filter" data-filter="practice">🔁 Need Practice ('+counts.practice+')</button>'+
   '<button class="btn practice-btn'+(showPractice?' show':'')+'" data-action="start-practice">🎯 Practise</button>'+
-  '</div><div class="flash-grid" id="flashGrid"></div>';
+  '</div><div class="flash-grid" id="flashGrid"></div>');
   main.appendChild(v);main.appendChild(stageFooter(null,2)); renderFlashcards();
   if(fbConnected&&!vocabCloudLoaded){vocabCloudLoaded=true;loadVocabStateCloud().then(function(){renderStage()})}
 }
 function setFilter(f){s1Filter=f;renderStage()}
 
 function renderFlashcards(){
-  const grid=document.getElementById('flashGrid');if(!grid)return;grid.innerHTML='';
+  const grid=document.getElementById('flashGrid');if(!grid)return;clearElement(grid);
   const list=VOCAB.filter(function(w){return getWordStatus(w.en)===s1Filter}); s1VisibleList=list;
   if(!list.length){
     const emptyMsg=s1Filter==='learned'?'No learned words yet — keep practising.':(s1Filter==='practice'?'No words need practice. Great job!':'No words here.');
-    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft);font-size:17px">'+emptyMsg+'</div>'; return;
+    setHtml(grid, '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft);font-size:17px">'+emptyMsg+'</div>'); return;
   }
   list.forEach(function(w,idx){
     const card=document.createElement('div');card.className='flashcard';
     const status=getWordStatus(w.en); if(status==='learned')card.classList.add('known'); if(status==='practice')card.classList.add('needs-practice');
     const firstMeaning = w.meanings[0]; const imgKey = (firstMeaning && firstMeaning.displayEn) ? firstMeaning.displayEn + '_0' : w.en + '_0'; const img = customImages[imgKey] || customImages[w.en];
-    card.innerHTML='<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" loading="lazy">':escapeHtml(w.emoji||'📖'))+'</div><div class="flashcard-word">'+escapeHtml(w.en)+'</div>';
+    setHtml(card, '<div class="flashcard-img">'+(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(w.en)+'" loading="lazy">':escapeHtml(w.emoji||'📖'))+'</div><div class="flashcard-word">'+escapeHtml(w.en)+'</div>');
     const image=card.querySelector('.flashcard-img img');
     if(image)image.addEventListener('error',function(){image.parentNode.textContent=w.emoji||'📖'},{once:true});
     registerDelegatedClick(card, () => openQuiz(idx)); grid.appendChild(card);
@@ -672,7 +673,7 @@ function renderQuizModal(){
   const meaning = activeMeaningObj.data; const displayWord = meaning.displayEn || w.en; const realMeaningIdx = activeMeaningObj.idx; const imgKey = displayWord + '_' + realMeaningIdx; 
   const img = customImages[imgKey] || customImages[displayWord] || customImages[w.en];
   const modalImage=document.getElementById('fcModalImg');
-  modalImage.innerHTML=(img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(displayWord)+'">':'<div style="font-size:180px;line-height:1;">'+escapeHtml(w.emoji||'📖')+'</div>')+'<div class="label">WORD</div>';
+  setHtml(modalImage, (img?'<img src="'+escapeAttr(img)+'" alt="'+escapeAttr(displayWord)+'">':'<div style="font-size:180px;line-height:1;">'+escapeHtml(w.emoji||'📖')+'</div>')+'<div class="label">WORD</div>');
   const modalImg=modalImage.querySelector('img');
   if(modalImg)modalImg.addEventListener('error',function(){const fallback=document.createElement('div');fallback.style.fontSize='180px';fallback.style.lineHeight='1';fallback.textContent=w.emoji||'📖';modalImg.replaceWith(fallback)},{once:true});
   document.getElementById('fcModalWord').textContent=displayWord;
@@ -689,10 +690,10 @@ function renderQuizModal(){
   });
   html+='</div>';
   if(answered){ const exClean=meaning.ex.replace(/<[^>]*>/g,''); if(answered.correct){html+='<div class="q-feedback correct" style="display:block">✓ Correct!<span class="exp">'+escapeHtml(exClean)+'</span></div>'} else{html+='<div class="q-feedback wrong" style="display:block">✗ Not quite. Correct answer: <b>'+escapeHtml(q.correct)+'</b><span class="exp">'+escapeHtml(exClean)+'</span></div>'} }
-  document.getElementById('fcRevealArea').innerHTML=html; document.getElementById('fcRevealArea').classList.add('show'); document.getElementById('fcCounter').textContent=(quizCurrentIdx+1)+' / '+quizMeanings.length;
+  setHtml(document.getElementById('fcRevealArea'), html); document.getElementById('fcRevealArea').classList.add('show'); document.getElementById('fcCounter').textContent=(quizCurrentIdx+1)+' / '+quizMeanings.length;
   document.querySelector('.fc-modal-actions').style.display='none';
   const tools=document.querySelector('.fc-modal-tools');
-  if(tools){ tools.innerHTML='<button class="tool" data-action="quiz-speak">🔊 Listen</button>'+(teacherCanEdit?'<button class="tool" data-action="edit-flashcard-image">🖼️ Set image</button>':'')+(teacherCanEdit?'<button class="tool" data-action="undo-vocab-word" data-word="'+escapeAttr(quizWord)+'" data-meaning-index="'+realMeaningIdx+'" style="color:var(--error)">↺ Reset Word</button>':''); }
+  if(tools){ setHtml(tools, '<button class="tool" data-action="quiz-speak">🔊 Listen</button>'+(teacherCanEdit?'<button class="tool" data-action="edit-flashcard-image">🖼️ Set image</button>':'')+(teacherCanEdit?'<button class="tool" data-action="undo-vocab-word" data-word="'+escapeAttr(quizWord)+'" data-meaning-index="'+realMeaningIdx+'" style="color:var(--error)">↺ Reset Word</button>':'')); }
   const nav=document.querySelector('.fc-modal-nav');if(nav)nav.style.display='';
   const navBtns=document.querySelectorAll('.fc-modal-nav button');
   if(navBtns.length>=2){ registerDelegatedClick(navBtns[0], quizPrev); registerDelegatedClick(navBtns[navBtns.length-1], quizNext); navBtns[navBtns.length-1].textContent=(quizCurrentIdx>=quizMeanings.length-1)?'Next Flashcard →':'Next →'; }
@@ -741,10 +742,10 @@ function continuePracticeQueue(){
 
 function showPracticeSummary(){
   const counts=getVocabCounts();
-  document.getElementById('fcModalImg').innerHTML='<div style="font-size:120px;line-height:1">🎉</div>'; document.getElementById('fcModalWord').textContent='Practice complete!';
-  document.getElementById('fcRevealArea').innerHTML='<div style="text-align:left"><p style="font-size:17px;color:var(--ink);margin-bottom:12px">🎉 All your words are now <b>Learned</b>!</p>'+ '<div style="padding:14px;background:var(--bg);border-radius:12px">'+ '<div style="padding:6px 0">📖 Learning: <b style="color:var(--accent)">'+counts.learning+'</b></div>'+ '<div style="padding:6px 0">✓ Learned: <b style="color:var(--success)">'+counts.learned+'</b></div>'+ '<div style="padding:6px 0">🔁 Need Practice: <b style="color:var(--warn)">'+counts.practice+'</b></div>'+ '</div></div>';
+  setHtml(document.getElementById('fcModalImg'), '<div style="font-size:120px;line-height:1">🎉</div>'); document.getElementById('fcModalWord').textContent='Practice complete!';
+  setHtml(document.getElementById('fcRevealArea'), '<div style="text-align:left"><p style="font-size:17px;color:var(--ink);margin-bottom:12px">🎉 All your words are now <b>Learned</b>!</p>'+ '<div style="padding:14px;background:var(--bg);border-radius:12px">'+ '<div style="padding:6px 0">📖 Learning: <b style="color:var(--accent)">'+counts.learning+'</b></div>'+ '<div style="padding:6px 0">✓ Learned: <b style="color:var(--success)">'+counts.learned+'</b></div>'+ '<div style="padding:6px 0">🔁 Need Practice: <b style="color:var(--warn)">'+counts.practice+'</b></div>'+ '</div></div>');
   document.getElementById('fcCounter').textContent='—'; const nav=document.querySelector('.fc-modal-nav');if(nav)nav.style.display='none'; const tools=document.querySelector('.fc-modal-tools');
-  if(tools)tools.innerHTML='<button class="tool" data-action="restart-practice">↻ Practise again</button><button class="tool" data-action="close-flashcard-modal">← Back to Vocabulary</button>';
+  if(tools)setHtml(tools, '<button class="tool" data-action="restart-practice">↻ Practise again</button><button class="tool" data-action="close-flashcard-modal">← Back to Vocabulary</button>');
 }
 function restartPractice(){practiceMode=false;practiceQueue=[];document.getElementById('fcModal').classList.remove('open');setTimeout(function(){startPractice()},200)}
 function startPractice(){
@@ -759,16 +760,16 @@ function quizSpeak(){ const w=VOCAB.find(function(x){return x.en===quizWord}); i
 function fcPrev(){quizPrev()} function fcNext(){quizNext()} function fcReveal(){} function fcMarkKnow(){} function fcMarkAgain(){}
 
 function renderStage2(){
-  const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
+  const main=document.getElementById('main'); if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 2 — Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
+  setHtml(v, '<div class="eyebrow">Stage 2 — Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
   '<div class="lead">Drag each English word onto its meaning.<span class="ru">Перетащите слово к его значению.</span></div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:700;color:var(--ink-soft)">Matched: <span id="s2count" style="color:var(--accent);font-size:18px">0</span> / '+MATCH_DATA.length+'</div><button class="btn ghost small" data-action="reset-stage-2">↻ Reset</button></div>'+
-  '<div class="dd-area"><div><div class="dd-col-title">English Words</div><div class="dd-words" id="ddWords"></div></div><div><div class="dd-col-title">Meaning</div><div class="dd-slots" id="ddSlots"></div></div></div>';
+  '<div class="dd-area"><div><div class="dd-col-title">English Words</div><div class="dd-words" id="ddWords"></div></div><div><div class="dd-col-title">Meaning</div><div class="dd-slots" id="ddSlots"></div></div></div>');
   main.appendChild(v);main.appendChild(stageFooter(1,3));renderDD();
 }
 function renderDD(){
-  const wEl=document.getElementById('ddWords'),sEl=document.getElementById('ddSlots');if(!wEl||!sEl)return;wEl.innerHTML='';sEl.innerHTML='';
+  const wEl=document.getElementById('ddWords'),sEl=document.getElementById('ddSlots');if(!wEl||!sEl)return;clearElement(wEl);clearElement(sEl);
   const words=shuffle(MATCH_DATA);const meanings=shuffle(MATCH_DATA); const matched = draftAnswers['match_correct'] || [];
   words.forEach(function(item){
     const d=document.createElement('div');d.className='dd-word';d.draggable=true;d.dataset.word=item.word;d.textContent=item.word;
@@ -778,11 +779,11 @@ function renderDD(){
     wEl.appendChild(d);
   });
   meanings.forEach(function(item){
-    const s=document.createElement('div');s.className='dd-slot';s.dataset.answer=item.word;s.innerHTML='<span class="slot-label">'+escapeHtml(item.meaning)+'</span>';
+    const s=document.createElement('div');s.className='dd-slot';s.dataset.answer=item.word;setHtml(s, '<span class="slot-label">'+escapeHtml(item.meaning)+'</span>');
     if(matched.includes(item.word)){
-        s.classList.add('correct'); s.innerHTML += '<span class="dropped-word ok">'+escapeHtml(item.word)+'</span>';
+        s.classList.add('correct'); appendHtml(s, '<span class="dropped-word ok">'+escapeHtml(item.word)+'</span>');
         if(teacherCanEdit) {
-            const rm = document.createElement('span'); rm.innerHTML = ' ❌'; rm.style.cssText = 'cursor:pointer; font-size:16px; margin-left:8px; color:var(--error);';
+            const rm = document.createElement('span'); setHtml(rm, ' ❌'); rm.style.cssText = 'cursor:pointer; font-size:16px; margin-left:8px; color:var(--error);';
             registerDelegatedClick(rm, e => { e.stopPropagation(); draftAnswers['match_correct'] = draftAnswers['match_correct'].filter(x => x !== item.word); debouncedSaveDraft(); renderStage(); });
             s.appendChild(rm);
         }
@@ -799,7 +800,7 @@ function tryPlace(word,slot){
   if(!word||slot.classList.contains('correct'))return;
   if(slot.dataset.answer===word){
     slot.classList.add('correct');
-    slot.innerHTML='<span class="slot-label">'+slot.querySelector('.slot-label').textContent+'</span><span class="dropped-word ok">'+escapeHtml(word)+'</span>';
+    setHtml(slot, '<span class="slot-label">'+slot.querySelector('.slot-label').textContent+'</span><span class="dropped-word ok">'+escapeHtml(word)+'</span>');
     document.querySelectorAll('.dd-word').forEach(function(d){if(d.dataset.word===word)d.classList.add('used')});
     draftAnswers['match_correct'] = draftAnswers['match_correct'] || [];
     if(!draftAnswers['match_correct'].includes(word)) draftAnswers['match_correct'].push(word);
@@ -816,9 +817,9 @@ function resetStage2(){setScore(2,0);state.done[state.currentLessonId+"_2"]=fals
 
 let s4Answers={};
 function renderStage3(){
-  const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
+  const main=document.getElementById('main'); if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">Stage 3 — Interactive Video & Questions</div><h2>📖 Read the Article & Answer</h2>'+
+  setHtml(v, '<div class="eyebrow">Stage 3 — Interactive Video & Questions</div><h2>📖 Read the Article & Answer</h2>'+
   '<div class="lead">Watch the video, read the article on the left, and highlight text to save notes. Answer every question on the right — the article stays visible so you can look back.<span class="ru">Смотрите видео, читайте текст слева, выделяйте важное, отвечайте на вопросы справа.</span></div>'+
   '<div class="reading-split">'+
     '<section class="reading-pane">'+
@@ -839,7 +840,7 @@ function renderStage3(){
       '<h3 style="font-family:\'Fira Code\',monospace;font-size:13px;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin:26px 0 12px">Part B — Vocabulary in context</h3>'+
       '<div id="contextQ"></div>'+
     '</section>'+
-  '</div>';
+  '</div>');
   main.appendChild(v);main.appendChild(stageFooter(2,4,'<button class="btn success" data-action="complete-reading">✓ Mark reading stage complete</button>'));
   
   s4Answers={};
@@ -856,7 +857,7 @@ function renderStage3(){
              const currentTitle = currentTitleMatch ? currentTitleMatch[1].trim() : '';
              
              if (currentTitle && savedHtml.includes(currentTitle)) {
-                 document.getElementById('passageBody').innerHTML = savedHtml;
+                 setHtml(document.getElementById('passageBody'), savedHtml);
                  document.querySelectorAll('.user-note').forEach((note, i) => { if(!note.dataset.id) note.dataset.id = 'legacy_' + Date.now() + '_' + i; });
              } else {
                  sessionRef.child('annotations/'+state.currentLessonId).remove();
@@ -869,12 +870,12 @@ function renderStage3(){
 function updateS3Progress(){const el=document.getElementById('s3Progress');if(el)el.textContent=Object.keys(s4Answers).length}
 
 function renderReadingQuestions(){
-  const body=document.getElementById('readingQ');if(!body)return;body.innerHTML='';
+  const body=document.getElementById('readingQ');if(!body)return;clearElement(body);
   READING_Q.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card';
     const typeLabel={short:'Short answer',tfng:'True / False / Not Given',long:'Long answer',mcq:'Multiple choice'}[item.type];
     const ruHtml = item.ru ? '<span class="ru-prompt">'+escapeHtml(item.ru)+'</span>' : '';
-    card.innerHTML='<div class="q-num">Question '+(i+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>';
+    setHtml(card, '<div class="q-num">Question '+(i+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>');
     
     if(item.type==='short'){
       const row=document.createElement('div');row.className='q-input-row';
@@ -885,14 +886,14 @@ function renderReadingQuestions(){
       
       if(isOk){
         inp.classList.add('correct');inp.disabled=true;btn.disabled=true;
-        fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
+        fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>');
       }
 
       function submit(){
         if(done)return; const ok=isAnswerCorrect(inp.value, item.answers);
         if(ok){
           inp.classList.add('correct');inp.disabled=true;btn.disabled=true;done=true;
-          fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';
+          fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>');
           sCorrect();s4Answers['r'+i]=true;checkS4();
           draftAnswers['r'+i+'_draft'] = inp.value; draftAnswers['r'+i+'_ok'] = true; debouncedSaveDraft();
           if (teacherCanEdit) {
@@ -900,7 +901,7 @@ function renderReadingQuestions(){
              registerDelegatedClick(rst, () => undoQuestion('r', i)); card.appendChild(rst);
           }
         } else {
-          inp.classList.add('wrong');sWrong(); fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again — check the passage.';
+          inp.classList.add('wrong');sWrong(); fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite. Try again — check the passage.');
           setTimeout(function(){inp.classList.remove('wrong')},600); draftAnswers['r'+i+'_draft'] = inp.value; debouncedSaveDraft();
           if(!flagAdded) { card.appendChild(buildFlagRow('r'+i,item.prompt,inp.value,'wrong')); flagAdded = true; }
         }
@@ -922,8 +923,8 @@ function renderReadingQuestions(){
           registerDelegatedClick(b, function(){
             if(b.disabled)return; draftAnswers['r'+i+'_draft'] = o; draftAnswers['r'+i+'_ok'] = (o === item.answer); debouncedSaveDraft();
             opts.querySelectorAll('button').forEach(function(x){x.disabled=true}); const fb=card.querySelector('.q-feedback');
-            if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
-            else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.answer)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+            if(o===item.answer){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>');s4Answers['r'+i]=true}
+            else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.answer)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>')}
             checkS4();
             if (teacherCanEdit) {
                const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px';
@@ -934,20 +935,20 @@ function renderReadingQuestions(){
         opts.appendChild(b);
       });
       card.appendChild(opts); const fb=document.createElement('div');fb.className='q-feedback';
-      if(chosen){ if(isOk){fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>'} else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'} }
+      if(chosen){ if(isOk){fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>')} else{fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>')} }
       card.appendChild(fb);
       if (isOk && teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('r', i)); card.appendChild(rst); }
     }else if(item.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...'; const val = draftAnswers['r'+i+'_draft'] || ''; const isOk = draftAnswers['r'+i+'_ok'] === true; if(val) ta.value = val;
       const row=document.createElement('div');row.className='q-input-row';row.style.marginTop='10px'; const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check my answer'; const fb=document.createElement('div');fb.className='q-feedback'; let done=isOk; let flagAdded=false;
-      if(isOk){ ta.classList.add('correct');ta.disabled=true;btn.disabled=true; const res=checkLongAnswer(ta.value,item.keywordGroups,item.minWords,item.minGroups); fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>'; }
+      if(isOk){ ta.classList.add('correct');ta.disabled=true;btn.disabled=true; const res=checkLongAnswer(ta.value,item.keywordGroups,item.minWords,item.minGroups); fb.className='q-feedback correct';setHtml(fb, '✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>'); }
       function submit(){
         if(done)return; const txt=ta.value.trim(); const res=checkLongAnswer(txt,item.keywordGroups,item.minWords,item.minGroups);
         if(res.pass){
-            ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true; fb.className='q-feedback correct';fb.innerHTML='✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>'; sCorrect();s4Answers['r'+i]=true;checkS4(); draftAnswers['r'+i+'_draft'] = txt; draftAnswers['r'+i+'_ok'] = true; debouncedSaveDraft();
+            ta.classList.add('correct');ta.disabled=true;btn.disabled=true;done=true; fb.className='q-feedback correct';setHtml(fb, '✓ Looks correct! You matched '+res.matched+' key ideas.<span class="exp">'+escapeHtml(item.exp)+'</span>'); sCorrect();s4Answers['r'+i]=true;checkS4(); draftAnswers['r'+i+'_draft'] = txt; draftAnswers['r'+i+'_ok'] = true; debouncedSaveDraft();
             if (teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('r', i)); card.appendChild(rst); }
-        } else { ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'; draftAnswers['r'+i+'_draft'] = txt; debouncedSaveDraft(); }
-        if(!flagAdded) { ta.insertAdjacentHTML('afterend',buildFlagRow('s3_r'+i,item.prompt,txt,res.pass?'correct':'wrong')); flagAdded = true; }
+        } else { ta.classList.add('wrong');sWrong();fb.className='q-feedback wrong';setHtml(fb, '✗ '+res.reason+'<span class="sample"><b>Sample answer:</b> '+escapeHtml(item.sample)+'</span>'); draftAnswers['r'+i+'_draft'] = txt; debouncedSaveDraft(); }
+        if(!flagAdded) { insertHtmlAfter(ta, buildFlagRow('s3_r'+i,item.prompt,txt,res.pass?'correct':'wrong')); flagAdded = true; }
       }
       registerDelegatedClick(btn, submit); ta.addEventListener('input', function() { draftAnswers['r'+i+'_draft'] = ta.value; debouncedSaveDraft(); });
       row.appendChild(btn);card.appendChild(ta);card.appendChild(row);card.appendChild(fb);
@@ -961,8 +962,8 @@ function renderReadingQuestions(){
           registerDelegatedClick(b, function(){
             if(b.disabled)return; draftAnswers['r'+i+'_draft'] = o; draftAnswers['r'+i+'_ok'] = (o === item.correct); debouncedSaveDraft();
             opts.querySelectorAll('button').forEach(function(x){x.disabled=true}); const fb=card.querySelector('.q-feedback');
-            if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['r'+i]=true}
-            else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+            if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>');s4Answers['r'+i]=true}
+            else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>')}
             checkS4();
             if (teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('r', i)); card.appendChild(rst); }
           });
@@ -970,7 +971,7 @@ function renderReadingQuestions(){
         opts.appendChild(b);
       });
       card.appendChild(opts); const fb=document.createElement('div');fb.className='q-feedback';
-      if(chosen){ if(isOk){fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>'} else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'} }
+      if(chosen){ if(isOk){fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>')} else{fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>')} }
       card.appendChild(fb);
       if (isOk && teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('r', i)); card.appendChild(rst); }
     }
@@ -979,10 +980,10 @@ function renderReadingQuestions(){
 }
 
 function renderContextQ(){
-  const body=document.getElementById('contextQ');if(!body)return;body.innerHTML='';
+  const body=document.getElementById('contextQ');if(!body)return;clearElement(body);
   CONTEXT_Q.forEach(function(item,i){
     const card=document.createElement('div');card.className='q-card'; const ruHtml = item.ru ? '<span class="ru-prompt">'+escapeHtml(item.ru)+'</span>' : '';
-    card.innerHTML='<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>';
+    setHtml(card, '<div class="q-num">Context '+(i+1)+'</div><div class="q-prompt">'+escapeHtml(item.prompt)+ruHtml+'</div>');
     const opts=document.createElement('div');opts.className='q-opts'; const chosen = draftAnswers['c'+i+'_draft']; const isOk = draftAnswers['c'+i+'_ok'] === true;
     
     shuffle(item.options).forEach(function(o){
@@ -992,8 +993,8 @@ function renderContextQ(){
         registerDelegatedClick(b, function(){
           if(b.disabled)return; draftAnswers['c'+i+'_draft'] = o; draftAnswers['c'+i+'_ok'] = (o === item.correct); debouncedSaveDraft();
           opts.querySelectorAll('button').forEach(function(x){x.disabled=true}); const fb=card.querySelector('.q-feedback');
-          if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>';s4Answers['c'+i]=true}
-          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'}
+          if(o===item.correct){b.classList.add('correct');sCorrect();fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>');s4Answers['c'+i]=true}
+          else{b.classList.add('wrong');opts.querySelectorAll('button').forEach(function(x){if(x.textContent===item.correct)x.classList.add('correct')});sWrong();fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>')}
           checkS4();
           if (teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('c', i)); card.appendChild(rst); }
         });
@@ -1001,7 +1002,7 @@ function renderContextQ(){
       opts.appendChild(b);
     });
     card.appendChild(opts); const fb=document.createElement('div');fb.className='q-feedback';
-    if(chosen){ if(isOk){fb.className='q-feedback correct';fb.innerHTML='✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>'} else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>'} }
+    if(chosen){ if(isOk){fb.className='q-feedback correct';setHtml(fb, '✓ Correct!<span class="exp">'+escapeHtml(item.exp)+'</span>')} else{fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite.<span class="exp">'+escapeHtml(item.exp)+'</span>')} }
     card.appendChild(fb);
     if (isOk && teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('c', i)); card.appendChild(rst); }
     body.appendChild(card);
@@ -1014,13 +1015,13 @@ function checkS4(silent){ const total=READING_Q.length+CONTEXT_Q.length; const c
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
 function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
-  const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
+  const main=document.getElementById('main');if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
+  setHtml(v, '<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
   '<div class="lead">'+lead+'</div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft)">Score: <span id="p'+stageId+'live" style="color:var(--accent);font-size:18px">0</span> / '+(data.pos.length+data.neg.length+data.q.length+data.shuffled.length)+'</div><button class="btn ghost small" data-action="reset-grammar-stage" data-stage="'+stageId+'">↻ Reset</button></div>'+
-  '<div id="p'+stageId+'body"></div>';
+  '<div id="p'+stageId+'body"></div>');
   main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
   let score=0;const body=document.getElementById('p'+stageId+'body');
   
@@ -1029,20 +1030,20 @@ function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formu
     items.forEach(function(item,i){
       const card=document.createElement('div');card.className='q-card'; const idx = startNum + i;
       const draftKey = 'g'+stageId+'_'+idx+'_draft'; const okKey = 'g'+stageId+'_'+idx+'_ok'; const isOk = draftAnswers[okKey] === true;
-      card.innerHTML='<div class="q-num">Question '+idx+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>';
+      setHtml(card, '<div class="q-num">Question '+idx+'</div><div class="q-prompt">'+escapeHtml(item.p).replace('___','<b style="color:var(--accent)">___</b>')+'</div>');
       const row=document.createElement('div');row.className='q-input-row'; const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type the missing word(s)...';inp.autocomplete='off';inp.spellcheck=false; if(draftAnswers[draftKey]) inp.value = draftAnswers[draftKey];
       const btn=document.createElement('button');btn.className='btn';btn.textContent='✓ Check'; const fb=document.createElement('div');fb.className='q-feedback'; let answered=isOk;
-      if(isOk){ inp.classList.add('correct');inp.disabled=true;btn.disabled=true; fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+sanitizeRichHtml(item.ex)+'</span>':''); score++; }
+      if(isOk){ inp.classList.add('correct');inp.disabled=true;btn.disabled=true; fb.className='q-feedback correct';setHtml(fb, '✓ Correct!'+(item.ex?'<span class="exp">'+sanitizeRichHtml(item.ex)+'</span>':'')); score++; }
       
       function submit(){
         if(answered)return; const ok = isAnswerCorrect(inp.value, [item.a]);
         if(ok){
-          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true; fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'+(item.ex?'<span class="exp">'+sanitizeRichHtml(item.ex)+'</span>':'');
+          inp.classList.add('correct');inp.disabled=true;btn.disabled=true;answered=true; fb.className='q-feedback correct';setHtml(fb, '✓ Correct!'+(item.ex?'<span class="exp">'+sanitizeRichHtml(item.ex)+'</span>':''));
           sCorrect();score++;document.getElementById('p'+stageId+'live').textContent=score; const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length; setScore(stageId,Math.floor(score*10/total)); if(score===total){setScore(stageId,10);markDone(stageId)}
           broadcastAction('answer_correct',item.p.substring(0,40)+' → '+item.a); draftAnswers[draftKey] = inp.value; draftAnswers[okKey] = true; debouncedSaveDraft();
           if (teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('g'+stageId+'_', idx)); card.appendChild(rst); }
         }else{
-          inp.classList.add('wrong');sWrong(); fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Try again!'; setTimeout(function(){inp.classList.remove('wrong')},600); draftAnswers[draftKey] = inp.value; debouncedSaveDraft();
+          inp.classList.add('wrong');sWrong(); fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite. Try again!'); setTimeout(function(){inp.classList.remove('wrong')},600); draftAnswers[draftKey] = inp.value; debouncedSaveDraft();
         }
       }
       registerDelegatedClick(btn, submit); inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
@@ -1163,13 +1164,13 @@ function renderStage5(){
 
 const SB_STATE={}; const SB_DATA={};
 function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
-  const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
+  const main=document.getElementById('main');if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active';
-  v.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
+  setHtml(v, '<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
   '<div class="lead">'+lead+'</div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft);">Score: <span id="sb'+stageId+'live" style="color:var(--accent);font-size:18px">0</span> / '+(data.pos.length+data.neg.length+data.q.length+data.shuffled.length)+'</div><button class="btn ghost small" data-action="reset-grammar-stage" data-stage="'+stageId+'">↻ Reset</button></div>'+
-  '<div id="sb'+stageId+'body"></div>';
+  '<div id="sb'+stageId+'body"></div>');
   main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
   const body=document.getElementById('sb'+stageId+'body'); const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length; SB_DATA[stageId]={pos:data.pos,neg:data.neg,q:data.q,shuffled:data.shuffled};
   let score = 0;
@@ -1178,11 +1179,11 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
     if(heading){const h=document.createElement('div');h.className='section-head';h.textContent=heading;body.appendChild(h)}
     items.forEach(function(item,i){
       const card=document.createElement('div');card.className='q-card'; const idx=startNum+i; const draftKey = 'sb'+stageId+'_'+idx+'_draft'; const okKey = 'sb'+stageId+'_'+idx+'_ok'; const isOk = draftAnswers[okKey] === true;
-      card.innerHTML='<div class="q-num">Question '+idx+'</div><div class="q-prompt" style="font-size:19px; line-height:1.6;">'+item.prompt+'</div>'+
+      setHtml(card, '<div class="q-num">Question '+idx+'</div><div class="q-prompt" style="font-size:19px; line-height:1.6;">'+item.prompt+'</div>'+
       '<div class="sb-chips" id="sbChips'+stageId+'_'+idx+'"></div>'+
       '<div class="sb-area" id="sbArea'+stageId+'_'+idx+'"><span class="placeholder">Click the words below...</span></div>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="sbCheck_'+stageId+'_'+idx+'" data-action="check-sentence-builder-item" data-stage="'+stageId+'" data-question-index="'+idx+'">✓ Check</button><button class="btn ghost small" id="sbReset_'+stageId+'_'+idx+'" data-action="reset-sentence-builder-item" data-stage="'+stageId+'" data-question-index="'+idx+'">↻ Reset</button></div>'+
-      '<div class="q-feedback" id="sbFb'+stageId+'_'+idx+'"></div>';
+      '<div class="q-feedback" id="sbFb'+stageId+'_'+idx+'"></div>');
       body.appendChild(card);
       const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx); const scrambled=shuffle(item.correct.map(function(w,ii){return{w:w,i:ii}})); const draftOrder = draftAnswers[draftKey] || []; 
       
@@ -1199,12 +1200,12 @@ function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,
                      if(isOk) return; newChip.remove(); const back = document.createElement('div'); back.className = 'sb-chip'; back.textContent = item.correct[origIdx]; back.dataset.origIndex = origIdx;
                      registerDelegatedClick(back, function() { moveChip(stageId, idx, back, item.correct[origIdx], origIdx); }); chipsEl.appendChild(back);
                      SB_STATE[stageId+'_'+idx] = (SB_STATE[stageId+'_'+idx] || []).filter(x => x !== origIdx); draftAnswers[draftKey] = SB_STATE[stageId+'_'+idx]; debouncedSaveDraft();
-                     if (!area.querySelector('.sb-chip')) { area.innerHTML = '<span class="placeholder">Click the words below...</span>'; area.classList.remove('filled'); }
+                     if (!area.querySelector('.sb-chip')) { setHtml(area, '<span class="placeholder">Click the words below...</span>'); area.classList.remove('filled'); }
                  });
                  area.appendChild(newChip); SB_STATE[stageId+'_'+idx].push(origIdx);
              }
          });
-         if(isOk){ window['sbDone_'+stageId+'_'+idx] = true; score++; const fb=document.getElementById('sbFb'+stageId+'_'+idx); fb.className='q-feedback correct';fb.innerHTML='✓ Correct!'; document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = true; }
+         if(isOk){ window['sbDone_'+stageId+'_'+idx] = true; score++; const fb=document.getElementById('sbFb'+stageId+'_'+idx); fb.className='q-feedback correct';setHtml(fb, '✓ Correct!'); document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = true; }
       }
       if (isOk && teacherCanEdit) { const rst = document.createElement('button'); rst.className='btn small danger'; rst.textContent='↺ Undo'; rst.style.marginTop='10px'; registerDelegatedClick(rst, () => undoQuestion('sb'+stageId+'_', idx)); card.appendChild(rst); }
     });
@@ -1224,7 +1225,7 @@ function moveChip(stageId,idx,chip,word,origIdx){
     newChip.remove(); const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx); const back=document.createElement('div');back.className='sb-chip';back.textContent=word;back.dataset.origIndex=origIdx;
     registerDelegatedClick(back,function(){moveChip(stageId,idx,back,word,origIdx)}); chipsEl.appendChild(back);
     SB_STATE[stageId+'_'+idx]=(SB_STATE[stageId+'_'+idx]||[]).filter(function(x){return x!==origIdx}); draftAnswers['sb'+stageId+'_'+idx+'_draft'] = SB_STATE[stageId+'_'+idx]; debouncedSaveDraft();
-    if(!area.querySelector('.sb-chip')){area.innerHTML='<span class="placeholder">Click the words below...</span>';area.classList.remove('filled')}
+    if(!area.querySelector('.sb-chip')){setHtml(area, '<span class="placeholder">Click the words below...</span>');area.classList.remove('filled')}
   });
   area.appendChild(newChip);area.classList.add('filled');chip.remove();sPop();
   if(!SB_STATE[stageId+'_'+idx])SB_STATE[stageId+'_'+idx]=[]; SB_STATE[stageId+'_'+idx].push(origIdx);
@@ -1233,18 +1234,18 @@ function moveChip(stageId,idx,chip,word,origIdx){
 function resetSBItem(stageId,idx){
   const area=document.getElementById('sbArea'+stageId+'_'+idx);const chipsEl=document.getElementById('sbChips'+stageId+'_'+idx); if(!area||!chipsEl)return;
   area.querySelectorAll('.sb-chip').forEach(function(ch){ const back=document.createElement('div');back.className='sb-chip';back.textContent=ch.textContent;back.dataset.origIndex=ch.dataset.origIndex; registerDelegatedClick(back,function(){moveChip(stageId,idx,back,ch.textContent,Number(ch.dataset.origIndex))}); chipsEl.appendChild(back); });
-  area.innerHTML='<span class="placeholder">Click the words below...</span>'; area.classList.remove('filled'); SB_STATE[stageId+'_'+idx]=[];
+  setHtml(area, '<span class="placeholder">Click the words below...</span>'); area.classList.remove('filled'); SB_STATE[stageId+'_'+idx]=[];
   draftAnswers['sb'+stageId+'_'+idx+'_draft'] = []; delete draftAnswers['sb'+stageId+'_'+idx+'_ok']; debouncedSaveDraft();
   const fb=document.getElementById('sbFb'+stageId+'_'+idx);if(fb)fb.className='q-feedback'; document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = false;
 }
 function checkSBItem(stageId,idx){
   const area=document.getElementById('sbArea'+stageId+'_'+idx);if(!area)return; const userOrder=Array.from(area.querySelectorAll('.sb-chip')).map(function(c){return Number(c.dataset.origIndex)}); const fb=document.getElementById('sbFb'+stageId+'_'+idx); const expected=Array.from({length:userOrder.length},function(_,i){return i});
-  if(userOrder.length!==expected.length){fb.className='q-feedback wrong';fb.innerHTML='Use all the words.';sWrong();return}
+  if(userOrder.length!==expected.length){fb.className='q-feedback wrong';setHtml(fb, 'Use all the words.');sWrong();return}
   const ok=userOrder.every(function(v,i){return v===i});
   if(ok){
-    fb.className='q-feedback correct';fb.innerHTML='✓ Correct!';sCorrect(); draftAnswers['sb'+stageId+'_'+idx+'_ok'] = true; debouncedSaveDraft(); document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = true;
+    fb.className='q-feedback correct';setHtml(fb, '✓ Correct!');sCorrect(); draftAnswers['sb'+stageId+'_'+idx+'_ok'] = true; debouncedSaveDraft(); document.getElementById('sbCheck_'+stageId+'_'+idx).disabled = true;
     if(!window['sbDone_'+stageId+'_'+idx]){ window['sbDone_'+stageId+'_'+idx]=true; const el=document.getElementById('sb'+stageId+'live'); let cur=Number(el.textContent)||0;cur++;el.textContent=cur; const tot=(SB_DATA[stageId].pos.length+SB_DATA[stageId].neg.length+SB_DATA[stageId].q.length+SB_DATA[stageId].shuffled.length); setScore(stageId,Math.floor(cur*10/tot)); if(cur===tot){setScore(stageId,10);markDone(stageId)} }
-  }else{fb.className='q-feedback wrong';fb.innerHTML='✗ Not quite. Check the word order.';sWrong()}
+  }else{fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite. Check the word order.');sWrong()}
 }
 function renderStage6(){
     let title = '🧩 Sentence Builder — Present Perfect';
@@ -1369,22 +1370,22 @@ let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,time
 function getTestTimeLimit() { const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length; return Math.max(300, totalQuestions * 30); }
 function buildTestQuestions(){ const qs=[]; TEST_MCQ.forEach(function(q){qs.push({type:'mcq',prompt:q.q,options:q.options,correct:q.correct,exp:q.exp})}); TEST_SHORT.forEach(function(q){qs.push({type:'short',prompt:q.q,answers:q.answers,exp:q.exp})}); TEST_TFNG.forEach(function(q){qs.push({type:'tfng',prompt:q.q,answer:q.answer,exp:q.exp})}); TEST_COMPLETE.forEach(function(q){qs.push({type:'complete',prompt:q.p,answer:q.a})}); return shuffle(qs); }
 function renderStage9(){
-  const main=document.getElementById('main'); if(!main)return; main.innerHTML='';
+  const main=document.getElementById('main');if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active'; const limitMins = Math.floor(getTestTimeLimit() / 60);
-  v.innerHTML='<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
+  setHtml(v, '<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
   '<div class="lead">This is a strict, timed test. You have <b>'+limitMins+' minutes</b> in total. You can only take this test <b>once</b>. After time runs out, the test closes automatically.<span class="ru">Строгий тест на время: '+limitMins+' минут, одна попытка.</span></div>'+
-  '<div id="testRoot"></div>';
+  '<div id="testRoot"></div>');
   main.appendChild(v);
   if (teacherCanEdit) { const resetBtn = document.createElement('button'); resetBtn.className = 'btn danger small'; resetBtn.style.marginBottom = '15px'; resetBtn.textContent = '🔄 Give Second Chance (Reset Test)'; registerDelegatedClick(resetBtn, function() { resetStageTeacher(9); }); v.insertBefore(resetBtn, document.getElementById('testRoot')); }
   main.appendChild(stageFooter(8,null));
-  if(state.done[state.currentLessonId+"_9"]) { const score = state.scores[state.currentLessonId+"_9"] || 0; document.getElementById('testRoot').innerHTML = '<div class="complete-banner"><div class="trophy">🏁</div><h3>Test already completed</h3>'+ '<p>You have already finished this test. Your score was: <b>' + score + ' / 10</b>.</p>'+ '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot retake the test, but you can review the grammar stages or practice vocabulary.</p>'+ '<div style="margin-top:20px"><button class="btn ghost" data-action="go-to-stage" data-stage="1">← Back to start</button></div></div>'; }
+  if(state.done[state.currentLessonId+"_9"]) { const score = state.scores[state.currentLessonId+"_9"] || 0; setHtml(document.getElementById('testRoot'), '<div class="complete-banner"><div class="trophy">🏁</div><h3>Test already completed</h3>'+ '<p>You have already finished this test. Your score was: <b>' + score + ' / 10</b>.</p>'+ '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot retake the test, but you can review the grammar stages or practice vocabulary.</p>'+ '<div style="margin-top:20px"><button class="btn ghost" data-action="go-to-stage" data-stage="1">← Back to start</button></div></div>'); }
   else { renderTestIntro(); }
 }
-function renderTestIntro(){ const r=document.getElementById('testRoot');if(!r)return; if(testState.timer){clearInterval(testState.timer);testState.timer=null} testState.active=false; const preview=buildTestQuestions().length; const limitMins = Math.floor(getTestTimeLimit() / 60); r.innerHTML='<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+ '<p>'+preview+' questions · '+limitMins+' minutes · one attempt only</p>'+ '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+ '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" data-action="start-test">▶ Start the test</button></div></div>'; }
+function renderTestIntro(){ const r=document.getElementById('testRoot');if(!r)return; if(testState.timer){clearInterval(testState.timer);testState.timer=null} testState.active=false; const preview=buildTestQuestions().length; const limitMins = Math.floor(getTestTimeLimit() / 60); setHtml(r, '<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+ '<p>'+preview+' questions · '+limitMins+' minutes · one attempt only</p>'+ '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+ '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" data-action="start-test">▶ Start the test</button></div></div>'); }
 function startTest(){
   testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:0,timer:null}; testState.total=testState.questions.length; testState.timeLeft = getTestTimeLimit();
   const limitMins = Math.floor(testState.timeLeft / 60); const limitSecs = testState.timeLeft % 60; const formattedTime = String(limitMins).padStart(2, '0') + ':' + String(limitSecs).padStart(2, '0');
-  const r=document.getElementById('testRoot');if(!r)return; r.innerHTML='<div class="test-hud">'+ '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">'+formattedTime+'</span></div>'+ '<div class="tcell"><span class="lbl">Question</span><span class="val" id="testQNum">1 / '+testState.total+'</span></div>'+ '<div class="tcell"><span class="lbl">Correct</span><span class="val" id="testCorrect">0</span></div>'+ '</div>'+ '<div class="test-progress-rail"><div class="test-progress-fill" id="testProgress"></div></div>'+ '<div id="testQuestion"></div>';
+  const r=document.getElementById('testRoot');if(!r)return; setHtml(r, '<div class="test-hud">'+ '<div class="tcell"><span class="lbl">Time</span><span class="val" id="testTimer">'+formattedTime+'</span></div>'+ '<div class="tcell"><span class="lbl">Question</span><span class="val" id="testQNum">1 / '+testState.total+'</span></div>'+ '<div class="tcell"><span class="lbl">Correct</span><span class="val" id="testCorrect">0</span></div>'+ '</div>'+ '<div class="test-progress-rail"><div class="test-progress-fill" id="testProgress"></div></div>'+ '<div id="testQuestion"></div>');
   updateTestTimer(); testState.timer=setInterval(function(){ testState.timeLeft--; updateTestTimer(); if(testState.timeLeft<=0)endTest(true); },1000); broadcastAction('test_start','Timed test started'); renderTestQuestion();
 }
 function updateTestTimer(){ const t=document.getElementById('testTimer');if(!t)return; const m=String(Math.floor(Math.max(0,testState.timeLeft)/60)).padStart(2,'0'); const s=String(Math.max(0,testState.timeLeft)%60).padStart(2,'0'); t.textContent=m+':'+s; if(testState.timeLeft<=60)t.classList.add('danger');else t.classList.remove('danger'); }
@@ -1395,11 +1396,11 @@ function renderTestQuestion(){
   else if(q.type==='tfng'){ html+='<div class="tfng-opts">'+shuffle(['True','False','Not Given']).map(function(o){return '<button class="q-opt" data-opt="'+o+'" data-action="answer-test-tfng">'+o+'</button>'}).join('')+'</div>'; }
   else if(q.type==='short'){ html+='<div class="q-input-row"><input type="text" class="q-input" id="testInput" placeholder="Type your answer..." autocomplete="off" data-action="answer-test-short-enter" data-action-event="keydown"><button class="btn" data-action="answer-test-short">Submit</button></div>'; }
   else if(q.type==='complete'){ html+='<div class="q-input-row"><input type="text" class="q-input" id="testInput" placeholder="Type the missing word(s)..." autocomplete="off" data-action="answer-test-complete-enter" data-action-event="keydown"><button class="btn" data-action="answer-test-complete">Submit</button></div>'; }
-  html+='<div class="q-feedback" id="testFeedback"></div><div id="testNextArea"></div></div>'; root.innerHTML=html; const inp=document.getElementById('testInput'); if(inp)setTimeout(function(){inp.focus()},80);
+  html+='<div class="q-feedback" id="testFeedback"></div><div id="testNextArea"></div></div>'; setHtml(root, html); const inp=document.getElementById('testInput'); if(inp)setTimeout(function(){inp.focus()},80);
 }
 function lockTestOptions(){document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){b.disabled=true})}
-function showTestFeedback(ok,exp){ const fb=document.getElementById('testFeedback');if(!fb)return; fb.className='q-feedback '+(ok?'correct':'wrong'); fb.innerHTML=(ok?'✓ Correct!':'✗ Incorrect.')+(exp?'<span class="exp">'+escapeHtml(exp)+'</span>':''); }
-function showTestNext(){ const area=document.getElementById('testNextArea');if(!area)return; const isLast=testState.idx>=testState.total-1; area.innerHTML='<div style="margin-top:18px;text-align:right"><button class="btn" data-action="next-test-question">'+(isLast?'Finish test →':'Next question →')+'</button></div>'; }
+function showTestFeedback(ok,exp){ const fb=document.getElementById('testFeedback');if(!fb)return; fb.className='q-feedback '+(ok?'correct':'wrong'); setHtml(fb, (ok?'✓ Correct!':'✗ Incorrect.')+(exp?'<span class="exp">'+escapeHtml(exp)+'</span>':'')); }
+function showTestNext(){ const area=document.getElementById('testNextArea');if(!area)return; const isLast=testState.idx>=testState.total-1; setHtml(area, '<div style="margin-top:18px;text-align:right"><button class="btn" data-action="next-test-question">'+(isLast?'Finish test →':'Next question →')+'</button></div>'); }
 function answerTestMCQ(btn){ const q=testState.questions[testState.idx];if(!q)return; const opt=btn.dataset.opt;const ok=opt===q.correct; if(ok)testState.correct++; lockTestOptions(); document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){ if(b.dataset.opt===q.correct)b.classList.add('correct'); else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong'); }); showTestFeedback(ok,q.exp); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
 function answerTestTFNG(btn){ const q=testState.questions[testState.idx];if(!q)return; const opt=btn.dataset.opt;const ok=opt===q.answer; if(ok)testState.correct++; lockTestOptions(); document.querySelectorAll('#testQuestion .q-opt').forEach(function(b){ if(b.dataset.opt===q.answer)b.classList.add('correct'); else if(b.dataset.opt===opt&&!ok)b.classList.add('wrong'); }); showTestFeedback(ok,q.exp); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
 function answerTestShort(){ const q=testState.questions[testState.idx];if(!q)return; const inp=document.getElementById('testInput');if(!inp)return; const ok=isAnswerCorrect(inp.value, q.answers); if(ok)testState.correct++; inp.disabled=true; if(ok)inp.classList.add('correct');else inp.classList.add('wrong'); showTestFeedback(ok,q.exp); const cc=document.getElementById('testCorrect');if(cc)cc.textContent=testState.correct; showTestNext(); broadcastAction('test_answer',(ok?'correct: ':'wrong: ')+q.prompt.substring(0,40)); }
@@ -1410,7 +1411,7 @@ function endTest(timedOut,customReason){
   const total=testState.total||1; const score=Math.round((testState.correct/total)*10);
   try { state.done[state.currentLessonId+"_9"] = true; setScore(9, score); saveState(); } catch(e) { console.error("State save failed", e); }
   const elapsed=getTestTimeLimit()-testState.timeLeft; const mins=Math.floor(elapsed/60),secs=elapsed%60; const root=document.getElementById('testRoot');if(!root)return; const msg=customReason?customReason:(timedOut?'You ran out of time.':'Test complete!');
-  root.innerHTML='<div class="'+(timedOut||customReason?'test-timeout':'test-result')+'">'+ '<div class="icon">'+(timedOut||customReason?'⏰':'🏁')+'</div>'+ '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+ '<div class="big">'+Number(testState.correct||0)+' / '+Number(total||0)+'</div>'+ '<p>'+escapeHtml(msg)+' You answered <b>'+Number(testState.correct||0)+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+ '<p style="color:var(--accent);font-weight:700;margin-top:10px">This test can only be taken once. You cannot retake it.</p>'+ '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px"><button class="btn ghost" data-action="go-to-stage" data-stage="1">← Back to start</button></div></div>';
+  setHtml(root, '<div class="'+(timedOut||customReason?'test-timeout':'test-result')+'">'+ '<div class="icon">'+(timedOut||customReason?'⏰':'🏁')+'</div>'+ '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+ '<div class="big">'+Number(testState.correct||0)+' / '+Number(total||0)+'</div>'+ '<p>'+escapeHtml(msg)+' You answered <b>'+Number(testState.correct||0)+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+ '<p style="color:var(--accent);font-weight:700;margin-top:10px">This test can only be taken once. You cannot retake it.</p>'+ '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px"><button class="btn ghost" data-action="go-to-stage" data-stage="1">← Back to start</button></div></div>');
   if(!timedOut&&!customReason){sWin();confetti();} broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
@@ -1428,24 +1429,24 @@ function resetStageTeacher(stageId) {
 
 // UPDATED: Collapsible sidebar logic
 function renderSidebar(){
-  const list=document.getElementById('stageList');if(!list)return;list.innerHTML=''; const isAraylim1 = activeContentName.includes('araylim_1'); const isAraylim3 = activeContentName.includes('araylim_3');
+  const list=document.getElementById('stageList');if(!list)return;clearElement(list); const isAraylim1 = activeContentName.includes('araylim_1'); const isAraylim3 = activeContentName.includes('araylim_3');
   let customLabels = null;
   if (isAraylim1) { customLabels = [ 'Vocabulary', 'Word Match', 'Interactive Video & Questions', 'Simple Present', 'Present Continuous', 'Simple Past', 'Past Continuous', 'Present Perfect', 'Test Your Knowledge' ]; }
   else if (isAraylim3) { customLabels = [ 'Vocabulary', 'Word Match', 'Interactive Video & Questions', 'Future I', 'Future II', 'Future Sentences', 'Time Clauses', 'Mixed Future', 'Test Your Knowledge' ]; }
 
   CURRICULUM.forEach(function(yearObj){
     const isY=expandedYears.includes(yearObj.year); const yearEl=document.createElement('div');yearEl.className='year-item'+(isY?' open':'');
-    yearEl.innerHTML='<span>📅 '+escapeHtml(yearObj.year)+'</span><span class="arrow">▶</span>'; registerDelegatedClick(yearEl,function(){if(isY)expandedYears=expandedYears.filter(function(y){return y!==yearObj.year});else expandedYears.push(yearObj.year);renderSidebar()}); list.appendChild(yearEl);
+    setHtml(yearEl, '<span>📅 '+escapeHtml(yearObj.year)+'</span><span class="arrow">▶</span>'); registerDelegatedClick(yearEl,function(){if(isY)expandedYears=expandedYears.filter(function(y){return y!==yearObj.year});else expandedYears.push(yearObj.year);renderSidebar()}); list.appendChild(yearEl);
     if(isY)yearObj.months.forEach(function(m){
       const isM=expandedMonths.includes(m.month); const mEl=document.createElement('div');mEl.className='month-item'+(isM?' open':'');
-      mEl.innerHTML='<span>📁 '+escapeHtml(m.month)+'</span><span class="arrow">▶</span>'; registerDelegatedClick(mEl,function(){if(isM)expandedMonths=expandedMonths.filter(function(x){return x!==m.month});else expandedMonths.push(m.month);renderSidebar()}); list.appendChild(mEl);
+      setHtml(mEl, '<span>📁 '+escapeHtml(m.month)+'</span><span class="arrow">▶</span>'); registerDelegatedClick(mEl,function(){if(isM)expandedMonths=expandedMonths.filter(function(x){return x!==m.month});else expandedMonths.push(m.month);renderSidebar()}); list.appendChild(mEl);
       if(isM)m.lessons.forEach(function(lesson){
         const isActive=lesson.id===state.currentLessonId;
         const isOpen = expandedLessons[lesson.id] !== undefined ? expandedLessons[lesson.id] : isActive;
         const fbLesson = curriculumCache[lesson.id]; const title = (fbLesson && fbLesson.title) ? fbLesson.title : lesson.title;
         
         const lEl=document.createElement('div');lEl.className='lesson-item'+(isActive?' active':'');
-        lEl.innerHTML='<span style="flex:1;">📘 '+escapeHtml(title)+'</span><span class="arrow" style="font-size:10px;">'+(isOpen?'▼':'▶')+'</span>';
+        setHtml(lEl, '<span style="flex:1;">📘 '+escapeHtml(title)+'</span><span class="arrow" style="font-size:10px;">'+(isOpen?'▼':'▶')+'</span>');
         registerDelegatedClick(lEl,function(){
             if(state.currentLessonId === lesson.id) {
                 expandedLessons[lesson.id] = !isOpen;
@@ -1466,7 +1467,7 @@ function renderSidebar(){
                 return it && it.homework && it.published!==false && it.parentId === lesson.id; 
             });
             if(assignedHW.length){
-              const hwList=document.createElement('div');hwList.className='homework-sub-list'; hwList.innerHTML='<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){ const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it}); const url=new URL(it.customUrl||'homework.html',window.location.href); url.searchParams.set('lesson',id); if(studentCode)url.searchParams.set('code',studentCode); const contentFile = (it.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, ''); if (contentFile) url.searchParams.set('variant', contentFile); return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>'; }).join('');
+              const hwList=document.createElement('div');hwList.className='homework-sub-list'; setHtml(hwList, '<div class="homework-sub-label">Homework</div>'+assignedHW.map(function(it){ const id=it.id||Object.keys(curriculumCache).find(function(k){return curriculumCache[k]===it}); const url=safeUrl(it.customUrl||'homework.html',window.location.href); if(!url){console.error('Skipping homework with an unsafe custom URL',{lessonId:id});return '<span class="homework-sub-item">📝 '+escapeHtml(it.title||'Homework')+' (link unavailable)</span>';} url.searchParams.set('lesson',id); if(studentCode)url.searchParams.set('code',studentCode); const contentFile = (it.contentUrl || '').replace(/^content\//, '').replace(/\.json$/, ''); if (contentFile) url.searchParams.set('variant', contentFile); return '<a class="homework-sub-item" href="'+escapeAttr(url.href)+'">📝 '+escapeHtml(it.title||'Homework')+' ↗</a>'; }).join(''));
               hwList.addEventListener('click',function(e){e.stopPropagation()}); list.appendChild(hwList);
             }
           }
@@ -1478,7 +1479,7 @@ function renderSidebar(){
             let statusIcon = isD ? '✅' : (isA ? '📍' : '🔒');
             const row = document.createElement('div'); row.style.display = 'flex'; row.style.alignItems = 'stretch'; row.style.gap = '4px';
             const stEl=document.createElement('button'); stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':''); stEl.style.flex = '1'; const displayLabel = customLabels ? customLabels[st.id - 1] : st.label;
-            stEl.innerHTML='<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+displayLabel+'</span>'; registerDelegatedClick(stEl,function(){goToStage(st.id)}); row.appendChild(stEl);
+            setHtml(stEl, '<span class="icon" style="font-size:14px; margin-right:8px;">'+statusIcon+'</span> <span>'+escapeHtml(displayLabel)+'</span>'); registerDelegatedClick(stEl,function(){goToStage(st.id)}); row.appendChild(stEl);
             if (teacherCanEdit) { const resetBtn = document.createElement('button'); resetBtn.textContent = '🔄'; resetBtn.title = 'Reset this stage (Teacher only)'; resetBtn.style.cssText = 'background:var(--panel-2); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:14px; padding:0 8px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; transition:all 0.15s;'; resetBtn.addEventListener('mouseover', () => { resetBtn.style.color = 'var(--error)'; resetBtn.style.borderColor = 'var(--error)'; }); resetBtn.addEventListener('mouseout', () => { resetBtn.style.color = 'var(--ink-soft)'; resetBtn.style.borderColor = 'var(--border)'; }); registerDelegatedClick(resetBtn, function(e) { e.stopPropagation(); resetStageTeacher(st.id); }); row.appendChild(resetBtn); }
             sub.appendChild(row);
           });
@@ -1493,16 +1494,16 @@ function goToStage(n){
   state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n);
 }
 function renderStage(){
-  const main=document.getElementById('main');if(!main)return; main.innerHTML=''; const lesson = getCurrentLesson(); const stages = DEFAULT_STAGES; const stageIndex = stages.findIndex(s => s.id === state.currentStage);
+  const main=document.getElementById('main');if(!main)return; clearElement(main); const lesson = getCurrentLesson(); const stages = DEFAULT_STAGES; const stageIndex = stages.findIndex(s => s.id === state.currentStage);
   let fn = null; if (stageIndex === stages.length - 1) { fn = renderStage9; } else { switch(stageIndex) { case 0: fn = renderStage1; break; case 1: fn = renderStage2; break; case 2: fn = renderStage3; break; case 3: fn = renderStage4; break; case 4: fn = renderStage5; break; case 5: fn = renderStage6; break; case 6: fn = renderStage7; break; case 7: fn = renderStage8; break; default: fn = renderStage1; } }
   try{
-    if(typeof fn === 'function') fn(); else main.innerHTML='<p>Error: Stage content not found.</p>';
+    if(typeof fn === 'function') fn(); else setHtml(main, '<p>Error: Stage content not found.</p>');
     const title = lesson ? lesson.title : 'Lesson'; const stageObj = stages.find(s => s.id === state.currentStage); const icon = (stageObj && stageObj.icon) ? stageObj.icon : '📘';
     const header = document.createElement('div'); header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
-    if(stageIndex === 2) header.style.maxWidth = '1400px'; header.innerHTML = `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`; main.insertBefore(header, main.firstChild);
-  }catch(e){ console.error(e); main.innerHTML='<p>Error loading stage.</p>'; }
+    if(stageIndex === 2) header.style.maxWidth = '1400px'; setHtml(header, `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`); main.insertBefore(header, main.firstChild);
+  }catch(e){ console.error(e); setHtml(main, '<p>Error loading stage.</p>'); }
 }
-function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; f.innerHTML=html;return f; }
+function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
 function startTimer(){ setInterval(function(){ const elapsed=Math.floor((Date.now()-state.sessionStart)/1000); const m=String(Math.floor(elapsed/60)).padStart(2,'0'); const s=String(elapsed%60).padStart(2,'0'); const el=document.getElementById('timerDisplay');if(el)el.textContent=m+':'+s; },1000); }
 function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
 function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
@@ -1563,14 +1564,14 @@ installDelegatedActions({
   "flashcard-previous": clickAction(fcPrev),
   "flashcard-next": clickAction(fcNext),
   "edit-note": clickAction((element, event) => {
-    const id = readActionParam(element, "noteId", /^note_[A-Za-z0-9_-]{1,64}$/);
+    const id = readActionParam(element, "noteId", /^(?:note|legacy)_[A-Za-z0-9_-]{1,64}$/);
     if (id) {
       event.preventDefault();
       openExistingNote(id);
     }
   }),
   "delete-note": clickAction((element, event) => {
-    const id = readActionParam(element, "noteId", /^note_[A-Za-z0-9_-]{1,64}$/);
+    const id = readActionParam(element, "noteId", /^(?:note|legacy)_[A-Za-z0-9_-]{1,64}$/);
     if (id) {
       event.preventDefault();
       deleteNoteById(id);
@@ -1712,7 +1713,7 @@ installDelegatedActions({
     const config=await import('../config.js');
     firebaseConfig=config.firebaseConfig;
   } catch (e) {
-    document.getElementById('main').innerHTML = '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' + '<h2>Content failed to load</h2>' + '<p style="color:var(--ink-soft)">' + escapeHtml(e.message) + '</p>' + '</div>';
+    setHtml(document.getElementById('main'), '<div class="card" style="max-width:520px;margin:80px auto;text-align:center;padding:34px">' + '<h2>Content failed to load</h2>' + '<p style="color:var(--ink-soft)">' + escapeHtml(e.message) + '</p>' + '</div>');
     return;
   }
   const lessonFromUrl=new URLSearchParams(window.location.search).get('lesson');

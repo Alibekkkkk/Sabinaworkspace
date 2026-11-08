@@ -1,5 +1,6 @@
 
 import { installDelegatedActions, readActionEnum } from "../delegated-actions.js";
+import { clearElement, safeUrl, setHtml } from "../dom.js";
 
 let db = null;
 let configModule = null;
@@ -142,7 +143,7 @@ function doRegister(){
       saveIdentity(code, name, remember);
       const el = document.getElementById('alertBox');
       el.className = 'alert show success';
-      el.innerHTML = '✓ Welcome, <b>' + escapeHtml(name) + '</b>!<br>Your code is: <span class="code-badge">' + escapeHtml(code) + '</span><br><span style="font-size:14px;">Save this code — you\'ll need it to sign in next time.</span>';
+      setHtml(el, '✓ Welcome, <b>' + escapeHtml(name) + '</b>!<br>Your code is: <span class="code-badge">' + escapeHtml(code) + '</span><br><span style="font-size:14px;">Save this code — you\'ll need it to sign in next time.</span>');
       setTimeout(() => enterPortal(), 2500);
     });
   }).catch(err => showAlert('Error: ' + err.message, 'error'));
@@ -191,10 +192,9 @@ function enterPortal(){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('lessonsScreen').style.display = 'block';
   document.body.classList.add('portal-authenticated');
-  document.getElementById('welcomeBox').innerHTML =
-    '<div class="avatar">' + escapeHtml(state.currentName.charAt(0).toUpperCase()) + '</div>' +
+  setHtml(document.getElementById('welcomeBox'), '<div class="avatar">' + escapeHtml(state.currentName.charAt(0).toUpperCase()) + '</div>' +
     '<h2>Welcome, ' + escapeHtml(state.currentName) + '! 👋</h2>' +
-    '<p>Code: <b style="color:var(--accent);font-family:Fira Code,monospace;letter-spacing:2px;">' + escapeHtml(state.currentCode) + '</b></p>';
+    '<p>Code: <b style="color:var(--accent);font-family:Fira Code,monospace;letter-spacing:2px;">' + escapeHtml(state.currentCode) + '</b></p>');
   loadLessons();
 }
 
@@ -268,14 +268,14 @@ function renderLessons(){
   lessons.sort((a, b) => (a.order || 0) - (b.order || 0));
 
   if (!lessons.length) {
-    grid.innerHTML = '';
+    clearElement(grid);
     document.getElementById('practiceLinks').replaceChildren();
     document.getElementById('pathSteps').replaceChildren();
     empty.style.display = 'block';
     return;
   }
   empty.style.display = 'none';
-  grid.innerHTML = '';
+  clearElement(grid);
   const practiceLinks=document.getElementById('practiceLinks');
   const pathSteps=document.getElementById('pathSteps');
   practiceLinks.replaceChildren();
@@ -300,7 +300,12 @@ function renderLessons(){
     const isPrivate = lesson.audience !== 'all';
 
     const targetFile = lesson.customUrl ? lesson.customUrl : 'lesson.html';
-    const targetUrl = new URL(targetFile, window.location.href);
+    const targetUrl = safeUrl(targetFile, window.location.href);
+    if (!targetUrl) {
+      console.error('Skipping lesson with an unsafe custom URL', { lessonId });
+      showAlert('A lesson link is invalid. Please ask your teacher to update it.', 'error');
+      return;
+    }
     targetUrl.searchParams.set('code', state.currentCode);
     targetUrl.searchParams.set('lesson', lessonId);
     
@@ -352,15 +357,14 @@ function renderLessons(){
     let card = document.createElement('a');
     card.className = 'lesson-card';
     card.href = targetUrl.href;
-    card.innerHTML =
-      (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
+    setHtml(card, (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
       (lesson.homework ? '<div class="homework-tag">📌 Homework' + (lesson.homeworkDue ? ' · ' + escapeHtml(lesson.homeworkDue) : '') + '</div>' : '') +
       '<div class="icon">' + escapeHtml(lesson.icon || '📘') + '</div>' +
       '<div class="title">' + escapeHtml(lesson.title || 'Untitled lesson') + '</div>' +
       '<div class="desc">' + escapeHtml(lesson.description || 'No description.') + '</div>' +
       '<div class="meta"><span>📍 ' + doneCount + ' / ' + totalStages + ' stages</span><span>🏆 <b>' + lessonScore + '</b> / ' + maxScore + '</span></div>' +
       '<div class="progress-rail"><div class="progress-fill" style="width:' + pct + '%;"></div></div>' +
-      '<button class="open-btn">' + (pct === 0 ? '▶ Start lesson' : (pct === 100 ? '✓ Review lesson' : '▶ Continue')) + '</button>';
+      '<button class="open-btn">' + (pct === 0 ? '▶ Start lesson' : (pct === 100 ? '✓ Review lesson' : '▶ Continue')) + '</button>');
     grid.appendChild(card);
   });
 }

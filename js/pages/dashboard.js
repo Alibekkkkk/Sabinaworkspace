@@ -12,6 +12,7 @@
 import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
+import { appendHtml, safeUrl, setHtml } from "../dom.js";
 
 let firebaseConfig = null;
 
@@ -189,7 +190,7 @@ function renderPendingApprovals() {
   if (!uids.length) { card.style.display = 'none'; return; }
   card.style.display = 'block';
   count.textContent = uids.length;
-  list.innerHTML = uids.map(function(uid) {
+  setHtml(list, uids.map(function(uid) {
     const p = pendingMap[uid] || {};
     return '<div class="pending-item">' +
       '<div><div class="who">' + escapeHtml(p.name || 'Student') + '</div>' +
@@ -199,7 +200,7 @@ function renderPendingApprovals() {
       '<button class="btn small" data-action="open-link-modal" data-uid="' + escapeHtml(uid) + '">🔗 Link existing</button>' +
       '<button class="btn small danger" data-action="reject-pending-student" data-uid="' + escapeHtml(uid) + '">✕ Reject</button>' +
       '</div></div>';
-  }).join('');
+  }).join(''));
 }
 
 function approvePendingStudent(uid) {
@@ -225,10 +226,10 @@ function openLinkModal(uid) {
   pendingLinkUid = uid;
   const unlinked = Object.keys(studentsMap).filter(function(code) { return !studentsMap[code].uid; });
   if (!unlinked.length) { alert('No unlinked students available. Create a new one instead.'); return; }
-  document.getElementById('linkCodeSelect').innerHTML = unlinked.map(function(code) {
+  setHtml(document.getElementById('linkCodeSelect'), unlinked.map(function(code) {
     const s = studentsMap[code];
     return '<option value="' + escapeHtml(code) + '">' + escapeHtml(s.name || code) + ' — ' + escapeHtml(code) + '</option>';
-  }).join('');
+  }).join(''));
   document.getElementById('linkStudentModal').classList.add('open');
 }
 
@@ -294,9 +295,9 @@ function renderStudentsList() {
     return !query || (s.name || '').toLowerCase().indexOf(query) !== -1 || code.toLowerCase().indexOf(query) !== -1;
   });
   document.getElementById('studentsCount').textContent = Object.keys(studentsMap).length;
-  if (!codes.length) { list.innerHTML = '<div class="no-data" style="padding:20px;">No students yet.</div>'; return; }
+  if (!codes.length) { setHtml(list, '<div class="no-data" style="padding:20px;">No students yet.</div>'); return; }
   
-  list.innerHTML = codes.map(function(code) {
+  setHtml(list, codes.map(function(code) {
     const s = studentsMap[code];
     const meta = studentMeta[code] || {};
     const lastSeen = meta.lastSeen || 0;
@@ -323,7 +324,7 @@ function renderStudentsList() {
       '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + escapeHtml(meta.score || 0) + '</b></span><span>📍 Stage ' + escapeHtml(meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
       progressBar +
       '</div>';
-  }).join('');
+  }).join(''));
 }
 
 function selectStudent(code) {
@@ -368,14 +369,13 @@ function renderSelectedView() {
   document.getElementById('selectedCode').textContent = activeCode;
   document.getElementById('selectedAdded').textContent = s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—';
 
-  document.getElementById('controlGrid').innerHTML = 
-    '<button class="btn" data-action="send-goto" data-stage="' + (Number(meta.stage) || 1) + '" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;">' +
+  setHtml(document.getElementById('controlGrid'), '<button class="btn" data-action="send-goto" data-stage="' + (Number(meta.stage) || 1) + '" style="grid-column: 1 / -1; background:var(--success); color:#fff; border:none; margin-bottom:8px; font-size:15px;">' +
       '🎯 Tell Student to Resume at Stage ' + escapeHtml(meta.stage || 1) +
     '</button>' +
     STAGE_LIST.map(function(st) {
       const isCurrent = (meta.stage || 1) === st.id;
       return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" data-action="send-goto" data-stage="' + st.id + '"><span class="num">' + st.id + '</span>' + st.label + '</button>';
-    }).join('');
+    }).join(''));
 
   document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
   renderStudentHomework();
@@ -436,8 +436,8 @@ function attachHistoryListener() {
   if (activeFeedRef) activeFeedRef.off();
   const sList = document.getElementById('studentHistoryList');
   const tList = document.getElementById('teacherHistoryList');
-  sList.innerHTML = '<div class="no-data">Loading…</div>';
-  tList.innerHTML = '<div class="no-data">Loading…</div>';
+  setHtml(sList, '<div class="no-data">Loading…</div>');
+  setHtml(tList, '<div class="no-data">Loading…</div>');
   
   const tf = document.getElementById('historyTimeframe').value;
   const cutoff = tf === 'all' ? 0 : Date.now() - Number(tf);
@@ -454,21 +454,21 @@ function attachHistoryListener() {
     const sItems = items.filter(i => i.actor === 'student');
     const tItems = items.filter(i => i.actor === 'teacher');
     
-    sList.innerHTML = sItems.map(item => `
+    setHtml(sList, sItems.map(item => `
       <div class="feed-item info" style="align-items:center;">
          <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
          <span class="msg">${escapeHtml(item.detail)}</span>
          <button class="btn small" data-action="reset-stage" data-stage="${escapeHtml(item.stage)}" style="padding:2px 6px; font-size:11px;">Reset Stage ${escapeHtml(item.stage)}</button>
       </div>
-    `).join('') || '<div class="no-data">No student actions.</div>';
+    `).join('') || '<div class="no-data">No student actions.</div>');
     
-    tList.innerHTML = tItems.map(item => `
+    setHtml(tList, tItems.map(item => `
       <div class="feed-item action" style="align-items:center;">
          <span class="time">${new Date(item.ts).toLocaleTimeString()}</span>
          <span class="msg">${escapeHtml(item.detail)}</span>
          ${item.undo ? `<button class="btn small danger" data-action="undo-teacher-action" data-id="${escapeHtml(item.id)}" data-undo-type="${escapeHtml(item.undo.type)}" style="padding:2px 6px; font-size:11px;">Undo</button>` : ''}
       </div>
-    `).join('') || '<div class="no-data">No teacher actions.</div>';
+    `).join('') || '<div class="no-data">No teacher actions.</div>');
   }, function(error) {
     activeHistoryItems = [];
     weeklyHistoryLoaded = false;
@@ -587,21 +587,26 @@ function renderStudentHomework() {
              Array.isArray(row.lesson.assignedTo) &&
              row.lesson.assignedTo.indexOf(activeCode) !== -1;
     });
-  if (!assigned.length) { list.innerHTML = 'No homework assigned to this student.'; return; }
+  if (!assigned.length) { setHtml(list, 'No homework assigned to this student.'); return; }
   const progress = (studentMeta[activeCode] || {}).homework || {};
-  list.innerHTML = assigned.map(function(row) {
+  setHtml(list, assigned.map(function(row) {
     const lesson = row.lesson;
     const prog = progress[row.id] || {};
     const isSubmitted = !!prog.submitted;
     const status = isSubmitted ? '✓ Submitted' : (prog.updatedAt ? 'In progress' : 'Not started');
     const score = isSubmitted ? ((prog.score || 0) + ' / ' + (prog.total || 16) + ' correct') : '';
     const base = lesson.customUrl || 'homework.html';
-    const url = new URL(base, window.location.href);
+    const url = safeUrl(base, window.location.href);
+    if (!url) {
+      console.error('Skipping homework with an unsafe custom URL', { lessonId: row.id });
+      return '<div class="info-row"><span class="k">' + escapeHtml(lesson.title || row.id) +
+        '</span><span class="v">Homework link unavailable.</span></div>';
+    }
     url.searchParams.set('code', activeCode);
     url.searchParams.set('lesson', row.id);
     return '<div class="info-row"><span class="k">' + escapeHtml(lesson.title || row.id) + '</span>' +
       '<span class="v">' + status + (score ? ' · ' + escapeHtml(score) : '') + ' · <a href="' + escapeHtml(url.href) + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">open</a></span></div>';
-  }).join('');
+  }).join(''));
 }
 
 function openStudentClasswork() {
@@ -617,14 +622,13 @@ function renderOverview() {
   const el = document.getElementById('overviewContent');
   const codes = Object.keys(studentsMap);
   if (!codes.length) {
-    el.innerHTML = '<div class="empty-state"><div class="icon">👥</div><h3>No students yet</h3>' +
-      '<p>Click <b>+ Add Student</b> to create your first student code.</p></div>';
+    setHtml(el, '<div class="empty-state"><div class="icon">👥</div><h3>No students yet</h3>' +
+      '<p>Click <b>+ Add Student</b> to create your first student code.</p></div>');
     return;
   }
   const totalScore = codes.reduce(function(s, c) { return s + (Number((studentMeta[c] || {}).score) || 0); }, 0);
   const active = codes.filter(function(c) { return ((studentMeta[c] || {}).lastSeen || 0) > Date.now() - 120000; }).length;
-  el.innerHTML =
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;">' +
+  setHtml(el, '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;">' +
     '<div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:800;color:var(--accent);">' + codes.length + '</div><div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Students</div></div>' +
     '<div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:800;color:var(--accent);">' + active + '</div><div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Active now</div></div>' +
     '<div class="card" style="text-align:center;"><div style="font-size:36px;font-weight:800;color:var(--accent);">' + totalScore + '</div><div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Total points</div></div>' +
@@ -639,7 +643,7 @@ function renderOverview() {
         '<div style="font-size:42px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px;">' + escapeHtml(meta.score || 0) + '</div>' +
         '<div style="font-size:12px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:1px;">points</div>' +
         '</div>';
-    }).join('') + '</div>';
+    }).join('') + '</div>');
 }
 
 function openAddStudent() {
@@ -751,7 +755,7 @@ function renderClassworkTree() {
   });
 
   if (Object.keys(grouped).length === 0) {
-    container.innerHTML = '<div class="tree-empty">No items yet.<br><br><button class="btn small primary" data-action="open-lesson-modal">+ New Item</button></div>';
+    setHtml(container, '<div class="tree-empty">No items yet.<br><br><button class="btn small primary" data-action="open-lesson-modal">+ New Item</button></div>');
     return;
   }
 
@@ -801,7 +805,7 @@ function renderClassworkTree() {
       });
     }
   });
-  container.innerHTML = html;
+  setHtml(container, html);
 }
 
 function toggleYear(year) { expandedYears[year] = expandedYears[year] === false; renderClassworkTree(); }
@@ -870,7 +874,7 @@ function renderHomeworkTree() {
     return true;
   });
   if (!hwIds.length) {
-    container.innerHTML = '<div class="tree-empty">No homework assigned yet.<br><br>Open a classwork lesson and assign it as homework, or click + New in the Classwork tab and mark it as homework.</div>';
+    setHtml(container, '<div class="tree-empty">No homework assigned yet.<br><br>Open a classwork lesson and assign it as homework, or click + New in the Classwork tab and mark it as homework.</div>');
     return;
   }
   const grouped = {};
@@ -885,14 +889,14 @@ function renderHomeworkTree() {
     });
   });
   const groups = Object.keys(grouped).sort();
-  container.innerHTML = groups.map(function(name) {
+  setHtml(container, groups.map(function(name) {
     const key = 'hw_' + name;
     const open = expandedYears[key] !== false;
     return '<div class="tree-year' + (open ? ' open' : '') + '" data-action="toggle-homework-group" data-group-name="' + escapeHtml(name) + '"><span>👤 ' + escapeHtml(name) + '</span><span class="arrow">▶</span></div>' +
       (open ? grouped[name].map(function(row) {
         return '<div class="tree-lesson' + (row.id === currentHomeworkId ? ' active' : '') + '" data-action="open-homework" data-lesson-id="' + escapeHtml(row.id) + '"><span>' + escapeHtml(row.title) + '</span></div>';
       }).join('') : '');
-  }).join('');
+  }).join(''));
 }
 function toggleHwGroup(name) { const k = 'hw_' + name; expandedYears[k] = expandedYears[k] === false; renderHomeworkTree(); }
 
@@ -992,24 +996,29 @@ function setLessonType(type) {
   
   if (type === 'homework') {
     const select = document.getElementById('lessonParent');
-    select.innerHTML = '<option value="">-- None / Independent --</option>';
+    setHtml(select, '<option value="">-- None / Independent --</option>');
     Object.keys(curriculum).forEach(id => {
       if (!curriculum[id].homework) {
-        select.innerHTML += `<option value="${escapeHtml(id)}">${escapeHtml(curriculum[id].title || id)}</option>`;
+        appendHtml(select, `<option value="${escapeHtml(id)}">${escapeHtml(curriculum[id].title || id)}</option>`);
       }
     });
   }
 }
 function renderStudentPickList(selected) {
   const list = document.getElementById('studentPickList');
-  list.innerHTML = Object.keys(studentsMap).map(function(code) {
+  setHtml(list, Object.keys(studentsMap).map(function(code) {
     const checked = selected.indexOf(code) !== -1 ? ' checked' : '';
     return '<label style="display:flex;align-items:center;gap:8px;padding:6px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink);margin:0;"><input type="checkbox" value="' + escapeHtml(code) + '"' + checked + ' style="width:auto;margin:0;"> ' + escapeHtml(studentsMap[code].name || code) + ' (' + escapeHtml(code) + ')</label>';
-  }).join('') || '<div style="color:var(--ink-soft);font-size:14px;">No students yet.</div>';
+  }).join('') || '<div style="color:var(--ink-soft);font-size:14px;">No students yet.</div>');
 }
 function submitLesson() {
   const title = (document.getElementById('lessonTitle').value || '').trim();
   if (!title) { alert('Please enter a lesson title.'); return; }
+  const customUrl = (document.getElementById('lessonCustomUrl').value || '').trim();
+  if (customUrl && !safeUrl(customUrl, window.location.href)) {
+    alert('Enter a secure HTTPS URL or a page on this site.');
+    return;
+  }
   const id = editingLessonId || ('lesson_' + Date.now());
   const assignedTo = lessonVisibility === 'some'
     ? Array.from(document.querySelectorAll('#studentPickList input:checked')).map(function(x) { return x.value; })
@@ -1018,7 +1027,7 @@ function submitLesson() {
     title: title,
     description: (document.getElementById('lessonDesc').value || '').trim(),
     icon: (document.getElementById('lessonIcon').value || '📘').trim() || '📘',
-    customUrl: (document.getElementById('lessonCustomUrl').value || '').trim(),
+    customUrl: customUrl,
     contentUrl: document.getElementById('lessonContentUrl').value.trim() ? 'content/' + document.getElementById('lessonContentUrl').value.trim() + '.json' : '',
     homework: lessonType === 'homework',
     homeworkDue: lessonType === 'homework' ? (document.getElementById('lessonDue').value || '').trim() : '',
