@@ -1,0 +1,110 @@
+{
+  "portal.html": [],
+  "placement.html": [],
+  "practice.html": [],
+  "clip.html": [
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "help": "Page should contain a level-one heading",
+      "nodes": 1,
+      "sample": [
+        "html"
+      ]
+    }
+  ],
+  "manga.html": [
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "help": "Page should contain a level-one heading",
+      "nodes": 1,
+      "sample": [
+        "html"
+      ]
+    }
+  ],
+  "lesson.html": [
+    {
+      "id": "landmark-unique",
+      "impact": "moderate",
+      "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+      "nodes": 1,
+      "sample": [
+        ".sidebar"
+      ]
+    },
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "help": "Page should contain a level-one heading",
+      "nodes": 1,
+      "sample": [
+        "html"
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "help": "All page content should be contained by landmarks",
+      "nodes": 4,
+      "sample": [
+        ".mark",
+        "#syncPill"
+      ]
+    }
+  ],
+  "homework.html": [
+    {
+      "id": "page-has-heading-one",
+      "impact": "moderate",
+      "help": "Page should contain a level-one heading",
+      "nodes": 1,
+      "sample": [
+        "html"
+      ]
+    }
+  ],
+  "dashboard.html": [
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "help": "Document should have one main landmark",
+      "nodes": 1,
+      "sample": [
+        "html"
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "help": "All page content should be contained by landmarks",
+      "nodes": 2,
+      "sample": [
+        "#teacherLogin > h1",
+        "#teacherLogin > p"
+      ]
+    }
+  ],
+  "tools/import-content.html": [
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "help": "Document should have one main landmark",
+      "nodes": 1,
+      "sample": [
+        "html"
+      ]
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "help": "All page content should be contained by landmarks",
+      "nodes": 3,
+      "sample": [
+        "h1",
+        "body > p:nth-child(2)"
+      ]
+    }
+  ]
+}

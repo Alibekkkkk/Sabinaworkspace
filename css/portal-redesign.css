@@ -338,3 +338,5 @@ body.portal-page.light .lb-tabs .btn[aria-pressed="true"] { color: #fff; }
 body.portal-page.light .due-tag.due-overdue { border-color: #b00020; color: #b00020; }
 .due-tag.due-due-today, .due-tag.due-due-soon { border-color: var(--accent); }
 .lesson-card.locked { opacity: 0.7; cursor: not-allowed; }
+/* Dark theme: the accent is a light lavender, so primary buttons need dark text (axe: 1.95:1 with white). */
+body.portal-page:not(.light) .btn:not(.ghost):not(.google) { color: #10162b; }

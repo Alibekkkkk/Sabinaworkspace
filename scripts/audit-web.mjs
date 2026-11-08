@@ -102,7 +102,7 @@ const browserVersion = (() => { try { return findBrowser(); } catch (error) { re
 const lines = [
   "# Lighthouse and axe baseline", "",
   `Commit: \`${commit}\` · Generated: ${new Date().toISOString()} · Browser: \`${browserVersion}\` · Served from a local static server (no CDN, no HTTP caching headers, no compression), so performance numbers are indicative, not production numbers.`, "",
-  "Reproduce with `npm run audit:web` (optionally `-- portal.html placement.html`).", "",
+  "Reproduce with `npm run audit:web` (optionally `-- portal.html placement.html`; a subset run replaces the report with only those pages).", "",
   "Scores are Lighthouse 0-100. P = Performance, A = Accessibility, BP = Best Practices, SEO.", "",
   "| Page | Mobile P | A | BP | SEO | Desktop P | A | BP | SEO | axe serious/critical |", "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"
 ];
@@ -121,6 +121,7 @@ for (const row of rows) {
 }
 lines.push("## Scope and limits", "",
   "- `lesson.html`, `homework.html`, `dashboard.html` and the import tool need a signed-in student or teacher. Here they are measured in the state an anonymous visitor sees. Use `npm run dev` (Firebase emulators + seed data) to inspect the signed-in views by hand.",
+  "- SEO is 54 on every page on purpose: the pages carry `noindex, nofollow` because this is a private class portal, and Lighthouse penalises that. Do not 'fix' it.",
   "- Lighthouse runs in a throttled simulated environment; re-run on the deployed site for production numbers.");
 mkdirSync(join(root, "docs", "audit"), { recursive: true });
 writeFileSync(join(root, "docs", "LIGHTHOUSE.md"), lines.join("\n") + "\n");

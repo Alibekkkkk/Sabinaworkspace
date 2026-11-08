@@ -10,7 +10,7 @@ npm run test:rules
 npm run audit:web
 ```
 
-`npm run audit:web` runs Lighthouse (mobile and desktop) and axe-core against every page and rewrites [docs/LIGHTHOUSE.md](docs/LIGHTHOUSE.md). It needs Chrome or Edge (set `CHROME_PATH` if yours is somewhere unusual). Add page names to run a subset, for example `npm run audit:web -- portal.html placement.html`.
+`npm run audit:web` runs Lighthouse (mobile and desktop) and axe-core against every page and rewrites [docs/LIGHTHOUSE.md](docs/LIGHTHOUSE.md). It needs Chrome or Edge (set `CHROME_PATH` if yours is somewhere unusual). Add page names to run a subset, for example `npm run audit:web -- portal.html placement.html` (the report then lists only those pages).
 
 The rules test command requires Java 21 or later for the Firebase emulator. See [Teacher setup](TEACHER_SETUP.md) and the [security migration runbook](docs/SECURITY.md) before deploying rules or importing content.
 
