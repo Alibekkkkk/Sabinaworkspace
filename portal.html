@@ -74,6 +74,27 @@
       <div class="practice-links" id="practiceLinks"></div>
     </section>
 
+    <section class="practice-hub" id="leaderboardPanel" aria-labelledby="leaderboardTitle">
+      <h2 id="leaderboardTitle">🏆 Class leaderboard</h2>
+      <div id="leaderboardJoin">
+        <p class="helper">The leaderboard is <b>off</b> unless you turn it on. If you join, classmates see only your nickname and this week&rsquo;s XP &mdash; never your real name or code. You can leave at any time and your entries are removed.</p>
+        <label for="leaderboardNickname">Choose a nickname (3&ndash;16 letters or numbers)</label>
+        <input type="text" id="leaderboardNickname" maxlength="16" autocomplete="off" spellcheck="false" aria-describedby="leaderboardError">
+        <p class="helper" id="leaderboardError" role="alert"></p>
+        <button class="btn" type="button" data-action="leaderboard-join">Join the leaderboard</button>
+      </div>
+      <div id="leaderboardBoard" hidden>
+        <div class="lb-tabs" role="group" aria-label="Leaderboard period">
+          <button class="btn ghost" type="button" id="lbWeekly" aria-pressed="true" data-action="leaderboard-tab" data-tab="weekly">This week</button>
+          <button class="btn ghost" type="button" id="lbAll" aria-pressed="false" data-action="leaderboard-tab" data-tab="all">All time</button>
+        </div>
+        <p class="helper" id="leaderboardMessage" aria-live="polite"></p>
+        <ol class="lb-list" id="leaderboardList"></ol>
+        <p class="helper" id="leaderboardOwn"></p>
+        <button class="btn ghost" type="button" data-action="leaderboard-leave">Leave the leaderboard</button>
+      </div>
+    </section>
+
     <section class="path-panel" id="learningPath">
       <h2>🧭 Your learning path</h2>
       <p class="helper">Move through your assigned lessons at your own pace.</p>

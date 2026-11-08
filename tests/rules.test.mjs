@@ -590,3 +590,61 @@ test("placement results: server-stamped, own code only, one retake a week, teach
   });
   await assertSucceeds(set(placement, { ...result, cefr: "C1" }));
 });
+
+test("leaderboard: opt-in only, own uid only, own class only, capped, uid-keyed, teacher moderates", async () => {
+  await testEnv.withSecurityRulesDisabled(async context => {
+    await set(ref(context.database(), "students/B222222/classId"), "room-b");
+  });
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const outsider = testEnv.authenticatedContext("stranger").database();
+  const member = { nickname: "Maple Fox", totalXp: 120, updatedAt: Date.now() };
+  const week = { weeklyXp: 40, baselineXp: 80, updatedAt: Date.now() };
+
+  // opted OUT by default: a weekly score cannot exist without a member (nickname) entry
+  await assertFails(set(ref(dbA, "leaderboard/main/weeks/2026-W02/student-a"), week));
+  await assertSucceeds(set(ref(dbA, "leaderboard/main/members/student-a"), member));
+  await assertSucceeds(set(ref(dbA, "leaderboard/main/weeks/2026-W02/student-a"), week));
+
+  // cannot write another student's entry, another class, or by student code
+  await assertFails(set(ref(dbA, "leaderboard/main/members/student-b"), member));
+  await assertFails(set(ref(dbA, "leaderboard/room-b/members/student-a"), member));
+  await assertFails(set(ref(dbB, "leaderboard/main/members/student-b"), member));
+  await assertFails(set(ref(dbA, "leaderboard/main/weeks/2026-W02/student-b"), week));
+  await assertFails(set(ref(outsider, "leaderboard/main/members/stranger"), member));
+
+  // validation: caps, nickname, week id, unknown fields, immutable baseline
+  await assertFails(set(ref(dbA, "leaderboard/main/weeks/2026-W03/student-a"), { ...week, weeklyXp: 5001 }));
+  await assertFails(set(ref(dbA, "leaderboard/main/weeks/2026-W03/student-a"), { ...week, weeklyXp: -1 }));
+  await assertFails(set(ref(dbA, "leaderboard/main/weeks/not-a-week/student-a"), week));
+  await assertFails(set(ref(dbA, "leaderboard/main/weeks/2026-W02/student-a"), { ...week, baselineXp: 0 }));
+  await assertSucceeds(set(ref(dbA, "leaderboard/main/weeks/2026-W02/student-a"), { ...week, weeklyXp: 55 }));
+  await assertFails(set(ref(dbA, "leaderboard/main/weeks/2026-W02/student-a"), { ...week, realName: "Sabina" }));
+  await assertFails(set(ref(dbA, "leaderboard/main/members/student-a"), { ...member, nickname: "<b>x</b>" }));
+  await assertFails(set(ref(dbA, "leaderboard/main/members/student-a"), { ...member, nickname: "ab" }));
+  await assertFails(set(ref(dbA, "leaderboard/main/members/student-a"), { ...member, code: "A111111" }));
+
+  // reads: classmates and teacher yes, other class and strangers no
+  await assertSucceeds(get(ref(dbA, "leaderboard/main")));
+  await assertSucceeds(get(ref(teacher, "leaderboard/main")));
+  await assertFails(get(ref(dbB, "leaderboard/main")));
+  await assertFails(get(ref(outsider, "leaderboard/main")));
+  await assertFails(get(ref(dbA, "leaderboard")));
+
+  // opt out = delete own entries; teacher can rename and remove
+  await assertSucceeds(set(ref(teacher, "leaderboard/main/members/student-a/nickname"), "Friendly Owl"));
+  await assertFails(set(ref(teacher, "leaderboard/main/members/student-a/nickname"), "ab"));
+  await assertSucceeds(set(ref(teacher, "leaderboard/main/members/student-a"), null));
+  await assertSucceeds(set(ref(dbA, "leaderboard/main/members/student-a"), member));
+  await assertSucceeds(set(ref(dbA, "leaderboard/main/members/student-a"), null));
+  await assertSucceeds(set(ref(dbA, "leaderboard/main/weeks/2026-W02/student-a"), null));
+
+  // only the teacher may assign a class
+  await assertFails(set(ref(dbA, "students/A111111/classId"), "room-b"));
+  await assertSucceeds(set(ref(teacher, "students/A111111/classId"), "room-a"));
+  await assertFails(set(ref(teacher, "students/A111111/classId"), "Bad Class!"));
+  await testEnv.withSecurityRulesDisabled(async context => {
+    await set(ref(context.database(), "students/A111111/classId"), null);
+  });
+});

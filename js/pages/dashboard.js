@@ -14,6 +14,7 @@ import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 import { appendHtml, safeUrl, setHtml } from "../dom.js";
+import { DEFAULT_CLASS_ID, validateNickname } from "../leaderboard.js";
 import { showToast } from "../ui.js";
 
 let firebaseConfig = null;
@@ -351,6 +352,7 @@ function selectStudent(code) {
   attachHistoryListener();
   attachGameProgressListener();
   attachNotesListener();
+  loadLeaderboardCard();
   renderClassworkTree();
 }
 
@@ -400,6 +402,52 @@ function attachNotesListener() {
     studentMeta[code] = Object.assign({}, studentMeta[code], { notes: notes });
     document.getElementById('notesView').textContent = notes || '— No notes yet —';
   }, function(error) { console.error('Unable to load student notes', error); });
+}
+
+function leaderboardTarget() {
+  const student = studentsMap[activeCode] || {};
+  return { uid: student.uid || '', classId: student.classId || DEFAULT_CLASS_ID };
+}
+
+function loadLeaderboardCard() {
+  const summary = document.getElementById('leaderboardSummary');
+  const target = leaderboardTarget();
+  document.getElementById('classIdInput').value = studentsMap[activeCode] && studentsMap[activeCode].classId || '';
+  document.getElementById('leaderboardNicknameInput').value = '';
+  if (!target.uid) { summary.textContent = 'This student has not linked an account yet.'; return; }
+  fbDb.ref('leaderboard/' + target.classId + '/members/' + target.uid).once('value').then(function(snapshot) {
+    const member = snapshot.val();
+    summary.textContent = member
+      ? 'Nickname: ' + member.nickname + ' (class ' + target.classId + ', ' + (Number(member.totalXp) || 0) + ' XP all time)'
+      : 'Not joined (students are opted out by default).';
+    if (member) document.getElementById('leaderboardNicknameInput').value = member.nickname;
+  }).catch(function(error) { summary.textContent = 'Could not load: ' + error.message; });
+}
+
+function renameLeaderboardNickname() {
+  const target = leaderboardTarget();
+  const check = validateNickname(document.getElementById('leaderboardNicknameInput').value);
+  if (!target.uid) return;
+  if (!check.valid) { showToast(check.reason); return; }
+  fbDb.ref('leaderboard/' + target.classId + '/members/' + target.uid + '/nickname').set(check.nickname)
+    .then(function() { showToast('Nickname updated'); loadLeaderboardCard(); })
+    .catch(function(error) { alert('Rename failed: ' + error.message); });
+}
+
+function removeFromLeaderboard() {
+  const target = leaderboardTarget();
+  if (!target.uid || !confirm('Remove this student from the leaderboard? They can join again.')) return;
+  fbDb.ref('leaderboard/' + target.classId + '/members/' + target.uid).remove()
+    .then(function() { showToast('Removed from the leaderboard'); loadLeaderboardCard(); })
+    .catch(function(error) { alert('Remove failed: ' + error.message); });
+}
+
+function saveClassId() {
+  const value = document.getElementById('classIdInput').value.trim().toLowerCase();
+  if (value && !/^[a-z0-9_-]{1,32}$/.test(value)) { showToast('Use letters, numbers, - and _ only.'); return; }
+  fbDb.ref('students/' + activeCode + '/classId').set(value || null)
+    .then(function() { showToast(value ? 'Class set to ' + value : 'Class cleared (main)'); })
+    .catch(function(error) { alert('Could not save the class: ' + error.message); });
 }
 
 function renderPlacementCard() {
@@ -1124,6 +1172,9 @@ function escapeHtml(s) {
 }
 const clickAction = run => ({ event: "click", run });
 installDelegatedActions({
+  "leaderboard-rename": { event: "click", run: renameLeaderboardNickname },
+  "leaderboard-remove": { event: "click", run: removeFromLeaderboard },
+  "save-class-id": { event: "click", run: saveClassId },
   "save-placement-override": { event: "click", run: savePlacementOverride },
   "reset-placement": { event: "click", run: resetPlacement },
   "teacher-google-sign-in": clickAction(teacherGoogleSignIn),

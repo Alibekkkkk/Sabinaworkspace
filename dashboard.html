@@ -135,6 +135,23 @@
             </div>
           </div>
 
+          <div class="card" id="leaderboardCard">
+            <h2>Class leaderboard</h2>
+            <p id="leaderboardSummary" aria-live="polite">Not joined (students are opted out by default).</p>
+            <div class="placement-controls">
+              <label for="leaderboardNicknameInput">Nickname</label>
+              <input type="text" id="leaderboardNicknameInput" maxlength="16" autocomplete="off">
+              <button class="btn small" type="button" data-action="leaderboard-rename">Rename</button>
+              <button class="btn small danger" type="button" data-action="leaderboard-remove">Remove from board</button>
+            </div>
+            <div class="placement-controls">
+              <label for="classIdInput">Class</label>
+              <input type="text" id="classIdInput" maxlength="32" autocomplete="off" placeholder="main">
+              <button class="btn small" type="button" data-action="save-class-id">Save class</button>
+            </div>
+            <p class="hint">Students see only nicknames and weekly XP. Classes keep boards separate (letters, numbers, - and _).</p>
+          </div>
+
           <div class="card" id="placementCard">
             <h2>English level check</h2>
             <p id="placementSummary" class="placement-summary" aria-live="polite">No result yet.</p>

@@ -4,6 +4,7 @@ import { clearElement, safeUrl, setHtml } from "../dom.js";
 import { resolveMaxScore } from "../lesson-meta.js";
 import { generateStudentCode } from "../student-code.js";
 import { assessPlacement, canRetake, nextRetakeAt } from "../placement.js";
+import { DEFAULT_CLASS_ID, encouragement, isoWeekId, previousWeekId, rankEntries, validateNickname, weeklyXpSince } from "../leaderboard.js";
 
 let db = null;
 let configModule = null;
@@ -202,9 +203,11 @@ function enterPortal(){
     '<h2>Welcome, ' + escapeHtml(state.currentName) + '! 👋</h2>' +
     '<p>Code: <b style="color:var(--accent);font-family:Fira Code,monospace;letter-spacing:2px;">' + escapeHtml(state.currentCode) + '</b></p>');
   loadLessons();
+  startLeaderboard();
 }
 
 function clearPortalListeners(){
+  detachLeaderboardListener();
   portalListeners.forEach(function(entry){entry.ref.off(entry.event,entry.callback)});
   portalListeners=[];
 }
@@ -296,6 +299,115 @@ async function renderPlacement(){
   }
 }
 
+// ---- opt-in class leaderboard --------------------------------------------------------------
+const leaderboard = { classId: DEFAULT_CLASS_ID, uid: '', joined: false, members: {}, weeks: {}, tab: 'weekly', ref: null, listener: null };
+
+async function startLeaderboard(){
+  const user=firebase.auth().currentUser;
+  if(!user||!state.currentCode)return;
+  leaderboard.uid=user.uid;
+  try {
+    const classSnap=await db.ref('students/'+state.currentCode+'/classId').once('value');
+    leaderboard.classId=classSnap.val()||DEFAULT_CLASS_ID;
+    const mine=await db.ref('leaderboard/'+leaderboard.classId+'/members/'+leaderboard.uid).once('value');
+    leaderboard.joined=mine.exists();
+  } catch (error) { console.error('Leaderboard unavailable', error); }
+  renderLeaderboard();
+  if(leaderboard.joined)attachLeaderboardListener();
+}
+
+function attachLeaderboardListener(){
+  detachLeaderboardListener();
+  leaderboard.ref=db.ref('leaderboard/'+leaderboard.classId);
+  leaderboard.listener=snap=>{
+    const value=snap.val()||{};
+    leaderboard.members=value.members||{};
+    leaderboard.weeks=value.weeks||{};
+    renderLeaderboard();
+  };
+  leaderboard.ref.on('value',leaderboard.listener,error=>console.error('Leaderboard read failed',error));
+}
+function detachLeaderboardListener(){
+  if(leaderboard.ref&&leaderboard.listener)leaderboard.ref.off('value',leaderboard.listener);
+  leaderboard.ref=null;leaderboard.listener=null;
+}
+
+function renderLeaderboard(){
+  const join=document.getElementById('leaderboardJoin');
+  const board=document.getElementById('leaderboardBoard');
+  if(!join||!board)return;
+  join.hidden=leaderboard.joined;
+  board.hidden=!leaderboard.joined;
+  if(!leaderboard.joined)return;
+  const nicknames={};
+  Object.keys(leaderboard.members).forEach(uid=>{nicknames[uid]=leaderboard.members[uid].nickname});
+  const week=leaderboard.weeks[isoWeekId()]||{};
+  const lastWeek=leaderboard.weeks[previousWeekId()]||{};
+  const scores={};
+  Object.keys(nicknames).forEach(uid=>{
+    scores[uid]=leaderboard.tab==='weekly'?Number((week[uid]||{}).weeklyXp)||0:Number(leaderboard.members[uid].totalXp)||0;
+  });
+  const ranked=rankEntries(scores,nicknames,leaderboard.uid,10);
+  const list=document.getElementById('leaderboardList');
+  list.replaceChildren();
+  ranked.top.forEach(row=>{
+    const li=document.createElement('li');
+    li.className=row.isOwn?'lb-own':'';
+    li.value=row.rank;
+    const name=document.createElement('span');name.textContent=row.nickname+(row.isOwn?' (you)':'');
+    const xp=document.createElement('b');xp.textContent=row.xp+' XP';
+    li.append(name,xp);
+    list.append(li);
+  });
+  const ownWeekly=Number((week[leaderboard.uid]||{}).weeklyXp)||0;
+  document.getElementById('leaderboardMessage').textContent=encouragement({rank:ranked.own?ranked.own.rank:0,total:ranked.total,xp:ownWeekly,lastWeekXp:Number((lastWeek[leaderboard.uid]||{}).weeklyXp)||0});
+  document.getElementById('leaderboardOwn').textContent=ranked.own&&!ranked.top.some(row=>row.isOwn)?'Your place: #'+ranked.own.rank+' ('+ranked.own.xp+' XP)':'';
+  document.getElementById('lbWeekly').setAttribute('aria-pressed',String(leaderboard.tab==='weekly'));
+  document.getElementById('lbAll').setAttribute('aria-pressed',String(leaderboard.tab==='all'));
+}
+
+// Keeps the student's own entries current. Weekly XP is the gain since the week's baseline.
+async function syncLeaderboard(){
+  if(!leaderboard.joined||!leaderboard.uid)return;
+  const xp=Number((state.gameProgress||{}).xp)||0;
+  const base='leaderboard/'+leaderboard.classId;
+  const weekRef=db.ref(base+'/weeks/'+isoWeekId()+'/'+leaderboard.uid);
+  try {
+    const existing=(await weekRef.once('value')).val();
+    const baselineXp=existing?Number(existing.baselineXp)||0:xp;
+    await weekRef.set({weeklyXp:weeklyXpSince(baselineXp,xp),baselineXp:baselineXp,updatedAt:Date.now()});
+    await db.ref(base+'/members/'+leaderboard.uid+'/totalXp').set(xp);
+    await db.ref(base+'/members/'+leaderboard.uid+'/updatedAt').set(Date.now());
+  } catch (error) { console.error('Leaderboard sync failed', error); }
+}
+
+async function joinLeaderboard(){
+  const error=document.getElementById('leaderboardError');
+  const check=validateNickname(document.getElementById('leaderboardNickname').value);
+  if(!check.valid){error.textContent=check.reason;return}
+  error.textContent='';
+  try {
+    await db.ref('leaderboard/'+leaderboard.classId+'/members/'+leaderboard.uid).set({nickname:check.nickname,totalXp:Number((state.gameProgress||{}).xp)||0,updatedAt:Date.now()});
+    leaderboard.joined=true;
+    attachLeaderboardListener();
+    await syncLeaderboard();
+    renderLeaderboard();
+  } catch (failure) { error.textContent='Could not join: '+failure.message; }
+}
+
+async function leaveLeaderboard(){
+  if(!confirm('Leave the leaderboard? Your nickname and scores will be removed.'))return;
+  const base='leaderboard/'+leaderboard.classId;
+  try {
+    await db.ref(base+'/weeks/'+isoWeekId()+'/'+leaderboard.uid).remove();
+    await db.ref(base+'/weeks/'+previousWeekId()+'/'+leaderboard.uid).remove();
+    await db.ref(base+'/members/'+leaderboard.uid).remove();
+    detachLeaderboardListener();
+    leaderboard.joined=false;leaderboard.members={};leaderboard.weeks={};
+    renderLeaderboard();
+  } catch (failure) { showAlert('Could not leave the leaderboard: '+failure.message,'error'); }
+}
+
 function renderGameStats(){
   const summary=document.getElementById('studentSummary');
   const progress=state.gameProgress||{};
@@ -317,6 +429,7 @@ function renderGameStats(){
     summary.append(item);
   });
   renderPlacement();
+  syncLeaderboard();
 }
 
 function renderLessons(){
@@ -489,6 +602,12 @@ function showCodeInfo(){
 
 const clickAction = run => ({ event: "click", run });
 installDelegatedActions({
+  "leaderboard-join": clickAction(joinLeaderboard),
+  "leaderboard-leave": clickAction(leaveLeaderboard),
+  "leaderboard-tab": clickAction(element => {
+    const tab = readActionEnum(element, "tab", ["weekly", "all"]);
+    if (tab) { leaderboard.tab = tab; renderLeaderboard(); }
+  }),
   "toggle-theme": clickAction(toggleTheme),
   "switch-tab": clickAction(element => {
     const tab = readActionEnum(element, "tab", ["login", "register"]);
