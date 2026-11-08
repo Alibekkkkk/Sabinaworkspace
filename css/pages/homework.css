@@ -119,3 +119,10 @@ html.dark .underline:hover { background-color: color-mix(in srgb, var(--ds-color
 
 .phase0-inline-1{display:none; margin-right:10px;}
 .phase0-inline-2{background:var(--error); color:var(--ds-color-on-primary); border:none; box-shadow:0 2px 0 color-mix(in srgb, var(--ds-color-danger) 70%, black);}
+
+.save-state { font-size: var(--ds-text-sm); font-weight: 700; color: var(--ds-color-muted); min-width: 9rem; }
+.save-state[data-state="saved"] { color: var(--ds-color-success); }
+.save-state[data-state="failed"] { color: var(--ds-color-danger); }
+.result-banner .xp-earned { font-weight: 800; color: var(--ds-color-primary); font-size: var(--ds-text-lg); }
+.result-banner .submit-once { font-size: var(--ds-text-sm); color: var(--ds-color-muted); }
+.result-banner .ds-btn { text-decoration: none; }

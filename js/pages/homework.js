@@ -12,6 +12,7 @@ import { installDelegatedActions, readActionEnum, readActionInteger, readActionP
 import { clearElement, serializeChildren, setHtml } from "../dom.js";
 import { answerKey, migrateLegacyAnswerKeys } from "../homework-answers.js";
 import { showToast } from "../ui.js";
+import { confetti } from "../celebrate.js";
 // Keyword matching for long answers ignores punctuation entirely.
 function normalizeString(str) { return expandContractions(String(str).toLowerCase().trim()).replace(/[.,!?;:'"()\[\]{}]/g, '').replace(/\s+/g, ' '); }
 
@@ -72,10 +73,29 @@ document.getElementById('themeButton').textContent=document.documentElement.clas
 
 let answers={}; let submitted=false; let saveTimeout;
 
+let retryTimer = 0;
+function setSaveState(state) {
+  const el = document.getElementById('saveState');
+  if (!el) return;
+  const labels = { saving: 'Saving\u2026', saved: 'Saved \u2713 ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), failed: 'Not saved \u2014 retrying\u2026', idle: '' };
+  el.textContent = labels[state] || '';
+  el.dataset.state = state;
+}
+
 function debouncedSave(){
   if(teacherMode) return;
-  clearTimeout(saveTimeout); saveTimeout=setTimeout(()=>{ if(sessionRef&&!submitted){ sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, updatedAt:Date.now() }).catch(console.error); writeHomeworkSummary({ submitted:false, completed:false }); } },400);
+  setSaveState('saving');
+  clearTimeout(saveTimeout); saveTimeout=setTimeout(saveAnswersNow,400);
 }
+
+function saveAnswersNow(){
+  if(!sessionRef||submitted)return;
+  clearTimeout(retryTimer);
+  sessionRef.child('homework/'+homeworkId).update({ version:homeworkVersion, answers:answers, updatedAt:Date.now() })
+    .then(function(){ setSaveState('saved'); writeHomeworkSummary({ submitted:false, completed:false }); })
+    .catch(function(error){ console.error('Autosave failed',error); setSaveState('failed'); retryTimer=setTimeout(saveAnswersNow,5000); });
+}
+
 
 function renderPassage(){
   const p=lesson.reading; const body=document.getElementById('passageBody'); if(!body)return;
@@ -102,7 +122,8 @@ function updateProgress(){
   const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pc=document.getElementById('progressCount');if(pc)pc.textContent=answered+' / '+total+' answered';
   const remaining=total-answered; const hint=document.getElementById('submitHint'); const btn=document.getElementById('submitBtn');
   if(submitted){ if(btn){btn.disabled=true;btn.textContent='✓ Submitted'} if(hint)setHtml(hint, 'Homework already submitted.'); return; }
-  if(remaining===0){ if(hint)setHtml(hint, 'All questions answered. Ready to submit!'); if(btn)btn.disabled=false; } else { if(hint)setHtml(hint, 'Answer every question to unlock submission. <b>'+remaining+' remaining.</b>'); if(btn)btn.disabled=true; }
+  if(remaining===0){ if(hint)setHtml(hint, 'All questions answered. Ready to submit!'); } else { if(hint)setHtml(hint, '<b>'+remaining+' unanswered.</b> You can still submit; we will show you what is missing first.'); }
+  if(btn)btn.disabled=answered===0;
 }
 
 function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=normalizeString(text); const words=t.split(/\s+/).filter(function(w){return w.length>0}); if(words.length<minWords)return{pass:false,reason:'Your answer is too short. Aim for at least '+minWords+' words.',matched:0}; let matched=0; keywordGroups.forEach(function(g){if(g.some(function(k){return t.indexOf(normalizeString(k))!==-1}))matched++}); if(matched>=minGroups)return{pass:true,matched:matched,total:keywordGroups.length}; return{pass:false,reason:'You matched '+matched+' of '+keywordGroups.length+' key ideas. Check the passage again and try to include more.',matched:matched}; }
@@ -184,8 +205,35 @@ function renderQuestions(){
   updateProgress();
 }
 
+function unansweredNumbers(){
+  return lesson.questions.map(function(q,idx){ return answers[answerKey(q,idx)]===undefined?idx+1:0; }).filter(Boolean);
+}
+
+let modalReturnFocus = null;
+function openSubmitModal(){
+  const missing = unansweredNumbers();
+  const body = document.getElementById('submitModalBody');
+  body.replaceChildren();
+  const summary = document.createElement('p');
+  summary.textContent = missing.length
+    ? 'You have answered ' + (lesson.questions.length - missing.length) + ' of ' + lesson.questions.length + ' questions. Unanswered: ' + missing.map(function(n){ return 'Question ' + n; }).join(', ') + '.'
+    : 'You answered all ' + lesson.questions.length + ' questions. Ready to send it to your teacher?';
+  body.append(summary);
+  modalReturnFocus = document.activeElement;
+  document.getElementById('submitModal').hidden = false;
+  document.getElementById('keepWorkingBtn').focus();
+}
+function closeSubmitModal(){
+  document.getElementById('submitModal').hidden = true;
+  if (modalReturnFocus && modalReturnFocus.focus) modalReturnFocus.focus();
+}
+function requestSubmit(){
+  if (submitted || !lesson || !lesson.questions) return;
+  openSubmitModal();
+}
+
 async function submitAll(){
-  if(submitted)return; const total=lesson.questions.length; if(Object.keys(answers).length<total){ if(!confirm('Some questions are still blank. Submit anyway?'))return; }
+  if(submitted)return; const total=lesson.questions.length;
   let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[answerKey(q,idx)]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer], { mode: q.type === "short" ? "fuzzy" : "exact" })) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
   if(!sessionRef||!studentContext)throw new Error('Verified student session is unavailable; your work was not submitted.');
   try {
@@ -222,14 +270,30 @@ async function submitAll(){
   
   renderQuestions(); const host=document.getElementById('questionsHost');
   const banner=document.createElement('div');banner.className='result-banner';
-  setHtml(banner, '<div class="icon">🎉</div><h3>Homework complete!</h3>'+ '<div class="big">'+score+' / '+total+'</div>'+ '<p>Your answers have been sent to your teacher. You can review your results below.</p>'+ '<p style="font-size:14px;color:var(--error);font-weight:bold;margin-top:10px">This homework can only be submitted once.</p>');
+  const xpEarned = score * 10 + (score === total ? 5 : 0);
+  awardHomeworkXp(xpEarned);
+  setHtml(banner, '<div class="icon">🎉</div><h3>Homework complete!</h3><div class="big">' + score + ' / ' + total + '</div>' +
+    '<p class="xp-earned">+' + xpEarned + ' XP earned' + (score === total ? ' (perfect score bonus!)' : '') + '</p>' +
+    '<p>Your answers have been sent to your teacher. Scroll down to see what each question was looking for.</p>' +
+    '<p class="submit-once">This homework can only be submitted once.</p>' +
+    '<p><a class="ds-btn ds-btn--primary" href="portal.html">Back to my lessons</a></p>');
   const receipt=document.createElement('p');
-  receipt.textContent='Submitted as '+studentContext.name+' at '+new Date(submittedAt).toLocaleString();
+  receipt.textContent='Submitted as '+studentContext.name+' at '+new Date().toLocaleString();
   banner.appendChild(receipt);
-  host.insertBefore(banner,host.firstChild); window.scrollTo({top:0,behavior:'smooth'}); if(typeof confetti==='function')confetti(); updateProgress();
+  host.insertBefore(banner,host.firstChild); window.scrollTo({top:0,behavior:'smooth'}); confetti(); updateProgress();
 }
 
-function confetti(){ const colors=['#ee5a24','#ff6b6b','#2a5298','#28a745','#ffd700','#6a3093']; for(let i=0;i<70;i++){ const c=document.createElement('div');c.className='confetti'; c.style.left=Math.random()*100+'vw';c.style.top='-20px'; c.style.background=colors[Math.floor(Math.random()*colors.length)]; c.style.animationDelay=Math.random()*.5+'s'; c.style.width=(Math.random()*8+6)+'px';c.style.height=(Math.random()*8+6)+'px'; if(Math.random()>.5)c.style.borderRadius='50%'; document.body.appendChild(c);setTimeout(function(){c.remove()},3600); } }
+// XP for finished homework: 10 per correct answer, +5 for a perfect score (same rule as the practice games).
+function awardHomeworkXp(xpEarned){
+  if(!fbDb||!studentContext||xpEarned<=0)return;
+  fbDb.ref('studentProgress/'+studentContext.code).transaction(function(current){
+    const state=current&&typeof current==='object'?current:{};
+    const xp=Math.max(0,Number(state.xp)||0)+xpEarned;
+    return Object.assign({},state,{xp:xp,level:Math.floor(xp/100)+1});
+  }).catch(function(error){ console.error('Could not record homework XP',error); });
+}
+
+
 
 async function loadHomeworkContent() {
   const { resolveStudentContext } = await import('../student-context.js');
@@ -391,7 +455,9 @@ installDelegatedActions({
   "switch-student": clickAction(switchStudent),
   "reset-homework-teacher": clickAction(resetHomeworkTeacher),
   "toggle-theme": clickAction(toggleTheme),
-  "submit-homework": clickAction(submitAll),
+  "submit-homework": clickAction(requestSubmit),
+  "cancel-submit": clickAction(closeSubmitModal),
+  "confirm-submit": clickAction(function() { closeSubmitModal(); submitAll(); }),
   "delete-current-note": clickAction(deleteCurrentNote),
   "close-sticky-note": clickAction(closeStickyNote),
   "close-vocab-backdrop": clickAction((element, event) => {
@@ -531,3 +597,7 @@ if (typeof initFirebase === "function") globalThis["initFirebase"] = initFirebas
 if (typeof startHomework === "function") globalThis["startHomework"] = startHomework;
 if (typeof boot === "function") globalThis["boot"] = boot;
 if (typeof unsubscribe === "function") globalThis["unsubscribe"] = unsubscribe;
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape' && !document.getElementById('submitModal').hidden) closeSubmitModal();
+});
