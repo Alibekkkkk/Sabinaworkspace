@@ -2,6 +2,7 @@
 import { installDelegatedActions, readActionEnum } from "../delegated-actions.js";
 import { clearElement, safeUrl, setHtml } from "../dom.js";
 import { resolveMaxScore } from "../lesson-meta.js";
+import { generateStudentCode } from "../student-code.js";
 
 let db = null;
 let configModule = null;
@@ -46,13 +47,6 @@ function showAlert(msg, type){
   el.textContent = msg;
   setTimeout(() => { el.className = 'alert'; }, 5000);
 }
-function generateCode(existing){
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = 'S';
-  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  return code;
-}
-
 function saveIdentity(code, name, remember) {
   clearStudentSession();
   const storage = remember ? localStorage : sessionStorage;
@@ -123,7 +117,7 @@ function doRegister(){
     let code = '';
     let claimed = false;
     for (let attempt = 0; attempt < 10 && !claimed; attempt++) {
-      code = generateCode();
+      code = generateStudentCode();
       const result = await db.ref('students/' + code).transaction(current => {
         if (current !== null) return;
         return {
@@ -468,7 +462,6 @@ if (typeof storedIdentity === "function") globalThis["storedIdentity"] = storedI
 if (typeof toggleTheme === "function") globalThis["toggleTheme"] = toggleTheme;
 if (typeof escapeHtml === "function") globalThis["escapeHtml"] = escapeHtml;
 if (typeof showAlert === "function") globalThis["showAlert"] = showAlert;
-if (typeof generateCode === "function") globalThis["generateCode"] = generateCode;
 if (typeof saveIdentity === "function") globalThis["saveIdentity"] = saveIdentity;
 if (typeof switchTab === "function") globalThis["switchTab"] = switchTab;
 if (typeof doLogin === "function") globalThis["doLogin"] = doLogin;
