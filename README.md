@@ -7,9 +7,25 @@ A static, mobile-first English-learning portal backed by Firebase Realtime Datab
 ```powershell
 npm test
 npm run test:rules
+npm run audit:web
 ```
 
+`npm run audit:web` runs Lighthouse (mobile and desktop) and axe-core against every page and rewrites [docs/LIGHTHOUSE.md](docs/LIGHTHOUSE.md). It needs Chrome or Edge (set `CHROME_PATH` if yours is somewhere unusual). Add page names to run a subset, for example `npm run audit:web -- portal.html placement.html`.
+
 The rules test command requires Java 21 or later for the Firebase emulator. See [Teacher setup](TEACHER_SETUP.md) and the [security migration runbook](docs/SECURITY.md) before deploying rules or importing content.
+
+## Try it locally with demo data
+
+```powershell
+npm run dev
+```
+
+This starts the Firebase Realtime Database and Auth emulators (needs Java 21+), fills them with demo data ([scripts/seed-emulator.mjs](scripts/seed-emulator.mjs)) and serves the site at `http://127.0.0.1:5050/`. Nothing touches your real Firebase project.
+
+- **Students:** open `portal.html` and sign in with the code `DEMOA001`, `DEMOB002` or `DEMOC003`. Anna has a saved placement result, an open lesson and homework due in two days; Boris's lesson is overdue; Chen's lesson is locked for three days (try opening it to see the server-side gate).
+- **Teacher:** open `dashboard.html` and sign in with the e-mail and password shown in the terminal / `scripts/seed-emulator.mjs`. The account is already marked as an admin.
+- The dev server rewrites the Content-Security-Policy and `js/config.js` in memory so the browser can reach the emulators; the files on disk are unchanged. Stop everything with Ctrl+C.
+- `npm run seed` re-seeds a running emulator. The seed script refuses to talk to anything that is not on localhost.
 
 ## Current learning features
 
@@ -20,9 +36,11 @@ The rules test command requires Java 21 or later for the Firebase emulator. See 
 - The installable PWA caches the public app shell and static assets. Sign-in, protected lessons, and progress still require a network connection; protected Firebase data is not cached offline.
 - Practice, Clip Lab, and Manga Reader support a saved light/dark theme preference; the shared controls are keyboard accessible and respect reduced-motion settings.
 - Teachers can generate and download a seven-day student progress summary from existing game, homework, and activity records; no parent login or automatic sharing is enabled.
-- Students can take a short, non-persisted English level self-check before signing in. Its suggested level is advisory only and does not assign lessons or certify a CEFR level.
+- An adaptive English level check (about 18 to 30 questions: multiple choice, gap typing, sentence ordering and a spoken listening item) estimates A1-C1 and builds a practice path. Signed-in students' results are saved (one retake a week unless the teacher resets it), shown in the portal and on the teacher dashboard, where the teacher can override the level. It is a rough guide, not an exam, and never changes assignments. The item bank is `content/placement/items.json` (validated by `js/placement.js`).
+- An opt-in class leaderboard: students are opted out by default, choose a nickname, and classmates see only nicknames and weekly XP. The teacher can rename, remove or assign classes.
+- Assignment scheduling: lessons and homework can have an available-from, due and closing time. Students see "Due in 2 days", "Overdue" or "Locked until...", the database refuses to serve locked content early, and the teacher has a per-student schedule list with "duplicate to next week". After changing dates, run Import Content so each student's view is refreshed.
 - The legacy lesson, homework, and teacher dashboard pages now share responsive spacing, visible focus states, reduced-motion handling, and touch-friendly controls. `lesson_abay.html` and `lesson_gaziz.html` are compatibility redirects into the shared data-driven `lesson.html` renderer, not separate lesson implementations.
 
 Clip metadata and study prompts in `content/clips/` are public static files, so they must not contain answer keys. Add correct answers in the teacher-only answer-key field in `tools/import-content.html`; the importer stores them only in `protectedContent/<lessonId>/clip`. See the authoring instructions in [Teacher setup](TEACHER_SETUP.md).
 
-The full visual redesign of the legacy lesson/homework/dashboard pages, automatic placement-to-learning-path integration, class leaderboards, and assignment scheduling are not implemented yet. The weekly summary is teacher-only; parent accounts or automatic report sharing are not provided. The CSP is a defense-in-depth baseline; legacy inline scripts and dynamic HTML rendering still need a stricter XSS-hardening pass. Production deployment is paused while protected static lesson content is migrated and Firebase access is verified; see the [security migration runbook](docs/SECURITY.md) before republishing Pages. See [Teacher setup](TEACHER_SETUP.md) for current authoring limitations.
+The full visual redesign of the legacy lesson/homework/dashboard pages is not implemented yet. The weekly summary is teacher-only; parent accounts or automatic report sharing are not provided. Production deployment is paused while protected static lesson content is migrated and Firebase access is verified; see the [security migration runbook](docs/SECURITY.md) before republishing Pages. See [Teacher setup](TEACHER_SETUP.md) for current authoring limitations.

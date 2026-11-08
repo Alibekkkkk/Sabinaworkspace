@@ -47,7 +47,7 @@ test("Practice, Clip Lab, and Manga Reader expose accessible theme controls", ()
   const theme = read("js/theme.js");
   assert.match(theme, /localStorage\.getItem/);
   assert.match(theme, /localStorage\.setItem/);
-  assert.match(theme, /setAttribute\("aria-label"/);
+  assert.match(theme, /setAttribute\("aria-pressed"/);
   assert.match(read("sw.js"), /"js\/theme\.js"/);
 });
 
@@ -72,7 +72,8 @@ test("theme follows the system until selected and then persists the learner choi
 
   button.listeners.click();
   assert.equal(document.documentElement.dataset.theme, "light");
-  assert.equal(button.attributes["aria-label"], "Switch to dark theme");
+  assert.equal(button.attributes["aria-pressed"], "true");
+  assert.equal(button.attributes["aria-label"], undefined, "the visible text is the accessible name");
   assert.equal(storage.get("learning-portal-theme"), "light");
 
   mediaListeners[0]({ matches: false });

@@ -288,3 +288,7 @@ html.dark .q-feedback.info{color:#f5c66b}
 
 .phase0-inline-1{opacity:.6;}
 .phase0-inline-2{font-size:14px;color:var(--ink-soft);margin-bottom:12px}
+
+/* Phase 0b: contrast fixes found by axe (WCAG AA 4.5:1 on the cream pill background) */
+html:not(.dark) #syncStatus { color: #475058; }
+html:not(.dark) #timerDisplay { color: #a93208; }

@@ -22,7 +22,7 @@
     theme = nextTheme;
     document.documentElement.dataset.theme = theme;
     toggle.textContent = theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
-    toggle.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} theme`);
+    toggle.setAttribute("aria-pressed", String(theme === "light"));
     if (persist) {
       try {
         localStorage.setItem(storageKey, theme);

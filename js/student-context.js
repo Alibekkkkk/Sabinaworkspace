@@ -49,7 +49,10 @@ export async function bindStudentCode({ auth, db, code } = {}) {
   let result;
   try {
     result = await studentRef.transaction(current => {
-      if (!current || typeof current !== "object" || (current.uid && current.uid !== user.uid)) return;
+      // The first run sees the local cache, which is empty after a one-off read. Returning the
+      // null unchanged makes the SDK retry with the server's value instead of aborting.
+      if (current === null) return current;
+      if (typeof current !== "object" || (current.uid && current.uid !== user.uid)) return;
       return { ...current, uid: user.uid };
     });
   } catch (error) {

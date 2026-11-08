@@ -84,6 +84,14 @@ async function doLogin(){
   await firebase.auth().setPersistence(document.getElementById('rememberMe').checked
     ? firebase.auth.Auth.Persistence.LOCAL
     : firebase.auth.Auth.Persistence.SESSION);
+  // The rules only let signed-in users read a student record, so a first-time code login must
+  // have an (anonymous) identity before the lookup. Existing sessions are reused.
+  if (!firebase.auth().currentUser) {
+    await new Promise((resolve, reject) => {
+      const stop = firebase.auth().onAuthStateChanged(user => { stop(); resolve(user); }, reject);
+    });
+    if (!firebase.auth().currentUser) await firebase.auth().signInAnonymously();
+  }
   const snap=await db.ref('students/' + code).once('value');
     const data = snap.val();
     if (!data) {

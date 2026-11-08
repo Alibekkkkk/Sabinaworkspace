@@ -5,12 +5,18 @@
   "scripts": {
     "test:rules": "firebase emulators:exec --only database \"node --test tests/rules.test.mjs\"",
     "test:unit": "node --test tests/delegated-actions.test.mjs tests/protected-content.test.mjs tests/student-context.test.mjs tests/games.test.mjs tests/clips.test.mjs tests/manga.test.mjs tests/placement.test.mjs tests/pwa.test.mjs tests/security-policy.test.mjs tests/sanitization.test.mjs tests/theme.test.mjs tests/weekly-summary.test.mjs tests/auth.test.mjs tests/grading.test.mjs tests/audience.test.mjs tests/teacher-commands.test.mjs tests/lesson-meta.test.mjs tests/homework-answers.test.mjs tests/student-code.test.mjs tests/leaderboard.test.mjs tests/schedule.test.mjs",
-    "test": "npm run test:unit"
+    "test": "npm run test:unit",
+    "audit:web": "node scripts/audit-web.mjs",
+    "seed": "node scripts/seed-emulator.mjs",
+    "dev": "firebase emulators:exec --only database,auth --project sabina-s-workspace \"node scripts/dev.mjs\""
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",
+    "axe-core": "^4.14.0",
     "firebase": "^11.0.0",
     "firebase-tools": "^15.34.2",
-    "jsdom": "^31.0.0"
+    "jsdom": "^31.0.0",
+    "lighthouse": "^12.8.2",
+    "puppeteer-core": "^23.11.1"
   }
 }
