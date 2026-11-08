@@ -10,6 +10,8 @@ import { expandContractions, isAnswerCorrect } from "../grading.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 import { clearElement, serializeChildren, setHtml } from "../dom.js";
+import { answerKey, migrateLegacyAnswerKeys } from "../homework-answers.js";
+import { showToast } from "../ui.js";
 // Keyword matching for long answers ignores punctuation entirely.
 function normalizeString(str) { return expandContractions(String(str).toLowerCase().trim()).replace(/[.,!?;:'"()\[\]{}]/g, '').replace(/\s+/g, ' '); }
 
@@ -107,9 +109,10 @@ function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=normali
 
 function undoHomeworkQuestion(idx) {
   if (!teacherCanEdit) return;
-  delete answers[idx];
+  const key = answerKey(lesson.questions[idx], idx);
+  delete answers[key];
   if (sessionRef) {
-      sessionRef.child('homework/'+homeworkId+'/answers').update({ [idx]: null }).then(() => {
+      sessionRef.child('homework/'+homeworkId+'/answers').update({ [key]: null }).then(() => {
           renderQuestions();
           showToast('Question reset by teacher');
       });
@@ -132,6 +135,7 @@ async function switchStudent() {
 function renderQuestions(){
   const host=document.getElementById('questionsHost');if(!host)return; clearElement(host);
   lesson.questions.forEach(function(q,idx){
+    const ak=answerKey(q,idx);
     const card=document.createElement('div');card.className='q-card';
     const typeLabel={short:'Short answer',tfng:'True / False / Not Given',mcq:'Multiple choice',long:'Long answer',complete:'Complete the sentence'}[q.type]||'';
     setHtml(card, '<div class="q-num">Question '+(idx+1)+' <span class="q-type">'+typeLabel+'</span></div><div class="q-prompt">'+escapeHtml(q.prompt).replace('___','<b style="color:var(--accent)">___</b>')+'</div>');
@@ -139,24 +143,24 @@ function renderQuestions(){
     
     if(q.type==='short'||q.type==='complete'){
       const row=document.createElement('div');row.className='q-input-row'; const inp=document.createElement('input');inp.type='text';inp.className='q-input';inp.placeholder='Type your answer...';inp.autocomplete='off';
-      if(submitted){inp.value=answers[idx]||'';inp.disabled=true} else { inp.value=answers[idx]||''; inp.addEventListener('input',function(){ if(inp.value.trim().length>0){answers[idx]=inp.value;} else{delete answers[idx];} updateProgress(); debouncedSave(); }); }
+      if(submitted){inp.value=answers[ak]||'';inp.disabled=true} else { inp.value=answers[ak]||''; inp.addEventListener('input',function(){ if(inp.value.trim().length>0){answers[ak]=inp.value;} else{delete answers[ak];} updateProgress(); debouncedSave(); }); }
       row.appendChild(inp);body.appendChild(row);
       if(submitted){ const ok = isAnswerCorrect(inp.value, q.answers || [q.answer], { mode: q.type === "short" ? "fuzzy" : "exact" }); if(ok)inp.classList.add('correct'); else inp.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (ok ? 'correct' : 'wrong'); setHtml(fb, (ok ? '✓ Correct!' : '✗ Incorrect. Expected: '+escapeHtml(q.answers[0]||q.answer))+'<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='tfng'){
       const opts=document.createElement('div');opts.className='q-opts';
-      ['True','False','Not Given'].forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.answer)b.classList.add('correct'); if(answers[idx]===o && o!==q.answer)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[idx]===o) b.classList.add('selected'); } opts.appendChild(b); });
+      ['True','False','Not Given'].forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.answer)b.classList.add('correct'); if(answers[ak]===o && o!==q.answer)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[ak]===o) b.classList.add('selected'); } opts.appendChild(b); });
       body.appendChild(opts);
-      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.answer ? 'correct' : 'wrong'); setHtml(fb, (answers[idx]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[ak]===q.answer ? 'correct' : 'wrong'); setHtml(fb, (answers[ak]===q.answer ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='mcq'){
       const opts=document.createElement('div');opts.className='q-opts';
-      shuffle(q.options).forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.correct)b.classList.add('correct'); if(answers[idx]===o && o!==q.correct)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[idx]===o) b.classList.add('selected'); } opts.appendChild(b); });
+      shuffle(q.options).forEach(function(o){ const b=document.createElement('button');b.className='q-opt';b.textContent=o; if(submitted){ b.disabled=true; if(o===q.correct)b.classList.add('correct'); if(answers[ak]===o && o!==q.correct)b.classList.add('wrong'); } else { b.dataset.action = "choose-answer"; b.dataset.questionIndex = String(idx); b.dataset.answer = o; if(answers[ak]===o) b.classList.add('selected'); } opts.appendChild(b); });
       body.appendChild(opts);
-      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[idx]===q.correct ? 'correct' : 'wrong'); setHtml(fb, (answers[idx]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const fb=document.createElement('div'); fb.className='q-feedback ' + (answers[ak]===q.correct ? 'correct' : 'wrong'); setHtml(fb, (answers[ak]===q.correct ? '✓ Correct!' : '✗ Incorrect.') + '<span class="exp">'+escapeHtml(q.exp||'')+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }else if(q.type==='long'){
       const ta=document.createElement('textarea');ta.className='q-textarea';ta.placeholder='Write your answer in full sentences...';
-      if(submitted){ta.value=answers[idx]||'';ta.disabled=true} else { ta.value=answers[idx]||''; ta.addEventListener('input',function(){ if(ta.value.trim().length>0){answers[idx]=ta.value;} else{delete answers[idx];} updateProgress();debouncedSave(); }); }
+      if(submitted){ta.value=answers[ak]||'';ta.disabled=true} else { ta.value=answers[ak]||''; ta.addEventListener('input',function(){ if(ta.value.trim().length>0){answers[ak]=ta.value;} else{delete answers[ak];} updateProgress();debouncedSave(); }); }
       body.appendChild(ta);
-      if(submitted){ const res=checkLongAnswer(answers[idx]||'',q.keywordGroups,q.minWords,q.minGroups); if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong'); setHtml(fb, (res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>'); fb.style.display='block'; body.appendChild(fb); }
+      if(submitted){ const res=checkLongAnswer(answers[ak]||'',q.keywordGroups,q.minWords,q.minGroups); if(res.pass)ta.classList.add('correct'); else ta.classList.add('wrong'); const fb=document.createElement('div'); fb.className='q-feedback ' + (res.pass ? 'correct' : 'wrong'); setHtml(fb, (res.pass ? '✓ Looks correct!' : '✗ '+res.reason) + '<span class="sample"><b>Sample answer:</b> '+escapeHtml(q.sample)+'</span>'); fb.style.display='block'; body.appendChild(fb); }
     }
 
     if(submitted && teacherCanEdit) {
@@ -174,7 +178,7 @@ function renderQuestions(){
 
 async function submitAll(){
   if(submitted)return; const total=lesson.questions.length; if(Object.keys(answers).length<total){ if(!confirm('Some questions are still blank. Submit anyway?'))return; }
-  let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[idx]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer], { mode: q.type === "short" ? "fuzzy" : "exact" })) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
+  let score=0; lesson.questions.forEach(function(q,idx){ const a=answers[answerKey(q,idx)]; if(a===undefined)return; if(q.type==='short'||q.type==='complete'){ if(isAnswerCorrect(a, q.answers || [q.answer], { mode: q.type === "short" ? "fuzzy" : "exact" })) score++; }else if(q.type==='tfng'){ if(a===q.answer)score++; }else if(q.type==='mcq'){ if(a===q.correct)score++; }else if(q.type==='long'){ const res=checkLongAnswer(String(a),q.keywordGroups,q.minWords,q.minGroups); if(res.pass)score++; } });
   if(!sessionRef||!studentContext)throw new Error('Verified student session is unavailable; your work was not submitted.');
   try {
       await sessionRef.child('homework/'+homeworkId).update({
@@ -266,9 +270,22 @@ async function loadHomeworkContent() {
   return studentContext;
 }
 
-function resetHomeworkTeacher() {
-  if(!confirm('Are you sure you want to reset this ENTIRE homework for the student? They will be able to take it again.')) return;
-  if(sessionRef) { sessionRef.child('homework/'+homeworkId).remove().then(() => { alert('Homework reset successfully. The student can now retake it.'); location.reload(); }).catch(e => alert('Reset failed: ' + e.message)); }
+// A teacher reset never destroys a submission: the current record is archived under `attempts`
+// (bounded to the last 10) and then cleared so the student can retake the homework.
+async function resetHomeworkTeacher() {
+  if(!confirm('Reset this homework for the student? Their current answers are archived and they can take it again.')) return;
+  if(!sessionRef) return;
+  try {
+    const recordRef = sessionRef.child('homework/'+homeworkId);
+    const data = (await recordRef.once('value')).val() || {};
+    if (Object.keys(data).length) await appendBoundedRealtimeRecord(recordRef.child('attempts'), archivedHomeworkData(data), 10);
+    await recordRef.update({
+      version: homeworkVersion, answers: null, rawAnswers: null, score: null, total: null,
+      submitted: false, completed: false, submittedAt: null, submittedBy: null, updatedAt: null
+    });
+    alert('Homework reset. The previous attempt was archived and the student can retake it.');
+    location.reload();
+  } catch (error) { alert('Reset failed: ' + error.message); }
 }
 
 async function initFirebase(){
@@ -420,7 +437,7 @@ installDelegatedActions({
     if (!options) return;
     options.querySelectorAll("button").forEach(button => button.classList.remove("selected"));
     element.classList.add("selected");
-    answers[index] = answer;
+    answers[answerKey(question, index)] = answer;
     updateProgress();
     debouncedSave();
   }),
@@ -439,11 +456,11 @@ async function startHomework(){
   const snapshot=await recordRef.once('value');
   const data=snapshot.val()||{};
   if(data.submitted===true) {
-    answers=data.answers||{};
+    answers=migrateLegacyAnswerKeys(data.answers, lesson.questions);
     submitted=true;
   } else {
     if(Number(data.version)===homeworkVersion) {
-      answers=data.answers||{};
+      answers=migrateLegacyAnswerKeys(data.answers, lesson.questions);
       await recordRef.update({contentFile,contentHash,schemaVersion});
     }
     else {

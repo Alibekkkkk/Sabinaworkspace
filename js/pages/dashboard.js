@@ -14,6 +14,7 @@ import { isTeacher } from "../auth.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam } from "../delegated-actions.js";
 import { appendHtml, safeUrl, setHtml } from "../dom.js";
+import { showToast } from "../ui.js";
 
 let firebaseConfig = null;
 
@@ -603,7 +604,7 @@ function renderStudentHomework() {
     const prog = progress[row.id] || {};
     const isSubmitted = !!prog.submitted;
     const status = isSubmitted ? '✓ Submitted' : (prog.updatedAt ? 'In progress' : 'Not started');
-    const score = isSubmitted ? ((prog.score || 0) + ' / ' + (prog.total || 16) + ' correct') : '';
+    const score = isSubmitted ? (prog.total ? (prog.score || 0) + ' / ' + prog.total + ' correct' : (prog.score || 0) + ' correct') : '';
     const base = lesson.customUrl || 'homework.html';
     const url = safeUrl(base, window.location.href);
     if (!url) {
@@ -786,7 +787,7 @@ function renderClassworkTree() {
               // Render as homework
               const prog = (studentMeta[activeCode]?.homework?.[item.id]) || {};
               let progText = "";
-              if (prog.submitted) progText = `<span style="color:var(--success); font-size:11px; margin-left:auto;">✓ ${escapeHtml(prog.score || 0)}/${escapeHtml(prog.total || 16)}</span>`;
+              if (prog.submitted) progText = `<span style="color:var(--success); font-size:11px; margin-left:auto;">✓ ${escapeHtml(prog.score || 0)}${prog.total ? '/' + escapeHtml(prog.total) : ''}</span>`;
               else if (prog.updatedAt) progText = `<span style="color:var(--warn); font-size:11px; margin-left:auto;">In progress</span>`;
               else progText = `<span style="color:var(--ink-soft); font-size:11px; margin-left:auto;">Not started</span>`;
               
@@ -828,17 +829,13 @@ function toggleLessonTree(id) {
   renderClassworkTree();
 }
 
+// The lesson page resolves the classwork file from the manifest when none is given;
+// the dashboard never guesses a student's file from their name.
 function resolveContentName(lesson) {
   if (lesson && lesson.contentUrl) {
     return lesson.contentUrl.replace(/^content\//, '').replace(/\.json$/, '');
   }
-  if (activeCode && studentsMap[activeCode]) {
-    const n = String(studentsMap[activeCode].name || '').toLowerCase();
-    if (n.indexOf('gaziz') !== -1) return 'gaziz';
-    if (n.indexOf('sabina') !== -1) return 'sabina';
-    if (n.indexOf('george') !== -1) return 'george';
-  }
-  return 'sabina';
+  return '';
 }
 
 function openClassworkLesson(id, specificCode) {
@@ -854,7 +851,7 @@ function openClassworkLesson(id, specificCode) {
   const url = new URL('lesson.html', window.location.href);
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
-  url.searchParams.set('content', resolveContentName(l));
+  { const contentName = resolveContentName(l); if (contentName) url.searchParams.set('content', contentName); }
   if (currentClassworkCode) url.searchParams.set('code', currentClassworkCode); 
   frame.src = url.href;
   renderClassworkTree();
@@ -866,7 +863,7 @@ function openCurrentClassworkInTab() {
   const url = new URL('lesson.html', window.location.href);
   url.searchParams.set('lesson', currentClassworkId);
   url.searchParams.set('teacher', '1');
-  url.searchParams.set('content', resolveContentName(l));
+  { const contentName = resolveContentName(l); if (contentName) url.searchParams.set('content', contentName); }
   if (currentClassworkCode) url.searchParams.set('code', currentClassworkCode);
   window.open(url.href, '_blank');
 }
@@ -926,8 +923,6 @@ function openHomework(id) {
       } else if (activeCode) {
           const sName = (studentsMap[activeCode] && studentsMap[activeCode].name) ? studentsMap[activeCode].name : activeCode;
           contentFile = 'homework_' + sName.toLowerCase().replace(/\s+/g, '');
-      } else {
-          contentFile = 'homework_sabina';
       }
   }
   
@@ -935,7 +930,7 @@ function openHomework(id) {
   const url = new URL('homework.html', window.location.href);
   url.searchParams.set('lesson', id);
   url.searchParams.set('teacher', '1');
-  url.searchParams.set('variant', contentFile);
+  if (contentFile) url.searchParams.set('variant', contentFile);
   
   if (activeCode) url.searchParams.set('code', activeCode);
   frame.src = url.href;
@@ -956,15 +951,13 @@ function openCurrentHomeworkInTab() {
       } else if (activeCode) {
           const sName = (studentsMap[activeCode] && studentsMap[activeCode].name) ? studentsMap[activeCode].name : activeCode;
           contentFile = 'homework_' + sName.toLowerCase().replace(/\s+/g, '');
-      } else {
-          contentFile = 'homework_sabina';
       }
   }
   
   const url = new URL('homework.html', window.location.href);
   url.searchParams.set('lesson', currentHomeworkId);
   url.searchParams.set('teacher', '1');
-  url.searchParams.set('variant', contentFile);
+  if (contentFile) url.searchParams.set('variant', contentFile);
   
   if (activeCode) url.searchParams.set('code', activeCode);
   window.open(url.href, '_blank');
@@ -1075,14 +1068,6 @@ function escapeHtml(s) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
   });
 }
-function showToast(text) {
-  const t = document.getElementById('toast');
-  t.textContent = text;
-  t.classList.add('show');
-  clearTimeout(window.__toastT);
-  window.__toastT = setTimeout(function() { t.classList.remove('show'); }, 2400);
-}
-
 const clickAction = run => ({ event: "click", run });
 installDelegatedActions({
   "teacher-google-sign-in": clickAction(teacherGoogleSignIn),
@@ -1266,5 +1251,4 @@ if (typeof renderStudentPickList === "function") globalThis["renderStudentPickLi
 if (typeof submitLesson === "function") globalThis["submitLesson"] = submitLesson;
 if (typeof deleteLesson === "function") globalThis["deleteLesson"] = deleteLesson;
 if (typeof escapeHtml === "function") globalThis["escapeHtml"] = escapeHtml;
-if (typeof showToast === "function") globalThis["showToast"] = showToast;
 if (typeof Number === "function") globalThis["Number"] = Number;

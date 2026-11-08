@@ -6,6 +6,8 @@
 
 import { isTeacher } from "../auth.js";
 import { isLessonVisibleTo } from "../audience.js";
+import { DEFAULT_STAGES, resolveMaxScore } from "../lesson-meta.js";
+import { showToast } from "../ui.js";
 import { isAnswerCorrect } from "../grading.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { installDelegatedActions, readActionEnum, readActionInteger, readActionParam, registerDelegatedClick, runRegisteredClick } from "../delegated-actions.js";
@@ -19,17 +21,6 @@ let teacherMode=teacherPreviewRequested,teacherCanEdit=false,curriculumCache={};
 let studentContext=null,studentStorage=null,contentFile='',contentHash='',schemaVersion=1,vocabMode='tracked',identityVerified=false;
 
 let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
-const DEFAULT_STAGES = [
-  {id:1,label:'Vocabulary',sub:'Cards',icon:'🌪️'},
-  {id:2,label:'Word Match',sub:'Drag',icon:'🔗'},
-  {id:3,label:'Interactive Video & Questions',sub:'Video + practice',icon:'📖'},
-  {id:4,label:'Completing Sentence 1',sub:'Grammar',icon:'⏳'},
-  {id:5,label:'Completing Sentence 2',sub:'Grammar',icon:'🛡️'},
-  {id:6,label:'Sentence Builder 1',sub:'Build',icon:'🧩'},
-  {id:7,label:'Sentence Builder 2',sub:'Build',icon:'🧱'},
-  {id:8,label:'Choose the Tense',sub:'Mixed',icon:'🧭'},
-  {id:9,label:'Test Your Knowledge',sub:'Timed test',icon:'⚡'}
-];
 
 const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
 
@@ -49,7 +40,7 @@ function totalScore(){
   return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)
 }
 
-let activeContentName = 'sabina';
+let activeContentName = '';
 let VOCAB = [];
 let MATCH_DATA = [];
 let READING_HTML = "";
@@ -309,7 +300,7 @@ function updateCurriculumView(snapshot,code,teacherPreview){
     const lesson=curriculumCache[id];
     if(!lesson||lesson.homework||lesson.published===false)return null;
     if(teacherPreview&&!isLessonVisibleTo(lesson,code))return null;
-    return {id:id,title:lesson.title||'Untitled Lesson',stages:lesson.stages||DEFAULT_STAGES,year:lesson.year||'2026',month:lesson.month||'October',order:lesson.order||0,maxScore:lesson.maxScore||130};
+    return {id:id,title:lesson.title||'Untitled Lesson',stages:lesson.stages||DEFAULT_STAGES,year:lesson.year||'2026',month:lesson.month||'October',order:lesson.order||0,maxScore:resolveMaxScore(lesson)};
   }).filter(Boolean).sort(function(a,b){return a.order-b.order});
   CURRICULUM[0].months[0].lessons=fbLessons;
   if(!state.currentLessonId&&fbLessons.length)state.currentLessonId=fbLessons[0].id;
@@ -1401,7 +1392,7 @@ function endTest(timedOut,customReason){
   if(!timedOut&&!customReason){sWin();confetti();} broadcastAction('test_end','Score: '+testState.correct+'/'+total);
 }
 
-function updateHUD(){ const el=document.getElementById('scoreDisplay'); if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')} const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak; const lesson=getCurrentLesson();if(!lesson)return; const doneCount=lesson.stages.filter(function(s){return state.done[lesson.id+"_"+s.id]}).length; const pct=Math.round((doneCount/lesson.stages.length)*100); const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; }
+function updateHUD(){ const maxEl=document.getElementById('scoreMax'); if(maxEl){const lesson=getCurrentLesson(); const max=lesson?resolveMaxScore(lesson):0; maxEl.textContent=max?String(max):'–'} const el=document.getElementById('scoreDisplay'); if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')} const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak; const lesson=getCurrentLesson();if(!lesson)return; const doneCount=lesson.stages.filter(function(s){return state.done[lesson.id+"_"+s.id]}).length; const pct=Math.round((doneCount/lesson.stages.length)*100); const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; }
 function markDone(stageId){ const key=state.currentLessonId+"_"+stageId; if(state.done[key])return; state.done[key]=true; sWin();confetti();renderSidebar();updateHUD();saveState(); broadcastAction('stage_complete','Stage '+stageId+' complete!'); }
 function setScore(stageId,amount){ const key=state.currentLessonId+"_"+stageId; state.scores[key]=amount; updateHUD();saveState(); }
 
@@ -1495,7 +1486,6 @@ function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundT
 function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
 function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.classList.toggle('open')}
 document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
-function showToast(text){ let t=document.getElementById('toast'); if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:white;padding:14px 24px;border-radius:12px;font-size:16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:9999;transition:opacity .3s,transform .3s;max-width:90vw;text-align:center';document.body.appendChild(t)} t.textContent=text;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)'; clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2200); }
 
 async function applyLessonContent(c,sourceFile) {
   if(!c||typeof c!=='object')throw new Error('Lesson content is invalid.');
@@ -1509,7 +1499,16 @@ async function applyLessonContent(c,sourceFile) {
 }
 
 async function loadContent() {
-  activeContentName = new URLSearchParams(location.search).get('content') || 'sabina';
+  const params = new URLSearchParams(location.search);
+  activeContentName = params.get('content') || '';
+  if (!activeContentName) {
+    // Teacher preview without an explicit file: resolve it from the manifest, never guess a student.
+    const manifestResponse = await fetch('content/manifest.json', { cache: 'no-store' });
+    if (!manifestResponse.ok) throw new Error('Content manifest could not be loaded.');
+    const entry = (await manifestResponse.json())[params.get('lesson') || ''];
+    activeContentName = String((entry && entry.classworkFile) || '').replace(/^content\//, '').replace(/\.json$/, '');
+  }
+  if (!/^[a-z0-9_-]+$/i.test(activeContentName)) throw new Error('No classwork content is configured for this lesson.');
   const contentFileName='content/'+activeContentName+'.json';
   const res = await fetch(contentFileName, { cache: 'no-store' });
   if (!res.ok) throw new Error(contentFileName+' not found');
@@ -1855,7 +1854,6 @@ if (typeof startTimer === "function") globalThis["startTimer"] = startTimer;
 if (typeof toggleSound === "function") globalThis["toggleSound"] = toggleSound;
 if (typeof toggleDark === "function") globalThis["toggleDark"] = toggleDark;
 if (typeof toggleNotes === "function") globalThis["toggleNotes"] = toggleNotes;
-if (typeof showToast === "function") globalThis["showToast"] = showToast;
 if (typeof applyLessonContent === "function") globalThis["applyLessonContent"] = applyLessonContent;
 if (typeof loadContent === "function") globalThis["loadContent"] = loadContent;
 if (typeof boot === "function") globalThis["boot"] = boot;

@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { after, before, test } from "node:test";
 import {
@@ -474,4 +475,26 @@ test("teacher commands use one versioned schema with a server timestamp", async 
   await assertSucceeds(set(ref(dbA, "sessions/A111111/commands/cmd-new/ack"), true));
   await assertSucceeds(get(ref(dbA, "sessions/A111111/commands")));
   await assertFails(get(ref(dbA, "sessions/B222222/commands")));
+});
+
+test("only an admin can reset a submitted homework record, and the attempt can be archived first", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const record = ref(dbA, "sessions/A111111/homework/task-reset");
+  await assertSucceeds(set(record, { version: 6, answers: { q_one: "mine" }, score: 1, total: 2, submitted: false }));
+  await assertSucceeds(update(record, { submitted: true }));
+  await assertFails(update(record, { submitted: false }));
+
+  const adminRecord = ref(teacher, "sessions/A111111/homework/task-reset");
+  await assertSucceeds(set(ref(teacher, "sessions/A111111/homework/task-reset/attempts/attempt-1"), {
+    version: 6, answers: { q_one: "mine" }, score: 1, total: 2, updatedAt: Date.now(), ts: Date.now()
+  }));
+  await assertSucceeds(update(adminRecord, {
+    version: 6, answers: null, rawAnswers: null, score: null, total: null,
+    submitted: false, completed: false, submittedAt: null, submittedBy: null, updatedAt: null
+  }));
+  // the student can answer again, and the archived attempt survived the reset
+  await assertSucceeds(update(record, { answers: { q_one: "retry" } }));
+  const attempt = await get(ref(teacher, "sessions/A111111/homework/task-reset/attempts/attempt-1/answers/q_one"));
+  assert.equal(attempt.val(), "mine");
 });

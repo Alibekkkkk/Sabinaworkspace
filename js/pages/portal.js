@@ -1,6 +1,7 @@
 
 import { installDelegatedActions, readActionEnum } from "../delegated-actions.js";
 import { clearElement, safeUrl, setHtml } from "../dom.js";
+import { resolveMaxScore } from "../lesson-meta.js";
 
 let db = null;
 let configModule = null;
@@ -287,7 +288,7 @@ function renderLessons(){
     let doneCount = stages.filter(s => state.progress.done[lessonId + '_' + s.id]).length;
     let pct = totalStages ? Math.round((doneCount / totalStages) * 100) : 0;
     let lessonScore = stages.reduce((sum, s) => sum + (Number(state.progress.scores[lessonId + '_' + s.id]) || 0), 0);
-    let maxScore = Number(lesson.maxScore) || 80;
+    let maxScore = resolveMaxScore(lesson);
     const homeworkResult = (state.homework || {})[lessonId];
     if (lesson.customUrl && lesson.customUrl.indexOf('homework.html') !== -1) {
       totalStages = 1;
