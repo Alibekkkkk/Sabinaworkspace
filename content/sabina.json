@@ -1,4 +1,10 @@
 {
+  "schemaVersion": 2,
+  "sections": [
+    {"id":"vocabulary","title":"Vocabulary","estimatedMinutes":25,"stages":["vocab","matchData"]},
+    {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
+    {"id":"reading","title":"Reading Comprehension","estimatedMinutes":20,"stages":["readingHtml","readingQ","contextQ"]}
+  ],
   "vocab": [
     { "en": "blizzard", "emoji": "❄️", "meanings": [
       { "context": "a long snowstorm", "pos": "noun", "ru": "снежная буря, пурга", "ex": "A <b>blizzard</b> is a long snowstorm with very strong winds." },

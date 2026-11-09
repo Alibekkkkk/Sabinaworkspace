@@ -1,4 +1,10 @@
 {
+  "schemaVersion": 2,
+  "sections": [
+    {"id":"vocabulary","title":"Vocabulary","estimatedMinutes":15,"stages":["vocab","matchData"]},
+    {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
+    {"id":"reading","title":"Reading Comprehension","estimatedMinutes":25,"stages":["readingHtml","readingQ","contextQ"]}
+  ],
   "vocab": [
     { "en": "memory", "emoji": "🧠", "meanings": [
       { "context": "the ability to remember things", "pos": "noun", "displayEn": "memory", "ru": "память", "ex": "She has an excellent <b>memory</b> for names." },

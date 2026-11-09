@@ -1,4 +1,10 @@
 {
+  "schemaVersion": 2,
+  "sections": [
+    {"id":"vocabulary","title":"Vocabulary","estimatedMinutes":15,"stages":["vocab","matchData"]},
+    {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
+    {"id":"reading","title":"Reading Comprehension","estimatedMinutes":25,"stages":["readingHtml","readingQ","contextQ"]}
+  ],
   "vocab": [
     { "en": "artificial intelligence", "emoji": "🧠", "meanings": [
       { "context": "the ability of computers to think and learn", "pos": "noun", "displayEn": "artificial intelligence", "ru": "искусственный интеллект", "ex": "<b>Artificial intelligence</b> is changing the way we work." }

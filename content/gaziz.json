@@ -1,4 +1,10 @@
 {
+  "schemaVersion": 2,
+  "sections": [
+    {"id":"vocabulary","title":"Vocabulary","estimatedMinutes":25,"stages":["vocab","matchData"]},
+    {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
+    {"id":"reading","title":"Reading Comprehension","estimatedMinutes":45,"stages":["readingHtml","readingQ","contextQ"]}
+  ],
   "vocab": [
     { "en": "environment", "emoji": "🌍", "meanings": [
       { "context": "the natural world", "pos": "noun", "ru": "окружающая среда", "ex": "We must protect the <b>environment</b> for future generations." },

@@ -1,4 +1,10 @@
 {
+  "schemaVersion": 2,
+  "sections": [
+    {"id":"vocabulary","title":"Vocabulary","estimatedMinutes":15,"stages":["vocab","matchData"]},
+    {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
+    {"id":"reading","title":"Reading Comprehension","estimatedMinutes":20,"stages":["readingHtml","readingQ","contextQ"]}
+  ],
   "vocab": [
     { "en": "athlete", "emoji": "🏃‍♂️", "meanings": [ 
       { "context": "a person who plays sports", "pos": "noun", "ru": "спортсмен", "ex": "He is a professional <b>athlete</b>." },

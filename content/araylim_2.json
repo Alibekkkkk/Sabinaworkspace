@@ -1,4 +1,10 @@
 {
+  "schemaVersion": 2,
+  "sections": [
+    {"id":"vocabulary","title":"Vocabulary","estimatedMinutes":15,"stages":["vocab","matchData"]},
+    {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
+    {"id":"reading","title":"Reading Comprehension","estimatedMinutes":15,"stages":["readingHtml","readingQ","contextQ"]}
+  ],
   "vocab": [
     { "en": "to launch", "emoji": "🚀", "meanings": [
       { "context": "to send a rocket into space", "pos": "verb", "displayEn": "to launch", "ru": "запускать", "ex": "They will <b>launch</b> the rocket tomorrow." },

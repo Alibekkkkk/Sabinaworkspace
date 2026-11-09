@@ -1,4 +1,10 @@
 {
+  "schemaVersion": 2,
+  "sections": [
+    {"id":"vocabulary","title":"Vocabulary","estimatedMinutes":20,"stages":["vocab","matchData"]},
+    {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
+    {"id":"reading","title":"Reading Comprehension","estimatedMinutes":45,"stages":["readingHtml","readingQ","contextQ"]}
+  ],
   "vocab": [
     { "en": "cognitive", "emoji": "🧠", "meanings": [
       { "context": "adjective: related to thinking and understanding", "pos": "adjective", "displayEn": "cognitive", "ru": "познавательный", "ex": "Video games can improve <b>cognitive</b> abilities like memory." }
