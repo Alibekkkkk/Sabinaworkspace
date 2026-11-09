@@ -5,3 +5,5 @@
     section{margin:28px 0;padding-top:18px;border-top:1px solid #d5dbe5}
     #status{white-space:pre-wrap;padding:14px;background:#f2f4f7;border-radius:8px}
   
+.listening-gap-easy { font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; }
+.listening-gap-medium { text-decoration: underline dotted; }

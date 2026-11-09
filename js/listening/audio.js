@@ -41,20 +41,20 @@ export function speechSupported() {
   return typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
 }
 
-// options: { item, character, baseUrl, onAmplitude(0..1), onWord(index), onSource(kind, message), onState("speaking"|"idle") }
+// options: { item, character, baseUrl, whenAmplitude(0..1), whenWord(index), whenSource(kind, message), whenState("speaking"|"idle") }
 export function createPlayer(options) {
-  const { item, character = "nora", baseUrl = "", onAmplitude = () => {}, onWord = () => {}, onSource = () => {}, onState = () => {} } = options;
+  const { item, character = "nora", baseUrl = "", whenAmplitude = () => {}, whenWord = () => {}, whenSource = () => {}, whenState = () => {} } = options;
   let audio = null; let context = null; let analyser = null; let frame = 0; let pulse = 0; let token = 0;
 
-  function stopMeters() { cancelAnimationFrame(frame); clearInterval(pulse); onAmplitude(0); }
+  function stopMeters() { cancelAnimationFrame(frame); clearInterval(pulse); whenAmplitude(0); }
   function meter() {
-    if (!analyser) { pulse = setInterval(() => onAmplitude(Math.random() * 0.8 + 0.1), 120); return; }
+    if (!analyser) { pulse = setInterval(() => whenAmplitude(Math.random() * 0.8 + 0.1), 120); return; }
     const data = new Uint8Array(analyser.fftSize);
     const tick = () => {
       analyser.getByteTimeDomainData(data);
       let sum = 0;
       for (const value of data) { const centred = (value - 128) / 128; sum += centred * centred; }
-      onAmplitude(Math.min(1, Math.sqrt(sum / data.length) * 4));
+      whenAmplitude(Math.min(1, Math.sqrt(sum / data.length) * 4));
       frame = requestAnimationFrame(tick);
     };
     tick();
@@ -65,12 +65,12 @@ export function createPlayer(options) {
     if (audio) { audio.pause(); audio.removeAttribute("src"); audio = null; }
     if (speechSupported()) window.speechSynthesis.cancel();
     stopMeters();
-    onState("idle");
+    whenState("idle");
   }
 
   function playDevice(slow, mine, reason) {
     return new Promise(resolve => {
-      if (!speechSupported()) { onSource("none", "This browser cannot play audio or speech."); onState("idle"); resolve(false); return; }
+      if (!speechSupported()) { whenSource("none", "This browser cannot play audio or speech."); whenState("idle"); resolve(false); return; }
       const speak = () => {
         if (mine !== token) { resolve(false); return; }
         const utterance = new SpeechSynthesisUtterance(item.text);
@@ -79,16 +79,16 @@ export function createPlayer(options) {
         if (voice) utterance.voice = voice;
         utterance.rate = slow ? 0.7 : 0.92;
         utterance.pitch = character === "arthur" ? 0.9 : 1;
-        utterance.onboundary = event => { if (event.name === "word" || event.charIndex !== undefined) { onWord(wordIndexAt(item.text, event.charIndex)); onAmplitude(0.9); setTimeout(() => onAmplitude(0.25), 90); } };
-        utterance.onend = () => { if (mine === token) { stopMeters(); onState("idle"); } resolve(true); };
-        utterance.onerror = () => { if (mine === token) { stopMeters(); onState("idle"); } resolve(false); };
-        onSource("device", reason || `Device voice${voice ? ` (${voice.name})` : ""}: quality depends on your device.`);
-        onState("speaking");
+        utterance.onboundary = event => { if (event.name === "word" || event.charIndex !== undefined) { whenWord(wordIndexAt(item.text, event.charIndex)); whenAmplitude(0.9); setTimeout(() => whenAmplitude(0.25), 90); } };
+        utterance.onend = () => { if (mine === token) { stopMeters(); whenState("idle"); } resolve(true); };
+        utterance.onerror = () => { if (mine === token) { stopMeters(); whenState("idle"); } resolve(false); };
+        whenSource("device", reason || `Device voice${voice ? ` (${voice.name})` : ""}: quality depends on your device.`);
+        whenState("speaking");
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utterance);
       };
       if (window.speechSynthesis.getVoices().length) speak();
-      else { let done = false; const once = () => { if (done) return; done = true; speak(); }; window.speechSynthesis.addEventListener("voiceschanged", once, { once: true }); setTimeout(once, 400); }
+      else { let done = false; const runOnce = () => { if (done) return; done = true; speak(); }; window.speechSynthesis.addEventListener("voiceschanged", runOnce, { once: true }); setTimeout(runOnce, 400); }
     });
   }
 
@@ -107,11 +107,11 @@ export function createPlayer(options) {
       }
     } catch (error) { analyser = null; }
     const timings = Array.isArray(item.wordTimings) ? item.wordTimings : [];
-    audio.addEventListener("timeupdate", () => { if (mine !== token) return; const now = audio.currentTime; const hit = timings.find(timing => now >= timing.start && now < timing.end); if (hit) onWord(hit.i); });
+    audio.addEventListener("timeupdate", () => { if (mine !== token) return; const now = audio.currentTime; const hit = timings.find(timing => now >= timing.start && now < timing.end); if (hit) whenWord(hit.i); });
     return new Promise(resolve => {
-      audio.addEventListener("ended", () => { if (mine === token) { stopMeters(); onState("idle"); } resolve(true); }, { once: true });
-      audio.addEventListener("error", () => resolve(false), { once: true });
-      audio.play().then(() => { if (mine !== token) return; onSource("neural", "Neural British voice"); onState("speaking"); meter(); }).catch(() => resolve(false));
+      audio.addEventListener("ended", () => { if (mine === token) { stopMeters(); whenState("idle"); } resolve(true); }, { runOnce: true });
+      audio.addEventListener("error", () => resolve(false), { runOnce: true });
+      audio.play().then(() => { if (mine !== token) return; whenSource("neural", "Neural British voice"); whenState("speaking"); meter(); }).catch(() => resolve(false));
     });
   }
 

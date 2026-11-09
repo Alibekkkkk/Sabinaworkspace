@@ -67,6 +67,10 @@ function stagesOf(lesson){ return lesson && Array.isArray(lesson.stages) && less
 // ---- lesson clock (teacher-controlled, shared by teacher and student) ----
 // ---- grammar ladder (rule card on the first grammar stage, six production steps after the last) ----
 let readingTasks = null;
+let listeningAvailable = false;
+// Show "Listen & type" only when the lesson has a listening pack (content/manifest.json lists the file names).
+let listeningChecked='';
+function detectListening(lessonId){ if(listeningChecked===lessonId)return; listeningChecked=lessonId; fetch('content/manifest.json').then(function(r){return r.ok?r.json():{}}).then(function(m){ const next=Boolean(m[lessonId]&&m[lessonId].listeningFile); if(next!==listeningAvailable){listeningAvailable=next; if(state.currentStage===1&&document.getElementById('flashGrid'))renderStage1();} }).catch(function(){}); }
 function appendReadingTasks(){
   if(!readingTasks)return;
   const column=document.querySelector('#main .reading-questions'); if(!column)return;
@@ -705,8 +709,9 @@ function showWordFamily(){
 }
 
 function renderStage1(){
+  detectListening(state.currentLessonId);
   const main=document.getElementById('main'); if(!main)return; clearElement(main); loadVocabStateLocal();
-  const v=document.createElement('div');v.className='stage-view active'; const counts=getVocabCounts(); const showPractice=shouldShowPractice();
+  const v=document.createElement('div');v.className='stage-view active'; const counts=getVocabCounts(); const showPractice=shouldShowPractice(); const listeningHref=listeningAvailable?'listening.html?code='+encodeURIComponent(studentContext?studentContext.code:'')+'&lesson='+encodeURIComponent(state.currentLessonId):'';
   setHtml(v, '<div class="eyebrow">Stage 1 — Vocabulary Quiz</div><h2>🌪️ Adaptive Vocabulary</h2>'+
   '<div class="lead">Every card is a small quiz. Choose the correct translation for each meaning of the word. Your answers automatically sort cards into three sections — <b>Learning</b>, <b>Learned</b>, and <b>Need Practice</b>.<span class="ru">Каждая карточка — небольшой тест. Ваши ответы автоматически сортируют карточки по трём разделам.</span></div>'+
   '<div class="flash-toolbar">'+
@@ -714,6 +719,7 @@ function renderStage1(){
   '<button class="filt '+(s1Filter==='learned'?'active':'')+'" data-action="set-vocab-filter" data-filter="learned">✓ Learned ('+counts.learned+')</button>'+
   '<button class="filt '+(s1Filter==='practice'?'active':'')+'" data-action="set-vocab-filter" data-filter="practice">🔁 Need Practice ('+counts.practice+')</button>'+
   '<button class="btn practice-btn'+(showPractice?' show':'')+'" data-action="start-practice">🎯 Practise</button>'+
+  (listeningHref?'<a class="btn ghost" href="'+escapeAttr(listeningHref)+'">🎧 Listen &amp; type</a>':'')+
   '</div><div class="flash-grid" id="flashGrid"></div>');
   main.appendChild(v);main.appendChild(stageFooter(null,2)); renderFlashcards(); appendFormTheWord(v);
   if(fbConnected&&!vocabCloudLoaded){vocabCloudLoaded=true;loadVocabStateCloud().then(function(){renderStage()})}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#141a25">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Listening | Learning Studio</title>
+  <script src="js/pwa.js" defer></script>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components/controls.css">
+  <link rel="stylesheet" href="css/components/surfaces.css">
+  <link rel="stylesheet" href="css/components/progress.css">
+  <link rel="stylesheet" href="css/components/feedback.css">
+  <link rel="stylesheet" href="css/pages/listening.css">
+</head>
+<body>
+  <main class="ls-shell">
+    <header class="ls-header">
+      <div>
+        <p class="muted">Listening · Dictation</p>
+        <h1 id="pageTitle">Listen and type</h1>
+      </div>
+      <a class="ds-btn ds-btn--secondary" href="portal.html">Back to lessons</a>
+      <div class="stats" id="stats" role="group" aria-label="Your learning rewards"></div>
+      <button class="theme-toggle" type="button" data-theme-toggle>☀️ Light mode</button>
+    </header>
+    <p id="status" role="status" aria-live="polite">Loading your listening sentences…</p>
+    <section id="lsSetup" class="ds-card ls-panel" aria-label="Set up your round" hidden></section>
+    <section id="lsStage" class="ds-card ls-panel" aria-label="Dictation" hidden></section>
+    <section id="lsSummary" class="ds-card ls-panel ls-summary" aria-label="Round summary" hidden></section>
+    <div id="lsLive" class="ls-sr" aria-live="polite"></div>
+  </main>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script type="module" src="js/pages/listening.js"></script>
+  <script src="js/theme.js" defer></script>
+</body>
+</html>

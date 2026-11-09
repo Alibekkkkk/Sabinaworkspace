@@ -1,4 +1,5 @@
-const CACHE_NAME = "learning-studio-shell-v5";
+const CACHE_NAME = "learning-studio-shell-v6";
+const AUDIO_CACHE = "learning-studio-audio-v1";
 const SHELL_URLS = [
   "index.html",
   "portal.html",
@@ -9,6 +10,7 @@ const SHELL_URLS = [
   "lesson_gaziz.html",
   "homework.html",
   "practice.html",
+  "listening.html",
   "clip.html",
   "manga.html",
   "offline.html",
@@ -38,6 +40,13 @@ const SHELL_URLS = [
   "js/placement-page.js",
   "js/games/engine.js",
   "js/games/progress.js",
+  "js/listening/schema.js",
+  "js/listening/answers.js",
+  "js/listening/levels.js",
+  "js/listening/audio.js",
+  "js/listening/character.js",
+  "js/listening/dictation.js",
+  "js/listening/speaking.js",
   "js/clips/schema.js",
   "js/manga/schema.js",
   "js/pages/clip.js",
@@ -58,6 +67,8 @@ const SHELL_URLS = [
   "css/pages/offline.css",
   "js/pages/portal.js",
   "css/pages/portal.css",
+  "js/pages/listening.js",
+  "css/pages/listening.css",
   "js/pages/practice.js",
   "css/pages/practice.css",
   "js/pages/tools-import-content.js",
@@ -79,6 +90,7 @@ const SHELL_DOCUMENTS = new Set([
   "lesson_gaziz.html",
   "homework.html",
   "practice.html",
+  "listening.html",
   "clip.html",
   "manga.html"
 ]);
@@ -110,6 +122,31 @@ self.addEventListener("fetch", event => {
   if (url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
 
   const relativePath = url.pathname.slice(scope.pathname.length);
+  // Listening: packs are network-first, audio is cache-first in its own cache so rounds work offline once heard.
+  if (relativePath.startsWith("content/audio/") && /\.mp3$/.test(relativePath)) {
+    event.respondWith(caches.open(AUDIO_CACHE).then(async cache => {
+      const cached = await cache.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      const response = await fetch(request);
+      if (response.ok && response.type === "basic" && response.status === 200) await cache.put(request, response.clone());
+      return response;
+    }));
+    return;
+  }
+  if (relativePath.startsWith("content/listening/") && relativePath.endsWith(".json")) {
+    event.respondWith(caches.open(CACHE_NAME).then(async cache => {
+      try {
+        const response = await fetch(request);
+        if (response.ok && response.type === "basic") await cache.put(request, response.clone());
+        return response;
+      } catch (error) {
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        throw error;
+      }
+    }));
+    return;
+  }
   const isDocument = request.mode === "navigate" &&
     (SHELL_DOCUMENTS.has(relativePath) || relativePath === "");
   if (!isDocument && !SHELL_ASSETS.has(relativePath)) return;

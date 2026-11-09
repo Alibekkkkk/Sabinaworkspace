@@ -43,6 +43,7 @@ This starts the Firebase Realtime Database and Auth emulators (needs Java 21+), 
 
 ## Current learning features
 
+- **Listening trainer** (`listening.html`): a British-voice character says a sentence, some words are hidden as stars, the student types them in place and gets per-word feedback with the differing letters marked. Levels Easy, Medium, Hard and Expert adapt (3 right in a row up, 2 wrong in a row down). Rounds of up to 10 sentences end with accuracy, stars, hardest words and a Practise-mistakes round. Tapping a word offers Look up and Save to my words; missed words go to the practice review queue. Optional speaking practice needs a one-time consent. Packs live in `content/listening/` and are checked by `npm run lint:listening`; see [Teacher setup](TEACHER_SETUP.md) and `docs/PHASE3-REPORT.md`.
 - Shared design tokens and a student portal with a learning path and practice entry points.
 - Protected practice games include word matching, memory cards, crosswords, word searches, timed quizzes, fill-in-the-gap, sentence building, hangman, word scramble, flashcards, listening dictation, pronunciation fallback, boss rounds, and teacher-authored story choices. Progress and the spaced-review queue are student-scoped.
 - Clip Lab uses official video embeds and protected Firebase clip records. Its current sample study text is teacher-created and explicitly not a verified transcript.

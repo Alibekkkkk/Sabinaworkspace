@@ -77,6 +77,24 @@ test("students can only read and write their own game progress", async () => {
   await assertFails(get(ref(dbA, "studentProgress")));
 });
 
+test("listening progress: own node only, bounded numbers, no extra fields, saved words may record their listening source", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const item = { attempts: 2, bestAccuracy: 0.75, lastAt: 1700000000000 };
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/listening/sabina-l-001"), item));
+  await assertSucceeds(get(ref(dbA, "studentProgress/A111111/listening/sabina-l-001")));
+  await assertFails(set(ref(dbA, "studentProgress/B222222/listening/sabina-l-001"), item));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/listening/sabina-l-001"), { ...item, bestAccuracy: 1.5 }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/listening/sabina-l-001"), { ...item, attempts: -1 }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/listening/sabina-l-001"), { ...item, extra: "x" }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/listening/sabina-l-001"), { attempts: 1 }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/listening/bad key!"), item));
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/vocabulary/grasp"), { word: "grasp", sourceListeningId: "sabina-l-001" }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/vocabulary/grip"), { word: "grip", sourceListeningId: "x".repeat(81) }));
+  const teacherDb = testEnv.authenticatedContext("teacher").database();
+  await assertSucceeds(get(ref(teacherDb, "studentProgress/A111111/listening")));
+  await assertFails(set(ref(teacherDb, "studentProgress/A111111/listening/sabina-l-001"), item));
+});
+
 test("teachers can read game progress but cannot write student progress", async () => {
   const teacherDb = testEnv.authenticatedContext("teacher").database();
   await assertSucceeds(get(ref(teacherDb, "studentProgress/A111111")));

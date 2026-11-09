@@ -63,7 +63,19 @@ function layoutProblems() {
 
   // overlapping interactive elements (ignoring ancestors/descendants and elements covered by an open overlay)
   const controls = [...document.querySelectorAll("button, a[href], input, select, textarea, [role='button']")].filter(visible);
-  const boxes = controls.map(element => ({ element, box: element.getBoundingClientRect() }));
+  // A scrolling or clipping ancestor hides part of a control: only the visible part can overlap something.
+  const visibleBox = element => {
+    let { left, right, top, bottom } = element.getBoundingClientRect();
+    for (let parent = element.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
+      const style = getComputedStyle(parent);
+      if ([style.overflowX, style.overflowY].every(value => value === "visible")) continue;
+      const clip = parent.getBoundingClientRect();
+      if (style.overflowX !== "visible") { left = Math.max(left, clip.left); right = Math.min(right, clip.right); }
+      if (style.overflowY !== "visible") { top = Math.max(top, clip.top); bottom = Math.min(bottom, clip.bottom); }
+    }
+    return { left, right, top, bottom, width: Math.max(0, right - left), height: Math.max(0, bottom - top) };
+  };
+  const boxes = controls.map(element => ({ element, box: visibleBox(element) }));
   for (let i = 0; i < boxes.length; i++) {
     for (let j = i + 1; j < boxes.length; j++) {
       const a = boxes[i], b = boxes[j];

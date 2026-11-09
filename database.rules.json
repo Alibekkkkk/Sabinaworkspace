@@ -461,6 +461,16 @@
             "$other": { ".validate": "false" }
           }
         },
+        "listening": {
+          ".validate": "newData.hasChildren()",
+          "$itemKey": {
+            ".validate": "$itemKey.matches(/^[A-Za-z0-9_-]{1,64}$/) && newData.hasChildren(['attempts', 'bestAccuracy', 'lastAt'])",
+            "attempts": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
+            "bestAccuracy": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "lastAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "$other": { ".validate": "false" }
+          }
+        },
         "vocabulary": {
           ".validate": "newData.hasChildren()",
           "$wordKey": {
@@ -470,6 +480,7 @@
             "definition": { ".validate": "newData.isString() && newData.val().length <= 1000" },
             "savedAt": { ".validate": "newData.isString() && newData.val().length <= 40" },
             "sourceClipId": { ".validate": "newData.isString() && newData.val().length <= 80" },
+            "sourceListeningId": { ".validate": "newData.isString() && newData.val().length <= 80" },
             "sourceMangaId": { ".validate": "newData.isString() && newData.val().length <= 80" },
             "chapterId": { ".validate": "newData.isString() && newData.val().length <= 80" },
             "$other": { ".validate": "false" }

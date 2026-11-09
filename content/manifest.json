@@ -52,6 +52,7 @@
     "homeworkFile": "homework_sabina.json",
     "clipFile": "clips/sabina-floods.json",
     "clipId": "sabina-floods",
+    "listeningFile": "listening/sabina.json",
     "assignedTo": []
   },
   "lesson_1": {
@@ -70,6 +71,7 @@
     "classworkFile": "sabina.json",
     "clipFile": "clips/sabina-floods.json",
     "clipId": "sabina-floods",
+    "listeningFile": "listening/sabina.json",
     "assignedTo": []
   },
   "homework_gaziz_sustainable_cities": {

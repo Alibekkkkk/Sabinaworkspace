@@ -54,6 +54,15 @@ Keep answers in the protected classwork workflow. Static `content/*.json` files 
 
 Practice, Clip Lab, and Manga Reader share a saved light/dark preference. Their theme controls work with keyboard input and follow the system preference until the learner selects a theme.
 
+## Listening trainer (dictation)
+
+1. Open `tools/import-content.html` and use **Listening pack helper**: paste one sentence per line (your own sentences, up to 25 words), list the lesson target words, and press *Pick gaps and preview*. Copy the JSON into `content/listening/<pack>.json`. Add `"translation": {"ru": "...", "kk": "..."}` per sentence if you want the translation line.
+2. Run `npm run lint:listening`. It checks ids, gap indices, the 25-word limit, credits (must start with "original", "CC0", "CC BY" or "public domain") and that audio files exist.
+3. Add `"listeningFile": "listening/<pack>.json"` to the student's entry in `content/manifest.json`. The portal then shows a "Listening" link and the lesson's Vocabulary stage a "Listen & type" button.
+4. A pack with `"status": "draft"` is hidden from students ("waiting for your teacher's approval"). Open `listening.html?code=<CODE>&lesson=<lesson>&preview=1` to try it, then change the status to `"approved"`. Note that the sentences are public static files (they are practice, not graded answers).
+5. **Voice.** Without audio files the page uses the device's British voice and says so on screen (quality depends on the device). For a consistent neural voice, set `TTS_PROVIDER` (`azure`, `google` or `elevenlabs`), `TTS_KEY` (and `TTS_REGION` for Azure) in your shell or an untracked `.env`, then run `node scripts/generate-listening-audio.mjs content/listening/<pack>.json`. It writes normal and slow mp3 files to `content/audio/`, estimated word timings (flagged) and the provider terms in `audioCredits`. Keys are never read from files in the repository. Check your provider's terms before publishing the audio.
+6. **Speaking practice** uses the browser's speech recognition, which may send audio to the browser company. The student sees a plain-language consent first; this app never records or stores audio or the transcript, and "Type instead" is always available. Mention it to parents of younger students.
+
 ## Author and update Clip Lab content
 
 Clip Lab uses official YouTube embeds. Do not download or host copyrighted video or manga files. Use short segments (10–60 seconds), record the official video ID and attribution, and use only teacher-created study text unless you have checked a short transcript excerpt and its timestamps against the source. The supplied examples clearly label their teacher-created text; they are not verbatim video captions.

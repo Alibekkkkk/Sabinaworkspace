@@ -55,8 +55,29 @@
     <p id="wordFamilyStatus" role="status">No word loaded.</p>
     <textarea id="wordFamilyOutput" spellcheck="false" readonly aria-label="forms JSON"></textarea>
   </section>
+  <section aria-labelledby="listeningTitleHeading">
+    <h2 id="listeningTitleHeading">Listening pack helper</h2>
+    <p id="listeningHelp">Paste one sentence per line (up to 25 words each, your own sentences only). Name the lesson target words to hide first. The tool picks gaps for Easy and Medium (content words first), previews them and prints the pack JSON. Hard and Expert hide every word.</p>
+    <label for="listeningTitle">Pack title</label>
+    <input id="listeningTitle" type="text" autocomplete="off" aria-describedby="listeningHelp">
+    <label for="listeningId">Pack id (letters, digits, dashes)</label>
+    <input id="listeningId" type="text" autocomplete="off">
+    <label for="listeningLevel">Level</label>
+    <select id="listeningLevel"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option></select>
+    <label for="listeningCharacter">Tutor</label>
+    <select id="listeningCharacter"><option value="nora">Nora (British female)</option><option value="arthur">Arthur (British male)</option></select>
+    <label for="listeningTargets">Target words (comma separated)</label>
+    <input id="listeningTargets" type="text" autocomplete="off">
+    <label for="listeningSentences">Sentences</label>
+    <textarea id="listeningSentences" spellcheck="true"></textarea>
+    <button id="listeningBuild" type="button">Pick gaps and preview</button>
+    <ul id="listeningPreview"></ul>
+    <p id="listeningStatus" role="status">No sentences loaded.</p>
+    <textarea id="listeningOutput" spellcheck="false" readonly aria-label="Listening pack JSON"></textarea>
+  </section>
   <p id="status" role="status">Initializing Firebase…</p>
   <script type="module" src="../js/pages/tools-import-content.js"></script>
   <script type="module" src="../js/pages/tools-word-family.js"></script>
+  <script type="module" src="../js/pages/tools-listening.js"></script>
 </body>
 </html>

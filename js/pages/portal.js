@@ -18,6 +18,13 @@ const configReady = import('../config.js').then(function(config) {
   db = firebase.database();
 });
 
+let listeningManifestPromise=null;
+// Which lessons have a listening pack: content/manifest.json is public (it holds file names, no answers).
+function listeningManifest(){
+  if(!listeningManifestPromise)listeningManifestPromise=fetch('content/manifest.json').then(function(response){return response.ok?response.json():{}}).catch(function(){return {}});
+  return listeningManifestPromise;
+}
+
 function storedIdentity() {
   const remember = localStorage.getItem('nd_remember_student') === 'true';
   const storage = remember ? localStorage : sessionStorage;
@@ -521,6 +528,18 @@ function renderLessons(){
       practiceLink.href=practiceUrl.href;
       practiceLink.textContent='🎮 Practice '+(lesson.title||'lesson');
       practiceLinks.append(practiceLink);
+      listeningManifest().then(function(manifest){
+        const entry=manifest[lessonId];
+        if(!entry||!entry.listeningFile)return;
+        const listenUrl=new URL('listening.html',window.location.href);
+        listenUrl.searchParams.set('code',state.currentCode);
+        listenUrl.searchParams.set('lesson',lessonId);
+        const listenLink=document.createElement('a');
+        listenLink.className='practice-link';
+        listenLink.href=listenUrl.href;
+        listenLink.textContent='🎧 Listening '+(lesson.title||'lesson');
+        practiceLinks.append(listenLink);
+      });
     }
     if (lesson.clipId) {
       const clipUrl=new URL('clip.html',window.location.href);

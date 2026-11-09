@@ -1,3 +1,7 @@
 node_modules/
 .firebase/
 *.log
+
+# local secrets (TTS keys etc.): never commit
+.env
+.env.*
