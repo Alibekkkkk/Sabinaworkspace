@@ -1074,3 +1074,76 @@ test("manga: a student whose teacher did not switch it on cannot read the story,
   await assertFails(get(ref(dbB, "protectedContent/lesson-g/manga")), "no flag anywhere: denied by default");
   await assertFails(get(ref(dbB, "protectedContent/lesson-g/manga/content")));
 });
+
+test("threat list: signed-out visitors can read and write nothing", async () => {
+  const anonymous = testEnv.unauthenticatedContext().database();
+  for (const path of ["students/A111111", "studentProgress/A111111", "sessions/A111111", "protectedContent/lesson-a/classwork", "studentCurriculum/A111111", "curriculum", "admins/teacher", "studentFeatures/A111111", "mangaAssignments/A111111", "whiteboards/A111111", "leaderboard", "lessonClock/A111111", "sessionSummary/A111111"]) {
+    await assertFails(get(ref(anonymous, path)), `anonymous read of ${path}`);
+    await assertFails(set(ref(anonymous, `${path}/x`), 1), `anonymous write of ${path}`);
+  }
+});
+
+test("threat list: a student cannot escalate to teacher or write teacher-owned data", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  await assertFails(set(ref(dbA, "admins/student-a"), true), "self-granting teacher access");
+  await assertFails(set(ref(dbA, "admins"), { "student-a": true }));
+  await assertFails(set(ref(dbA, "curriculum/lesson-x"), { title: "x" }), "writing the teacher's lesson list");
+  await assertFails(set(ref(dbA, "studentCurriculum/A111111/lesson-x"), { title: "x", published: true }), "assigning themselves a lesson");
+  await assertFails(set(ref(dbA, "protectedContent/lesson-a/classwork/content/title"), "hacked"), "editing protected content");
+  await assertFails(set(ref(dbA, "protectedContent/lesson-z/manga"), { content: {} }), "adding protected content");
+  await assertFails(set(ref(dbA, "studentFeatures/A111111/mangaReader"), true), "switching on their own features");
+  await assertFails(set(ref(dbA, "mangaAssignments/A111111/s/c"), { assignedAt: 1 }));
+  await assertFails(set(ref(dbA, "lessonClock/A111111/lesson-a"), { state: "running" }), "starting the teacher's lesson clock");
+  await assertFails(set(ref(dbA, "sessions/A111111/commands/cmd-9"), { type: "goto", payload: { stage: 9 }, createdAt: 9 }), "sending themselves teacher commands");
+  await assertFails(set(ref(dbA, "studentByUid/student-b"), "A111111"), "re-pointing another student's identity");
+  await assertFails(set(ref(dbA, "students/B222222/name"), "renamed"), "renaming another student");
+  await assertFails(get(ref(dbA, "students")), "listing every student");
+  await assertFails(get(ref(dbA, "sessions")), "listing every session");
+  await assertFails(get(ref(dbA, "studentProgress")), "listing every student's progress");
+  await assertFails(get(ref(dbA, "studentCurriculum")), "listing every curriculum");
+});
+
+test("threat list: write abuse is bounded (size, shape, unknown fields)", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const huge = "x".repeat(200000);
+  await assertFails(set(ref(dbA, "studentProgress/A111111/vocabulary/w1"), { word: huge }), "an oversized saved word");
+  await assertFails(set(ref(dbA, "studentProgress/A111111/vocabulary/w2"), { word: "ok", surprise: "extra field" }), "an unknown field");
+  await assertFails(set(ref(dbA, "studentProgress/A111111/vocabulary/bad key!"), { word: "ok" }), "a malformed key");
+  await assertFails(set(ref(dbA, "sessions/A111111/reviewQueue/r1"), { stage: 3, questionId: "q", prompt: "p", studentAnswer: huge, autoResult: false, ts: 1 }), "an oversized review answer");
+  await assertFails(set(ref(dbA, "sessions/A111111/reviewQueue/r2"), { stage: 99, questionId: "q", prompt: "p", studentAnswer: "a", autoResult: false, ts: 1 }), "an out-of-range stage");
+  await assertFails(set(ref(dbA, "sessions/A111111/unknownNode"), { a: 1 }), "an unknown session node");
+  await assertFails(set(ref(dbA, "studentProgress/A111111/unknownNode"), { a: 1 }), "an unknown progress node");
+  await assertFails(set(ref(dbA, "studentProgress/A111111/xp"), 99999999), "minting XP");
+});
+
+test("data deletion: a teacher can delete everything held for a student, nobody else can, and a teacher still cannot write progress", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  await testEnv.withSecurityRulesDisabled(async context => {
+    const db = context.database();
+    await set(ref(db, "studentProgress/A111111"), { xp: 10, level: 1 });
+    await set(ref(db, "sessionSummary/A111111"), { score: 1, stage: 1, streak: 0, elapsed: 5, doneCount: 0, lastUpdate: 1 });
+    await set(ref(db, "sessions/A111111/state"), { stage: 1 });
+    await set(ref(db, "whiteboards/A111111/lesson-a/mode"), "view");
+    await set(ref(db, "lessonClock/A111111/lesson-a"), { state: "stopped", totalMs: 1, rev: 1 });
+  });
+  for (const path of ["studentProgress/A111111", "sessionSummary/A111111", "sessions/A111111", "whiteboards/A111111", "lessonClock/A111111"]) {
+    await assertFails(remove(ref(dbB, path)), `another student deleting ${path}`);
+    await assertFails(set(ref(teacher, `${path}/zz`), { a: 1 }), `a teacher writing (not deleting) ${path}/zz`);
+  }
+  await assertFails(set(ref(teacher, "studentProgress/A111111"), { xp: 99999, level: 9 }), "a teacher cannot overwrite progress");
+  await assertFails(remove(ref(dbA, "sessions/A111111")), "a student cannot delete their own session wholesale");
+  await assertSucceeds(set(ref(dbA, "studentProgress/A111111/xp"), 20), "the student's own progress writes still work");
+  for (const path of ["studentProgress/A111111", "sessionSummary/A111111", "sessions/A111111", "whiteboards/A111111", "lessonClock/A111111", "studentCurriculum/A111111", "studentFeatures/A111111", "mangaAssignments/A111111", "students/A111111", "studentByUid/student-a"]) {
+    await assertSucceeds(remove(ref(teacher, path)), `a teacher deleting ${path}`);
+  }
+});
+
+test("the teacher can read a student's whole whiteboard node (for export); other students cannot", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  await testEnv.withSecurityRulesDisabled(async context => { await set(ref(context.database(), "whiteboards/A111111/lesson-a/mode"), "view"); });
+  await assertSucceeds(get(ref(teacher, "whiteboards/A111111")));
+  await assertFails(get(ref(dbB, "whiteboards/A111111")));
+});

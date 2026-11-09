@@ -8,7 +8,7 @@
 // so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
 // The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
 // BEGIN GENERATED (scripts/build-sw-manifest.mjs)
-const CACHE_VERSION = "f4f26daf6f";
+const CACHE_VERSION = "67797fdbb1";
 const SHELL_URLS = [
   "clip.html",
   "clips.html",
@@ -152,6 +152,8 @@ const SHELL_URLS = [
   "js/pages/whiteboard.js",
   "js/placement-page.js",
   "js/placement.js",
+  "js/privacy/dashboard-card.js",
+  "js/privacy/student-data.js",
   "js/protected-content.js",
   "js/pwa.js",
   "js/reading-prefs.js",
@@ -197,7 +199,8 @@ const IMAGE_PATTERN = /\.(svg|png|jpe?g|webp|avif|gif)$/i;
 
 self.addEventListener("install", event => {
   // A new version waits here until the student agrees to reload ("New version available"); see the message handler below.
-  event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.addAll(SHELL_URLS.map(path => new URL(path, self.registration.scope).href))));
+  // "reload" skips the browser's HTTP cache, so a new version never precaches an older copy of a file the host cached for an hour.
+  event.waitUntil(caches.open(SHELL_CACHE).then(cache => Promise.all(SHELL_URLS.map(path => cache.add(new Request(new URL(path, self.registration.scope).href, { cache: "reload" }))))));
 });
 
 self.addEventListener("message", event => {

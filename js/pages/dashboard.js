@@ -363,6 +363,7 @@ function selectStudent(code) {
   attachHistoryListener();
   attachGameProgressListener();
   attachFeatureListener();
+  renderPrivacy();
   attachNotesListener();
   loadLeaderboardCard();
   renderScheduleList();
@@ -523,6 +524,15 @@ function attachGameProgressListener() {
     weeklyProgressLoaded = false;
     updateWeeklySummaryAvailability();
   });
+}
+
+function renderPrivacy() {
+  const host = document.getElementById('privacyHost');
+  if (!host || !activeCode) return;
+  const code = activeCode;
+  import('../privacy/dashboard-card.js').then(function(mod) {
+    mod.renderPrivacyCard(host, { db: fbDb, code: code, name: (studentsMap[code] || {}).name, whenErased: function() { setTimeout(deselectStudent, 1500); } });
+  }).catch(function(error) { host.textContent = 'Privacy tools could not be shown: ' + error.message; });
 }
 
 function attachFeatureListener() {
@@ -1146,7 +1156,7 @@ function openCurrentClassworkInTab() {
   url.searchParams.set('teacher', '1');
   { const contentName = resolveContentName(l); if (contentName) url.searchParams.set('content', contentName); }
   if (currentClassworkCode) url.searchParams.set('code', currentClassworkCode);
-  window.open(url.href, '_blank');
+  window.open(url.href, '_blank', 'noopener,noreferrer');
 }
 
 function renderHomeworkTree() {
@@ -1241,7 +1251,7 @@ function openCurrentHomeworkInTab() {
   if (contentFile) url.searchParams.set('variant', contentFile);
   
   if (activeCode) url.searchParams.set('code', activeCode);
-  window.open(url.href, '_blank');
+  window.open(url.href, '_blank', 'noopener,noreferrer');
 }
 
 // ---- schedule list for the selected student ----------------------------------------------

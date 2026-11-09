@@ -183,3 +183,31 @@ The service worker (`sw.js`) only handles files served by this site. Protected l
 One exception, by design: the Manga Reader keeps the story it has opened in the device cache `learning-studio-manga-v1` so a chapter can be read offline. That copy contains the answer keys of the chapter questions and is deleted when the database refuses the student access (for example when the teacher switches the manga flag off). See `docs/MANGA.md`.
 
 What the worker caches: the app shell (pages, scripts, styles, icons; generated list, versioned), public content JSON (network first), audio and images (limited, oldest dropped first). It never caches other origins, non-GET requests, partial (Range) responses or the reserved sign-in paths.
+
+## HTTP headers (Firebase Hosting)
+
+`firebase.json` now has a `hosting` block that sends, on every response: a strict `Content-Security-Policy` (the union of what the pages need, no `unsafe-inline` or `unsafe-eval`, plus `frame-ancestors 'none'`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera, geolocation, payment and USB off; microphone off except on the five pages whose code can use speech recognition), `Cross-Origin-Opener-Policy: same-origin-allow-popups` (`same-origin` would break the Google sign-in popup) and `Strict-Transport-Security` for a year. `sw.js` and the manifest are sent with `Cache-Control: no-cache`; scripts and styles may be cached for an hour and must revalidate. Development files (tests, scripts, docs, rules, `package.json`) are not published.
+
+The site is still on GitHub Pages, which cannot send these headers; the block takes effect only if you deploy to Firebase Hosting. Nothing was deployed.
+
+**What was and was not verified.** `tests/hosting-headers.test.mjs` checks the rules (every header present, the header policy allows everything each page's own policy asks for, the microphone pages are exactly the pages whose code can ask for it). I could **not** observe the headers on a running server: the Hosting emulator in the installed firebase-tools served the files but did not apply `headers` or `ignore` (even for a minimal config), so the check by curl is still to do after a real deploy:
+
+```bash
+curl -sI https://<your-site>/portal.html | grep -iE "content-security|x-frame|x-content-type|referrer|permissions|cross-origin|strict-transport"
+curl -sI https://<your-site>/listening.html | grep -i permissions-policy
+curl -sI https://<your-site>/sw.js | grep -i cache-control
+curl -s -o /dev/null -w "%{http_code}\n" https://<your-site>/tests/security-gates.test.mjs   # expect 404
+```
+
+## Security re-review (Phase 8)
+
+| Check | Result |
+| --- | --- |
+| HTML written from strings (`innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`) | 2 files, both the sanitizing helpers (`js/dom.js`, `js/sanitize-html.js`); a test fails if any other file uses them. At the start of the project the review counted 128 |
+| Inline event handlers | 0 (was about 161); a test fails if one appears |
+| `eval`, `new Function`, string timers, `javascript:` URLs | 0; tested |
+| `target="_blank"` without `rel="noopener"`, `window.open` without `noopener` | 4 found and fixed (two dashboard links, two `window.open` calls); tested |
+| `unsafe-inline` or `unsafe-eval` in any page policy | 0 (the project started with `unsafe-inline`); tested |
+| Secrets in the current tree | none; the only key-like string is the public Firebase web API key in `js/config.js`, which is public by design |
+| Secrets in the full git history (274 commits, pattern scan for private keys, AWS, GitHub, OpenAI-style, Slack tokens, service-account JSON, `.env`, `.pem`) | none. The Firebase web API key appears (it is the same key in every commit, and public by design). No `gitleaks`/`trufflehog` was available, so this is a pattern scan, not a full entropy scan |
+| `npm audit` | 47 advisories (15 high, 32 moderate), **all in development tooling** (`firebase`, `firebase-tools`, `lighthouse`, `puppeteer-core`, `@firebase/rules-unit-testing` and their dependencies). The project has no runtime dependencies: students load only the files in this repository and the Firebase SDK from Google's CDN. Fixing needs major version bumps of the tooling; not done |
