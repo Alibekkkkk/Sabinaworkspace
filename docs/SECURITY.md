@@ -175,3 +175,11 @@ Realtime Database Rules do not expose object/list type checks or child-count met
 The application caps session history and review submissions at 100 entries per transaction, homework archived attempts at 10 entries, game attempts at 50, game review items at 100, topic statistics at 100, and saved vocabulary at 500. These are client write-path limits, not security boundaries: a signed-in client bypassing the application can write additional valid entries. The rules cannot cap the number of distinct annotation, draft, history, topic, or vocabulary keys; annotations and drafts are limited per value, while curriculum-controlled key counts remain application-managed. Monitor database usage and move writes requiring non-bypassable quotas behind a trusted server.
 
 GitHub Pages serves files publicly. Any answer key, student name, static lesson, or homework JSON committed in the repository can be downloaded from a public site. Database Rules protect Firebase paths only; they cannot protect static files.
+
+## Offline and protected content
+
+The service worker (`sw.js`) only handles files served by this site. Protected lesson content, answer keys, student progress and sign-in all travel over Firebase connections to other origins, which the worker never sees, so **none of it is stored by the worker**. Decision (Phase 8): protected content and answer keys are not cached for offline use, because storing them unencrypted on a shared device would defeat the protected-content design. A lesson that is already open keeps working offline because it is in memory; the offline banner says changes are kept only while the page stays open.
+
+One exception, by design: the Manga Reader keeps the story it has opened in the device cache `learning-studio-manga-v1` so a chapter can be read offline. That copy contains the answer keys of the chapter questions and is deleted when the database refuses the student access (for example when the teacher switches the manga flag off). See `docs/MANGA.md`.
+
+What the worker caches: the app shell (pages, scripts, styles, icons; generated list, versioned), public content JSON (network first), audio and images (limited, oldest dropped first). It never caches other origins, non-GET requests, partial (Range) responses or the reserved sign-in paths.

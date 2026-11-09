@@ -3,6 +3,8 @@
 import { firebaseConfig } from "../config.js";
 import { resolveStudentContext } from "../student-context.js";
 import { featureEnabled, showNotEnabled } from "../feature-gate.js";
+import { mountOfflineBanner, watchConnection } from "../shell.js";
+mountOfflineBanner();
 import { loadProtectedContent } from "../protected-content.js";
 import { progressPath, saveGameProgress, saveVocabularyWord } from "../games/progress.js";
 import { createPlayer, speechSupported } from "../listening/audio.js";
@@ -401,7 +403,7 @@ async function saveRound(results, summary, seconds) {
 async function boot() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    database = firebase.database();
+    database = firebase.database(); watchConnection(database);
     context = await resolveStudentContext({ auth: firebase.auth(), db: database, lessonId: query.get("lesson") });
     if (!(await featureEnabled(database, context.code, "listeningTrainer"))) { showNotEnabled(status, "listeningTrainer"); return; }
     const manifest = await (await fetch(new URL("../../content/manifest.json", import.meta.url))).json();

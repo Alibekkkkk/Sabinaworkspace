@@ -5,6 +5,8 @@ import { isTeacher } from "../auth.js";
 import { resolveStudentContext } from "../student-context.js";
 import { mountWhiteboard } from "../whiteboard/app.js";
 import { featureEnabled, showNotEnabled } from "../feature-gate.js";
+import { mountOfflineBanner, watchConnection } from "../shell.js";
+mountOfflineBanner();
 
 const query = new URLSearchParams(location.search);
 const status = document.getElementById("status");
@@ -17,7 +19,7 @@ function currentUser(auth) {
 async function boot() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.database(); const auth = firebase.auth();
+    const db = firebase.database(); const auth = firebase.auth(); watchConnection(db);
     const user = await currentUser(auth);
     const lessonId = query.get("lesson");
     if (!lessonId || !/^[A-Za-z0-9_-]{1,64}$/.test(lessonId)) throw new Error("Open the whiteboard from a lesson.");

@@ -7,6 +7,8 @@
     import { moduleFor, playModular } from "../games/runtime.js";
     import { mountPanels } from "../games/panels.js";
     import { applyCalm, createServices, loadSettings, saveSettings } from "../games/settings.js";
+    import { mountOfflineBanner, watchConnection } from "../shell.js";
+    mountOfflineBanner();
 
     const status = document.getElementById("status");
     const list = document.getElementById("gameList");
@@ -91,7 +93,7 @@
     async function boot() {
       try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        database = firebase.database();
+        database = firebase.database(); watchConnection(database);
         const query = new URLSearchParams(location.search);
         context = await resolveStudentContext({
           auth: firebase.auth(),

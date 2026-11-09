@@ -18,7 +18,7 @@ import { moduleFor, playModular } from "../games/runtime.js";
 import { createServices, loadSettings } from "../games/settings.js";
 import { featureEnabled, revealMangaTab, showNotEnabled } from "../feature-gate.js";
 import { localZone } from "../schedule.js";
-import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+import { mountBottomNav, mountOfflineBanner, showErrorPage, watchConnection } from "../shell.js";
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -378,7 +378,7 @@ function showReader(chapterId) {
 // ---- start ----------------------------------------------------------------------------------------------------------------------------------
 async function start() {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  db = firebase.database();
+  db = firebase.database(); watchConnection(db);
   const bound = await bindStudentCode({ auth: firebase.auth(), db, code: rememberedCode() });
   code = bound.code;
   $("backLink").href = `portal.html?code=${encodeURIComponent(code)}`;

@@ -6,6 +6,8 @@ import { generateStudentCode } from "../student-code.js";
 import { assessPlacement, canRetake, nextRetakeAt } from "../placement.js";
 import { dueState } from "../schedule.js";
 import { hasFeature } from "../features.js";
+import { mountOfflineBanner, watchConnection } from "../shell.js";
+mountOfflineBanner();
 import { classRows, lastClass, monthlyTotalSeconds } from "../clock-report.js";
 import { formatDuration } from "../lesson-clock.js";
 import { DEFAULT_CLASS_ID, encouragement, isoWeekId, previousWeekId, rankEntries, validateNickname, weeklyXpSince } from "../leaderboard.js";
@@ -17,6 +19,7 @@ const configReady = import('../config.js').then(function(config) {
   configModule = config;
   firebase.initializeApp(config.firebaseConfig);
   db = firebase.database();
+  watchConnection(db);
 });
 
 let listeningManifestPromise=null;

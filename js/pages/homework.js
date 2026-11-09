@@ -29,7 +29,7 @@ new MutationObserver(function(records){
 }).observe(document.body,{childList:true,subtree:true});
 
 import { confetti } from "../celebrate.js";
-import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+import { mountBottomNav, mountOfflineBanner, showErrorPage, watchConnection } from "../shell.js";
 
 mountOfflineBanner();
 mountBottomNav("homework");
@@ -386,6 +386,7 @@ async function initFirebase(){
   firebaseConfig=config.firebaseConfig;
   fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
   fbDb=firebase.database();
+  watchConnection(fbDb);
   fbAuth=firebase.auth();
   if(teacherPreviewRequested) {
     const user=await new Promise(function(resolve,reject){

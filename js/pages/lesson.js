@@ -10,7 +10,7 @@ import { DEFAULT_STAGES, resolveMaxScore } from "../lesson-meta.js";
 import { showToast } from "../ui.js";
 import { initReadingPrefs } from "../reading-prefs.js";
 import { confetti } from "../celebrate.js";
-import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+import { mountBottomNav, mountOfflineBanner, showErrorPage, watchConnection } from "../shell.js";
 import { initLessonClock } from "../lesson-clock-ui.js";
 import { applySectionOverrides, buildSections } from "../sections.js";
 import { validateLadder } from "../grammar-ladder.js";
@@ -407,6 +407,7 @@ function initFirebase(){
   try{
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
+    watchConnection(fbDb);
     const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
     
     if(lessonId) {

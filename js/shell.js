@@ -53,6 +53,10 @@ export function addNavTab(tab, after) {
   if (anchor) anchor.after(link); else nav.append(link);
 }
 
+export const OFFLINE_TEXT = "You are offline. Your answers are kept while this page stays open and are saved when you are back online. Please do not close this page.";
+export const DISCONNECTED_TEXT = "The connection to the lesson was lost. Your changes are kept while this page stays open and will sync when it returns.";
+export const SYNCED_TEXT = "Back online. Your changes have been saved.";
+
 export function mountOfflineBanner() {
   if (document.getElementById("offlineBanner")) return;
   const banner = document.createElement("div");
@@ -64,11 +68,28 @@ export function mountOfflineBanner() {
   icon.setAttribute("aria-hidden", "true");
   icon.textContent = "!";
   const text = document.createElement("p");
-  text.textContent = "You are offline. Your answers are kept on this device and will be saved when you are back online.";
+  text.textContent = OFFLINE_TEXT;
   banner.append(icon, text);
   document.body.prepend(banner);
   window.addEventListener("online", () => { banner.hidden = true; });
   window.addEventListener("offline", () => { banner.hidden = false; });
+}
+
+// Shows the connection state of the database on top of the browser's own online flag: a drop shows a warning, and coming back
+// shows "saved" for a few seconds. `db` is any object with ref(".info/connected").on("value", ...) (the Firebase database).
+export function watchConnection(db, { hideAfter = 4000 } = {}) {
+  mountOfflineBanner();
+  const banner = document.getElementById("offlineBanner"); const text = banner.querySelector("p");
+  let seenConnected = false; let dropped = false; let timer = 0;
+  db.ref(".info/connected").on("value", snapshot => {
+    const connected = snapshot.val() === true;
+    clearTimeout(timer);
+    if (connected) {
+      seenConnected = true;
+      if (dropped) { dropped = false; text.textContent = SYNCED_TEXT; banner.hidden = false; timer = setTimeout(() => { banner.hidden = navigator.onLine !== false; text.textContent = OFFLINE_TEXT; }, hideAfter); }
+      else banner.hidden = navigator.onLine !== false;
+    } else if (seenConnected) { dropped = true; text.textContent = navigator.onLine === false ? OFFLINE_TEXT : DISCONNECTED_TEXT; banner.hidden = false; }
+  });
 }
 
 // Replaces `target` with an error card: friendly message, retry, and a diagnostic code.

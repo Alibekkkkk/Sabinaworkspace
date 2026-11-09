@@ -1,81 +1,172 @@
-const CACHE_NAME = "learning-studio-shell-v14";
-const MANGA_CACHE = "learning-studio-manga-v1";
-const AUDIO_CACHE = "learning-studio-audio-v1";
+// Learning Studio service worker. Caches, by kind:
+//   shell    (pages, scripts, styles, icons)  precached; stale-while-revalidate; rolled over when CACHE_VERSION changes
+//   content  (content/**/*.json)              network-first, cached copy when offline
+//   audio    (content/audio/*.mp3)            cache-first, at most MAX_AUDIO files, oldest dropped first
+//   images   (assets/**, content/**)          cache-first, at most MAX_IMAGES files, oldest dropped first
+// Never cached: other origins (Firebase, sign-in, fonts), anything that is not a GET, partial (Range) responses, and the
+// reserved sign-in paths. Protected lesson content and answer keys travel over Firebase connections, not through this worker,
+// so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
+// The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
+// BEGIN GENERATED (scripts/build-sw-manifest.mjs)
+const CACHE_VERSION = "b76431d2ae";
 const SHELL_URLS = [
-  "index.html",
-  "portal.html",
-  "placement.html",
-  "dashboard.html",
-  "lesson.html",
-  "lesson_abay.html",
-  "lesson_gaziz.html",
-  "homework.html",
-  "practice.html",
-  "listening.html",
-  "whiteboard.html",
   "clip.html",
   "clips.html",
+  "dashboard.html",
+  "homework.html",
+  "index.html",
+  "lesson_abay.html",
+  "lesson_gaziz.html",
+  "lesson.html",
+  "listening.html",
   "manga.html",
   "offline.html",
-  "manifest.webmanifest",
-  "css/design-system.css",
+  "placement.html",
+  "portal.html",
+  "practice.html",
+  "whiteboard.html",
+  "assets/illustrations/celebrate.svg",
+  "assets/illustrations/empty.svg",
+  "assets/illustrations/mascot.svg",
+  "assets/manga/garden-harvest.svg",
+  "assets/manga/garden-neighbors.svg",
+  "assets/manga/garden-p1.svg",
+  "assets/manga/garden-p2.svg",
+  "assets/manga/garden-p3.svg",
+  "assets/manga/garden-p4.svg",
+  "assets/manga/garden-p5.svg",
+  "assets/manga/garden-rooftop.svg",
+  "assets/pwa/apple-touch-icon.png",
+  "assets/pwa/icon-192.png",
+  "assets/pwa/icon-512.png",
+  "assets/pwa/icon-maskable-512.png",
+  "assets/pwa/icon.svg",
+  "content/manifest.json",
   "css/components/controls.css",
-  "css/components/surfaces.css",
-  "css/components/progress.css",
   "css/components/feedback.css",
   "css/components/page-aliases.css",
+  "css/components/progress.css",
+  "css/components/surfaces.css",
+  "css/design-system.css",
+  "css/pages/clip.css",
+  "css/pages/clips.css",
+  "css/pages/dashboard.css",
+  "css/pages/games.css",
+  "css/pages/homework.css",
+  "css/pages/legacy-index.css",
+  "css/pages/lesson.css",
+  "css/pages/listening.css",
+  "css/pages/manga.css",
+  "css/pages/offline.css",
+  "css/pages/portal.css",
+  "css/pages/practice.css",
+  "css/pages/whiteboard.css",
   "css/placement.css",
   "css/portal-redesign.css",
-  "js/config.js",
+  "js/audience.js",
   "js/auth.js",
-  "js/student-context.js",
   "js/bounded-realtime-list.js",
-  "js/dom.js",
-  "js/protected-content.js",
-  "js/sanitize-html.js",
-  "js/pwa.js",
-  "js/theme.js",
-  "js/reading-prefs.js",
-  "js/shell.js",
   "js/celebrate.js",
-  "js/weekly-summary.js",
-  "js/placement.js",
-  "js/placement-page.js",
+  "js/charts.js",
+  "js/clips/catalog.js",
+  "js/clips/exercise-ui.js",
+  "js/clips/exercises.js",
+  "js/clips/lines.js",
+  "js/clips/player.js",
+  "js/clips/schema-v2.js",
+  "js/clips/schema.js",
+  "js/clock-controls.js",
+  "js/clock-report.js",
+  "js/clock-service.js",
+  "js/clock-ui.js",
+  "js/config.js",
+  "js/dashboard-clock.js",
+  "js/dashboard-status.js",
+  "js/delegated-actions.js",
+  "js/dom.js",
+  "js/feature-gate.js",
+  "js/features.js",
   "js/games/engine.js",
-  "js/games/progress.js",
-  "js/grading.js",
-  "js/word-family.js",
-  "js/games/rewards.js",
-  "js/games/game-mode.js",
   "js/games/game-mode-card.js",
+  "js/games/game-mode.js",
   "js/games/lesson-layer.js",
-  "js/games/settings.js",
-  "js/games/seed.js",
-  "js/games/ui.js",
-  "js/games/runtime.js",
-  "js/games/panels.js",
-  "js/games/mastery-summary.js",
   "js/games/mastery-card.js",
+  "js/games/mastery-summary.js",
+  "js/games/panels.js",
+  "js/games/progress.js",
+  "js/games/rewards.js",
+  "js/games/runtime.js",
+  "js/games/seed.js",
+  "js/games/settings.js",
+  "js/games/types/boss-battle.js",
+  "js/games/types/error-hunt.js",
   "js/games/types/pairs.js",
   "js/games/types/puzzles.js",
-  "js/games/types/tiles.js",
-  "js/games/types/typed.js",
   "js/games/types/sequence.js",
-  "js/games/types/error-hunt.js",
-  "js/games/types/boss-battle.js",
   "js/games/types/speed-quiz.js",
   "js/games/types/story-choice.js",
+  "js/games/types/tiles.js",
+  "js/games/types/typed.js",
   "js/games/types/word-formation.js",
-  "css/pages/games.css",
+  "js/games/ui.js",
+  "js/grading.js",
+  "js/grammar-ladder-ui.js",
+  "js/grammar-ladder.js",
+  "js/homework-answers.js",
+  "js/leaderboard.js",
+  "js/lesson-clock-ui.js",
+  "js/lesson-clock.js",
+  "js/lesson-meta.js",
   "js/listening-card.js",
   "js/listening-summary.js",
-  "js/listening/schema.js",
   "js/listening/answers.js",
-  "js/listening/levels.js",
   "js/listening/audio.js",
   "js/listening/character.js",
   "js/listening/dictation.js",
+  "js/listening/levels.js",
+  "js/listening/schema.js",
   "js/listening/speaking.js",
+  "js/manga/adaptation.js",
+  "js/manga/geometry.js",
+  "js/manga/learning-ui.js",
+  "js/manga/learning.js",
+  "js/manga/reader-state.js",
+  "js/manga/reader-ui.js",
+  "js/manga/schema-v2.js",
+  "js/manga/schema.js",
+  "js/manga/shelf.js",
+  "js/pages/clip.js",
+  "js/pages/clips.js",
+  "js/pages/dashboard.js",
+  "js/pages/homework.js",
+  "js/pages/index.js",
+  "js/pages/legacy-index.js",
+  "js/pages/lesson_abay.js",
+  "js/pages/lesson_gaziz.js",
+  "js/pages/lesson.js",
+  "js/pages/listening.js",
+  "js/pages/manga.js",
+  "js/pages/portal.js",
+  "js/pages/practice.js",
+  "js/pages/styleguide.js",
+  "js/pages/whiteboard.js",
+  "js/placement-page.js",
+  "js/placement.js",
+  "js/protected-content.js",
+  "js/pwa.js",
+  "js/reading-prefs.js",
+  "js/reading-tasks-ui.js",
+  "js/reading-tasks.js",
+  "js/sanitize-html.js",
+  "js/schedule.js",
+  "js/sections.js",
+  "js/shell.js",
+  "js/storage.js",
+  "js/student-code.js",
+  "js/student-context.js",
+  "js/theme.js",
+  "js/ui.js",
+  "js/weekly-summary.js",
   "js/whiteboard/app.js",
   "js/whiteboard/board.js",
   "js/whiteboard/dashboard-card.js",
@@ -88,102 +179,83 @@ const SHELL_URLS = [
   "js/whiteboard/snapshot.js",
   "js/whiteboard/sync.js",
   "js/whiteboard/templates.js",
-  "js/pages/whiteboard.js",
-  "css/pages/whiteboard.css",
-  "js/clips/schema.js",
-  "js/clips/schema-v2.js",
-  "js/clips/catalog.js",
-  "js/clips/dashboard-card.js",
-  "js/clips/lines.js",
-  "js/clips/exercises.js",
-  "js/clips/exercise-ui.js",
-  "js/clips/player.js",
-  "js/manga/schema.js",
-  "js/manga/schema-v2.js",
-  "js/manga/geometry.js",
-  "js/manga/reader-state.js",
-  "js/manga/learning.js",
-  "js/manga/learning-ui.js",
-  "js/manga/reader-ui.js",
-  "js/manga/adaptation.js",
-  "js/manga/shelf.js",
-  "js/features.js",
-  "js/feature-gate.js",
-  "js/feature-card.js",
-  "js/pages/clip.js",
-  "js/pages/clips.js",
-  "css/pages/clips.css",
-  "js/pages/tools-clips.js",
-  "js/clips/authoring.js",
-  "css/pages/clip.css",
-  "js/pages/dashboard.js",
-  "css/pages/dashboard.css",
-  "js/pages/homework.js",
-  "css/pages/homework.css",
-  "js/pages/index.js",
-  "js/pages/legacy-index.js",
-  "css/pages/legacy-index.css",
-  "js/pages/lesson.js",
-  "css/pages/lesson.css",
-  "js/pages/lesson_abay.js",
-  "js/pages/lesson_gaziz.js",
-  "js/pages/manga.js",
-  "css/pages/manga.css",
-  "css/pages/offline.css",
-  "js/pages/portal.js",
-  "css/pages/portal.css",
-  "js/pages/listening.js",
-  "css/pages/listening.css",
-  "js/pages/practice.js",
-  "css/pages/practice.css",
-  "js/pages/tools-import-content.js",
-  "css/pages/tools-import-content.css",
-  "content/manifest.json",
-  "assets/pwa/icon.svg",
-  "assets/manga/garden-rooftop.svg",
-  "assets/manga/garden-neighbors.svg",
-  "assets/manga/garden-harvest.svg",
-  "assets/manga/garden-p1.svg",
-  "assets/manga/garden-p2.svg",
-  "assets/manga/garden-p3.svg",
-  "assets/manga/garden-p4.svg",
-  "assets/manga/garden-p5.svg"
+  "js/word-family-ui.js",
+  "js/word-family.js",
+  "manifest.webmanifest"
 ];
+// END GENERATED
+const CACHE_PREFIX = "learning-studio-";
+const SHELL_CACHE = `${CACHE_PREFIX}shell-${CACHE_VERSION}`;
+const CONTENT_CACHE = `${CACHE_PREFIX}content-v1`;
+const AUDIO_CACHE = `${CACHE_PREFIX}audio-v1`;
+const IMAGE_CACHE = `${CACHE_PREFIX}images-v1`;
+const MAX_AUDIO = 60;
+const MAX_IMAGES = 120;
 const SHELL_ASSETS = new Set(SHELL_URLS);
-const SHELL_DOCUMENTS = new Set([
-  "index.html",
-  "portal.html",
-  "placement.html",
-  "dashboard.html",
-  "lesson.html",
-  "lesson_abay.html",
-  "lesson_gaziz.html",
-  "homework.html",
-  "practice.html",
-  "listening.html",
-  "whiteboard.html",
-  "clip.html",
-  "clips.html",
-  "manga.html"
-]);
+const SHELL_DOCUMENTS = new Set(SHELL_URLS.filter(path => path.endsWith(".html")));
+const IMAGE_PATTERN = /\.(svg|png|jpe?g|webp|avif|gif)$/i;
 
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(SHELL_URLS.map(path => new URL(path, self.registration.scope).href)))
-      .then(() => self.skipWaiting())
-  );
+  // A new version waits here until the student agrees to reload ("New version available"); see the message handler below.
+  event.waitUntil(caches.open(SHELL_CACHE).then(cache => cache.addAll(SHELL_URLS.map(path => new URL(path, self.registration.scope).href))));
+});
+
+self.addEventListener("message", event => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys
-        .filter(key => key.startsWith("learning-studio-shell-") && key !== CACHE_NAME)
+        .filter(key => key.startsWith(`${CACHE_PREFIX}shell-`) && key !== SHELL_CACHE)
         .map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
+
+// Keeps a cache to its limit by dropping the oldest entries (the cache lists entries oldest first; a hit is re-added to stay fresh).
+async function trim(cache, maximum) {
+  const keys = await cache.keys();
+  for (let index = 0; index < keys.length - maximum; index += 1) await cache.delete(keys[index]);
+}
+
+async function cacheFirst(request, cacheName, maximum) {
+  const cache = await caches.open(cacheName);
+  const cached = (await cache.match(request, { ignoreSearch: true })) || (await caches.match(request, { ignoreSearch: true }));
+  if (cached) { if (cacheName !== SHELL_CACHE) { try { await cache.put(request, cached.clone()); } catch (error) { /* keep serving */ } } return cached; }
+  const response = await fetch(request);
+  if (response.ok && response.type === "basic" && response.status === 200) { await cache.put(request, response.clone()); await trim(cache, maximum); }
+  return response;
+}
+
+async function networkFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const response = await fetch(request);
+    if (response.ok && response.type === "basic") await cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    throw error;
+  }
+}
+
+// Stale-while-revalidate: answer from the cache at once and refresh it in the background.
+async function staleWhileRevalidate(event, request, key, isDocument, scope) {
+  const cache = await caches.open(SHELL_CACHE);
+  const cached = await cache.match(key);
+  const refresh = fetch(request).then(async response => {
+    if (response.ok && response.type === "basic") await cache.put(key, response.clone());
+    return response;
+  }).catch(() => null);
+  if (cached) { event.waitUntil(refresh); return cached; }
+  const fresh = await refresh;
+  if (fresh) return fresh;
+  if (isDocument) { const offlinePage = await cache.match(new URL("offline.html", scope).href); if (offlinePage) return offlinePage; }
+  return Response.error();
+}
 
 self.addEventListener("fetch", event => {
   const request = event.request;
@@ -194,65 +266,16 @@ self.addEventListener("fetch", event => {
   if (url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
 
   const relativePath = url.pathname.slice(scope.pathname.length);
-  // Manga pages saved for offline reading live in their own cache (the reader puts them there); other pages are cached as they are seen.
-  if (relativePath.startsWith("assets/manga/") && /\.(svg|webp|avif|png|jpe?g)$/.test(relativePath)) {
-    event.respondWith(caches.open(MANGA_CACHE).then(async cache => {
-      const cached = await cache.match(request, { ignoreSearch: true });
-      if (cached) return cached;
-      const response = await fetch(request);
-      if (response.ok && response.type === "basic" && response.status === 200) await cache.put(request, response.clone());
-      return response;
-    }));
-    return;
-  }
-  // Listening: packs are network-first, audio is cache-first in its own cache so rounds work offline once heard.
-  if (relativePath.startsWith("content/audio/") && /\.mp3$/.test(relativePath)) {
-    event.respondWith(caches.open(AUDIO_CACHE).then(async cache => {
-      const cached = await cache.match(request, { ignoreSearch: true });
-      if (cached) return cached;
-      const response = await fetch(request);
-      if (response.ok && response.type === "basic" && response.status === 200) await cache.put(request, response.clone());
-      return response;
-    }));
-    return;
-  }
-  if (relativePath.startsWith("content/listening/") && relativePath.endsWith(".json")) {
-    event.respondWith(caches.open(CACHE_NAME).then(async cache => {
-      try {
-        const response = await fetch(request);
-        if (response.ok && response.type === "basic") await cache.put(request, response.clone());
-        return response;
-      } catch (error) {
-        const cached = await cache.match(request);
-        if (cached) return cached;
-        throw error;
-      }
-    }));
-    return;
-  }
-  const isDocument = request.mode === "navigate" &&
-    (SHELL_DOCUMENTS.has(relativePath) || relativePath === "");
-  if (!isDocument && !SHELL_ASSETS.has(relativePath)) return;
+  if (relativePath.startsWith("__/") || request.headers.has("range")) return; // reserved sign-in paths and partial media are never cached
 
-  event.respondWith((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    try {
-      const response = await fetch(request);
-      if (response.ok && response.type === "basic") {
-        url.search = "";
-        await cache.put(isDocument ? url.href : request, response.clone());
-      }
-      return response;
-    } catch (error) {
-      const cachedUrl = new URL(request.url);
-      cachedUrl.search = "";
-      const cached = await cache.match(isDocument ? cachedUrl.href : request);
-      if (cached) return cached;
-      if (isDocument) {
-        const offlinePage = await cache.match(new URL("offline.html", scope).href);
-        if (offlinePage) return offlinePage;
-      }
-      throw error;
-    }
-  })());
+  if (/^content\/audio\/.*\.(mp3|ogg|m4a)$/.test(relativePath)) { event.respondWith(cacheFirst(request, AUDIO_CACHE, MAX_AUDIO)); return; }
+  if (relativePath.startsWith("content/") && relativePath.endsWith(".json") && relativePath !== "content/manifest.json") { event.respondWith(networkFirst(request, CONTENT_CACHE)); return; }
+
+  const isDocument = request.mode === "navigate" && (SHELL_DOCUMENTS.has(relativePath) || relativePath === "");
+  if (isDocument || SHELL_ASSETS.has(relativePath)) {
+    const key = new URL(isDocument && relativePath === "" ? "index.html" : relativePath, scope);
+    event.respondWith(staleWhileRevalidate(event, request, key.href, isDocument, scope));
+    return;
+  }
+  if (IMAGE_PATTERN.test(relativePath) && (relativePath.startsWith("assets/") || relativePath.startsWith("content/"))) event.respondWith(cacheFirst(request, IMAGE_CACHE, MAX_IMAGES));
 });

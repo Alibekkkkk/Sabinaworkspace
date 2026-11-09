@@ -7,7 +7,7 @@ import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { clipEmbedUrl, validateClip } from "../clips/schema.js";
 import { clipWarnings, migrateV1 } from "../clips/schema-v2.js";
 import { completionRecord, summarise } from "../clips/exercises.js";
-import { mountBottomNav, mountOfflineBanner } from "../shell.js";
+import { mountBottomNav, mountOfflineBanner, watchConnection } from "../shell.js";
 import { featureEnabled, revealMangaTab, showNotEnabled } from "../feature-gate.js";
 import { renderExercise } from "../clips/exercise-ui.js";
 import { createClipPlayer, loadYouTubeApi } from "../clips/player.js";
@@ -186,7 +186,7 @@ async function completeLesson() {
 async function initialize() {
   if (!lessonId || !/^[A-Za-z0-9_-]+$/.test(lessonId)) throw new Error("A valid lesson is required.");
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  const db = firebase.database(); watchConnection(db);
   context = await resolveStudentContext({ auth: firebase.auth(), db, lessonId });
   revealMangaTab(db, context.code);
   if (!(await featureEnabled(db, context.code, "clipLab"))) { showNotEnabled(status, "clipLab", { backHref: `portal.html?code=${encodeURIComponent(context.code)}` }); return; }

@@ -7,7 +7,7 @@ import { validateClip } from "../clips/schema.js";
 import { migrateV1 } from "../clips/schema-v2.js";
 import { buildEntries, clipSummary, comingUp, describe, facets, filterEntries, sortEntries, starsText } from "../clips/catalog.js";
 import { localZone } from "../schedule.js";
-import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+import { mountBottomNav, mountOfflineBanner, showErrorPage, watchConnection } from "../shell.js";
 import { featureEnabled, revealMangaTab, showNotEnabled } from "../feature-gate.js";
 
 const $ = id => document.getElementById(id);
@@ -78,7 +78,7 @@ async function loadDetails(db) {
 
 async function start() {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+  const db = firebase.database(); watchConnection(db);
   const bound = await bindStudentCode({ auth: firebase.auth(), db, code: rememberedCode() });
   code = bound.code;
   $("backLink").href = `portal.html?code=${encodeURIComponent(code)}`;
