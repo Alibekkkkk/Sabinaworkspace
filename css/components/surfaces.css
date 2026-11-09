@@ -40,6 +40,7 @@
   border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); background: var(--ds-color-info-soft); color: var(--ds-color-text);
 }
 .ds-banner p { margin: 0; }
+.ds-banner[hidden] { display: none; } /* the offline banner is hidden while online, on every page that loads this file */
 .ds-banner--success { background: var(--ds-color-success-soft); color: var(--ds-color-success); border-color: var(--ds-color-success); }
 .ds-banner--warning { background: var(--ds-color-warning-soft); color: var(--ds-color-warning); border-color: var(--ds-color-warning); }
 .ds-banner--danger { background: var(--ds-color-danger-soft); color: var(--ds-color-danger); border-color: var(--ds-color-danger); }

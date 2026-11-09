@@ -51,7 +51,13 @@ try {
   const play = title => page.evaluate(name => { const card = [...document.querySelectorAll("#gameList .game-card")].find(c => c.querySelector("h2").textContent === name); if (!card) throw new Error(`No game called ${name}`); card.querySelector("button").click(); }, title);
   const summary = () => page.evaluate(() => document.querySelector(".gm-summary")?.innerText || "");
   const gotSummary = async (pattern, label) => check(await until(async () => pattern.test(await summary()), 10000), `${label} (page says: ${(await summary()).split("\n")[0]})`);
-  const nextFocused = () => page.waitForFunction(() => /Next|See results/.test(document.activeElement?.textContent || ""), { timeout: 10000 });
+  const nextFocused = () => page.waitForFunction(() => /Next|See results/.test(document.activeElement?.textContent || ""), { timeout: 10000 }).catch(async error => {
+    // Say what had focus and what the page showed, so a failure here can be diagnosed from the log.
+    console.log("focus was on:", await page.evaluate(() => { const a = document.activeElement; return a ? `${a.tagName}.${a.className} "${(a.textContent || a.value || "").slice(0, 60)}"` : "nothing"; }));
+    console.log("page showed:", await page.evaluate(() => (document.querySelector("#gameView") || document.body).innerText.slice(0, 400).split(/\s*\n+\s*/).join(" | ")));
+    console.log("notices:", await page.evaluate(() => (document.getElementById("noticeHost") || { innerText: "none" }).innerText));
+    throw error;
+  });
   const inputFocused = () => page.waitForFunction(() => document.activeElement && document.activeElement.classList.contains("gm-input"), { timeout: 10000 });
   const press = async (...keys) => { for (const key of keys) await page.keyboard.press(key); };
   const focusAndEnter = async selector => { await page.evaluate(sel => document.querySelector(sel).focus(), selector); await page.keyboard.press("Enter"); };

@@ -55,9 +55,10 @@ export const OFFLINE_TEXT = t("offline.text");
 export const DISCONNECTED_TEXT = t("offline.disconnected");
 export const SYNCED_TEXT = t("offline.synced");
 
-export function mountOfflineBanner() {
+// languageSwitch: false on full-screen tools (the whiteboard), where the picker would take drawing space; the saved choice still applies.
+export function mountOfflineBanner({ languageSwitch = true } = {}) {
   installErrorBoundary();
-  mountLanguageSwitch();
+  if (languageSwitch) mountLanguageSwitch();
   onStorageDegraded(() => showNotice("storage", t("storage.degraded")));
   if (document.getElementById("offlineBanner")) return;
   const banner = document.createElement("div");
@@ -86,7 +87,7 @@ export function skewMessage(offsetMs) {
 // Shows the connection state of the database on top of the browser's own online flag: a drop shows a warning, and coming back
 // shows "saved" for a few seconds. It also warns once if the device clock is far from the server's. `db` is the Firebase database.
 export function watchConnection(db, { hideAfter = 4000 } = {}) {
-  mountOfflineBanner();
+  mountOfflineBanner({ languageSwitch: false }); // the page already chose whether to show the picker
   setErrorLogTarget({ db });
   const banner = document.getElementById("offlineBanner"); const text = banner.querySelector("p");
   let seenConnected = false; let dropped = false; let timer = 0;

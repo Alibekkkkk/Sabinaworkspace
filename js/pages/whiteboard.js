@@ -6,7 +6,7 @@ import { resolveStudentContext } from "../student-context.js";
 import { mountWhiteboard } from "../whiteboard/app.js";
 import { featureEnabled, showNotEnabled } from "../feature-gate.js";
 import { mountOfflineBanner, watchConnection } from "../shell.js";
-mountOfflineBanner();
+mountOfflineBanner({ languageSwitch: false });
 
 const query = new URLSearchParams(location.search);
 const status = document.getElementById("status");
