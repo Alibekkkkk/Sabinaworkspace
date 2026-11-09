@@ -1,0 +1,31 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost/portal.html",
+        "http://localhost/placement.html",
+        "http://localhost/practice.html",
+        "http://localhost/clip.html",
+        "http://localhost/manga.html",
+        "http://localhost/lesson.html",
+        "http://localhost/homework.html",
+        "http://localhost/dashboard.html"
+      ],
+      "numberOfRuns": 1,
+      "settings": { "preset": "mobile" }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "categories:best-practices": ["error", { "minScore": 0.9 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 200 }],
+        "categories:seo": "off",
+        "is-crawlable": "off"
+      }
+    },
+    "_note": "SEO is off on purpose: every page is noindex because this is a private class portal. The urls use a placeholder host; `npm run perf:budgets` serves the folder itself and applies these same limits, and the CI workflow (.github/workflows/ci.yml) runs that script."
+  }
+}

@@ -8,7 +8,7 @@
 // so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
 // The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
 // BEGIN GENERATED (scripts/build-sw-manifest.mjs)
-const CACHE_VERSION = "b76431d2ae";
+const CACHE_VERSION = "f4f26daf6f";
 const SHELL_URLS = [
   "clip.html",
   "clips.html",
