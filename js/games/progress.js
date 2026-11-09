@@ -1,4 +1,5 @@
-import { applyGamification, updateReviewQueue } from "./engine.js";
+import { updateReviewQueue } from "./engine.js";
+import { applyRewards } from "./rewards.js";
 
 const STUDENT_CODE_PATTERN = /^[A-Z0-9]{4,12}$/;
 const MAP_KEY_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
@@ -22,7 +23,7 @@ export function progressPath(code) {
   return `studentProgress/${normalizedCode}`;
 }
 
-export async function saveGameProgress({ db, code, game, result, now = Date.now() }) {
+export async function saveGameProgress({ db, code, game, result, now = Date.now(), options = {} }) {
   if (!db) throw new Error("Firebase Database is required.");
   const path = progressPath(code);
   const reference = db.ref(path);
@@ -34,9 +35,11 @@ export async function saveGameProgress({ db, code, game, result, now = Date.now(
     timeSpentSeconds: Math.max(0, Math.round(Number(result.timeSpentSeconds) || 0)),
     completedAt: new Date(now).toISOString()
   };
+  let info = null;
   const transaction = await reference.transaction(current => {
     const state = current && typeof current === "object" ? current : {};
-    const next = applyGamification(state, result, now);
+    const { _info, ...next } = applyRewards(state, { ...result, kind: result.kind || (game.id === "review-queue" ? "review" : (game.type === "listening-dictation" || game.type === "listening") ? "listening" : "game") }, now, options);
+    info = _info;
     const attempts = [...(Array.isArray(state.attempts) ? state.attempts : []), attempt].slice(-50);
     const queuedMistakes = game.id === "review-queue"
       ? updateReviewQueue(state.reviewQueue, result, now)
@@ -90,6 +93,7 @@ export async function saveGameProgress({ db, code, game, result, now = Date.now(
         .slice(0, MAX_TOPIC_ENTRIES)
     );
     return {
+      ...state, // keep what other pages own (vocabulary, listening, avatar, placement)
       ...next,
       // The placement result is owned by the placement page and teacher; never drop it here.
       ...(state.placement ? { placement: state.placement } : {}),
@@ -99,7 +103,7 @@ export async function saveGameProgress({ db, code, game, result, now = Date.now(
     };
   });
   if (!transaction.committed) throw new Error("Could not save game progress.");
-  return transaction.snapshot.val();
+  return Object.assign(transaction.snapshot.val(), { _info: info });
 }
 
 export async function saveVocabularyWord({ db, code, key, entry }) {
@@ -128,4 +132,20 @@ export async function saveVocabularyWord({ db, code, key, entry }) {
     throw new Error("Your vocabulary deck is full; remove a saved word before adding another.");
   }
   return transaction.snapshot.val();
+}
+
+// Gems buy looks. The purchase is a transaction so two tabs cannot spend the same gems twice.
+export async function shopAction({ db, code, itemId, action }) {
+  const { buyItem, equipItem } = await import("./rewards.js");
+  const reference = db.ref(progressPath(code));
+  let outcome = { ok: false, reason: "unknown" };
+  const transaction = await reference.transaction(current => {
+    const state = current && typeof current === "object" ? current : null;
+    if (!state) return current;
+    const result = action === "equip" ? equipItem(state, itemId) : buyItem(state, itemId);
+    outcome = result;
+    return result.ok ? result.state : undefined;
+  });
+  if (!transaction.committed) return outcome.ok ? { ok: false, reason: "retry" } : outcome;
+  return { ok: true, state: transaction.snapshot.val() };
 }

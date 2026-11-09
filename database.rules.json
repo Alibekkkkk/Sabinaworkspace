@@ -715,31 +715,63 @@
           },
           "$other": { ".validate": "false" }
         },
-        "xp": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
+        "xp": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && (root.child('admins').child(auth.uid).val() === true || (newData.val() >= (data.exists() ? data.val() : 0) && newData.val() <= (data.exists() ? data.val() : 0) + 600))"
+        },
         "level": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 1000000" },
-        "gems": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
+        "gems": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && (root.child('admins').child(auth.uid).val() === true || newData.val() <= (data.exists() ? data.val() : 0) + 60)"
+        },
         "hearts": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5" },
         "streak": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
-        "streakFreezes": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000" },
         "lastActivityDate": { ".validate": "newData.isString() && newData.val().length === 10" },
         "daily": {
           ".validate": "newData.hasChildren(['date', 'games', 'correct', 'questComplete'])",
-          "date": { ".validate": "newData.isString() && newData.val().length === 10" },
-          "games": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
-          "correct": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
-          "questComplete": { ".validate": "newData.isBoolean()" },
-          "$other": { ".validate": "false" }
+          "date": {
+            ".validate": "newData.isString() && newData.val().length === 10"
+          },
+          "games": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          },
+          "correct": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "xp": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000"
+          },
+          "questComplete": {
+            ".validate": "newData.isBoolean()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
         },
         "weekly": {
           ".validate": "newData.hasChildren(['week', 'games', 'questComplete'])",
-          "week": { ".validate": "newData.isString() && newData.val().length === 10" },
-          "games": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
-          "questComplete": { ".validate": "newData.isBoolean()" },
-          "$other": { ".validate": "false" }
+          "week": {
+            ".validate": "newData.isString() && newData.val().length === 10"
+          },
+          "games": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          },
+          "words": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          },
+          "listening": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000"
+          },
+          "questComplete": {
+            ".validate": "newData.isBoolean()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
         },
         "badges": {
           ".validate": "newData.hasChildren()",
-          "$index": { ".validate": "$index.matches(/^[0-9]{1,64}$/) && newData.isString() && (newData.val() === 'three-day-streak' || newData.val() === 'first-level-up' || newData.val() === 'perfect-round')" }
+          "$index": {
+            ".validate": "$index.matches(/^[0-9]{1,64}$/) && newData.isString() && newData.val().matches(/^[a-z0-9-]{3,40}$/)"
+          }
         },
         "attempts": {
           ".validate": "newData.hasChildren()",
@@ -779,6 +811,63 @@
             "timeSpentSeconds": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 315360000" },
             "updatedAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
             "$other": { ".validate": "false" }
+          }
+        },
+        "streakFreezes": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3"
+        },
+        "stats": {
+          ".validate": "newData.hasChildren()",
+          "games": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "perfect": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "correct": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "words": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "listening": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "boss": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "hunts": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "reviewed": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "weeks": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        },
+        "avatar": {
+          ".validate": "newData.hasChildren()",
+          "owned": {
+            ".validate": "newData.hasChildren()",
+            "$index": {
+              ".validate": "$index.matches(/^[0-9]{1,2}$/) && newData.isString() && newData.val().matches(/^[a-z0-9-]{3,30}$/)"
+            }
+          },
+          "frame": {
+            ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{3,30}$/)"
+          },
+          "theme": {
+            ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{3,30}$/)"
+          },
+          "pet": {
+            ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{3,30}$/)"
+          },
+          "$other": {
+            ".validate": "false"
           }
         },
         "listening": {

@@ -1,0 +1,49 @@
+/* Game screens: meters, option buttons, tokens, the boss arena and the reward panels. */
+.gm-arena-host, .gm-stage { display: grid; gap: var(--ds-space-3); }
+.gm-arena { display: grid; gap: var(--ds-space-2); }
+.gm-meter { display: grid; gap: 2px; }
+.gm-meter__label { font-size: var(--ds-text-sm); color: var(--ds-color-muted); }
+.gm-meter__track { height: 0.7rem; border-radius: var(--ds-radius-pill); background: var(--ds-color-surface-raised); border: 1px solid var(--ds-color-border-strong); overflow: hidden; }
+.gm-meter__fill { height: 100%; width: var(--fill, 0%); background: var(--ds-color-primary); transition: width var(--ds-motion-base) var(--ds-ease-out); }
+html[data-calm="true"] .gm-meter__fill { transition: none; }
+@media (prefers-reduced-motion: reduce) { .gm-meter__fill { transition: none; } }
+.gm-prompt, .gm-story, .gm-sentence { font-size: var(--ds-text-lg); margin: 0; }
+.gm-hint, .gm-live { color: var(--ds-color-muted); margin: 0; font-size: var(--ds-text-sm); }
+.gm-live { min-height: 1.2em; }
+.gm-feedback { margin: 0; min-height: 1.4em; font-weight: 600; }
+.gm-timer { margin: 0; font-variant-numeric: tabular-nums; font-weight: 700; }
+.gm-options { display: grid; gap: var(--ds-space-2); }
+.gm-option, .gm-token { min-height: var(--ds-target); padding: var(--ds-space-2) var(--ds-space-4); text-align: left; font: inherit; color: var(--ds-color-text); background: var(--ds-color-surface-raised); border: 2px solid var(--ds-color-border-strong); border-radius: var(--ds-radius-sm); cursor: pointer; }
+.gm-option:hover:not(:disabled), .gm-token:hover:not(:disabled) { background: var(--ds-color-primary-soft); }
+.gm-option:focus-visible, .gm-token:focus-visible, .gm-input:focus-visible { outline: 3px solid var(--ds-color-focus); outline-offset: 2px; }
+.gm-option:disabled, .gm-token:disabled { cursor: default; opacity: 0.85; }
+.gm-option.is-right::after, .gm-token.is-right::after { content: " ✓ correct"; font-weight: 700; }
+.gm-option.is-missed::after, .gm-token.is-missed::after { content: " ✗ not this one"; font-weight: 700; }
+.gm-option.is-right, .gm-token.is-right { border-color: var(--ds-color-success); background: var(--ds-color-success-soft); }
+.gm-option.is-missed, .gm-token.is-missed { border-color: var(--ds-color-danger); background: var(--ds-color-danger-soft); }
+.gm-tokens { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); }
+.gm-token { text-align: center; }
+.gm-token[aria-pressed="true"] { border-color: var(--ds-color-primary); background: var(--ds-color-primary-soft); }
+.gm-answer { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); }
+.gm-input { flex: 1 1 12rem; min-height: var(--ds-target); padding: 0 var(--ds-space-3); font: inherit; color: var(--ds-color-text); background: var(--ds-color-surface); border: 2px solid var(--ds-color-border-strong); border-radius: var(--ds-radius-sm); }
+.gm-boss { font-size: 3.5rem; line-height: 1; text-align: center; transition: transform var(--ds-motion-fast); }
+.gm-boss.is-hit { transform: rotate(-8deg) scale(0.92); }
+html[data-calm="true"] .gm-boss { transition: none; }
+.gm-weak { margin: 0; padding-left: var(--ds-space-5); }
+.gm-summary { display: grid; gap: var(--ds-space-2); }
+.gm-reward { margin: 0; font-weight: 600; }
+
+.game-panels { display: grid; gap: var(--ds-space-2); margin-bottom: var(--ds-space-4); }
+.gm-panel { border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); padding: var(--ds-space-2) var(--ds-space-4); background: var(--ds-color-surface); }
+.gm-panel summary { cursor: pointer; font-weight: 700; min-height: var(--ds-target); display: flex; align-items: center; }
+.gm-panel summary:focus-visible { outline: 3px solid var(--ds-color-focus); outline-offset: 2px; }
+.gm-check { display: flex; align-items: center; gap: var(--ds-space-2); min-height: var(--ds-target); }
+.gm-check input { width: 1.4rem; height: 1.4rem; }
+.gm-quests, .gm-badges, .gm-shop { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--ds-space-2); }
+.gm-badges { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+.gm-badge { padding: var(--ds-space-2) var(--ds-space-3); border: 1px dashed var(--ds-color-border-strong); border-radius: var(--ds-radius-sm); color: var(--ds-color-muted); }
+.gm-badge.is-earned { border-style: solid; border-color: var(--ds-color-success); color: var(--ds-color-text); background: var(--ds-color-success-soft); }
+.gm-badge__icon { font-size: 1.4rem; margin-right: var(--ds-space-2); }
+.gm-shopitem { display: flex; align-items: center; gap: var(--ds-space-3); flex-wrap: wrap; }
+.gm-shopitem span:nth-child(2) { flex: 1; }
+.gm-subhead { margin: var(--ds-space-3) 0 var(--ds-space-1); font-weight: 700; }

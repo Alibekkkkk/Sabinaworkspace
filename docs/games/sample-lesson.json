@@ -1,0 +1,57 @@
+{
+  "cefr": "B1",
+  "title": "Sample lesson for every game type",
+  "vocab": [
+    { "en": "flood", "meanings": [{ "ru": "наводнение", "context": "water covering dry land" }], "forms": { "status": "approved", "noun": { "w": "flooding", "ex": "Flooding closed the road." }, "adjective": { "w": "flooded", "ex": "The flooded fields were brown." } } },
+    { "en": "erupt", "meanings": [{ "ru": "извергаться", "context": "a volcano throws out lava" }], "forms": { "status": "approved", "noun": { "w": "eruption", "ex": "The eruption lasted a week." }, "adjective": { "w": "eruptive", "ex": "The mountain was in an eruptive phase." } } },
+    { "en": "evacuate", "meanings": [{ "ru": "эвакуировать", "context": "leave a dangerous place" }], "forms": { "status": "approved", "noun": { "w": "evacuation", "ex": "The evacuation began at dawn." }, "adjective": { "w": "evacuated", "ex": "The evacuated town was silent." } } },
+    { "en": "damage", "meanings": [{ "ru": "ущерб", "context": "harm to something" }], "forms": { "status": "approved", "adjective": { "w": "damaged", "ex": "The damaged roof leaked." }, "negative": { "w": "undamaged", "ex": "The undamaged house stood alone." } } }
+  ],
+  "matchData": [
+    { "id": "m1", "word": "flood", "meaning": "too much water on land" },
+    { "id": "m2", "word": "drought", "meaning": "a long time without rain" },
+    { "id": "m3", "word": "eruption", "meaning": "when a volcano throws out lava" },
+    { "id": "m4", "word": "shelter", "meaning": "a safe place to stay" },
+    { "id": "m5", "word": "rescue", "meaning": "to save someone from danger" },
+    { "id": "m6", "word": "storm", "meaning": "very bad weather with wind and rain" }
+  ],
+  "testMcq": [
+    { "id": "t1", "q": "Which word means \"a long time without rain\"?", "options": ["flood", "drought", "storm"], "correct": "drought", "exp": "A drought is dry weather for a long time." },
+    { "id": "t2", "q": "A volcano throws out...", "options": ["lava", "snow", "sand"], "correct": "lava", "exp": "Lava is hot melted rock." }
+  ],
+  "testTfng": [
+    { "id": "f1", "q": "The text says every town was evacuated.", "answer": "Not Given", "exp": "The text does not say how many towns." }
+  ],
+  "testShort": [
+    { "id": "s1", "q": "How many days did the storm last?", "answers": ["3", "three"], "exp": "Three days." }
+  ],
+  "testComplete": [
+    { "id": "c1", "p": "The town ___ (flood) twice this year.", "a": "has flooded" },
+    { "id": "c2", "p": "Rescue teams ___ (arrive) an hour ago.", "a": "arrived" }
+  ],
+  "sbPp": {
+    "pos": [{ "id": "b1", "prompt": "Build a present perfect sentence.", "correct": ["The", "river", "has", "risen."] }]
+  },
+  "errorHunt": [
+    { "id": "e1", "sentence": "She go to school every day.", "wrong": "go", "fix": "goes", "explanation": "Add -es after she in the present simple." },
+    { "id": "e2", "sentence": "They has finished their homework.", "wrong": "has", "fix": "have", "alternatives": ["had"], "explanation": "They takes have." },
+    { "id": "e3", "sentence": "He didn't saw the flood.", "wrong": "saw", "fix": "see", "explanation": "After didn't use the base form." }
+  ],
+  "storyGraph": {
+    "title": "The storm night",
+    "start": "start",
+    "nodes": {
+      "start": { "text": "The wind was loud. Last night we ____ the shutters before the storm came.", "choices": [
+        { "text": "closed", "next": "middle", "correct": true },
+        { "text": "close", "explain": "Last night is finished, so use the past simple." },
+        { "text": "have closing", "explain": "have closing is not a verb form in English." }
+      ] },
+      "middle": { "text": "At midnight the power went out. We ____ candles and waited.", "choices": [
+        { "text": "lit", "next": "finish", "correct": true },
+        { "text": "lighten", "explain": "lighten means make lighter, not start a flame." },
+        { "text": "lighted ones", "explain": "The phrase is not natural here; lit is the past of light." }
+      ] },
+      "finish": { "text": "In the morning the storm had passed. Everyone was safe.", "end": true }
+    }
+  }
+}

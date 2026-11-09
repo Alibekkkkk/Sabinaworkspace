@@ -10,7 +10,7 @@
     .game-card{padding:1.25rem}
     .game-card h2{margin-bottom:.4rem}
     .muted{color:var(--ds-color-muted);line-height:1.5}
-    .button{border:0;border-radius:var(--ds-radius-sm);padding:.75rem 1rem;background:var(--ds-color-primary);color:#fff;font:700 1rem var(--ds-font-body);cursor:pointer}
+    .button{border:0;border-radius:var(--ds-radius-sm);padding:.75rem 1rem;background:var(--ds-color-primary);color:var(--ds-color-on-primary,#fff);font:700 1rem var(--ds-font-body);cursor:pointer}
     .button.secondary{background:var(--ds-color-surface-raised);color:var(--ds-color-text)}
     .button:disabled{opacity:.55;cursor:not-allowed}
     .game-view{margin-top:1rem}
@@ -35,7 +35,7 @@
     .question-feedback{min-height:1.5rem;color:var(--ds-color-muted)}
     .result{padding:1rem;background:var(--ds-color-surface-raised);border-radius:var(--ds-radius-md);margin-top:1rem}
     [role=status]{min-height:1.5rem}
-    html[data-theme="dark"]{color-scheme:dark;--ds-color-background:#141a25;--ds-color-surface:#1e2735;--ds-color-surface-raised:#293447;--ds-color-text:#f1f4fa;--ds-color-muted:#b3bfd0;--ds-color-primary:#a6b6ff;--ds-color-success:#75d4a0;--ds-color-danger:#ff9aa3;--ds-color-border:#3a4659;--ds-color-focus:#b7c5ff}
+    html[data-theme="dark"]{color-scheme:dark;--ds-color-background:#141a25;--ds-color-surface:#1e2735;--ds-color-surface-raised:#293447;--ds-color-text:#f1f4fa;--ds-color-muted:#b3bfd0;--ds-color-primary:#a6b6ff;--ds-color-on-primary:#10172a;--ds-color-success:#75d4a0;--ds-color-danger:#ff9aa3;--ds-color-border:#3a4659;--ds-color-focus:#b7c5ff}
     html[data-theme="light"]{color-scheme:light}
     @media(max-width:600px){.practice-shell{width:min(100% - 1rem,64rem);padding-top:.5rem}.practice-header{align-items:flex-start;flex-direction:column}}
   

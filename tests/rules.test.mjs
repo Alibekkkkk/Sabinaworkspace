@@ -915,3 +915,39 @@ test("whiteboard: snapshots are teacher-written JPEGs the student can read", asy
   await assertFails(get(ref(dbB, path)));
   await assertFails(set(ref(teacher, "whiteboards/A111111/lesson-e/snapshots/s3"), { ...snapshot, pages: { p1: "data:text/html;base64,PGI+" } }));
 });
+
+// ---- game progress caps ----------------------------------------------------------------------------------------------
+test("progress: XP only goes up, by a bounded amount per write; gems may be spent but not minted; teachers still cannot write", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const path = "studentProgress/A111111";
+  await testEnv.withSecurityRulesDisabled(async context => { await set(ref(context.database(), path), { xp: 100, gems: 20, level: 2 }); });
+  await assertSucceeds(update(ref(dbA, path), { xp: 150 }));
+  await assertSucceeds(update(ref(dbA, path), { xp: 750 }));
+  await assertFails(update(ref(dbA, path), { xp: 1500 }), "a single write cannot add more than 600 XP");
+  await assertFails(update(ref(dbA, path), { xp: 10 }), "XP can never go down for a student");
+  await assertFails(set(ref(dbA, `${path}/xp`), -5));
+  await assertSucceeds(update(ref(dbA, path), { gems: 10 }), "spending gems lowers them");
+  await assertSucceeds(update(ref(dbA, path), { gems: 60 }));
+  await assertFails(update(ref(dbA, path), { gems: 500 }), "gems cannot jump");
+  await assertFails(update(ref(teacher, path), { xp: 40 }), "teachers still cannot write student progress, as before");
+  await assertFails(update(ref(testEnv.authenticatedContext("student-b").database(), path), { xp: 41 }));
+});
+
+test("progress: stats, badges, avatar, daily and weekly shapes are validated", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const path = "studentProgress/A111111";
+  await testEnv.withSecurityRulesDisabled(async context => { await set(ref(context.database(), path), { xp: 0, level: 1 }); });
+  await assertSucceeds(update(ref(dbA, path), { stats: { games: 3, perfect: 1, correct: 9, words: 4, listening: 1, boss: 0, hunts: 2, reviewed: 0, weeks: 0 } }));
+  await assertFails(update(ref(dbA, path), { stats: { games: -1 } }));
+  await assertFails(update(ref(dbA, path), { stats: { hacks: 1 } }));
+  await assertSucceeds(update(ref(dbA, path), { badges: ["first-game", "boss-slayer", "seven-day-streak"] }));
+  await assertFails(update(ref(dbA, path), { badges: ["<script>"] }));
+  await assertSucceeds(update(ref(dbA, path), { avatar: { owned: ["frame-sun", "pet-fox"], frame: "frame-sun", pet: "pet-fox" } }));
+  await assertFails(update(ref(dbA, path), { avatar: { owned: ["Bad Id!"] } }));
+  await assertFails(update(ref(dbA, path), { avatar: { cheat: 1 } }));
+  await assertSucceeds(update(ref(dbA, path), { daily: { date: "2026-11-09", games: 2, correct: 9, xp: 90, questComplete: true }, weekly: { week: "2026-11-09", games: 2, words: 8, listening: 1, questComplete: false }, streakFreezes: 2 }));
+  await assertFails(update(ref(dbA, path), { streakFreezes: 9 }), "at most three freezes");
+  await assertFails(update(ref(dbA, path), { weekly: { week: "2026-11-09", games: 2, questComplete: false, extra: 1 } }));
+  await assertFails(update(ref(testEnv.authenticatedContext("student-b").database(), path), { stats: { games: 1 } }));
+});

@@ -1,3 +1,11 @@
+import { isAnswerCorrect } from "../grading.js";
+import { applyRewards } from "./rewards.js";
+import { create as createErrorHunt } from "./types/error-hunt.js";
+import { fromContent as bossItems } from "./types/boss-battle.js";
+import { decisionsOf, validateStoryGraph } from "./types/story-choice.js";
+import { fromVocab } from "./types/word-formation.js";
+import { seededRandom, seededShuffle } from "./seed.js";
+
 const SUPPORTED_GAME_TYPES = new Set([
   "word-match",
   "memory-cards",
@@ -12,8 +20,22 @@ const SUPPORTED_GAME_TYPES = new Set([
   "boss-battle",
   "story-choice",
   "crossword",
-  "word-search"
+  "word-search",
+  "error-hunt",
+  "word-formation"
 ]);
+
+// What each game trains and roughly how long a round takes. Teachers can set content.cefr for the lesson.
+export const GAME_META = Object.freeze({
+  "word-match": { skill: "vocab", estimatedMinutes: 3 }, "memory-cards": { skill: "vocab", estimatedMinutes: 4 }, flashcards: { skill: "vocab", estimatedMinutes: 4 },
+  "speed-quiz": { skill: "vocab", estimatedMinutes: 4 }, "fill-gap": { skill: "grammar", estimatedMinutes: 5 }, "sentence-builder": { skill: "grammar", estimatedMinutes: 5 },
+  hangman: { skill: "spelling", estimatedMinutes: 4 }, "word-scramble": { skill: "spelling", estimatedMinutes: 4 }, "listening-dictation": { skill: "listening", estimatedMinutes: 4 },
+  pronunciation: { skill: "speaking", estimatedMinutes: 4 }, "boss-battle": { skill: "reading", estimatedMinutes: 8 }, "story-choice": { skill: "grammar", estimatedMinutes: 5 },
+  crossword: { skill: "spelling", estimatedMinutes: 8 }, "word-search": { skill: "vocab", estimatedMinutes: 6 }, "error-hunt": { skill: "grammar", estimatedMinutes: 5 }, "word-formation": { skill: "vocab", estimatedMinutes: 4 }
+});
+const SKILL_LIST = ["vocab", "grammar", "reading", "listening", "speaking", "spelling"];
+const CEFR = /^(A1|A2|B1|B2|C1|C2)(-(A1|A2|B1|B2|C1|C2))?$/;
+export const SUPPORTED_TYPES = [...SUPPORTED_GAME_TYPES];
 const REVIEW_INTERVALS_DAYS = [1, 3, 7, 14, 30];
 
 function stableId(item, prefix, index) {
@@ -39,7 +61,7 @@ export function normalizeAnswer(value) {
     .replace(/\s+/g, " ");
 }
 
-export function createPracticeGames(content) {
+export function createPracticeGames(content, { seed = "", isTeacher = false } = {}) {
   if (!content || typeof content !== "object") {
     throw new Error("Lesson content must be an object.");
   }
@@ -74,9 +96,9 @@ export function createPracticeGames(content) {
       instructions: "Recall each meaning before you reveal the answer.",
       questions: practicePairs.map(pair => ({ ...pair, prompt: pair.prompt, answer: pair.answer }))
     });
-    const crossword = createCrosswordGame(pairs);
+    const crossword = createCrosswordGame(pairs, seed);
     if (crossword) games.push(crossword);
-    const wordSearch = createWordSearchGame(pairs);
+    const wordSearch = createWordSearchGame(pairs, seed);
     if (wordSearch) games.push(wordSearch);
     games.push({
       id: "hangman",
@@ -139,12 +161,15 @@ export function createPracticeGames(content) {
       questions: quizQuestions.slice(0, 10),
       secondsPerQuestion: 20
     });
+  }
+  const bossQuestions = bossItems(content);
+  if (bossQuestions.length >= 1) {
     games.push({
       id: "boss-battle",
       type: "boss-battle",
       title: "Unit Boss Battle",
-      instructions: "Answer the unit questions to defeat the boss.",
-      questions: quizQuestions.slice(0, 10)
+      instructions: "Answer the unit questions to defeat the boss. Mistakes cost a shield, but you can never be locked out.",
+      questions: bossQuestions.slice(0, 20)
     });
   }
 
@@ -200,7 +225,27 @@ export function createPracticeGames(content) {
     });
   }
 
-  return games;
+  if (Array.isArray(content.errorHunt) && content.errorHunt.length) {
+    try {
+      games.push({ id: "error-hunt", type: "error-hunt", title: "Error Hunt", instructions: "Find the mistake in each sentence, then fix it.", questions: createErrorHunt(content.errorHunt).slice(0, 10) });
+    } catch (error) { console.warn(`Error Hunt skipped: ${error.message}`); }
+  }
+  const formation = fromVocab(content.vocab, { isTeacher });
+  if (formation.length >= 3) {
+    games.push({ id: "word-formation", type: "word-formation", title: "Word Formation Race", instructions: "Turn each word into the form asked for.", questions: formation });
+  }
+  if (content.storyGraph && !validateStoryGraph(content.storyGraph).length) {
+    const decisions = decisionsOf(content.storyGraph);
+    const hasChoice = games.findIndex(game => game.id === "story-choice");
+    const story = { id: "story-choice", type: "story-choice", title: content.storyGraph.title || "Story Choice Adventure", instructions: "Read the story and choose the correct form at each step.", graph: content.storyGraph, questions: decisions };
+    if (hasChoice >= 0) games[hasChoice] = story; else games.push(story);
+  }
+
+  return games.map(game => {
+    const meta = GAME_META[game.type] || {};
+    const cefr = CEFR.test(String(content.cefr || "")) ? content.cefr : "";
+    return { ...game, skill: meta.skill, estimatedMinutes: meta.estimatedMinutes, ...(cefr ? { cefr } : {}) };
+  });
 }
 
 function scrambleWord(word, id) {
@@ -224,6 +269,11 @@ export function validateGame(game) {
 
   const items = game.pairs || game.questions;
   if (!items.length) throw new Error("A game must contain at least one item.");
+  if (game.skill !== undefined && !SKILL_LIST.includes(game.skill)) throw new Error("A game skill must be vocab, grammar, reading, listening, speaking or spelling.");
+  if (game.cefr !== undefined && !CEFR.test(String(game.cefr))) throw new Error("A game level must look like B1 or A2-B1.");
+  if (game.estimatedMinutes !== undefined && !(Number.isFinite(game.estimatedMinutes) && game.estimatedMinutes >= 1 && game.estimatedMinutes <= 60)) throw new Error("estimatedMinutes must be between 1 and 60.");
+  if (game.graph) { const problems = validateStoryGraph(game.graph); if (problems.length) throw new Error(`Story: ${problems[0]}`); }
+  if (game.type === "error-hunt" && items.some(item => !Array.isArray(item.tokens) || !Number.isInteger(item.wrongIndex) || item.wrongIndex < 0 || item.wrongIndex >= item.tokens.length)) throw new Error("Error Hunt items need tokens and the index of the wrong word.");
   if (["crossword", "word-search"].includes(game.type) &&
       (!Array.isArray(game.grid) || !game.grid.length ||
        game.grid.length > 20 || !Array.isArray(game.grid[0]) ||
@@ -244,7 +294,7 @@ export function validateGame(game) {
     if (game.type === "word-match" && !cleanText(item.answer)) {
       throw new Error("Word matches need meanings.");
     }
-    if (["speed-quiz", "boss-battle", "story-choice"].includes(game.type) &&
+    if (["speed-quiz", "boss-battle", "story-choice"].includes(game.type) && !item.typed &&
         (!Array.isArray(item.options) || item.options.length < 2 ||
          !item.options.includes(item.answer))) {
       throw new Error("Multiple-choice options must include the correct answer.");
@@ -279,7 +329,7 @@ export function validateGame(game) {
   return game;
 }
 
-function createCrosswordGame(pairs) {
+function createCrosswordGame(pairs, seed = "") {
   const words = pairs
     .map(pair => ({
       id: pair.id,
@@ -287,9 +337,10 @@ function createCrosswordGame(pairs) {
       answer: pair.prompt.toLocaleUpperCase().replace(/[^A-Z]/g, "")
     }))
     .filter(item => item.answer.length >= 3 && item.answer.length <= 12)
-    .filter((item, index, list) => list.findIndex(other => other.answer === item.answer) === index)
-    .sort((a, b) => b.answer.length - a.answer.length)
-    .slice(0, 8);
+    .filter((item, index, list) => list.findIndex(other => other.answer === item.answer) === index);
+  const tieBreak = new Map(seededShuffle(words.map(item => item.id), `crossword:${seed}`).map((id, rank) => [id, rank]));
+  words.sort((a, b) => b.answer.length - a.answer.length || tieBreak.get(a.id) - tieBreak.get(b.id));
+  words.splice(8);
   if (words.length < 2) return null;
 
   const placed = [{
@@ -388,7 +439,7 @@ function createCrosswordGame(pairs) {
   };
 }
 
-function createWordSearchGame(pairs) {
+function createWordSearchGame(pairs, seed = "") {
   const words = pairs
     .map(pair => ({
       id: pair.id,
@@ -404,11 +455,7 @@ function createWordSearchGame(pairs) {
   const size = Math.max(10, Math.max(...words.map(item => item.answer.length)));
   const grid = Array.from({ length: size }, () => Array(size).fill(""));
   const directions = [[0, 1], [1, 0], [1, 1], [0, -1], [-1, 0], [-1, -1], [1, -1], [-1, 1]];
-  let seed = words.reduce((value, item) => value + item.answer.length + item.id.length, 0) || 1;
-  const random = max => {
-    seed = (seed * 1664525 + 1013904223) >>> 0;
-    return seed % max;
-  };
+  const random = seededRandom(`word-search:${seed}:${words.map(item => item.answer).join(",")}`);
 
   const questions = [];
   for (const item of words) {
@@ -456,7 +503,10 @@ export function evaluateGame(game, answers) {
   const correctItemIds = [];
   let score = 0;
   for (const item of items) {
-    if (normalizeAnswer(answers && answers[item.id]) === normalizeAnswer(item.answer)) {
+    const given = answers && answers[item.id];
+    const accepted = [item.answer, ...(Array.isArray(item.alternatives) ? item.alternatives : [])];
+    const right = item.typed ? isAnswerCorrect(String(given || ""), accepted, { mode: item.mode || "exact" }) : accepted.some(candidate => normalizeAnswer(given) === normalizeAnswer(candidate));
+    if (right) {
       score += 1;
       correctItemIds.push(String(item.reviewId || item.id));
     } else {
@@ -499,66 +549,10 @@ export function createReviewGame(queue, now = Date.now()) {
   };
 }
 
-export function applyGamification(previous, result, now = Date.now()) {
-  if (!result || !Number.isInteger(result.score) || !Number.isInteger(result.total) ||
-      result.score < 0 || result.total < 1 || result.score > result.total) {
-    throw new Error("A valid completed game result is required.");
-  }
-
-  const state = previous && typeof previous === "object" ? previous : {};
-  const date = new Date(now).toISOString().slice(0, 10);
-  const previousDate = String(state.lastActivityDate || "");
-  const dayGap = previousDate ? Math.floor((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${previousDate}T00:00:00Z`)) / 86400000) : 0;
-  const freezes = Math.max(0, Number(state.streakFreezes) || 0);
-  let streak = Math.max(0, Number(state.streak) || 0);
-  let streakFreezes = freezes;
-  if (dayGap === 1) streak += 1;
-  else if (dayGap > 1 && dayGap <= 2 && freezes > 0) streakFreezes -= 1;
-  else if (dayGap > 1) streak = 1;
-  else if (!previousDate) streak = 1;
-
-  const xpEarned = result.score * 10 + (result.score === result.total ? 5 : 0);
-  const xp = Math.max(0, Number(state.xp) || 0) + xpEarned;
-  const level = Math.floor(xp / 100) + 1;
-  const gems = Math.max(0, Number(state.gems) || 0) + Math.floor(result.score / 5);
-  const hearts = Math.max(0, Math.min(5, Number.isFinite(state.hearts) ? state.hearts : 5) -
-    (result.total - result.score));
-  const daily = state.daily && state.daily.date === date ? state.daily : { date, games: 0, correct: 0 };
-  const weekStart = new Date(now);
-  weekStart.setUTCHours(0, 0, 0, 0);
-  weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
-  const week = weekStart.toISOString().slice(0, 10);
-  const weekly = state.weekly && state.weekly.week === week ? state.weekly : { week, games: 0 };
-  const mistakes = Array.isArray(result.mistakes) ? result.mistakes.slice(0, 20) : [];
-  const reviewQueue = [...(Array.isArray(state.reviewQueue) ? state.reviewQueue : []), ...mistakes]
-    .slice(-100);
-  const badges = new Set(Array.isArray(state.badges) ? state.badges : []);
-  if (streak >= 3) badges.add("three-day-streak");
-  if (xp >= 100) badges.add("first-level-up");
-  if (result.score === result.total) badges.add("perfect-round");
-
-  return {
-    xp,
-    level,
-    gems,
-    hearts,
-    streak,
-    streakFreezes,
-    lastActivityDate: date,
-    daily: {
-      date,
-      games: (Number(daily.games) || 0) + 1,
-      correct: (Number(daily.correct) || 0) + result.score,
-      questComplete: (Number(daily.games) || 0) + 1 >= 1
-    },
-    weekly: {
-      week,
-      games: (Number(weekly.games) || 0) + 1,
-      questComplete: (Number(weekly.games) || 0) + 1 >= 5
-    },
-    badges: [...badges],
-    reviewQueue
-  };
+export function applyGamification(previous, result, now = Date.now(), options = {}) {
+  const { _info, ...state } = applyRewards(previous, result, now, options); // _info is for the screen, never stored
+  void _info;
+  return state;
 }
 
 export function updateReviewQueue(queue, result, now = Date.now()) {

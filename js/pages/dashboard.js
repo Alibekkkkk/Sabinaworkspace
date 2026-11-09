@@ -510,12 +510,27 @@ function attachGameProgressListener() {
     updateWeeklySummaryAvailability();
     renderGameAnalytics();
     renderListening();
+    renderMastery();
     renderPlacementCard();
   }, function(error) {
     host.textContent = 'Practice data could not be loaded: ' + error.message;
     weeklyProgressLoaded = false;
     updateWeeklySummaryAvailability();
   });
+}
+
+function renderMastery() {
+  const host = document.getElementById('masterySummary');
+  if (!host) return;
+  import('../games/mastery-card.js').then(function(mod) {
+    mod.renderMasteryCard(host, activeGameProgress || {}, {
+      loadClass: function() {
+        return Promise.all(Object.keys(studentsMap || {}).map(function(code) {
+          return fbDb.ref('studentProgress/' + code).once('value').then(function(snapshot) { return { code: code, name: (studentsMap[code] && studentsMap[code].name) || code, progress: snapshot.val() || {} }; });
+        }));
+      }
+    });
+  }).catch(function(error) { host.textContent = 'Mastery could not be shown: ' + error.message; });
 }
 
 function renderListening() {
