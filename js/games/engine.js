@@ -105,7 +105,7 @@ export function createPracticeGames(content, { seed = "", isTeacher = false } = 
       type: "hangman",
       title: "Vocabulary Hangman",
       instructions: "Use the meaning as a hint and guess the hidden word.",
-      questions: practicePairs.map(pair => ({ ...pair, prompt: pair.answer, answer: pair.prompt }))
+      questions: practicePairs.map(pair => ({ ...pair, prompt: pair.answer, answer: pair.prompt, typed: true, mode: "exact" }))
     });
     games.push({
       id: "word-scramble",
@@ -116,7 +116,9 @@ export function createPracticeGames(content, { seed = "", isTeacher = false } = 
         ...pair,
         prompt: pair.answer,
         answer: pair.prompt,
-        scrambled: scrambleWord(pair.prompt, pair.id)
+        scrambled: scrambleWord(pair.prompt, pair.id),
+        typed: true,
+        mode: "exact"
       }))
     });
     games.push({
@@ -128,7 +130,9 @@ export function createPracticeGames(content, { seed = "", isTeacher = false } = 
         ...pair,
         prompt: "Listen and type the word.",
         answer: pair.prompt,
-        spoken: pair.prompt
+        spoken: pair.prompt,
+        typed: true,
+        mode: "exact"
       }))
     });
     games.push({
@@ -139,7 +143,9 @@ export function createPracticeGames(content, { seed = "", isTeacher = false } = 
       questions: practicePairs.map(pair => ({
         ...pair,
         prompt: `Say: ${pair.prompt}`,
-        answer: pair.prompt
+        answer: pair.prompt,
+        typed: true,
+        mode: "exact"
       }))
     });
   }
@@ -184,7 +190,7 @@ export function createPracticeGames(content, { seed = "", isTeacher = false } = 
       type: "fill-gap",
       title: "Fill the Gap",
       instructions: "Type the missing words.",
-      questions: gapQuestions.slice(0, 10)
+      questions: gapQuestions.slice(0, 10).map(item => ({ ...item, typed: true, mode: "exact" }))
     });
   }
 
@@ -194,7 +200,7 @@ export function createPracticeGames(content, { seed = "", isTeacher = false } = 
   }).flatMap(([group, items]) => questionsFrom(items, `sentence-${group}`, (item, id) => {
     const words = Array.isArray(item.correct) ? item.correct.map(cleanText) : [];
     return cleanText(item.prompt) && words.length
-      ? { id, prompt: item.prompt, answer: words.join(" "), words }
+      ? { id, prompt: item.prompt, answer: words.join(" "), words, ...(Array.isArray(item.distractors) ? { distractors: item.distractors.map(cleanText).filter(Boolean).slice(0, 4) } : {}) }
       : null;
   }));
   if (sentenceQuestions.length) {
@@ -536,7 +542,9 @@ export function createReviewGame(queue, now = Date.now()) {
       reviewId: String(item.itemId),
       prompt: String(item.prompt),
       answer: String(item.answer),
-      topic: String(item.topic || "Review")
+      topic: String(item.topic || "Review"),
+      typed: true,
+      mode: "exact"
     }))
     .filter(item => item.reviewId && item.prompt && item.answer);
   if (!dueItems.length) return null;

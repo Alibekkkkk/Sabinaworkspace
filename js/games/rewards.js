@@ -5,6 +5,7 @@ export const LEVEL_STEP_AFTER = 500; // each level beyond the table needs this m
 export const DAILY_XP_CAP = 400; // grinding the same game all day stops paying XP
 export const MAX_XP_PER_RESULT = 500; // also enforced by the database rules (600 per write)
 export const MAX_FREEZES = 3;
+export const HINT_XP_COST = 3; // a hint (reveal a letter) takes this much off the round's XP
 export const WEEKLY_QUESTS = Object.freeze([
   { id: "words", label: "Learn 15 words", field: "words", goal: 15 },
   { id: "listening", label: "Do 3 listening rounds", field: "listening", goal: 3 },
@@ -43,13 +44,14 @@ export function daysBetween(fromKey, toKey) {
 }
 
 // Raw XP a finished round is worth before the daily cap: 10 per correct answer, +5 for a perfect round,
-// +2 for every three correct answers in a row (at most +10).
+// +2 for every three correct answers in a row (at most +10), minus 3 for each hint used (never below 0).
 export function xpForResult(result) {
   const score = Math.max(0, Math.floor(Number(result.score) || 0));
   const total = Math.max(1, Math.floor(Number(result.total) || 1));
   const run = Math.max(0, Math.floor(Number(result.bestRun) || 0));
-  const raw = score * 10 + (score === total ? 5 : 0) + Math.min(10, Math.floor(run / 3) * 2);
-  return Math.min(MAX_XP_PER_RESULT, raw);
+  const hints = Math.max(0, Math.floor(Number(result.hints) || 0));
+  const raw = score * 10 + (score === total ? 5 : 0) + Math.min(10, Math.floor(run / 3) * 2) - hints * HINT_XP_COST;
+  return Math.max(0, Math.min(MAX_XP_PER_RESULT, raw));
 }
 
 const num = value => Math.max(0, Number(value) || 0);

@@ -63,3 +63,26 @@ html[data-calm="true"] .gm-boss { transition: none; }
 .gl-epic { margin: var(--ds-space-3, 0.75rem) 0; padding: var(--ds-space-4, 1rem); border: 2px solid var(--ds-color-success, #24744d); border-radius: var(--ds-radius-sm, 0.6rem); background: var(--ds-color-success-soft, #dcf3e6); color: var(--ds-color-text, #1d2738); }
 .gl-epic h3 { margin: 0 0 0.25rem; }
 .gm-hint { margin: 0; }
+
+/* Older games, now modules */
+.gm-stack { display: grid; gap: var(--ds-space-3); }
+.gm-columns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--ds-space-4); }
+.gm-col { display: grid; gap: var(--ds-space-2); align-content: start; }
+.gm-option.is-picked, .gm-option[aria-pressed="true"] { border-color: var(--ds-color-primary); background: var(--ds-color-primary-soft); }
+.gm-bank, .gm-placed { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); }
+.gm-placed { min-height: var(--ds-target); padding: var(--ds-space-2); border: 2px dashed var(--ds-color-border-strong); border-radius: var(--ds-radius-sm); }
+.gm-mask { margin: 0; font-size: var(--ds-text-2xl); letter-spacing: 0.15em; font-family: var(--ds-font-mono); }
+.gm-built, .gm-answerline { margin: 0; font-weight: 600; }
+.gm-linkbtn { background: none; border: 0; padding: 0 var(--ds-space-1); min-height: var(--ds-target); text-align: left; color: var(--ds-color-primary-strong); text-decoration: underline; cursor: pointer; font: inherit; }
+.gm-linkbtn:focus-visible { outline: 3px solid var(--ds-color-focus); outline-offset: 2px; }
+.puzzle-words li.is-active { font-weight: 700; }
+.puzzle-cell input:focus-visible, button.puzzle-cell:focus-visible { outline: 3px solid var(--ds-color-focus); outline-offset: -3px; }
+.puzzle-cell.in-word input, .puzzle-cell input.in-word { background: var(--ds-color-primary-soft); }
+.puzzle-cell input.is-right { background: var(--ds-color-success-soft); }
+.puzzle-cell input.is-missed { background: var(--ds-color-danger-soft); text-decoration: underline wavy; }
+.memory-card { min-height: var(--ds-target); transition: transform var(--ds-motion-base) var(--ds-ease-out), background var(--ds-motion-base); transform-style: preserve-3d; }
+.memory-card.is-flipped { transform: rotateY(0deg); background: var(--ds-color-primary-soft); }
+.memory-card:not(.is-flipped) { transform: rotateY(8deg); }
+html[data-calm="true"] .memory-card { transition: none; transform: none !important; }
+@media (prefers-reduced-motion: reduce) { .memory-card { transition: none; transform: none !important; } }
+@media (max-width: 520px) { .gm-columns { grid-template-columns: 1fr; } }

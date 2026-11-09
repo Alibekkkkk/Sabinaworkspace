@@ -134,10 +134,10 @@ test("Story Choice: the validator finds dead ends, loops, missing scenes and une
   assert.equal(evaluateGame(game, { start: "closed", middle: "lighten" }).score, 1);
 });
 
-test("games with a module are routed to it; the others keep their existing screens", () => {
+test("every generated game is routed to a module", () => {
   const games = createPracticeGames(sample);
   for (const type of ["speed-quiz", "boss-battle", "story-choice", "error-hunt", "word-formation"]) assert.ok(moduleFor(games.find(game => game.type === type)), type);
-  assert.equal(moduleFor(games.find(game => game.type === "crossword")), null);
+  for (const game of games) assert.ok(moduleFor(game), `${game.type} has a module`);
   assert.equal(moduleFor({ type: "story-choice", questions: [] }), null, "a flat story list has no graph to walk");
 });
 

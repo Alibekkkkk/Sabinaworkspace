@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "test:rules": "firebase emulators:exec --only database \"node --test tests/rules.test.mjs\"",
-    "test:unit": "node --test tests/delegated-actions.test.mjs tests/protected-content.test.mjs tests/student-context.test.mjs tests/games.test.mjs tests/clips.test.mjs tests/manga.test.mjs tests/placement.test.mjs tests/pwa.test.mjs tests/security-policy.test.mjs tests/sanitization.test.mjs tests/theme.test.mjs tests/weekly-summary.test.mjs tests/auth.test.mjs tests/grading.test.mjs tests/audience.test.mjs tests/teacher-commands.test.mjs tests/lesson-meta.test.mjs tests/homework-answers.test.mjs tests/student-code.test.mjs tests/leaderboard.test.mjs tests/schedule.test.mjs tests/design-tokens.test.mjs tests/reading-prefs.test.mjs tests/shell.test.mjs tests/dashboard-status.test.mjs tests/lesson-clock.test.mjs tests/sections.test.mjs tests/clock-report.test.mjs tests/grammar-ladder.test.mjs tests/word-family.test.mjs tests/reading-tasks.test.mjs tests/listening.test.mjs tests/listening-summary.test.mjs tests/whiteboard.test.mjs tests/rewards.test.mjs tests/game-types.test.mjs tests/mastery.test.mjs tests/game-mode.test.mjs",
+    "test:unit": "node --test tests/delegated-actions.test.mjs tests/protected-content.test.mjs tests/student-context.test.mjs tests/games.test.mjs tests/clips.test.mjs tests/manga.test.mjs tests/placement.test.mjs tests/pwa.test.mjs tests/security-policy.test.mjs tests/sanitization.test.mjs tests/theme.test.mjs tests/weekly-summary.test.mjs tests/auth.test.mjs tests/grading.test.mjs tests/audience.test.mjs tests/teacher-commands.test.mjs tests/lesson-meta.test.mjs tests/homework-answers.test.mjs tests/student-code.test.mjs tests/leaderboard.test.mjs tests/schedule.test.mjs tests/design-tokens.test.mjs tests/reading-prefs.test.mjs tests/shell.test.mjs tests/dashboard-status.test.mjs tests/lesson-clock.test.mjs tests/sections.test.mjs tests/clock-report.test.mjs tests/grammar-ladder.test.mjs tests/word-family.test.mjs tests/reading-tasks.test.mjs tests/listening.test.mjs tests/listening-summary.test.mjs tests/whiteboard.test.mjs tests/rewards.test.mjs tests/game-types.test.mjs tests/mastery.test.mjs tests/game-mode.test.mjs tests/game-modules.test.mjs",
     "test": "npm run test:unit",
     "audit:web": "node scripts/audit-web.mjs",
     "check:visual": "node scripts/visual-check.mjs",
@@ -22,6 +22,7 @@
     "seed": "node scripts/seed-emulator.mjs",
     "dev": "firebase emulators:exec --only database,auth --project sabina-s-workspace \"node scripts/dev.mjs\"",
     "test:lesson-games-e2e": "node scripts/lesson-games-e2e.mjs",
+    "test:games-keyboard-e2e": "node scripts/games-keyboard-e2e.mjs",
     "test:games-e2e": "node scripts/games-e2e.mjs",
     "test:whiteboard-e2e": "node scripts/whiteboard-e2e.mjs",
     "test:whiteboard-devices-e2e": "node scripts/whiteboard-devices-e2e.mjs"

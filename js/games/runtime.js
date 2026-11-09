@@ -7,9 +7,13 @@ import * as errorHunt from "./types/error-hunt.js";
 import * as speedQuiz from "./types/speed-quiz.js";
 import * as storyChoice from "./types/story-choice.js";
 import * as wordFormation from "./types/word-formation.js";
+import { flashcards, memoryCards, wordMatch } from "./types/pairs.js";
+import { crossword, wordSearch } from "./types/puzzles.js";
+import { sentenceBuilder } from "./types/tiles.js";
+import { fillGap, hangman, listeningDictation, pronunciation, wordScramble } from "./types/typed.js";
 import { createServices } from "./settings.js";
 
-export const MODULES = Object.freeze([speedQuiz, bossBattle, storyChoice, errorHunt, wordFormation]);
+export const MODULES = Object.freeze([speedQuiz, bossBattle, storyChoice, errorHunt, wordFormation, wordMatch, memoryCards, flashcards, fillGap, sentenceBuilder, hangman, wordScramble, listeningDictation, pronunciation, crossword, wordSearch]);
 export const moduleFor = game => MODULES.find(module => module.supports(game)) || null;
 
 export function buildResult(game, payload, startedAt, now = Date.now()) {
@@ -19,6 +23,8 @@ export function buildResult(game, payload, startedAt, now = Date.now()) {
   if (payload.won !== undefined) result.won = Boolean(payload.won);
   if (payload.fixes !== undefined) result.fixes = Math.min(payload.fixes, base.total);
   if (payload.words !== undefined) result.words = Math.min(payload.words, base.total);
+  if (payload.hints) result.hints = Math.min(Math.max(0, Math.floor(payload.hints)), 50);
+  if (payload.noQueue) { result.mistakes = []; result.coaching = true; } // coaching games never fill the review list
   return result;
 }
 

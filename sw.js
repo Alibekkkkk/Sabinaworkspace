@@ -1,4 +1,4 @@
-const CACHE_NAME = "learning-studio-shell-v10";
+const CACHE_NAME = "learning-studio-shell-v11";
 const AUDIO_CACHE = "learning-studio-audio-v1";
 const SHELL_URLS = [
   "index.html",
@@ -54,6 +54,11 @@ const SHELL_URLS = [
   "js/games/panels.js",
   "js/games/mastery-summary.js",
   "js/games/mastery-card.js",
+  "js/games/types/pairs.js",
+  "js/games/types/puzzles.js",
+  "js/games/types/tiles.js",
+  "js/games/types/typed.js",
+  "js/games/types/sequence.js",
   "js/games/types/error-hunt.js",
   "js/games/types/boss-battle.js",
   "js/games/types/speed-quiz.js",

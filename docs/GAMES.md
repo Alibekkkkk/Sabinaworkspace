@@ -19,28 +19,25 @@ Teacher content keys read by `createPracticeGames`: `matchData`, `testMcq`, `tes
 Shared services (`js/games/settings.js`): sound (small WebAudio tones, mute), haptics (`navigator.vibrate`), confetti (calm-aware), and the settings panel: **reduce animation**, **no timers** (timed games become untimed), **no sound**, vibration. Stored per device.
 
 ## Audit: before and after
-"Before" was read from `engine.js`, `practice.js` and `tests/games.test.mjs` at the start of this phase. "UI" means a screen that can be played; "tests" means behaviour tests beyond "it generates".
+"Before" was read from `engine.js`, `practice.js` and `tests/games.test.mjs` at the start of Phase 5. "After" is the state now: **all sixteen types are modules** in `js/games/types/` (`runtime.js` routes every generated game, a test checks it), built on the shared contract, with behaviour tests and a keyboard-only browser run.
 
-| Type | Before: generator / validator / UI / tests / in lesson | After |
+| Type | Before | After |
 |---|---|---|
-| word-match | yes / yes / yes (drop-down per word) / generation only / no | unchanged UI; sample JSON; validated in the all-types test |
-| memory-cards | yes / yes / yes / generation only / no | same |
-| flashcards | yes / yes / yes / generation only / no | same |
-| speed-quiz | yes / yes / yes (list with one round timer) / generation only / no | **new module**: one question at a time, number keys, streak, untimed variant, tests |
-| fill-gap | yes / yes / yes / generation only / no | typed items now use the shared grader (alternatives); no word bank yet |
-| sentence-builder | yes / yes / yes (tap tiles) / generation only / no | same |
-| hangman | yes / yes / yes / generation only / no | same (no XP cost for hints yet) |
-| word-scramble | yes / yes / yes / generation only / no | same |
-| listening-dictation | word-level only / yes / yes (speech synthesis) / generation only / no | same; the Phase 3 trainer is still its own page |
-| pronunciation | yes / yes / yes (typing fallback) / generation only / no | same |
-| boss-battle | multiple choice only / yes / yes (list of drop-downs) / generation only / no | **new module**: fight with shields and boss health, multiple choice + True/False/Not Given + typed answers, never locks out, weak-point summary, tests |
-| story-choice | **never generated** (no content has `storyChoices`) / yes / yes (flat) / no / no | **new module**: branching `storyGraph`, validator (dead ends, loops, unreachable scenes, unexplained wrong choices), retry on wrong choice, tests |
-| crossword | yes / yes / yes / grid cells check / no | seeded, repeatable, tests |
-| word-search | yes / yes / yes / grid cells check / no | seeded, repeatable, tests |
-| error-hunt | no | **new**: pick the wrong word, type the fix, hints, reveal after two wrong picks, tests |
-| word-formation | no | **new**: from approved word-family forms, race or untimed, tests |
+| word-match | old screen: a drop-down per word; generation tests only | **module** (`pairs.js`): pick a word, then its meaning; a wrong pick is forgiven but costs that word's point |
+| memory-cards | old screen, random order, no moves | **module**: flip animation (off in calm mode), moves count, pure tested rules; a pair found after two wrong flips goes to review |
+| flashcards | old screen | **module**: turn over, "I knew it" or "Practise again" |
+| speed-quiz | old list with one round timer | module (Phase 5): number keys, streak, untimed variant |
+| fill-gap | old screen, plain equality | **module** (`typed.js`): shared grader (alternatives, case, punctuation), optional word bank |
+| sentence-builder | old screen, clear only | **module** (`tiles.js`): tap to place, tap a placed tile to take it back, distractor tiles, no drag-only step |
+| hangman | old screen | **module**: keyboard letters, six lives, a hint reveals a letter and costs 3 XP |
+| word-scramble | old screen | **module**: real anagrams, a hint shows the first letter (3 XP) |
+| listening-dictation | old screen, speech synthesis only | **module**: the Phase 3 player (British voice, slow play, device-voice label), "show the word" fallback |
+| pronunciation | old screen | **module**: Phase 3 speaking layer with the consent screen, `compareSpoken` coaching, three tries, typed fallback; **coaching only: nothing is added to review** |
+| boss-battle, story-choice, error-hunt, word-formation | modules (Phase 5) | unchanged |
+| crossword | old screen | **module** (`puzzles.js`): one tab stop, arrow keys, typing runs along the clue, Space switches across/down, Tab jumps to the next clue, spoken row, column and clue labels |
+| word-search | old screen | **module**: one tab stop, arrow keys, Enter selects, words forwards or backwards, pure tested selection rules |
 
-Modules in `js/games/types/`: speed-quiz, boss-battle, story-choice, error-hunt, word-formation. The other eleven still use the older screens in `js/pages/practice.js`; moving them to modules is the remaining part of Step 1.
+The old 400-line screen code was deleted from `js/pages/practice.js` (531 lines down to 138).
 
 ## Lesson stages and games
 Set per student and lesson by the teacher (dashboard card "Lesson game mode", stored at `studentCurriculum/<code>/<lessonId>/gameMode`; a lesson file may suggest a default with `gameMode`). Default **light**. A re-import of lesson content never overwrites the teacher's choice. **No mode replaces a stage, changes its content key, its grading or its score.**
@@ -65,5 +62,6 @@ Celebrations: a finished game gets a small one, a finished stage the usual confe
 - **Streak:** next day adds one, a gap resets it. A **freeze** covers one missed day automatically; one is earned every 7 days in a row (at most 3).
 - **Weekly goals** (week starts Monday, one id across New Year): learn 15 words, 3 listening rounds, 5 games.
 - **Badges:** 22, each with an icon and a criterion shown in words; locked ones show their criterion too.
+- **Hints:** a hint (Hangman, Word Scramble) takes 3 XP off the round, never below zero.
 - **Hearts:** still tracked but never block play; the live-lesson default is no lockout (`applyRewards(..., { hearts: false })` switches the loss off).
 - **Spaced review:** Leitner intervals 1, 3, 7, 14, 30 days (unchanged); the Practice card shows at most 20 due items and says "You're done for today" when nothing is due.
