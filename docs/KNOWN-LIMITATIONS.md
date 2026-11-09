@@ -3,6 +3,7 @@
 Honest list as of the end of Phase 8, most important first. Details and evidence are in the phase reports (`docs/PHASE*-REPORT.md`) and [PHASE8-REPORT.md](PHASE8-REPORT.md).
 
 ## Needs your decision or action
+0. **Two browser scripts fail** since the Phase 8 shell changes: `whiteboard-e2e` (the shapes check) and `games-keyboard-e2e` (Pronunciation Challenge step). Not yet diagnosed; see PHASE8-REPORT.md.
 1. **Nothing is deployed.** The site is on GitHub Pages, which cannot send security headers. `firebase.json` has a hosting block with strict headers, but it has not been deployed, and the header rules were not observed on a running server (the Hosting emulator ignored them). Run the `curl` checks in [SECURITY.md](SECURITY.md) after a deploy.
 2. **Protected lesson JSON is still public on a static host** until the files under `content/` are removed after the Firebase import is verified (runbook in SECURITY.md).
 3. **Russian and Kazakh text is machine-drafted.** A native speaker must check `locales/ru.json` and `locales/kk.json` before students see them. The language picker is on.

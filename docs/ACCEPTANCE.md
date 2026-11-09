@@ -45,4 +45,4 @@ How to repeat it: `npm run dev`, then `npm run test:e2e` (every script below, on
 | Accessibility | axe checks inside `manga-e2e.mjs`, `clips-tab-e2e.mjs`, `games-e2e.mjs`; Lighthouse accessibility 95 to 100 in `docs/PERFORMANCE.md` |
 
 ## Result of the last run
-See [PHASE8-REPORT.md](PHASE8-REPORT.md), section "Evidence".
+11 of 17 scripts passed in the last full run; of the six that failed, four passed on rerun and two (`whiteboard-e2e` shapes, `games-keyboard-e2e` Pronunciation step) still fail. See [PHASE8-REPORT.md](PHASE8-REPORT.md), "Last runs". The rows above that name those two scripts are **not currently verified**.

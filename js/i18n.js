@@ -64,7 +64,7 @@ export function mountLanguageSwitch(host) {
   }
   if (!place) return null;
   const select = document.createElement("select"); select.id = "languageSwitch"; select.className = "ds-select"; select.setAttribute("aria-label", t("lang.label"));
-  select.style.setProperty("width", "auto"); select.style.setProperty("min-height", "44px"); select.style.setProperty("margin-inline", "8px");
+  for (const [name, value] of Object.entries({ width: "6.5rem", "max-width": "100%", "min-width": "0", "min-height": "44px", "margin-inline": "4px", "padding-inline": "6px", "flex": "0 1 auto" })) select.style.setProperty(name, value);
   for (const [code, name] of Object.entries(LANGUAGES)) { const option = document.createElement("option"); option.value = code; option.textContent = name; option.selected = code === current; option.lang = code; select.append(option); }
   select.addEventListener("change", () => setLanguage(select.value));
   if (host) host.append(select); else place.after(select);

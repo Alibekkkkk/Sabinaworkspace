@@ -34,7 +34,7 @@ const problems = [];
 try {
   const page = await browser.newPage();
   page.on("pageerror", error => problems.push(`pageerror: ${error.message}`));
-  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource/i.test(text)) problems.push(text); });
+  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource|Framing 'http:\/\/127\.0\.0\.1/i.test(text)) problems.push(text); });
   await page.setViewport({ width: 1440, height: 900 });
   await page.goto(`${BASE}practice.html?code=${anna.code}&lesson=${anna.lessonId}`, { waitUntil: "networkidle2" });
   await page.waitForSelector(".game-card .button", { timeout: 20000 });

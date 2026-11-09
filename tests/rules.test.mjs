@@ -1149,6 +1149,7 @@ test("the teacher can read a student's whole whiteboard node (for export); other
 });
 
 test("client error reports: own code only, fifty slots, bounded fields, teacher reads and clears", async () => {
+  await testEnv.withSecurityRulesDisabled(async context => { await set(ref(context.database(), "students/A111111"), { uid: "student-a", name: "A" }); }); // an earlier test deletes this student
   const dbA = testEnv.authenticatedContext("student-a").database();
   const dbB = testEnv.authenticatedContext("student-b").database();
   const teacher = testEnv.authenticatedContext("teacher").database();

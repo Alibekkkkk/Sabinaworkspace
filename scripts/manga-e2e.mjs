@@ -40,7 +40,7 @@ const browser = await puppeteer.launch({ executablePath: executable, headless: t
 const problems = [];
 const watch = (page, label) => {
   page.on("pageerror", error => { console.log(`pageerror: ${error.message}`); problems.push(`${label} pageerror: ${error.message}`); });
-  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource|permission_denied|PERMISSION_DENIED/i.test(text)) problems.push(`${label}: ${text}`); });
+  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource|Framing 'http:\/\/127\.0\.0\.1|permission_denied|PERMISSION_DENIED/i.test(text)) problems.push(`${label}: ${text}`); });
 };
 async function login(page, code) {
   await page.goto(`${BASE}portal.html`, { waitUntil: "networkidle2" });

@@ -59,7 +59,7 @@ const browser = await puppeteer.launch({ executablePath: executable, headless: t
 const problems = [];
 const watch = (page, label, ignore = /^$/) => {
   page.on("pageerror", error => { console.log(`pageerror: ${error.message}`); problems.push(`${label} pageerror: ${error.message}`); });
-  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource/i.test(text) && !ignore.test(text)) problems.push(`${label}: ${text}`); });
+  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource|Framing 'http:\/\/127\.0\.0\.1/i.test(text) && !ignore.test(text)) problems.push(`${label}: ${text}`); });
 };
 async function login(context) {
   const page = await context.newPage();

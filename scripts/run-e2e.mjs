@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const SITE = process.env.SITE || "http://127.0.0.1:5050/";
+const SCRIPT_TIMEOUT_MS = Number(process.env.E2E_TIMEOUT_MS || 8 * 60 * 1000);
 
 // One entry per user journey the acceptance review needs (see docs/ACCEPTANCE.md).
 export const SUITE = Object.freeze([
@@ -35,7 +36,10 @@ async function reachable() { try { return (await fetch(`${SITE}portal.html`)).ok
 const run = (script, extra = {}) => new Promise(resolve => {
   const started = Date.now(); const child = spawn(process.execPath, [script], { cwd: root, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, ...extra } });
   let output = ""; child.stdout.on("data", chunk => { output += chunk; }); child.stderr.on("data", chunk => { output += chunk; });
-  child.on("close", code => resolve({ code, seconds: Math.round((Date.now() - started) / 1000), output }));
+  // A script that hangs must not hold the whole suite: stop it after SCRIPT_TIMEOUT_MS and count it as failed.
+  let timedOut = false;
+  const timer = setTimeout(() => { timedOut = true; output += " FAILED: timed out "; child.kill(); }, SCRIPT_TIMEOUT_MS);
+  child.on("close", code => { clearTimeout(timer); resolve({ code: timedOut ? 1 : code, seconds: Math.round((Date.now() - started) / 1000), output }); });
 });
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
