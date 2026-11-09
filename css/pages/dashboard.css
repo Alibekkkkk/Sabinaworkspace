@@ -216,3 +216,6 @@ body{font-family:var(--ds-font-body);background:var(--bg);color:var(--ink);min-h
 .clock-chip[data-state="paused"] { background: var(--ds-color-warning-soft); color: var(--ds-color-warning); border-color: var(--ds-color-warning); }
 .clock-chip[data-state="stopped"] { background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); border-color: var(--ds-color-primary); }
 .clock-hint { font-size: var(--ds-text-xs); color: var(--ds-color-warning); font-weight: 700; }
+
+#listeningSummary h3{margin:16px 0 6px;font-size:15px}
+#listeningSummary ul{margin:0 0 8px;padding-left:20px}

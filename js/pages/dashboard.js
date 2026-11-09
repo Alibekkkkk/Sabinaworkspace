@@ -17,6 +17,7 @@ import { appendHtml, safeUrl, setHtml } from "../dom.js";
 import { DEFAULT_CLASS_ID, validateNickname } from "../leaderboard.js";
 import { barChart, sparkline } from "../charts.js";
 import { mountDashboardClock } from "../dashboard-clock.js";
+import { loadListeningTexts, renderListeningCard } from "../listening-card.js";
 import { classesInLastDays } from "../clock-report.js";
 import { createProgressTracker, STATUS_LABELS, studentStatus, todaySummary, trackProgress } from "../dashboard-status.js";
 import { compareByDue, dueState, duplicateScheduleToNextWeek, formatInZone, localInputToTimestamp, localZone, timestampToLocalInput, validateSchedule } from "../schedule.js";
@@ -506,11 +507,22 @@ function attachGameProgressListener() {
     weeklyProgressLoaded = true;
     updateWeeklySummaryAvailability();
     renderGameAnalytics();
+    renderListening();
     renderPlacementCard();
   }, function(error) {
     host.textContent = 'Practice data could not be loaded: ' + error.message;
     weeklyProgressLoaded = false;
     updateWeeklySummaryAvailability();
+  });
+}
+
+function renderListening() {
+  const host = document.getElementById('listeningSummary');
+  if (!host) return;
+  const progress = activeGameProgress || {};
+  renderListeningCard(host, progress);
+  loadListeningTexts().then(function(texts) {
+    if (activeGameProgress === progress) renderListeningCard(host, progress, texts);
   });
 }
 

@@ -28,11 +28,16 @@
 | Screenshots | `docs/screenshots/phase3/` (desktop, mobile, narrow; light, dark; setup, question, feedback, word panel, checked) | |
 | Secrets scan | no key patterns in the files added or changed in this phase; `.env` and `.env.*` are now git-ignored | `grep` over changed files |
 
+## Teacher dashboard card (added after the first report)
+
+- A "Listening practice" card on the selected student's dashboard shows: rounds, the share of words correct, minutes and last practice date; sentences practised and how many reached 90%; an accuracy-by-round chart with a text alternative and a trend word (Improving, Steady or Slipping, only with 4 or more rounds); the words missed most often with the sentence they were missed in; and the sentences still below 70%, weakest first, with their text.
+- It reads only data the trainer already saves (`attempts` with type listening, review-queue entries with topic "Listening", `listening/<sentenceId>`), so no rules or schema changed. Sentence text comes from the public listening packs; without it the card shows sentence ids.
+- Code: `js/listening-summary.js` (pure), `js/listening-card.js`, `dashboard.html`, `js/pages/dashboard.js`. Tests: 5 unit tests (`tests/listening-summary.test.mjs`) and `npm run test:dashboard-listening-e2e` (13 checks: seeded rounds and missed words, other games and topics ignored, text alternative on the chart, weak-sentence order, empty state, axe, 390px, console). The layout gate still passes. Screenshot: `docs/screenshots/phase3/dashboard-listening-card.png`.
+
 ## Not done or not verified
 
 - **Neural audio was not generated.** No TTS key was provided, so no mp3 files exist and the trainer uses the labelled device voice. `scripts/generate-listening-audio.mjs` and its request builders are unit-tested, but the script has not been run against a live provider. Word timings from it are estimates (a syllable heuristic); REST endpoints do not return word boundaries.
 - **Loudness normalisation and the ElevenLabs slow version need ffmpeg** on the machine running the script; without it the script warns and skips them.
-- **Dashboard feed** (weak words, accuracy trend for the teacher) is not built. The data is saved (`listening` node and review queue entries with topic "Listening") but no dashboard card shows it yet.
 - **Teacher "assign" entry point** and **time spent counting towards the lesson clock** are not built (the trainer is a separate page; the clock is teacher-controlled).
 - **Combo multiplier and XP-costing hints:** XP comes from the shared engine (10 per correct word, bonus for a perfect round), so a combo multiplier would have shown numbers that do not match what is saved. Instead the best combo is shown, and a hinted or revealed word simply does not count towards the score.
 - **Multi-word alternatives** (such as "it is" for "it's") cannot be typed into one gap; list single-word variants (for example "havent") in `alternatives`.
@@ -43,7 +48,7 @@
 
 1. Approve (or edit) Sabina's draft pack: `content/listening/sabina.json`, then set `"status": "approved"`.
 2. Provide a TTS provider and key (and say Azure, Google or ElevenLabs) so I can generate the real British audio, or run the script yourself.
-3. Should the teacher dashboard get a listening card (weak words, accuracy trend) next?
+3. The dashboard now has a Listening practice card (see below). Tell me if you want more on it, for example a class-wide view.
 
 ## Suggested next phase
 
