@@ -282,7 +282,6 @@ html.dark .q-feedback.info{color:var(--ds-color-warning)}
 
 /* Phase 0b: contrast fixes found by axe (WCAG AA 4.5:1 on the cream pill background) */
 html:not(.dark) #syncStatus { color: var(--ds-color-muted); }
-html:not(.dark) #timerDisplay { color: var(--ds-color-accent); }
 
 html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .passage { letter-spacing: 0.04em; word-spacing: 0.14em; }
 .ds-reading-panel { position: fixed; top: 4rem; right: 1rem; z-index: var(--ds-z-drawer); width: min(22rem, calc(100vw - 2rem)); display: grid; gap: var(--ds-space-3); }
@@ -300,3 +299,47 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .identity-banner { display: flex; visibility: hidden; min-height: 3rem; }
 .identity-banner.ready { visibility: visible; }
 #timerPill, #scorePill { min-width: 5.5rem; justify-content: center; }
+
+/* ---- lesson clock and sections (Phase 2) ---- */
+.clock-pill { gap: var(--ds-space-2); min-width: 0; }
+.clock-value { font: 700 1.35rem / 1 var(--ds-font-mono); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: var(--ds-color-text); min-width: 4.4ch; }
+.clock-chip { font-size: var(--ds-text-xs); font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--ds-radius-pill); border: 1px solid var(--ds-color-border-strong); color: var(--ds-color-text); background: var(--ds-color-surface-raised); }
+.clock-chip[data-state="running"] { background: var(--ds-color-success-soft); color: var(--ds-color-success); border-color: var(--ds-color-success); }
+.clock-chip[data-state="paused"] { background: var(--ds-color-warning-soft); color: var(--ds-color-warning); border-color: var(--ds-color-warning); }
+.clock-chip[data-state="stopped"] { background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); border-color: var(--ds-color-primary); }
+.clock-pill[data-clock-state="paused"] .clock-value { opacity: 0.55; }
+.clock-hint { font-size: var(--ds-text-xs); color: var(--ds-color-warning); font-weight: 700; }
+.clock-hint[hidden] { display: none; }
+
+.ds-lesson-bar { display: block; padding: 0; }
+.ds-lesson-bar:empty { display: none; }
+.section-bar { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); align-items: stretch; padding: var(--ds-space-2) var(--ds-space-4); background: var(--ds-color-surface-raised); border-bottom: 1px solid var(--ds-color-border); }
+.section-segment { flex: 1 1 11rem; display: grid; gap: 0.15rem; padding: var(--ds-space-2) var(--ds-space-3); border: 2px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); background: var(--ds-color-surface); font-size: var(--ds-text-sm); min-width: 0; }
+.section-segment[data-current] { border-color: var(--ds-color-primary); background: var(--ds-color-primary-soft); }
+.section-segment__title { font-weight: 700; }
+.section-segment__times { font: 700 var(--ds-text-sm) var(--ds-font-mono); font-variant-numeric: tabular-nums; }
+.section-segment__remaining { font-size: var(--ds-text-xs); color: var(--ds-color-muted); }
+.section-segment__track { height: 0.5rem; }
+.section-segment[data-band="over"] .ds-progress__fill { background: var(--ds-color-warning); }
+.section-segment[data-band="late"] .ds-progress__fill { background: var(--ds-color-danger); }
+.section-segment[data-band="over"] .section-segment__remaining, .section-segment[data-band="late"] .section-segment__remaining { font-weight: 700; color: var(--ds-color-text); }
+.section-segment[data-band="late"]::after { content: "Over time"; font-size: var(--ds-text-xs); font-weight: 700; color: var(--ds-color-danger); }
+.section-segment[data-band="over"]::after { content: "At the planned time"; font-size: var(--ds-text-xs); font-weight: 700; color: var(--ds-color-warning); }
+.section-bar__next { align-self: center; }
+.section-bar[data-clock-state="paused"] { opacity: 0.8; }
+.section-bar[data-clock-state="paused"] .ds-progress__fill { background-image: repeating-linear-gradient(45deg, transparent 0 6px, color-mix(in srgb, var(--ds-color-surface) 50%, transparent) 6px 12px); }
+.section-bar[data-clock-state="idle"] .section-segment__remaining::before { content: "Not started  b7 "; }
+
+.class-summary { margin: var(--ds-space-3) var(--ds-space-4); }
+.class-summary h2 { margin: 0 0 var(--ds-space-2); }
+.class-summary__total { font: 800 var(--ds-text-lg) var(--ds-font-display); margin: 0 0 var(--ds-space-2); }
+.class-summary__list { margin: 0; padding-left: 1.2rem; }
+
+.clock-panel { position: fixed; right: var(--ds-space-3); bottom: calc(var(--ds-space-3) + env(safe-area-inset-bottom)); z-index: var(--ds-z-drawer); width: min(22rem, calc(100vw - 1.5rem)); padding: var(--ds-space-3); }
+.clock-panel__title { margin: 0 0 var(--ds-space-2); font-size: var(--ds-text-md); }
+.clock-controls { display: grid; gap: var(--ds-space-2); }
+.clock-controls__row { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); align-items: center; }
+.clock-controls__adjust { display: grid; gap: var(--ds-space-2); }
+.clock-controls__adjust summary { cursor: pointer; font-weight: 700; min-height: var(--ds-target); display: flex; align-items: center; }
+.clock-controls__warnings:empty { display: none; }
+@media (max-width: 700px) { .clock-panel { bottom: calc(4.75rem + env(safe-area-inset-bottom)); } .clock-chip { display: none; } .clock-pill[data-clock-state="paused"] .clock-chip, .clock-pill[data-clock-state="stopped"] .clock-chip { display: inline-flex; } }

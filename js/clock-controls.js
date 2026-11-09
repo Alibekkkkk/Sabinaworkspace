@@ -89,6 +89,9 @@ export function createClockControls({ container, sections, run, getSnapshot, onM
     try {
       const result = await run(action, { expectedRev: snapshot.clock.rev, ...options });
       say(describeResult(result));
+    } catch (error) {
+      console.error("Lesson clock action failed", error);
+      say(`The clock could not be changed (${error && error.message ? error.message : "unknown error"}).`);
     } finally {
       render();
     }
@@ -129,5 +132,11 @@ export function createClockControls({ container, sections, run, getSnapshot, onM
     if (document.activeElement !== sectionSelect && sections.some(section => section.id === snapshot.clock.currentSection)) sectionSelect.value = snapshot.clock.currentSection;
   }
 
-  return { render, setWarnings(items) { warning.replaceChildren(...items.map(item => { const line = document.createElement("p"); line.className = "ds-banner ds-banner--warning"; line.textContent = item.text; return line; })); } };
+  function setSections(list) {
+    const selected = sectionSelect.value;
+    sectionSelect.replaceChildren(...list.map(section => new Option(section.title, section.id)));
+    if (list.some(section => section.id === selected)) sectionSelect.value = selected;
+  }
+
+  return { render, setSections, setWarnings(items) { warning.replaceChildren(...items.map(item => { const line = document.createElement("p"); line.className = "ds-banner ds-banner--warning"; line.textContent = item.text; return line; })); } };
 }

@@ -9,6 +9,7 @@
     "audit:web": "node scripts/audit-web.mjs",
     "check:visual": "node scripts/visual-check.mjs",
     "lint:content": "node scripts/lint-content.mjs",
+    "test:clock-e2e": "node scripts/clock-e2e.mjs",
     "migrate:sections": "node scripts/migrate-sections.mjs",
     "audit:signed-in": "node scripts/audit-signed-in.mjs",
     "tokens:contrast": "node scripts/design-tokens.mjs",

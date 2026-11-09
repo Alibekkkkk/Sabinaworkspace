@@ -11,6 +11,8 @@ import { showToast } from "../ui.js";
 import { initReadingPrefs } from "../reading-prefs.js";
 import { confetti } from "../celebrate.js";
 import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+import { initLessonClock } from "../lesson-clock-ui.js";
+import { applySectionOverrides, buildSections } from "../sections.js";
 
 mountOfflineBanner();
 mountBottomNav("lesson");
@@ -43,7 +45,7 @@ let studentContext=null,studentStorage=null,contentFile='',contentHash='',schema
 
 let CURRICULUM = [{year:"2026",months:[{month:"October",lessons:[]}]}];
 
-const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},sessionStart:Date.now(),streak:0,lastAction:''};
+const state={currentYear:"2026",currentMonth:"October",currentLessonId:"lesson_1",currentStage:1,scores:{},done:{},streak:0,lastAction:''};
 
 // NEW: Track expanded lessons in sidebar
 let expandedLessons = {};
@@ -56,6 +58,24 @@ function getCurrentLesson(){
   return m.lessons.find(function(l){return l.id===state.currentLessonId})||null
 }
 function stagesOf(lesson){ return lesson && Array.isArray(lesson.stages) && lesson.stages.length ? lesson.stages : DEFAULT_STAGES; }
+// ---- lesson clock (teacher-controlled, shared by teacher and student) ----
+let lessonClock = null;
+let lessonSections = null;
+function clockSeconds(){ return lessonClock ? lessonClock.elapsedSeconds() : 0; }
+function currentSections(){
+  const overrides = curriculumCache && curriculumCache[state.currentLessonId] ? curriculumCache[state.currentLessonId].sectionOverrides : null;
+  return applySectionOverrides(lessonSections || buildSections({ vocab: VOCAB, readingHtml: READING_HTML, readingQ: READING_Q, contextQ: CONTEXT_Q }), overrides);
+}
+function startLessonClock(isTeacherView, getCode){
+  if(lessonClock||!fbDb)return;
+  lessonClock=initLessonClock({
+    db:fbDb, auth:firebase.auth(), isTeacher:isTeacherView,
+    getContext:function(){ const code=getCode(); return code?{code:code,lessonId:state.currentLessonId}:null },
+    getSections:currentSections,
+    getScore:function(){ return totalScore() }
+  });
+}
+
 function totalScore(){
   const l=getCurrentLesson();
   if(!l)return 0;
@@ -398,7 +418,7 @@ function initFirebase(){
             fbDb.ref('students/' + code).once('value').then(snap => { document.getElementById('workspaceName').textContent = snap.val() ? snap.val().name : 'Student'; });
           } else { document.getElementById('workspaceName').textContent = 'Teacher Workspace'; }
           updateSyncUI('teacher');
-          document.getElementById('timerPill').style.display='none'; document.getElementById('scorePill').style.display='none'; document.getElementById('streakPill').style.display='none';
+          startLessonClock(true,getSessionCode); document.getElementById('scorePill').style.display='none'; document.getElementById('streakPill').style.display='none';
           renderStage();
         }
         else{teacherMode=true;updateSyncUI('error');setHtml(document.getElementById('main'), '<div class="card"><h2>Teacher sign-in required</h2></div>')}
@@ -452,7 +472,7 @@ function initFirebase(){
         storageModule.migrateLegacyValue(context,'state','nd_state_sabina_v6',localStorage.getItem('nd_state_owner_code'));
         if(!teacherPreviewRequested)loadState();
         await startStudentSession(context.code);
-        renderSidebar();renderStage();startTimer();updateHUD();
+        renderSidebar();renderStage();startLessonClock(false,function(){return studentContext?studentContext.code:''});updateHUD();
       } catch(error) {
         console.error('Student identity verification failed',error);
         identityVerified=false;
@@ -585,9 +605,9 @@ function writeSessionSummary(payload){
   fbDb.ref('sessionSummary/'+studentContext.code).update(summary).catch(function(error){console.error('Unable to update session summary',error)});
 }
 function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state'){sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));writeSessionSummary(payload)}else if(type==='action'){appendBoundedRealtimeRecord(activityRef,payload).catch(function(error){console.error('Unable to append lesson activity',error)});sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){console.error('Unable to broadcast lesson update',e)}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
-function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000),contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion})}
+function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:clockSeconds(),contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion})}
 function broadcastAction(type,detail){ state.lastAction=detail; const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor: teacherMode ? 'teacher' : 'student' }; broadcast('action', payload); }
-function saveState(){ if(!teacherMode&&studentStorage) { try { studentStorage.set('state',{currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}); } catch(e) { console.error('Unable to save lesson state',e); } } if(identityVerified)broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:Math.floor((Date.now()-state.sessionStart)/1000)}); }
+function saveState(){ if(!teacherMode&&studentStorage) { try { studentStorage.set('state',{currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}); } catch(e) { console.error('Unable to save lesson state',e); } } if(identityVerified)broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:clockSeconds()}); }
 function loadState(){try{if(!studentStorage)return;const p=studentStorage.get('state');if(!p)return;if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){console.error('Unable to load lesson state',e)}}
 let customImages={};
 
@@ -1518,7 +1538,6 @@ function renderStage(){
   }catch(e){ console.error(e); setHtml(main, '<p>Error loading stage.</p>'); }
 }
 function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
-function startTimer(){ setInterval(function(){ const elapsed=Math.floor((Date.now()-state.sessionStart)/1000); const m=String(Math.floor(elapsed/60)).padStart(2,'0'); const s=String(elapsed%60).padStart(2,'0'); const el=document.getElementById('timerDisplay');if(el)el.textContent=m+':'+s; },1000); }
 function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
 function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
 function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.classList.toggle('open')}
@@ -1529,6 +1548,8 @@ async function applyLessonContent(c,sourceFile) {
   contentFile=sourceFile;
   vocabMode=c.vocabMode||'tracked';
   schemaVersion=c.schemaVersion||1;
+  lessonSections=Array.isArray(c.sections)?c.sections:null;
+  if(lessonClock)lessonClock.refreshSections();
   if(crypto&&crypto.subtle){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(c)));contentHash=Array.from(new Uint8Array(bytes)).map(b=>b.toString(16).padStart(2,'0')).join('')}
   VOCAB         = c.vocab; MATCH_DATA    = c.matchData; READING_HTML  = c.readingHtml; READING_Q     = c.readingQ; CONTEXT_Q     = c.contextQ;
   G6            = c.g6; G7            = c.g7; SB_PP         = c.sbPp; SB_PS         = c.sbPs; G10           = c.g10;
@@ -1887,7 +1908,6 @@ if (typeof renderSidebar === "function") globalThis["renderSidebar"] = renderSid
 if (typeof goToStage === "function") globalThis["goToStage"] = goToStage;
 if (typeof renderStage === "function") globalThis["renderStage"] = renderStage;
 if (typeof stageFooter === "function") globalThis["stageFooter"] = stageFooter;
-if (typeof startTimer === "function") globalThis["startTimer"] = startTimer;
 if (typeof toggleSound === "function") globalThis["toggleSound"] = toggleSound;
 if (typeof toggleDark === "function") globalThis["toggleDark"] = toggleDark;
 if (typeof toggleNotes === "function") globalThis["toggleNotes"] = toggleNotes;

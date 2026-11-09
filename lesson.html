@@ -30,7 +30,12 @@
   <div class="session-input"><label class="lbl" for="sessionCodeInput">Code:</label>
     <input type="text" id="sessionCodeInput" placeholder="ENTER" maxlength="12" autocapitalize="characters" autocomplete="off" data-action="change-session-code-enter" data-action-event="keydown">
     <button type="button" class="join-code" data-action="change-session-code">Open</button></div>
-  <div class="stat-pill" id="timerPill">⏱ <span class="val" id="timerDisplay">00:00</span></div>
+  <div class="stat-pill clock-pill" id="timerPill">
+    <span aria-hidden="true">⏱</span>
+    <span class="clock-value" id="clockValue">00:00</span>
+    <span class="clock-chip" id="clockChip">Not started</span>
+    <span class="clock-hint" id="clockHint" hidden>offline – time may resync</span>
+  </div>
   <div class="stat-pill" id="scorePill">🏆 <span class="val" id="scoreDisplay">0</span><span class="phase0-inline-1"> / <span id="scoreMax">–</span></span></div>
   <div class="stat-pill" id="streakPill"><span id="streakDisplay" class="val green">0</span> 🔥</div>
   <div class="spacer"></div>
@@ -41,7 +46,7 @@
   <button class="icon-btn" data-action="toggle-notes" title="Notes">📝</button>
 </div>
 
-<div class="ds-lesson-bar" id="lessonBarSlot" aria-label="Lesson timer and section progress (reserved)"></div>
+<div class="ds-lesson-bar" id="lessonBarSlot"></div>
 <div class="identity-banner" id="studentIdentityBanner" role="region" aria-label="Signed-in student"><span id="studentIdentityText"></span><button type="button" data-action="switch-student">Not you? Switch student</button></div>
 <pre class="debug-overlay" id="debugOverlay" hidden></pre>
 
