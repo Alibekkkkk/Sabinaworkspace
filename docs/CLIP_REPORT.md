@@ -21,5 +21,5 @@ Checked on 2026-11-09 with `npm run check:clips` (YouTube's oEmbed endpoint; raw
 - None has 8 transcript lines or four kinds of exercise yet. Use the clip maker to watch each one, stamp at least 8 lines and tick "timing matches".
 - Rights: all are on the rights holder's own channel (BBC Learning English, BBC Earth Science, NASA, Learn With NASA, FN-sambandet Norge, National Geographic) or an English-teaching channel (My English Center Online) as official embeds. Whether each channel's terms allow classroom embedding beyond the embed switch was not assessed.
 
-## Decision needed
-Hide the seven clips from students until a teacher has stamped and verified each one, or keep them in text-and-activity mode as now?
+## Decision (2026-11-09)
+The owner chose to **keep the seven clips visible** to students in text-and-activity mode until a teacher has stamped and verified each one. Nothing is hidden; each clip shows the plain "your teacher is still checking the timing" notice. A clip leaves this mode when its file has `timingVerified: true`, which the clip maker sets only when the teacher ticks "I watched the clip and the line times match".

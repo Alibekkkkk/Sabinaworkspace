@@ -18,13 +18,13 @@ Branch `araylim-4-academic`, nothing pushed or deployed. Rules and how to make a
 | `npm run test:clips-e2e` (run twice, both green) | ✅ with a fake player: highlight follows time, Space/arrows/L, loop, speed, end-of-window stop, subtitle modes, word saving, all nine exercise types, review queue, XP and stars; failure paths (owner blocks the video, player script blocked, unverified clip); the clip maker end to end (lookup, mark window, stamp eight lines, overlap flagged, download valid v2 clip with no answers in it); axe clean; 390 px layout; no console errors |
 
 ## Not done / honest limits
-- ❌ **None of the real videos was watched**, and no real YouTube player ran in the tests (a fake player was used). So no clip's line timing or window is verified, the shipped clips have one line and fewer than 4 exercise types, and the acceptance rule "at least 8 verified lines or hidden from students" is **not met**: they are shown in text-and-activity mode (your decision, see CLIP_REPORT.md).
+- ❌ **None of the real videos was watched**, and no real YouTube player ran in the tests (a fake player was used). So no clip's line timing or window is verified, the shipped clips have one line and fewer than 4 exercise types, and the acceptance rule "at least 8 verified lines or hidden from students" is **not met**: they are shown in text-and-activity mode (the owner's decision, 2026-11-09, see CLIP_REPORT.md).
 - ❌ Step 5 integration is not built: portal Clips tab with filters, embedding a clip in the lesson, assigning a clip with a due date, the lesson clock counting clip time, dashboard clip completion and weak lines, collectible clips and clip streaks.
 - ❌ "Student cannot read answers before submitting" is not true by design: an assigned student receives the protected clip including answer keys (as before). Only the public repo file is answer-free. Server-side grading would need a different design.
 - ❌ `sw.js` caches the clip pages and scripts but not clip JSON, because clips come from the protected database, not static files.
 - ❌ Vimeo is not supported (YouTube embeds and link-outs only). Real microphone coaching and real device speech were not tested. Link-out clips (`provider: link`) validate and show "Open the video" but were not driven in a browser.
 
 ## Decisions needed
-1. Hide unverified clips from students (as the brief says) or keep text-and-activity mode?
+1. ~~Hide unverified clips from students?~~ Decided: keep them visible in text-and-activity mode (see CLIP_REPORT.md).
 2. Who watches and stamps the seven clips (about 8 lines each with the clip maker)?
 3. Should the portal Clips tab and dashboard completion come next, or the Manga reader (Phase 7)?
