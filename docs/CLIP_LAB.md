@@ -44,3 +44,4 @@ Exercise types: `before-watch`, `gist`, `line-gap`, `dictation`, `order-lines`, 
 - **Assigning and scheduling:** a clip is attached to a lesson (`clipFile` and `clipId` in the manifest), so the usual schedule applies: available from, due and closes dates set on the lesson in the dashboard.
 - **In the lesson:** a lesson that has a clip offers "Open the clip" on its vocabulary and first grammar stages; the clip page has a "Back to the lesson" link.
 - **Results for the teacher:** the dashboard card "Clip Lab" shows, per clip, finished or not, stars and score, attempts, time on the clip (seconds with the page in view), the words saved from it, and the transcript lines the student found hard. The record is `studentProgress/<code>/clips/<clipId>`.
+- **Clip time and the lesson clock:** time on a clip is recorded separately and is not added to the teacher's lesson clock or its class-time totals.

@@ -17,7 +17,7 @@ Branch `araylim-4-academic`, nothing pushed or deployed. How it works for studen
 | `npm run test:clips-e2e`, `lesson-games`, `games`, `ladder`, `clock` e2es, layout gate | ✅ all still pass; the clip e2e also checks the saved completion record |
 
 ## Not done / honest limits
-- ❌ **The Phase 2 lesson clock does not count clip time.** The clock is teacher-controlled and per lesson section; the clip page records its own active time instead, and the dashboard shows that. Making the clock include it needs a decision on which section the time belongs to.
+- ✅ **Decided (2026-11-09): clip time stays separate from the Phase 2 lesson clock.** The lesson clock does not count clip time. The clock is teacher-controlled and per lesson section; the clip page records its own active time instead, and the dashboard shows that. Making the clock include it needs a decision on which section the time belongs to.
 - ❌ Clips inside a lesson are a link, not an embedded player on the page (the video and the stage content do not share a screen).
 - ❌ No dedicated "assign this clip" screen: clips are assigned through the lesson and the manifest, as before.
 - ❌ Collectible clips and a clip streak were not built (stars and the existing XP, badges and streak cover rewards).
@@ -25,5 +25,5 @@ Branch `araylim-4-academic`, nothing pushed or deployed. How it works for studen
 - ⚠ The dashboard lists clips from the teacher's lesson records, so a clip assigned only in the student's own record (not the teacher's) does not appear there.
 - ⚠ The seven shipped clips still have unverified timing and show "Text and activities" on their cards.
 
-## Decisions needed
-Should clip time count in the lesson clock (and in which section), or stay separate? Then: Phase 7 (Manga reader)?
+## Decisions
+Clip time stays separate from the lesson clock (decided 2026-11-09). Next: Phase 7 (Manga reader).
