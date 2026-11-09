@@ -29,7 +29,7 @@ await rest(`sessions/${anna.code}/draft`, "DELETE");
 await rest(`sessions/${anna.code}/reviewQueue`, "DELETE");
 await rest(`protectedContent/${anna.lessonId}/classwork/content/grammarLadder/status`, "PUT", "draft");
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const openStage = async (page, label) => {
   await page.waitForSelector("#stageList .stage-sub-item", { timeout: 25000 });
   await page.evaluate(text => { [...document.querySelectorAll("#stageList .stage-sub-item")].find(item => item.textContent.includes(text)).click(); }, label);

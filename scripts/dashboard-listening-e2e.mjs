@@ -41,7 +41,7 @@ await rest(`studentProgress/${anna.code}`, "PUT", {
   }
 });
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 try {
   const page = await browser.newPage();

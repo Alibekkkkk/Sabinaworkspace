@@ -32,7 +32,7 @@ await seedEmulator({ log: () => {} });
 await rest(`sessions/${anna.code}/draft`, "DELETE");
 await setStatus("draft");
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const openVocabulary = async page => {
   await page.waitForSelector("#stageList .stage-sub-item", { timeout: 25000 });
   await page.evaluate(() => { [...document.querySelectorAll("#stageList .stage-sub-item")].find(item => /Vocabulary/.test(item.textContent)).click(); });

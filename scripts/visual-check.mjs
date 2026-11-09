@@ -105,7 +105,7 @@ async function signIn(page, role) {
 
 // Start from clean demo accounts: every run signs in as a brand-new anonymous student, so the demo codes must be unlinked.
 await seedEmulator({ log: () => {} });
-const browser = await puppeteer.launch({ executablePath: findBrowser(), headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: findBrowser(), headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 mkdirSync(OUT, { recursive: true });
 let failures = 0;
 try {

@@ -24,7 +24,7 @@ async function rest(path, method = "GET", body) {
 await seedEmulator({ log: () => {} });
 for (const node of ["studentProgress", "sessions"]) await rest(`${node}/${anna.code}`, "DELETE");
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const consoleProblems = [];
 const watch = page => {
   page.on("pageerror", error => consoleProblems.push(`pageerror: ${error.message}`));

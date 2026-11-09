@@ -8,6 +8,7 @@ import { assessPlacement, canRetake, nextRetakeAt } from "../placement.js";
 import { dueState } from "../schedule.js";
 import { hasFeature } from "../features.js";
 import { mountOfflineBanner, watchConnection } from "../shell.js";
+import { applyPersistence } from "../auth-persistence.js";
 mountOfflineBanner();
 import { classRows, lastClass, monthlyTotalSeconds } from "../clock-report.js";
 import { formatDuration } from "../lesson-clock.js";
@@ -96,9 +97,7 @@ async function doLogin(){
   if (!code) { showAlert('Please enter your student code.', 'error'); return; }
   try {
   await configReady;
-  await firebase.auth().setPersistence(document.getElementById('rememberMe').checked
-    ? firebase.auth.Auth.Persistence.LOCAL
-    : firebase.auth.Auth.Persistence.SESSION);
+  await applyPersistence(firebase.auth(), document.getElementById('rememberMe').checked);
   // The rules only let signed-in users read a student record, so a first-time code login must
   // have an (anonymous) identity before the lookup. Existing sessions are reused.
   if (!firebase.auth().currentUser) {
@@ -145,9 +144,7 @@ function doRegister(){
   if (name.length < 2) { showAlert('Name must be at least 2 characters.', 'error'); return; }
   configReady.then(async function() {
     const remember = document.getElementById('rememberRegister').checked;
-    await firebase.auth().setPersistence(remember
-      ? firebase.auth.Auth.Persistence.LOCAL
-      : firebase.auth.Auth.Persistence.SESSION);
+    await applyPersistence(firebase.auth(), remember);
     if(firebase.auth().currentUser)await firebase.auth().signOut();
     const credential = await firebase.auth().signInAnonymously();
     let code = '';
@@ -183,9 +180,7 @@ function doRegister(){
 async function doGoogleLogin() {
   try {
     await configReady;
-    await firebase.auth().setPersistence(safeLocal.getItem('nd_remember_student') === 'true'
-      ? firebase.auth.Auth.Persistence.LOCAL
-      : firebase.auth.Auth.Persistence.SESSION);
+    await applyPersistence(firebase.auth(), safeLocal.getItem('nd_remember_student') === 'true');
     const provider = new firebase.auth.GoogleAuthProvider();
     const result = await firebase.auth().signInWithPopup(provider);
     const user = result.user;
@@ -691,9 +686,7 @@ installDelegatedActions({
 });
 
 configReady.then(async function() {
-  await firebase.auth().setPersistence(safeLocal.getItem('nd_remember_student') === 'true'
-    ? firebase.auth.Auth.Persistence.LOCAL
-    : firebase.auth.Auth.Persistence.SESSION);
+  await applyPersistence(firebase.auth(), safeLocal.getItem('nd_remember_student') === 'true');
   const identity = storedIdentity();
   if (identity.code && identity.name) {
     try {

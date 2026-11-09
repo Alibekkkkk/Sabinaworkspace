@@ -42,7 +42,7 @@ for (const [lessonId, { lesson, clip }] of Object.entries(clips)) {
   await rest(`protectedContent/${lessonId}/clip`, "PUT", { sourceFile: `clips/${clip.id}.json`, content: clip });
 }
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 const watch = (page, label) => {
   page.on("pageerror", error => { console.log(`pageerror: ${error.message}`); problems.push(`${label} pageerror: ${error.message}`); });

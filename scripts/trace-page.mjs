@@ -11,7 +11,7 @@ const BASE = process.env.SITE || "http://127.0.0.1:5050/";
 const [label = "page", target = "portal.html", output] = process.argv.slice(2);
 const executable = [process.env.CHROME_PATH, "C:/Program Files/Google/Chrome/Application/chrome.exe", "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", "C:/Program Files/Microsoft/Edge/Application/msedge.exe", "/usr/bin/google-chrome", "/usr/bin/chromium"].filter(Boolean).find(path => existsSync(path));
 await seedEmulator({ log: () => {} });
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 try {
   const page = await browser.newPage(); await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true });
   await page.goto(`${BASE}portal.html`, { waitUntil: "networkidle2" }); await page.waitForSelector("#loginCode");

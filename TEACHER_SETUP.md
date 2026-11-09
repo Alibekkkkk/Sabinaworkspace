@@ -91,3 +91,43 @@ The sample is tagged A2 for its short sentences, but `content/gaziz.json` has no
 - Stopping the lesson clock saves a picture of every page of the class board for that student (they find it under **Snapshots from your teacher**). **Save as, Send snapshot to student** does the same at any time.
 - Students cannot add pages to the class board; you can. Each student also has a private board that only they and you can read.
 - Deploy: the new database rules (`whiteboards`) must be published with the rest of `database.rules.json`.
+
+## Switch features on or off for a student (Phase 7 and later)
+
+On the dashboard, select a student and use the **Feature flags** card: Manga reader (off until you switch it on), Clip Lab, Whiteboard and Listening trainer. A student without a feature sees a friendly "not switched on" page, and for manga the database also refuses the story. **Use default** removes your override. Screenshot: `docs/screenshots/phase7/teacher-manga-card.png`.
+
+## Manga Reader (current format, replaces the older notes above)
+
+Stories use the version 2 format (`docs/MANGA.md`): pages with panel and bubble boxes, credits and rights, questions, boss and retell. Make one without writing JSON in `tools/import-content.html` > **Make a manga draft**: write a script or CSV and press **Turn it into a draft** (the **Show an example script** button fills a complete example), then draw panel and bubble boxes on each page image (or type their numbers), **Put this page in the draft**, **Validate manga draft**, download to `content/manga/`, add the answer keys (JSON keyed by story id, see `docs/manga/gaziz-demo.answers.json`) and use **Import content**. Page images go in `assets/manga/` (local files only, each under 250 kB, run `npm run check:manga`). Use only original art or openly licensed work with its licence and address in the credits; never scans. Assign a chapter with a due date from the dashboard **Manga Reader** card. Written answers and retells arrive in the review queue.
+
+## Run a class
+
+1. Open the student's lesson link (`lesson.html?code=<CODE>&lesson=<ID>`) with them; from the dashboard, select the student.
+2. **Lesson clock** card: Start, Pause, Resume, Stop (the student sees the same time; the saved duration goes to the history, weekly summary and CSV). Sections show planned, actual and remaining time.
+3. **Send command to student** moves them to a stage or resets progress; **Lesson game mode** sets how game-like the lesson is.
+4. **Whiteboard** card: choose view, draw or teacher-only mode and open their board; stopping the clock saves a snapshot.
+5. Written answers the student sends appear in the review queue; level check results and the weekly summary are on the same page.
+
+## Assign with a schedule and read reports
+
+Give a lesson or homework an available-from, due and closing time in the schedule list (and **duplicate to next week**); students see "Due in 2 days", "Overdue" or "Locked until…" and the database refuses locked content early. Run **Import content** after changing dates. Reports: **Practice games and weak topics**, **Games & mastery**, **Clip Lab**, **Manga Reader** and **Listening practice** cards, plus the weekly summary download.
+
+## Student data: export and delete
+
+Dashboard > student > **Student data and privacy**: **Download all data (JSON)** for a copy, or type the student's code and **Delete all data**. It cannot be undone. What is stored and for how long: `docs/PRIVACY.md`.
+
+## Errors a student's browser reported
+
+The **Recent errors** card lists the codes students see on screen ("Something went wrong. Code: E-XXXXXX"). Ask a student for the code, find it here, then **Clear these reports** when done.
+
+## Languages
+
+Students can switch the shared interface between English, Russian and Kazakh (a picker next to the theme button). The Russian and Kazakh text is a machine-made draft in `locales/ru.json` and `locales/kk.json`: have a native speaker check it. Most page text is still English.
+
+## Backups and restore
+
+Firebase does not give you a one-click restore for the Realtime Database by default. Before changing rules or importing content: in the Firebase console open **Realtime Database > Data > ⋮ > Export JSON** and keep the file; save the current rules text too. To restore, **Import JSON** at the node you exported (use a specific path, not the root, so you do not overwrite newer data), and paste the saved rules back. The repository holds the content files (`content/`), so protected content can be re-imported with **Import content**. Student progress exists only in the database, so a regular export is the only backup of it.
+
+## Before the first deployment
+
+Read `docs/SECURITY.md` (runbook, headers, offline and protected content) and `docs/KNOWN-LIMITATIONS.md`. Nothing is deployed from this repository automatically.

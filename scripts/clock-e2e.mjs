@@ -29,7 +29,7 @@ await seedEmulator({ log: () => {} });
 await rest(`lessonClock/${anna.code}`, "DELETE");
 await rest(`lessonClockLog/${anna.code}`, "DELETE");
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 try {
   // ---- student, in its own browser session, with a clock that is 10 minutes fast
   const studentContext = await browser.createBrowserContext();

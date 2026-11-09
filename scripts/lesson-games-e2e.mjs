@@ -33,7 +33,7 @@ await rest(`protectedContent/${anna.lessonId}/classwork`, "PUT", { sourceFile: "
 for (const node of ["sessions", "studentProgress"]) await rest(`${node}/${anna.code}`, "DELETE");
 await rest(`studentCurriculum/${anna.code}/${anna.lessonId}/gameMode`, "PUT", "off");
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 const watch = (page, label) => {
   page.on("pageerror", error => problems.push(`${label} pageerror: ${error.message}`));

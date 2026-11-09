@@ -23,7 +23,7 @@ await rest(`sessions/${anna.code}/state`, "PUT", { stage: 3 });
 await rest(`studentFeatures/${anna.code}`, "PUT", { mangaReader: true });
 await rest(`mangaAssignments/${anna.code}/gaziz-demo/first-seeds`, "PUT", { assignedAt: Date.now() });
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 try {
   const context = await browser.createBrowserContext(); const page = await context.newPage();

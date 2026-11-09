@@ -30,7 +30,7 @@ await seedEmulator({ log: () => {} });
 await rest(`protectedContent/${anna.lessonId}/classwork`, "PUT", { sourceFile: "sabina.json", content: sample });
 await rest(`studentProgress/${anna.code}`, "PUT", { xp: 0, level: 1, gems: 0, hearts: 5, streak: 0 });
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 try {
   const page = await browser.newPage();

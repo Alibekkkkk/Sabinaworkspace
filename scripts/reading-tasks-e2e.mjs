@@ -30,7 +30,7 @@ await rest(`sessions/${anna.code}/draft`, "DELETE");
 await rest(`sessions/${anna.code}/reviewQueue`, "DELETE");
 await setStatus("draft");
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const openReading = async page => {
   await page.waitForSelector("#stageList .stage-sub-item", { timeout: 25000 });
   await page.evaluate(() => { [...document.querySelectorAll("#stageList .stage-sub-item")].find(item => item.textContent.includes("Interactive Video")).click(); });

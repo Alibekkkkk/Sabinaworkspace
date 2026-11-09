@@ -12,7 +12,7 @@ const check = (condition, message) => { console.log(`${condition ? "ok  " : "FAI
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(fn, ms = 15000, step = 100) { const end = Date.now() + ms; while (Date.now() < end) { const value = await fn(); if (value) return value; await sleep(step); } return false; }
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 try {
   const context = await browser.createBrowserContext(); const page = await context.newPage();
   const problems = [];

@@ -55,7 +55,7 @@ const FAKE_YT = () => {
   } };
 };
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 const watch = (page, label, ignore = /^$/) => {
   page.on("pageerror", error => { console.log(`pageerror: ${error.message}`); problems.push(`${label} pageerror: ${error.message}`); });

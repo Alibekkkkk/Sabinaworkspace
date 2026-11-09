@@ -22,7 +22,7 @@ const server = createServer((request, response) => {
 });
 await new Promise(done => server.listen(0, "127.0.0.1", done));
 const browserPath = [process.env.CHROME_PATH, "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", "/usr/bin/google-chrome", "/usr/bin/chromium"].filter(Boolean).find(path => existsSync(path));
-const browser = await puppeteer.launch({ executablePath: browserPath, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: browserPath, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const port = Number(new URL(browser.wsEndpoint()).port);
 try {
   for (const page of process.argv.slice(2)) {

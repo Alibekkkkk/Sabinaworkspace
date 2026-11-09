@@ -36,7 +36,7 @@ for (const code of [anna.code, ben.code]) await rest(`studentCurriculum/${code}/
 await rest(`curriculum/${LESSON}`, "PUT", { ...lessonRecord, assignedTo: [anna.code] });
 await rest(`protectedContent/${LESSON}/manga`, "PUT", { sourceFile: "manga/gaziz-demo.json", content: addProtectedMangaAnswers(story, answers) });
 
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 const watch = (page, label) => {
   page.on("pageerror", error => { console.log(`pageerror: ${error.message}`); problems.push(`${label} pageerror: ${error.message}`); });

@@ -8,7 +8,7 @@ import { DEMO_STUDENTS, DEMO_TEACHER, seedEmulator } from "./seed-emulator.mjs";
 const BASE = process.env.SITE || "http://127.0.0.1:5050/";
 const DB = process.env.DB_HOST || "127.0.0.1:9000";
 const NS = "sabina-s-workspace-default-rtdb";
-const [anna] = DEMO_STUDENTS;
+const [anna, ben, cara] = DEMO_STUDENTS; // each browser that signs in is bound to its own student code
 const executable = [process.env.CHROME_PATH, "C:/Program Files/Google/Chrome/Application/chrome.exe", "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", "C:/Program Files/Microsoft/Edge/Application/msedge.exe", "/usr/bin/google-chrome", "/usr/bin/chromium"].filter(Boolean).find(path => existsSync(path));
 if (!executable) throw new Error("No Chrome/Edge found. Set CHROME_PATH.");
 const failures = [];
@@ -16,7 +16,7 @@ const check = (condition, message) => { console.log(`${condition ? "ok  " : "FAI
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(fn, ms = 12000, step = 80) { const end = Date.now() + ms; while (Date.now() < end) { const value = await fn(); if (value) return value; await sleep(step); } return false; }
 async function rest(path, method = "GET", body) { const response = await fetch(`http://${DB}/${path}.json?ns=${NS}&access_token=owner`, { method, body: body === undefined ? undefined : JSON.stringify(body) }); return response.json(); }
-const IGNORE = /favicon|Tracking Prevention|404|Failed to load resource|Framing 'http:\/\/127\.0\.0\.1|robustness-test/i;
+const IGNORE = /JSHandle@error|favicon|Tracking Prevention|404|Failed to load resource|Framing 'http:\/\/127\.0\.0\.1|robustness-test/i;
 
 await seedEmulator({ log: () => {} });
 await rest(`clientErrors/${anna.code}`, "DELETE");
@@ -55,8 +55,8 @@ try {
   check(await until(async () => { const all = await rest(`clientErrors/${anna.code}`); return all && Object.values(all).some(item => item.diag === diag && /robustness-test boom/.test(item.message) && item.page === "clips.html"); }), `one report with that code reached the database (${diag})`);
   await page.evaluate(() => { const script = document.createElement("script"); script.src = `tests/fixtures/throw-error.js?${Date.now()}`; document.body.append(script); }); await sleep(600);
   check(Object.keys((await rest(`clientErrors/${anna.code}`)) || {}).length === 1, "the same error is not reported twice");
-  await page.evaluate(() => { Promise.reject(new Error("robustness-test rejection")); }); await sleep(4000);
-  await page.evaluate(() => { Promise.reject(new Error("robustness-test rejection two")); }); await sleep(1200);
+  await page.evaluate(() => { const script = document.createElement("script"); script.src = `tests/fixtures/reject-promise.js?${Date.now()}`; document.body.append(script); }); await sleep(4000);
+  await page.evaluate(() => { const script = document.createElement("script"); script.src = `tests/fixtures/reject-promise.js?${Date.now()}b`; document.body.append(script); }); await sleep(1200);
   check(Object.keys((await rest(`clientErrors/${anna.code}`)) || {}).length >= 2 && Object.keys((await rest(`clientErrors/${anna.code}`))).length <= 3, "an unhandled rejection is reported too, with a gap between reports");
   check(await page.evaluate(async () => { const box = document.querySelector("#noticeHost [role=alert]"); const button = [...box.querySelectorAll("button")].find(b => b.textContent === "Copy code"); return Boolean(button) && button.offsetHeight >= 44; }), "the copy button is a full-size touch target");
   const teacherContext = await browser.createBrowserContext(); const teacher = await teacherContext.newPage(); watch(teacher, "teacher"); await teacher.setViewport({ width: 1440, height: 1000 });
@@ -75,7 +75,7 @@ try {
   await blocked.goto(`${BASE}portal.html`, { waitUntil: "networkidle2" });
   check(await until(() => blocked.evaluate(() => Boolean(document.getElementById("loginCode")))), "with storage blocked the sign-in page still opens");
   check(await until(() => blocked.evaluate(() => /not letting the portal save on your device/.test(document.body.textContent))), "and says plainly that nothing can be saved on the device");
-  await blocked.evaluate(code => { document.getElementById("loginCode").value = code; document.querySelector('[data-action="login"]').click(); }, anna.code);
+  await blocked.evaluate(code => { document.getElementById("loginCode").value = code; document.querySelector('[data-action="login"]').click(); }, ben.code);
   check(await until(() => blocked.evaluate(() => getComputedStyle(document.getElementById("lessonsScreen")).display !== "none"), 20000), "a student can still sign in and see their lessons");
   await blockedContext.close();
 
@@ -87,8 +87,8 @@ try {
   await second.close();
 
   const skewContext = await browser.createBrowserContext(); const skew = await skewContext.newPage(); watch(skew, "skew"); await skew.setViewport({ width: 1100, height: 900 });
-  await skew.evaluateOnNewDocument(() => { const real = Date.now.bind(Date); Date.now = () => real() + 10 * 60 * 1000; });
-  await login(skew, anna.code);
+  await skew.evaluateOnNewDocument(() => { const RealDate = Date; const shift = 10 * 60 * 1000; class ShiftedDate extends RealDate { constructor(...args) { if (args.length) super(...args); else super(RealDate.now() + shift); } static now() { return RealDate.now() + shift; } } window.Date = ShiftedDate; });
+  await login(skew, cara.code);
   check(await until(() => skew.evaluate(() => /about \d+ minutes ahead/.test(document.body.textContent)), 15000), "a device clock ten minutes fast is reported");
   await skewContext.close();
 

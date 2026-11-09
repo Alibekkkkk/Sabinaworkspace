@@ -33,7 +33,7 @@ const server = createServer((request, response) => {
 });
 await new Promise(done => server.listen(0, "127.0.0.1", done));
 const base = `http://127.0.0.1:${server.address().port}/`;
-const browser = await puppeteer.launch({ executablePath: browserPath, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: browserPath, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const port = Number(new URL(browser.wsEndpoint()).port);
 const rows = []; let failed = 0;
 try {

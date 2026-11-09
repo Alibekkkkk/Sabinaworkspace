@@ -24,7 +24,7 @@ async function rest(path, method = "GET", body) {
 }
 await seedEmulator({ log: () => {} });
 await rest("whiteboards", "DELETE");
-const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox"] });
+const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const problems = [];
 const watch = (page, label) => {
   page.on("pageerror", error => problems.push(`${label} pageerror: ${error.message}`));
