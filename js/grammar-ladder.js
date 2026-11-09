@@ -20,7 +20,12 @@ const ID_PATTERN = /^[A-Za-z0-9_.-]{3,64}$/;
 
 // Realtime Database keys cannot contain ".", and draft keys are limited to 64 characters.
 export function ladderKey(id) {
-  return `lad_${String(id).replace(/[^A-Za-z0-9_-]/g, "_")}`.slice(0, 64);
+  return `lad_${String(id).replace(/[^A-Za-z0-9_-]/g, "_")}`.slice(0, 60);
+}
+
+// Draft key for "this item was answered correctly" (the typed text itself is stored under ladderKey).
+export function ladderOkKey(id) {
+  return `${ladderKey(id)}_ok`;
 }
 
 const words = text => String(text || "").split(/\s+/).filter(Boolean);

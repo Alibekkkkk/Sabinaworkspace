@@ -16,6 +16,14 @@
 - Teacher overrides of the planned minutes are stored per student (`studentCurriculum/<code>/<lessonId>/sectionOverrides`), not in the protected lesson content.
 - `npm run lint:content` checks schema/sections (errors) and target vocabulary, grammar-structure counts, reading time and short answers (warnings). Findings are in `docs/CONTENT_REVIEW.md`.
 
+**Grammar ladder (Part B3)**
+- Rule card (formula, 2 contrasting examples, common mistakes for Kazakh and Russian speakers) is shown at the top of the Grammar stage 4. The six-step ladder (Notice, Complete, Build, Correct the error, Transform, Use it yourself) is added at the end of stage 8. Steps unlock one after another; every wrong answer shows its explanation, and "Show answer" appears after the first miss.
+- Content lives in the lesson file under `grammarLadder` with item metadata `{id, prompt, answers[], explanation, tags[]}` and stable ids. `js/grammar-ladder.js` validates it (also run by `npm run lint:content`).
+- Step 6 asks for 2-3 original sentences, a self-check checklist and at most 300 characters; the text goes to the teacher's review queue. A missing target structure is only a hint.
+- **Approval gate:** `status: "draft"` is visible only in teacher preview (with a banner). Sabina's present-perfect ladder is a draft that needs your review; set `"status": "approved"` in `content/sabina.json` to show it to the student.
+- The ladder does not change the existing stage scores. Progress is saved in the lesson draft.
+- Evidence: 9 unit tests, `npm run test:ladder-e2e` (26 checks: draft hidden from student, order of unlocking, explanations, tiles, review queue, refresh keeps progress), axe clean and no horizontal scroll at 1440/390/320.
+
 ## Evidence
 
 | Check | Result | Repeat |
@@ -35,7 +43,7 @@ Revision conflicts: a write is only accepted when its `rev` is the stored `rev` 
 
 ## Not done
 
-- **Vocabulary word families, the grammar exercise ladder and the new reading question types** (B2 to B4 in the brief). They add lesson content and authoring tools and need your approval of the content design; see section 5 of `docs/CONTENT_REVIEW.md`.
+- **Vocabulary word families and the new reading question types** (B2 and B4 in the brief). They add lesson content and authoring tools and need your approval of the content design; see section 5 of `docs/CONTENT_REVIEW.md`.
 - **CEFR word-level check** (needs an openly licensed word list saved locally) and the **grammar-structure check** (needs a `topic` on each grammar section).
 - **"Lock while paused"** toggle (optional in the brief) and the **per-stage time-on-stage analytics derived from section events**; the existing per-stage views are unchanged.
 - **Final-test countdown** still has its own timer; it was left as the brief asked and is not tied to the lesson clock.

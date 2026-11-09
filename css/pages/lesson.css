@@ -328,7 +328,7 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .section-bar__next { align-self: center; }
 .section-bar[data-clock-state="paused"] { opacity: 0.8; }
 .section-bar[data-clock-state="paused"] .ds-progress__fill { background-image: repeating-linear-gradient(45deg, transparent 0 6px, color-mix(in srgb, var(--ds-color-surface) 50%, transparent) 6px 12px); }
-.section-bar[data-clock-state="idle"] .section-segment__remaining::before { content: "Not started  b7 "; }
+.section-bar[data-clock-state="idle"] .section-segment__remaining::before { content: "Not started \00b7 "; }
 
 .class-summary { margin: var(--ds-space-3) var(--ds-space-4); }
 .class-summary h2 { margin: 0 0 var(--ds-space-2); }
@@ -347,3 +347,38 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .clock-panel__title { margin: 0; }
 .clock-panel__toggle { width: 100%; text-align: start; min-height: var(--ds-target); padding: 0; border: 0; background: transparent; color: var(--ds-color-text); font: 700 var(--ds-text-md) var(--ds-font-body); cursor: pointer; }
 .clock-panel [hidden] { display: none; }
+
+/* ---- grammar ladder ---- */
+.ladder { max-width: 1000px; margin: var(--ds-space-6) auto 0; display: grid; gap: var(--ds-space-4); }
+.ladder__title { margin: 0; }
+.ladder__progress { margin: 0; font-weight: 700; }
+.ladder-step { border: 2px solid var(--ds-color-border); border-radius: var(--ds-radius-md); padding: var(--ds-space-4); background: var(--ds-color-surface); }
+.ladder-step[data-state="done"] { border-color: var(--ds-color-success); }
+.ladder-step[data-state="locked"] { opacity: 0.7; border-style: dashed; }
+.ladder-step__head { margin: 0 0 var(--ds-space-3); display: flex; flex-wrap: wrap; gap: var(--ds-space-2); align-items: center; font-size: var(--ds-text-lg); }
+.ladder-step__num { font-size: var(--ds-text-sm); color: var(--ds-color-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.ladder-step__body[hidden], .ladder-step > p[hidden] { display: none; }
+.ladder-item { padding: var(--ds-space-3) 0; border-top: 1px solid var(--ds-color-border); display: grid; gap: var(--ds-space-2); }
+.ladder-item:first-child { border-top: 0; }
+.ladder-prompt { margin: 0; font-weight: 700; font-size: var(--ds-text-lg); }
+.ladder-given, .ladder-wrong, .ladder-right { margin: 0; font-size: var(--ds-text-lg); }
+.ladder-wrong { color: var(--ds-color-danger); }
+.ladder-right { color: var(--ds-color-success); }
+.ladder-note { display: block; font-size: var(--ds-text-sm); color: var(--ds-color-muted); }
+.ladder-row { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); align-items: center; }
+.ladder-input { flex: 1 1 16rem; min-width: 0; }
+.ladder-textarea { min-height: 7rem; }
+.ladder-rule { max-width: 1000px; margin: 0 auto var(--ds-space-4); }
+.ladder-formula { font: 800 var(--ds-text-xl) var(--ds-font-display); color: var(--ds-color-primary); margin: 0 0 var(--ds-space-3); }
+.ladder-examples { display: grid; gap: var(--ds-space-2); padding-left: 1.2rem; margin: 0 0 var(--ds-space-3); }
+.ladder-l1 summary { cursor: pointer; font-weight: 700; min-height: var(--ds-target); display: flex; align-items: center; }
+.ladder-l1__entry { border-left: 4px solid var(--ds-color-border-strong); padding-left: var(--ds-space-3); margin: var(--ds-space-2) 0; }
+.ladder-notice-text { line-height: 2.4; font-size: var(--ds-text-lg); margin: 0; }
+.ladder-token, .ladder-tile { min-height: 2.5rem; padding: 0.15rem 0.7rem; border: 2px solid var(--ds-color-border-strong); border-radius: var(--ds-radius-pill); background: var(--ds-color-surface); color: var(--ds-color-text); font: 700 var(--ds-text-md) var(--ds-font-body); cursor: pointer; }
+.ladder-token[aria-pressed="true"] { background: var(--ds-color-primary); color: var(--ds-color-on-primary); border-color: var(--ds-color-primary); text-decoration: underline; }
+.ladder-token:disabled, .ladder-tile:disabled { cursor: default; opacity: 0.6; }
+.ladder-tiles { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); min-height: 3rem; padding: var(--ds-space-2); border-radius: var(--ds-radius-sm); }
+.ladder-tiles--answer { border: 2px dashed var(--ds-color-border-strong); }
+.ladder-checklist { border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); padding: var(--ds-space-3); display: grid; gap: var(--ds-space-1); }
+.ladder-check { display: flex; gap: var(--ds-space-2); align-items: center; min-height: var(--ds-target); }
+.ladder-check input { width: 1.4rem; height: 1.4rem; }

@@ -10,6 +10,7 @@
     "check:visual": "node scripts/visual-check.mjs",
     "lint:content": "node scripts/lint-content.mjs",
     "test:clock-e2e": "node scripts/clock-e2e.mjs",
+    "test:ladder-e2e": "node scripts/ladder-e2e.mjs",
     "migrate:sections": "node scripts/migrate-sections.mjs",
     "audit:signed-in": "node scripts/audit-signed-in.mjs",
     "tokens:contrast": "node scripts/design-tokens.mjs",

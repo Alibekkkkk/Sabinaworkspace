@@ -13,6 +13,8 @@ import { confetti } from "../celebrate.js";
 import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
 import { initLessonClock } from "../lesson-clock-ui.js";
 import { applySectionOverrides, buildSections } from "../sections.js";
+import { validateLadder } from "../grammar-ladder.js";
+import { renderGrammarLadder, renderRuleCard } from "../grammar-ladder-ui.js";
 
 mountOfflineBanner();
 mountBottomNav("lesson");
@@ -59,6 +61,28 @@ function getCurrentLesson(){
 }
 function stagesOf(lesson){ return lesson && Array.isArray(lesson.stages) && lesson.stages.length ? lesson.stages : DEFAULT_STAGES; }
 // ---- lesson clock (teacher-controlled, shared by teacher and student) ----
+// ---- grammar ladder (rule card on the first grammar stage, six production steps after the last) ----
+let grammarLadder = null;
+function ladderShown(){ return Boolean(grammarLadder) && (grammarLadder.status==='approved' || teacherMode); }
+function decorateGrammarStage(stageId){
+  if(!ladderShown())return;
+  const view=document.querySelector('#main .stage-view'); if(!view)return;
+  if(stageId===4){
+    const card=renderRuleCard(grammarLadder);
+    const firstBox=view.querySelector('.g-box');
+    if(firstBox)view.insertBefore(card,firstBox); else view.insertBefore(card,view.firstChild);
+  } else if(stageId===8){
+    const ladderStore={
+      get:function(key){return draftAnswers[key]},
+      set:function(key,value){ if(teacherMode)return; draftAnswers[key]=value; debouncedSaveDraft(); }
+    };
+    view.append(renderGrammarLadder({
+      ladder:grammarLadder, store:ladderStore, isTeacher:teacherMode, stageId:8,
+      flag:function(id,prompt,answer,auto,extra){ flagForReview(id,prompt,answer,auto,8,extra); }
+    }));
+  }
+}
+
 let lessonClock = null;
 let lessonSections = null;
 function clockSeconds(){ return lessonClock ? lessonClock.elapsedSeconds() : 0; }
@@ -1535,6 +1559,7 @@ function renderStage(){
     const title = lesson ? lesson.title : 'Lesson'; const stageObj = stages.find(s => s.id === state.currentStage); const icon = (stageObj && stageObj.icon) ? stageObj.icon : '📘';
     const header = document.createElement('div'); header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
     if(stageIndex === 2) header.style.maxWidth = '1400px'; setHtml(header, `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`); main.insertBefore(header, main.firstChild);
+    decorateGrammarStage(state.currentStage);
   }catch(e){ console.error(e); setHtml(main, '<p>Error loading stage.</p>'); }
 }
 function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
@@ -1549,6 +1574,12 @@ async function applyLessonContent(c,sourceFile) {
   vocabMode=c.vocabMode||'tracked';
   schemaVersion=c.schemaVersion||1;
   lessonSections=Array.isArray(c.sections)?c.sections:null;
+  grammarLadder=null;
+  if(c.grammarLadder){
+    const ladderErrors=validateLadder(c.grammarLadder);
+    if(ladderErrors.length)console.warn('Grammar ladder ignored:',ladderErrors);
+    else grammarLadder=c.grammarLadder;
+  }
   if(lessonClock)lessonClock.refreshSections();
   if(crypto&&crypto.subtle){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(c)));contentHash=Array.from(new Uint8Array(bytes)).map(b=>b.toString(16).padStart(2,'0')).join('')}
   VOCAB         = c.vocab; MATCH_DATA    = c.matchData; READING_HTML  = c.readingHtml; READING_Q     = c.readingQ; CONTEXT_Q     = c.contextQ;
