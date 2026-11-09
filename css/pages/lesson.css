@@ -382,3 +382,17 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .ladder-checklist { border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); padding: var(--ds-space-3); display: grid; gap: var(--ds-space-1); }
 .ladder-check { display: flex; gap: var(--ds-space-2); align-items: center; min-height: var(--ds-target); }
 .ladder-check input { width: 1.4rem; height: 1.4rem; }
+
+/* ---- word families ---- */
+.wf { max-width: 1000px; margin: var(--ds-space-6) auto 0; display: grid; gap: var(--ds-space-3); }
+.wf__title, .wf-panel__title, .wf-panel__sub { margin: 0; }
+.wf__progress { margin: 0; font-weight: 700; }
+.wf-panel { display: grid; gap: var(--ds-space-3); padding: var(--ds-space-3); text-align: left; }
+.wf-forms { margin: 0; display: grid; gap: var(--ds-space-2); }
+.wf-forms__row { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--ds-space-3); border-top: 1px solid var(--ds-color-border); padding-top: var(--ds-space-2); }
+.wf-forms__pos { font-weight: 700; color: var(--ds-color-primary); text-transform: uppercase; font-size: var(--ds-text-sm); letter-spacing: 0.05em; }
+.wf-forms__word { margin: 0; display: grid; gap: 0.1rem; font-size: var(--ds-text-lg); }
+.wf-flag { color: var(--ds-color-danger); font-size: var(--ds-text-sm); font-weight: 700; }
+.wf-affixes { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: var(--ds-space-2); }
+.wf-affix { border: 1px solid var(--ds-color-border-strong); border-radius: var(--ds-radius-pill); padding: 0.2rem 0.7rem; font-size: var(--ds-text-sm); }
+@media (max-width: 480px) { .wf-forms__row { grid-template-columns: 1fr; gap: 0; } }

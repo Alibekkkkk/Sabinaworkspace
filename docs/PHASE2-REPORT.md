@@ -24,6 +24,15 @@
 - The ladder does not change the existing stage scores. Progress is saved in the lesson draft.
 - Evidence: 9 unit tests, `npm run test:ladder-e2e` (26 checks: draft hidden from student, order of unlocking, explanations, tiles, review queue, refresh keeps progress), axe clean and no horizontal scroll at 1440/390/320.
 
+**Word families (Part B2)**
+- Every target word can carry `vocab[].forms`: noun, verb, adjective, adverb, negative and one `other` form (each with an example sentence), plus `affixes` (part, prefix or suffix, meaning). A flashcard shows a "Word family" button that lists the forms, examples and word parts, with a Back button to the quiz.
+- "Form the word" sits under the flashcards: `Humid → (noun) ______`. The type rotates between choose, type and build from morphemes (tap prefix, root and suffix tiles, with distractor pieces). Wrong answers explain where the word comes from. Progress is saved in the lesson draft.
+- **Validation without a dictionary:** no openly licensed derivation list was available offline, so nothing is guessed. A form must share a stem (4+ letters) with the headword, spell out its `parts` (which must add up to the word), or be listed in an optional `content/wordlists/derivations.txt` (one word per line, record its licence). Anything else is a lint error that tells the author to list it under `forms.review`; review items are hidden from students and appear as warnings.
+- **Approval gate:** `forms.status` is `draft` or `approved` per word; students see approved families only. Seven of Sabina's words (flood, volcano, eruption, humid, deforestation, atmosphere, evacuation) have a draft family that needs your review; the other 13 words have no real derived forms and were left alone.
+- Authoring: the import tool (`tools/import-content.html`) has a "Word family helper". It proposes candidate forms from suffix and prefix patterns (not checked against a dictionary), the teacher ticks the real ones and writes examples, and it prints a `forms` block to paste into the lesson file.
+- Evidence: 7 unit tests; `npm run test:wordfamily-e2e` (15 checks: draft hidden from student, panel, all three exercise types solved, wrong answer explains, saved and restored after refresh); axe clean and no horizontal scroll at 1440/390/320.
+- **Fixed on the way:** flashcards could not be opened at all, because `openQuiz` assigned an undeclared variable (`s1CurrentIdx`), which throws in module code. It is now declared.
+
 ## Evidence
 
 | Check | Result | Repeat |
@@ -43,7 +52,7 @@ Revision conflicts: a write is only accepted when its `rev` is the stored `rev` 
 
 ## Not done
 
-- **Vocabulary word families and the new reading question types** (B2 and B4 in the brief). They add lesson content and authoring tools and need your approval of the content design; see section 5 of `docs/CONTENT_REVIEW.md`.
+- **The new reading question types** (B4 in the brief). They add lesson content and authoring tools and need your approval of the content design; see section 5 of `docs/CONTENT_REVIEW.md`.
 - **CEFR word-level check** (needs an openly licensed word list saved locally) and the **grammar-structure check** (needs a `topic` on each grammar section).
 - **"Lock while paused"** toggle (optional in the brief) and the **per-stage time-on-stage analytics derived from section events**; the existing per-stage views are unchanged.
 - **Final-test countdown** still has its own timer; it was left as the brief asked and is not tied to the lesson clock.

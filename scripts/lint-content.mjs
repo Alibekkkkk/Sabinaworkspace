@@ -9,6 +9,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateLadder } from "../js/grammar-ladder.js";
+import { parseDerivations, validateWordFamilies } from "../js/word-family.js";
 import { countWords, readingMinutes, validateSections } from "../js/sections.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -24,22 +25,31 @@ export const GRAMMAR_PATTERNS = Object.freeze({
 const plain = html => String(html || "").replace(/<[^>]*>/g, " ").replace(/&[a-z]+;/gi, " ");
 const normalise = text => plain(text).toLowerCase();
 
+// Words of a vocabulary item's word family (vocab[].forms[kind].w), whatever their review state.
+function formWords(item) {
+  if (!item || !item.forms || typeof item.forms !== "object") return [];
+  return Object.values(item.forms).filter(value => value && typeof value === "object" && !Array.isArray(value) && typeof value.w === "string").map(value => value.w);
+}
+
 function wordForms(word) {
   const base = word.toLowerCase().trim().replace(/^to\s+/, "");
   const stem = base.replace(/(e|y)$/, "");
   return [base, `${base}s`, `${base}es`, `${base}ed`, `${base}d`, `${base}ing`, `${stem}ies`, `${stem}ied`, `${stem}ing`, `${base}ly`];
 }
 
-export function lintContent(name, content, { wordlist = null } = {}) {
+export function lintContent(name, content, { wordlist = null, derivations = new Set() } = {}) {
   const errors = validateSections(content).map(message => `${message}`);
   if (content.grammarLadder !== undefined) errors.push(...validateLadder(content.grammarLadder).map(message => `grammarLadder: ${message}`));
   const warnings = [];
+  const families = validateWordFamilies(content.vocab, { derivations });
+  errors.push(...families.errors);
+  warnings.push(...families.warnings);
   const passage = normalise(content.readingHtml);
 
   // 1. target vocabulary in the passage
   const missing = [];
   for (const item of Array.isArray(content.vocab) ? content.vocab : []) {
-    const forms = new Set([item.en, ...(item.forms ? Object.values(item.forms).flatMap(value => (Array.isArray(value) ? value : [value])) : [])].filter(Boolean).flatMap(wordForms));
+    const forms = new Set([item.en, ...formWords(item)].filter(Boolean).flatMap(wordForms));
     const found = [...forms].some(form => new RegExp(`(^|[^a-z])${form.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-z]|$)`).test(passage));
     if (!found) missing.push(item.en);
   }
@@ -72,7 +82,7 @@ export function lintContent(name, content, { wordlist = null } = {}) {
 
   // 5. words above the lesson level (only with an openly licensed list supplied by the teacher)
   if (wordlist) {
-    const allowed = new Set([...wordlist, ...(Array.isArray(content.vocab) ? content.vocab.flatMap(item => wordForms(item.en)) : []), ...(content.allowWords || []).map(word => String(word).toLowerCase())]);
+    const allowed = new Set([...wordlist, ...(Array.isArray(content.vocab) ? content.vocab.flatMap(item => [item.en, ...formWords(item)].flatMap(wordForms)) : []), ...(content.allowWords || []).map(word => String(word).toLowerCase())]);
     const unknown = [...new Set(passage.match(/[a-z]{3,}/g) || [])].filter(word => !allowed.has(word) && !allowed.has(word.replace(/(ing|ed|es|s)$/, "")));
     if (unknown.length > 8) warnings.push(`${unknown.length} passage words are not in the word list (first: ${unknown.slice(0, 12).join(", ")}). Proper nouns can go in "allowWords".`);
   }
@@ -82,9 +92,11 @@ export function lintContent(name, content, { wordlist = null } = {}) {
 export function lintAll(directory = join(root, "content")) {
   const listPath = join(directory, "wordlists", "ngsl.txt");
   const wordlist = existsSync(listPath) ? new Set(readFileSync(listPath, "utf8").split(/\s+/).map(word => word.toLowerCase()).filter(Boolean)) : null;
+  const derivationsPath = join(directory, "wordlists", "derivations.txt");
+  const derivations = existsSync(derivationsPath) ? parseDerivations(readFileSync(derivationsPath, "utf8")) : new Set();
   return readdirSync(directory)
     .filter(file => file.endsWith(".json") && file !== "manifest.json" && !file.startsWith("homework_"))
-    .map(file => lintContent(file, JSON.parse(readFileSync(join(directory, file), "utf8")), { wordlist }));
+    .map(file => lintContent(file, JSON.parse(readFileSync(join(directory, file), "utf8")), { wordlist, derivations }));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

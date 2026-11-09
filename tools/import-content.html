@@ -44,7 +44,19 @@
     <textarea id="mangaAnswerKeys" spellcheck="false" autocomplete="off" placeholder='{"manga-id":{"question-id":"correct answer"}}'></textarea>
     <p>Correct answers are merged into the protected Firebase record and are not written to the public manga JSON.</p>
   </section>
+  <section aria-labelledby="wordFamilyTitle">
+    <h2 id="wordFamilyTitle">Word family helper</h2>
+    <p id="wordFamilyHelp">Type a target word. The tool proposes possible forms from common suffix and prefix patterns. It does not check a dictionary, so tick only forms you know are real words, write one example sentence for each, then copy the result into the word's <code>forms</code> in the lesson file. The result is saved as a draft.</p>
+    <label for="wordFamilyInput">Target word</label>
+    <input id="wordFamilyInput" type="text" autocomplete="off" spellcheck="false" aria-describedby="wordFamilyHelp">
+    <button id="wordFamilySuggest" type="button">Suggest forms</button>
+    <ul id="wordFamilyList"></ul>
+    <button id="wordFamilyBuild" type="button" disabled>Build forms JSON</button>
+    <p id="wordFamilyStatus" role="status">No word loaded.</p>
+    <textarea id="wordFamilyOutput" spellcheck="false" readonly aria-label="forms JSON"></textarea>
+  </section>
   <p id="status" role="status">Initializing Firebase…</p>
   <script type="module" src="../js/pages/tools-import-content.js"></script>
+  <script type="module" src="../js/pages/tools-word-family.js"></script>
 </body>
 </html>

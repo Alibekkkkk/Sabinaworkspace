@@ -299,7 +299,8 @@
     { "en": "flood", "emoji": "🌊", "meanings": [
       { "context": "water covering dry land", "pos": "noun", "ru": "наводнение, паводок", "ex": "A <b>flood</b> happens when water covers land that is usually dry." },
       { "context": "to cover with water", "pos": "verb", "displayEn": "to flood", "ru": "затоплять", "ex": "Heavy rain can <b>flood</b> the streets." }
-    ]},
+    ],
+    "forms": {"status": "draft", "noun": {"w": "flooding", "ex": "Flooding closed the main road for two days."}, "adjective": {"w": "flooded", "ex": "The flooded fields were full of brown water."}, "affixes": [{"part": "-ing", "type": "suffix", "meaning": "the action or result of the verb"}, {"part": "-ed", "type": "suffix", "meaning": "affected by the action"}]}},
     { "en": "heat wave", "emoji": "🥵", "meanings": [
       { "context": "a period of very hot weather", "pos": "noun", "ru": "волна жары", "ex": "A <b>heat wave</b> brings temperatures much higher than usual." }
     ]},
@@ -324,11 +325,13 @@
     { "en": "volcano", "emoji": "🌋", "meanings": [
       { "context": "a mountain that can erupt", "pos": "noun", "ru": "вулкан", "ex": "Active <b>volcanoes</b> send ash into the air and lava onto the ground." },
       { "context": "related to a volcano", "pos": "adjective", "displayEn": "volcanic", "ru": "вулканический", "ex": "The <b>volcanic</b> eruption was massive." }
-    ]},
+    ],
+    "forms": {"status": "draft", "adjective": {"w": "volcanic", "ex": "A volcanic island rose out of the sea.", "parts": ["volcan", "ic"]}, "other": {"label": "person", "w": "volcanologist", "ex": "A volcanologist studies how volcanoes work."}, "affixes": [{"part": "-ic", "type": "suffix", "meaning": "relating to"}]}},
     { "en": "eruption", "emoji": "💥", "meanings": [
       { "context": "when a volcano explodes", "pos": "noun", "ru": "извержение", "ex": "The <b>eruption</b> sent ash clouds into the sky." },
       { "context": "to explode", "pos": "verb", "displayEn": "to erupt", "ru": "извергаться", "ex": "The volcano could <b>erupt</b> at any moment." }
-    ]},
+    ],
+    "forms": {"status": "draft", "verb": {"w": "erupt", "ex": "Scientists think the mountain may erupt soon."}, "adjective": {"w": "eruptive", "ex": "The volcano entered a new eruptive phase.", "parts": ["erupt", "ive"]}, "affixes": [{"part": "-ive", "type": "suffix", "meaning": "tending to; relating to"}]}},
     { "en": "magnitude", "emoji": "📊", "meanings": [
       { "context": "the strength of an earthquake", "pos": "noun", "ru": "магнитуда", "ex": "The <b>magnitude</b> of an earthquake describes its strength." },
       { "context": "importance or scale", "pos": "noun", "ru": "масштаб, величина", "ex": "Few understood the <b>magnitude</b> of the disaster." }
@@ -342,18 +345,22 @@
     { "en": "humid", "emoji": "💧", "meanings": [
       { "context": "warm and wet in the air", "pos": "adjective", "ru": "влажный", "ex": "Warm, <b>humid</b> air rises quickly into the sky." },
       { "context": "the state of being wet", "pos": "noun", "displayEn": "humidity", "ru": "влажность", "ex": "The <b>humidity</b> in the jungle is very high." }
-    ]},
+    ],
+    "forms": {"status": "draft", "noun": {"w": "humidity", "ex": "The humidity was so high that the walls felt wet.", "parts": ["humid", "ity"]}, "verb": {"w": "humidify", "ex": "This machine will humidify the dry room.", "parts": ["humid", "ify"]}, "other": {"label": "opposite verb", "w": "dehumidify", "ex": "We dehumidify the cellar to stop the mould.", "parts": ["de", "humid", "ify"]}, "affixes": [{"part": "-ity", "type": "suffix", "meaning": "state or quality of being"}, {"part": "-ify", "type": "suffix", "meaning": "to make or become"}, {"part": "de-", "type": "prefix", "meaning": "remove; do the opposite"}]}},
     { "en": "deforestation", "emoji": "🪓", "meanings": [
       { "context": "the removal of many trees", "pos": "noun", "ru": "вырубка лесов", "ex": "<b>Deforestation</b> can make droughts worse." },
       { "context": "to remove trees", "pos": "verb", "displayEn": "to deforest", "ru": "вырубать леса", "ex": "Companies <b>deforest</b> large areas for farming." }
-    ]},
+    ],
+    "forms": {"status": "draft", "verb": {"w": "deforest", "ex": "Farmers continue to deforest the hills."}, "other": {"label": "opposite noun", "w": "reforestation", "ex": "Reforestation plants new trees where forests were cut down.", "parts": ["re", "forest", "ation"]}, "affixes": [{"part": "de-", "type": "prefix", "meaning": "remove; do the opposite"}, {"part": "re-", "type": "prefix", "meaning": "again"}, {"part": "-ation", "type": "suffix", "meaning": "the act or result of"}]}},
     { "en": "atmosphere", "emoji": "🌍", "meanings": [
       { "context": "the air around Earth", "pos": "noun", "ru": "атмосфера", "ex": "High pressure in the <b>atmosphere</b> can cause a heat wave." }
-    ]},
+    ],
+    "forms": {"status": "draft", "adjective": {"w": "atmospheric", "ex": "Atmospheric pressure falls before a storm.", "parts": ["atmospher", "ic"]}, "affixes": [{"part": "-ic", "type": "suffix", "meaning": "relating to"}]}},
     { "en": "evacuation", "emoji": "🚨", "meanings": [
       { "context": "organized removal from danger", "pos": "noun", "ru": "эвакуация", "ex": "The <b>evacuation</b> of the coastal town began at dawn." },
       { "context": "to move to a safe place", "pos": "verb", "displayEn": "to evacuate", "ru": "эвакуировать", "ex": "They had to <b>evacuate</b> the town." }
-    ]}
+    ],
+    "forms": {"status": "draft", "verb": {"w": "evacuate", "ex": "Police ordered everyone to evacuate the coast."}, "other": {"label": "person", "w": "evacuee", "ex": "Each evacuee received a blanket and a meal.", "parts": ["evacu", "ee"]}, "affixes": [{"part": "-ee", "type": "suffix", "meaning": "person who is affected by the action"}]}}
   ],
   "matchData": [
     { "word": "blizzard", "meaning": "a long snowstorm with strong winds" },

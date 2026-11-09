@@ -6,14 +6,14 @@ import {
   MAX_PRODUCE_CHARS, noticeTokens, STEP_TITLES
 } from "./grammar-ladder.js";
 
-function el(tag, className, text) {
+export function el(tag, className, text) {
   const element = document.createElement(tag);
   if (className) element.className = className;
   if (text !== undefined) element.textContent = text;
   return element;
 }
 
-function button(label, className = "ds-btn ds-btn--secondary ds-btn--small", handler) {
+export function button(label, className = "ds-btn ds-btn--secondary ds-btn--small", handler) {
   const element = el("button", className, label);
   element.type = "button";
   if (handler) element.addEventListener("click", handler);
@@ -21,7 +21,7 @@ function button(label, className = "ds-btn ds-btn--secondary ds-btn--small", han
 }
 
 // A feedback sheet: icon + words + reason, never colour alone.
-function feedbackBox() {
+export function feedbackBox() {
   const box = el("div", "ds-feedback");
   box.setAttribute("role", "status");
   box.setAttribute("aria-live", "polite");

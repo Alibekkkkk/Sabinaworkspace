@@ -15,6 +15,8 @@ import { initLessonClock } from "../lesson-clock-ui.js";
 import { applySectionOverrides, buildSections } from "../sections.js";
 import { validateLadder } from "../grammar-ladder.js";
 import { renderGrammarLadder, renderRuleCard } from "../grammar-ladder-ui.js";
+import { familyVisible } from "../word-family.js";
+import { renderFamilyPanel, renderFormTheWord } from "../word-family-ui.js";
 
 mountOfflineBanner();
 mountBottomNav("lesson");
@@ -647,7 +649,7 @@ function flagForReview(qId,prompt,studentAnswer,autoResult,stageId,extra){
   appendBoundedRealtimeRecord(sessionRef.child('reviewQueue'),payload).then(function(){ broadcastAction('review_flagged',prompt.substring(0,40)); }).catch(function(e){alert('Failed to send: '+e.message)});
 }
 
-let s1Filter='learning', vocabState={}, vocabCloudLoaded=false, s1VisibleList=[], quizWord=null, quizMeanings=[], quizCurrentIdx=0, quizRoundWrongs=0, quizAnswers={}, quizOptionsCache={}, quizHintShown=false, quizRoundFinalized=false, practiceMode=false, practiceQueue=[], practiceIdx=0;
+let s1CurrentIdx=0, s1Filter='learning', vocabState={}, vocabCloudLoaded=false, s1VisibleList=[], quizWord=null, quizMeanings=[], quizCurrentIdx=0, quizRoundWrongs=0, quizAnswers={}, quizOptionsCache={}, quizHintShown=false, quizRoundFinalized=false, practiceMode=false, practiceQueue=[], practiceIdx=0;
 
 function vocabKey(){return 'vocab_'+state.currentLessonId}
 function loadVocabStateLocal(){try{vocabState=studentStorage?studentStorage.get(vocabKey())||{}:{}}catch(e){console.error('Unable to load vocabulary state',e);vocabState={}}}
@@ -667,6 +669,25 @@ function getWordStatus(word){ const w = VOCAB.find(x => x.en === word); if(!w) r
 function getVocabCounts(){ const c={learning:0,learned:0,practice:0}; VOCAB.forEach(function(w){c[getWordStatus(w.en)]++}); return c; }
 function shouldShowPractice(){ if(vocabMode==='preLearned') return false; if(!Object.keys(vocabState).length)return false; return Object.keys(vocabState).some(function(w){return getWordStatus(w)!=='learned'}); }
 
+// ---- word families (flashcard "Word family" panel and the "Form the word" exercise) ----
+function wordFamilyStore(){
+  return {
+    get:function(key){return draftAnswers[key]},
+    set:function(key,value){ if(teacherMode)return; draftAnswers[key]=value; debouncedSaveDraft(); }
+  };
+}
+function appendFormTheWord(view){
+  if(!VOCAB.some(function(w){return familyVisible(w,teacherMode)}))return;
+  const exercise=renderFormTheWord({vocab:VOCAB,store:wordFamilyStore(),isTeacher:teacherMode});
+  if(exercise)view.append(exercise);
+}
+function showWordFamily(){
+  const w=VOCAB.find(function(x){return x.en===quizWord}); const area=document.getElementById('fcRevealArea'); if(!w||!area)return;
+  const back=document.createElement('button'); back.type='button'; back.className='ds-btn ds-btn--secondary ds-btn--small'; back.textContent='← Back to the quiz';
+  back.addEventListener('click',function(){renderQuizModal()});
+  area.replaceChildren(renderFamilyPanel(w,{isTeacher:teacherMode}),back);
+}
+
 function renderStage1(){
   const main=document.getElementById('main'); if(!main)return; clearElement(main); loadVocabStateLocal();
   const v=document.createElement('div');v.className='stage-view active'; const counts=getVocabCounts(); const showPractice=shouldShowPractice();
@@ -678,7 +699,7 @@ function renderStage1(){
   '<button class="filt '+(s1Filter==='practice'?'active':'')+'" data-action="set-vocab-filter" data-filter="practice">🔁 Need Practice ('+counts.practice+')</button>'+
   '<button class="btn practice-btn'+(showPractice?' show':'')+'" data-action="start-practice">🎯 Practise</button>'+
   '</div><div class="flash-grid" id="flashGrid"></div>');
-  main.appendChild(v);main.appendChild(stageFooter(null,2)); renderFlashcards();
+  main.appendChild(v);main.appendChild(stageFooter(null,2)); renderFlashcards(); appendFormTheWord(v);
   if(fbConnected&&!vocabCloudLoaded){vocabCloudLoaded=true;loadVocabStateCloud().then(function(){renderStage()})}
 }
 function setFilter(f){s1Filter=f;renderStage()}
@@ -751,7 +772,7 @@ function renderQuizModal(){
   setHtml(document.getElementById('fcRevealArea'), html); document.getElementById('fcRevealArea').classList.add('show'); document.getElementById('fcCounter').textContent=(quizCurrentIdx+1)+' / '+quizMeanings.length;
   document.querySelector('.fc-modal-actions').style.display='none';
   const tools=document.querySelector('.fc-modal-tools');
-  if(tools){ setHtml(tools, '<button class="tool" data-action="quiz-speak">🔊 Listen</button>'+(teacherCanEdit?'<button class="tool" data-action="edit-flashcard-image">🖼️ Set image</button>':'')+(teacherCanEdit?'<button class="tool" data-action="undo-vocab-word" data-word="'+escapeAttr(quizWord)+'" data-meaning-index="'+realMeaningIdx+'" style="color:var(--error)">↺ Reset Word</button>':'')); }
+  if(tools){ setHtml(tools, '<button class="tool" data-action="quiz-speak">🔊 Listen</button>'+(familyVisible(w,teacherMode)?'<button class="tool" data-action="show-word-family">🌳 Word family</button>':'')+(teacherCanEdit?'<button class="tool" data-action="edit-flashcard-image">🖼️ Set image</button>':'')+(teacherCanEdit?'<button class="tool" data-action="undo-vocab-word" data-word="'+escapeAttr(quizWord)+'" data-meaning-index="'+realMeaningIdx+'" style="color:var(--error)">↺ Reset Word</button>':'')); }
   const nav=document.querySelector('.fc-modal-nav');if(nav)nav.style.display='';
   const navBtns=document.querySelectorAll('.fc-modal-nav button');
   if(navBtns.length>=2){ registerDelegatedClick(navBtns[0], quizPrev); registerDelegatedClick(navBtns[navBtns.length-1], quizNext); navBtns[navBtns.length-1].textContent=(quizCurrentIdx>=quizMeanings.length-1)?'Next Flashcard →':'Next →'; }
@@ -1682,6 +1703,7 @@ installDelegatedActions({
     if (options.includes(option)) answerQuiz(element);
   }),
   "quiz-speak": clickAction(quizSpeak),
+  "show-word-family": clickAction(showWordFamily),
   "restart-practice": clickAction(restartPractice),
   "reset-stage-2": clickAction(resetStage2),
   "speak-passage": clickAction(() => {

@@ -42,6 +42,6 @@ No grammar section has a `topic`, so the linter cannot yet check that the passag
 
 These change lesson content or add authoring tools, so they need your approval of the design first:
 
-1. **Vocabulary word families** (`vocab[].forms`, affixes, "Form the word" exercise, import-tool suggestions): needs an openly licensed derivation source for validating forms.
+1. ~~Vocabulary word families~~ built (see `docs/PHASE2-REPORT.md`). Sabina's seven families are drafts awaiting approval. An openly licensed derivation list (optional `content/wordlists/derivations.txt`) would let the linter confirm forms that do not share a stem with the headword.
 2. **Grammar exercise ladder** (notice, gap, build, correct, transform, produce) with rule cards and L1 error notes: needs new items per topic.
 3. **Reading question types** (long answer with rubric, true/false/not given with evidence quote, find-the-sentence, opinion question).
