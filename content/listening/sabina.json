@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "id": "sabina-natural-disasters",
+  "title": "Natural disasters: listen and type",
+  "level": "B1",
+  "status": "draft",
+  "voice": {
+    "id": "en-GB-SoniaNeural",
+    "provider": "browser",
+    "character": "nora"
+  },
+  "items": [
+    {
+      "id": "sabina-l-001",
+      "text": "The river has flooded the main road again.",
+      "gaps": {
+        "easy": [
+          1,
+          3
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Река снова затопила главную дорогу."
+      },
+      "lessonTags": [
+        "vocabulary:flood",
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-002",
+      "text": "Heavy rain has fallen on the town for three days.",
+      "gaps": {
+        "easy": [
+          0,
+          3
+        ],
+        "medium": [
+          0,
+          1,
+          3,
+          6,
+          8
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Сильный дождь идёт над городом уже три дня."
+      },
+      "lessonTags": [
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-003",
+      "text": "Rescue teams have helped many families to evacuate.",
+      "gaps": {
+        "easy": [
+          5,
+          7
+        ],
+        "medium": [
+          0,
+          3,
+          5,
+          7
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Спасательные команды помогли многим семьям эвакуироваться."
+      },
+      "lessonTags": [
+        "vocabulary:evacuation",
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-004",
+      "text": "The council has provided free food and water.",
+      "gaps": {
+        "easy": [
+          1,
+          3
+        ],
+        "medium": [
+          1,
+          3,
+          4,
+          7
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Совет предоставил бесплатную еду и воду."
+      },
+      "lessonTags": [
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-005",
+      "text": "A long drought has damaged the crops this summer.",
+      "gaps": {
+        "easy": [
+          2,
+          4
+        ],
+        "medium": [
+          1,
+          2,
+          4,
+          6,
+          8
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Долгая засуха повредила урожай этим летом."
+      },
+      "lessonTags": [
+        "vocabulary:drought",
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-006",
+      "text": "Scientists have measured the magnitude of the earthquake.",
+      "gaps": {
+        "easy": [
+          4,
+          7
+        ],
+        "medium": [
+          0,
+          2,
+          4,
+          7
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Учёные измерили магнитуду землетрясения."
+      },
+      "lessonTags": [
+        "vocabulary:magnitude",
+        "vocabulary:earthquake",
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-007",
+      "text": "Have you ever seen a tornado?",
+      "gaps": {
+        "easy": [
+          5
+        ],
+        "medium": [
+          2,
+          3,
+          5
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Ты когда-нибудь видел торнадо?"
+      },
+      "lessonTags": [
+        "vocabulary:tornado",
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-008",
+      "text": "The volcano has not erupted for two hundred years.",
+      "gaps": {
+        "easy": [
+          1,
+          4
+        ],
+        "medium": [
+          1,
+          4,
+          6,
+          7,
+          8
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Вулкан не извергался двести лет."
+      },
+      "lessonTags": [
+        "vocabulary:volcano",
+        "vocabulary:eruption",
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    },
+    {
+      "id": "sabina-l-009",
+      "text": "We haven't heard any news since the storm.",
+      "gaps": {
+        "easy": [
+          1,
+          2
+        ],
+        "medium": [
+          1,
+          2,
+          5,
+          7
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Мы не слышали никаких новостей со времени бури."
+      },
+      "lessonTags": [
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson",
+      "alternatives": {
+        "1": [
+          "havent"
+        ]
+      }
+    },
+    {
+      "id": "sabina-l-010",
+      "text": "The town is making a plan to build new defences.",
+      "gaps": {
+        "easy": [
+          3,
+          9
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "translation": {
+        "ru": "Город составляет план строительства новых защитных сооружений."
+      },
+      "lessonTags": [
+        "grammar:present perfect"
+      ],
+      "credits": "original sentence written for this lesson"
+    }
+  ]
+}
