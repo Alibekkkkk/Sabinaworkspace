@@ -177,6 +177,8 @@ try {
   check(/★★★/.test(resultText) && /mastered/.test(resultText), `a perfect clip is a mastered scene (${resultText})`);
   const progress = await rest(`studentProgress/${anna.code}`);
   check(progress && progress.xp > 0 && Object.values(progress.attempts || {}).some(a => a.gameId === "sample-flood-night"), `XP and the attempt are saved (${progress && progress.xp} XP)`);
+  const record = progress.clips && progress.clips["sample-flood-night"];
+  check(record && record.stars === 3 && record.attempts === 1 && Number.isFinite(record.seconds) && (record.weakLines || []).length === 0 && record.interactive === true, `the clip's own completion record is saved for the Clips tab and the teacher (${JSON.stringify(record)})`);
   check(progress.vocabulary && Object.keys(progress.vocabulary).length >= 1, "saving the clip lesson kept the saved word");
 
   // axe and phone

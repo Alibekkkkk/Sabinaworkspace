@@ -964,3 +964,26 @@ test("game mode on a student's lesson: teacher-set, three values, readable by th
   await assertSucceeds(get(ref(dbA, path)));
   await assertFails(get(ref(testEnv.authenticatedContext("student-b").database(), path)));
 });
+
+test("clip completion records: own progress only, bounded, stars 1 to 3, at most eight weak lines", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const path = "studentProgress/A111111/clips/sample-flood-night";
+  const record = { title: "Sample", completedAt: 1790000000000, score: 8, total: 10, stars: 2, lastStars: 2, attempts: 1, seconds: 300, interactive: true, weakLines: ["l1", "l3"] };
+  await testEnv.withSecurityRulesDisabled(async context => { await set(ref(context.database(), "studentProgress/A111111"), { xp: 0, level: 1 }); });
+  await assertSucceeds(set(ref(dbA, path), record));
+  await assertSucceeds(get(ref(teacher, path)));
+  await assertFails(set(ref(teacher, path), record));
+  await assertFails(set(ref(dbB, path), record));
+  await assertFails(get(ref(dbB, path)));
+  await assertFails(set(ref(dbA, path), { ...record, stars: 4 }));
+  await assertFails(set(ref(dbA, path), { ...record, stars: 0 }));
+  await assertFails(set(ref(dbA, path), { ...record, total: 0 }));
+  await assertFails(set(ref(dbA, path), { ...record, seconds: 90000 }));
+  await assertFails(set(ref(dbA, path), { ...record, weakLines: { 8: "l9" } }));
+  await assertFails(set(ref(dbA, path), { ...record, weakLines: ["bad id!"] }));
+  await assertFails(set(ref(dbA, path), { ...record, extra: 1 }));
+  await assertFails(set(ref(dbA, path), { score: 1 }));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/clips/x"), record));
+});

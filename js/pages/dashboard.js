@@ -513,12 +513,34 @@ function attachGameProgressListener() {
     renderGameAnalytics();
     renderListening();
     renderMastery();
+    renderClips();
     renderPlacementCard();
   }, function(error) {
     host.textContent = 'Practice data could not be loaded: ' + error.message;
     weeklyProgressLoaded = false;
     updateWeeklySummaryAvailability();
   });
+}
+
+function visibleLessonsWithClips() {
+  const out = {};
+  Object.keys(curriculum || {}).forEach(function(id) { const lesson = curriculum[id]; if (lesson && lesson.clipId && isLessonVisibleTo(lesson, activeCode)) out[id] = lesson; });
+  return out;
+}
+function renderClips() {
+  const host = document.getElementById('clipSummary');
+  if (!host) return;
+  import('../clips/dashboard-card.js').then(function(mod) {
+    mod.renderClipCard(host, {
+      lessons: visibleLessonsWithClips(), progress: activeGameProgress || {},
+      loadLines: function(lessonId, ids) {
+        return fbDb.ref('protectedContent/' + lessonId + '/clip/content/transcript').once('value').then(function(snapshot) {
+          const lines = snapshot.val() || []; const all = Array.isArray(lines) ? lines : Object.values(lines);
+          return ids.map(function(id) { const line = all.find(function(item) { return item && item.id === id; }); return line ? line.text : ''; }).filter(Boolean);
+        });
+      }
+    });
+  }).catch(function(error) { host.textContent = 'Clip results could not be shown: ' + error.message; });
 }
 
 function renderMastery() {

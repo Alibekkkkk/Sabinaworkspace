@@ -197,7 +197,8 @@ test("a clip lesson is summed from scored exercises only, misses become review i
   assert.equal(done.total, 1 + 2 + 6 + 3, "gist 1 + gaps 2 + dictation 6 words + order 3");
   assert.deepEqual(done.mistakes.map(m => m.itemId), ["demo-clip:g1", "demo-clip:dic"]);
   assert.ok(done.mistakes.every(m => m.topic.startsWith("Clip: ") && m.prompt && m.answer));
-  assert.deepEqual(summarise(clip, {}), { score: 0, total: 0, mistakes: [], pending: 0 });
+  assert.deepEqual(summarise(clip, {}), { score: 0, total: 0, mistakes: [], pending: 0, missedLines: [] });
+  assert.deepEqual(done.missedLines.sort(), ["l3"], "the missed dictation was about line l3, the missed gist is not about a line");
 });
 
 test("exercises can be suggested from the lines so teachers do not write them by hand", () => {

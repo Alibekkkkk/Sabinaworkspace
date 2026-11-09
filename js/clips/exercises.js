@@ -86,15 +86,31 @@ export function gradeExercise(clip, exercise, response) {
 
 // What a whole clip lesson was worth: only scored exercises count, each exercise's items sum.
 export function summarise(clip, responses) {
-  let score = 0; let total = 0; const mistakes = []; let pending = 0;
+  let score = 0; let total = 0; const mistakes = []; let pending = 0; const missedLines = new Set();
   for (const exercise of clip.exercises || []) {
     if (!(exercise.id in responses)) continue;
     const result = gradeExercise(clip, exercise, responses[exercise.id]);
     if (result.scored === false) { if (exercise.type === "production") pending += 1; continue; }
     score += result.score; total += result.total;
+    if (!result.correct) for (const id of linesOf(exercise)) missedLines.add(id);
     if (!result.correct) mistakes.push({ itemId: `${clip.id}:${exercise.id}`, prompt: exercise.prompt.slice(0, 300), answer: describeAnswer(clip, exercise).slice(0, 300), topic: `Clip: ${clip.title}`.slice(0, 80) });
   }
-  return { score, total, mistakes, pending };
+  return { score, total, mistakes, pending, missedLines: [...missedLines] };
+}
+
+// The transcript lines an exercise was about (so the teacher can see which lines a student struggled with).
+export function linesOf(exercise) {
+  if (exercise.lineId) return [exercise.lineId];
+  if (Array.isArray(exercise.lineIds)) return exercise.lineIds;
+  return [];
+}
+
+// What the student's record of a clip holds: bounded and safe to store.
+export function completionRecord(clip, summary, previous, now, seconds) {
+  const total = Math.max(1, summary.total); const score = summary.total ? summary.score : 1;
+  const accuracy = score / total; const stars = accuracy >= 0.9 ? 3 : accuracy >= 0.7 ? 2 : 1;
+  const best = previous && Number.isFinite(previous.stars) ? Math.max(previous.stars, stars) : stars;
+  return { title: String(clip.title).slice(0, 80), completedAt: now, score, total, stars: best, lastStars: stars, attempts: (previous && previous.attempts ? previous.attempts : 0) + 1, seconds: Math.max(0, Math.min(86400, Math.round(seconds + (previous && previous.seconds ? previous.seconds : 0)))), weakLines: summary.missedLines.slice(0, 8), interactive: clip.timingVerified === true };
 }
 
 export function describeAnswer(clip, exercise) {

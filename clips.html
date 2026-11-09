@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#141a25">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Clips | Learning Studio</title>
+  <script src="js/pwa.js" defer></script>
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components/controls.css">
+  <link rel="stylesheet" href="css/components/surfaces.css">
+  <link rel="stylesheet" href="css/components/feedback.css">
+  <link rel="stylesheet" href="css/pages/clips.css">
+</head>
+<body>
+  <main class="cl-shell">
+    <header class="cl-header">
+      <div>
+        <p class="muted">Clip Lab</p>
+        <h1 id="pageTitle">Your clips</h1>
+      </div>
+      <a class="ds-btn ds-btn--secondary" id="backLink" href="portal.html">Back to lessons</a>
+      <button class="theme-toggle" type="button" data-theme-toggle>☀️ Light mode</button>
+    </header>
+    <p id="status" role="status" aria-live="polite">Loading your clips…</p>
+    <section id="clFilters" class="ds-card cl-filters" aria-label="Find a clip" hidden>
+      <label class="ds-field"><span class="ds-field__label">Level</span><select class="ds-select" id="fLevel"><option value="">All levels</option></select></label>
+      <label class="ds-field"><span class="ds-field__label">Kind of video</span><select class="ds-select" id="fGenre"><option value="">All kinds</option></select></label>
+      <label class="ds-field"><span class="ds-field__label">Grammar</span><select class="ds-select" id="fGrammar"><option value="">All grammar</option></select></label>
+      <fieldset class="cl-status"><legend class="ds-field__label">Show</legend>
+        <label><input type="radio" name="fStatus" value="all" checked> All</label>
+        <label><input type="radio" name="fStatus" value="todo"> To do</label>
+        <label><input type="radio" name="fStatus" value="done"> Done</label>
+      </fieldset>
+    </section>
+    <p id="clCount" role="status" aria-live="polite" class="muted"></p>
+    <ul id="clList" class="cl-list"></ul>
+    <section id="clSoon" hidden aria-labelledby="clSoonTitle"><h2 id="clSoonTitle">Coming up</h2><ul id="clSoonList" class="cl-list"></ul></section>
+  </main>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script type="module" src="js/pages/clips.js"></script>
+  <script src="js/theme.js" defer></script>
+</body>
+</html>

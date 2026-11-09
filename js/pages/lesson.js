@@ -116,7 +116,7 @@ function currentSections(){
   return applySectionOverrides(lessonSections || buildSections({ vocab: VOCAB, readingHtml: READING_HTML, readingQ: READING_Q, contextQ: CONTEXT_Q }), overrides);
 }
 let lessonRole='student',lessonCodeGetter=function(){return ''},whiteboard=null;
-let gameMode='light',studentGameMode=null,contentGameMode=null,errorHuntContent=null,bossActive=false;
+let lessonClipId=null,gameMode='light',studentGameMode=null,contentGameMode=null,errorHuntContent=null,bossActive=false;
 applyCalm(loadSettings());
 function startLessonClock(isTeacherView, getCode){
   lessonRole=isTeacherView?'teacher':'student'; lessonCodeGetter=getCode;
@@ -503,7 +503,7 @@ function initFirebase(){
         const selected=lessonSnapshot.val();
         if(!selected)throw new Error('Lesson assignment was not found.');
         if(selected.published===false)throw new Error('This lesson is not published.');
-        studentGameMode=selected.gameMode||null; gameMode=resolveGameMode(studentGameMode,contentGameMode);
+        lessonClipId=/^[A-Za-z0-9][A-Za-z0-9_-]{1,59}$/.test(String(selected.clipId||''))?selected.clipId:null; studentGameMode=selected.gameMode||null; gameMode=resolveGameMode(studentGameMode,contentGameMode);
         let expectedFile=selected.classworkContentUrl||selected.contentUrl;
         if(!expectedFile) {
           const manifestResponse=await fetch('content/manifest.json',{cache:'no-store'});
@@ -1539,6 +1539,16 @@ function afterStageDone(stageId){
     import('../celebrate.js').then(function(c){c.confetti(120)});
   }
 }
+// A short video for this lesson, offered on the vocabulary and the first grammar stage. It opens in Clip Lab and comes back here.
+function decorateClipLink(stageId){
+  if(!lessonClipId||teacherMode||!studentContext||(stageId!==1&&stageId!==4))return;
+  const view=document.querySelector('#main .stage-view'); if(!view||view.querySelector('.gl-clip'))return;
+  const box=document.createElement('aside'); box.className='gl-clip'; box.setAttribute('aria-label','Video for this lesson');
+  const text=document.createElement('p'); text.textContent=stageId===1?'🎬 Watch a short video that uses these words.':'🎬 Watch a short video with this grammar in use.';
+  const link=document.createElement('a'); link.className='btn ghost'; link.textContent='Open the clip';
+  link.href='clip.html?code='+encodeURIComponent(studentContext.code)+'&lesson='+encodeURIComponent(state.currentLessonId)+'&from=lesson';
+  box.append(text,link); view.insertBefore(box,view.children[1]||null);
+}
 function decorateGameLayer(stageId){
   if(!modeAllows(gameMode,'mission'))return;
   const view=document.querySelector('#main .stage-view'); if(!view||view.querySelector('.gl-mission'))return;
@@ -1673,6 +1683,7 @@ function renderStage(){
     if(stageIndex === 2) header.style.maxWidth = '1400px'; setHtml(header, `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`); main.insertBefore(header, main.firstChild);
     decorateGrammarStage(state.currentStage);
     decorateGameLayer(state.currentStage);
+    decorateClipLink(state.currentStage);
   }catch(e){ console.error(e); setHtml(main, '<p>Error loading stage.</p>'); }
 }
 function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }

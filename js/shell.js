@@ -5,7 +5,7 @@ const TABS = [
   { id: "home", label: "Home", icon: "\u{1F3E0}", href: "portal.html" },
   { id: "lesson", label: "Lesson", icon: "\u{1F4D8}", href: "portal.html#lessonsScreen" },
   { id: "practice", label: "Practice", icon: "\u{1F3AE}", href: "practice.html" },
-  { id: "clips", label: "Clips", icon: "\u{1F3AC}", href: "clip.html" },
+  { id: "clips", label: "Clips", icon: "\u{1F3AC}", href: "clips.html" },
   { id: "homework", label: "Homework", icon: "\u{1F4CC}", href: "portal.html#lessonsScreen" },
   { id: "me", label: "Me", icon: "\u{1F9D1}", href: "portal.html#studentSummary" }
 ];

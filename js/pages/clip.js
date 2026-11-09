@@ -6,7 +6,8 @@ import { loadProtectedContent } from "../protected-content.js";
 import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
 import { clipEmbedUrl, validateClip } from "../clips/schema.js";
 import { clipWarnings, migrateV1 } from "../clips/schema-v2.js";
-import { summarise } from "../clips/exercises.js";
+import { completionRecord, summarise } from "../clips/exercises.js";
+import { mountBottomNav, mountOfflineBanner } from "../shell.js";
 import { renderExercise } from "../clips/exercise-ui.js";
 import { createClipPlayer, loadYouTubeApi } from "../clips/player.js";
 import { wordsOf } from "../clips/lines.js";
@@ -18,7 +19,10 @@ const params = new URLSearchParams(location.search);
 const lessonId = params.get("lesson");
 const status = $("status");
 let context; let clip; let player = null; let activeLine = -1; let mode = "en"; let selectedWord = null;
-const responses = {}; const savedWords = new Set(); const startedAt = Date.now(); const lineNodes = [];
+const responses = {}; const savedWords = new Set(); const lineNodes = [];
+let activeSeconds = 0; // seconds with this page in view, so time on the clip is honest
+setInterval(() => { if (document.visibilityState === "visible") activeSeconds += 1; }, 1000);
+mountOfflineBanner(); mountBottomNav("clips");
 let exerciseCount = 0;
 
 const showError = error => { status.textContent = `Clip Lab could not load: ${error.message}`; status.classList.add("error"); };
@@ -167,8 +171,11 @@ async function completeLesson() {
   $("complete").disabled = true;
   const summary = summarise(clip, responses); const total = Math.max(1, summary.total); const score = summary.total ? summary.score : 1;
   const game = { id: clip.id.slice(0, 60), type: "clip-lab", title: `Clip Lab: ${clip.title}`.slice(0, 80) };
-  const result = { score, total, mistakes: summary.mistakes, timeSpentSeconds: Math.round((Date.now() - startedAt) / 1000), kind: "game" };
+  const result = { score, total, mistakes: summary.mistakes, timeSpentSeconds: activeSeconds, kind: "game" };
   const saved = await saveGameProgress({ db: firebase.database(), code: context.code, game, result, options: { hearts: false } });
+  const recordRef = firebase.database().ref(`studentProgress/${context.code}/clips/${clip.id}`);
+  const previous = (await recordRef.once("value")).val();
+  await recordRef.set(completionRecord(clip, summary, previous, Date.now(), activeSeconds));
   const earned = stars(score / total); const info = saved._info || {};
   $("result").textContent = `Clip complete: ${summary.total ? `${summary.score} of ${summary.total} correct. ` : ""}${"★".repeat(earned)}${"☆".repeat(3 - earned)} scene ${earned === 3 ? "mastered" : "practised"}. +${info.xpEarned || 0} XP.${summary.pending ? " Your writing was sent to your teacher." : ""}`;
   $("result").classList.add("success"); createServices(loadSettings()).celebrate(earned === 3 ? "big" : "small");
@@ -185,7 +192,9 @@ async function initialize() {
   clip = validateClip(stored); if (clip.schemaVersion === 1) clip = migrateV1(clip);
   const lesson = lessonSnapshot.val();
   if (!lesson || lesson.published === false || lesson.clipId !== clip.id) throw new Error("This clip is not assigned to your account.");
-  $("backLink").href = `portal.html?code=${encodeURIComponent(context.code)}`;
+  $("backLink").href = params.get("from") === "lesson" ? `lesson.html?code=${encodeURIComponent(context.code)}&lesson=${encodeURIComponent(context.lessonId)}` : `portal.html?code=${encodeURIComponent(context.code)}`;
+  if (params.get("from") === "lesson") $("backLink").textContent = "← Back to the lesson";
+  $("clipsLink").href = `clips.html?code=${encodeURIComponent(context.code)}`;
   $("practiceLink").href = `practice.html?code=${encodeURIComponent(context.code)}&lesson=${encodeURIComponent(context.lessonId)}`;
   $("title").textContent = clip.title; $("level").textContent = clip.level;
   $("description").textContent = `${clip.source.channel} · ${clip.source.videoTitle}`;

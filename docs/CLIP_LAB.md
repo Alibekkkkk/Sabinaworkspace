@@ -38,3 +38,9 @@ Exercise types: `before-watch`, `gist`, `line-gap`, `dictation`, `order-lines`, 
 
 ## What `timingVerified` means
 `false` (the default for every clip until a person checks): the learner sees the study text and the activities, but lines are not highlighted or loopable and "play this line" uses the device voice, because wrong timing teaches the wrong thing. `true` only when the teacher watched the clip and the stamped times match.
+
+## For students and for scheduling
+- **Clips tab:** the Clips item in the bottom bar opens `clips.html`: every clip assigned through a lesson, with level, kind of video and grammar filters, a To do / Done switch, due dates, and stars earned. A clip that opens later is listed under "Coming up" with its lock date and no start button.
+- **Assigning and scheduling:** a clip is attached to a lesson (`clipFile` and `clipId` in the manifest), so the usual schedule applies: available from, due and closes dates set on the lesson in the dashboard.
+- **In the lesson:** a lesson that has a clip offers "Open the clip" on its vocabulary and first grammar stages; the clip page has a "Back to the lesson" link.
+- **Results for the teacher:** the dashboard card "Clip Lab" shows, per clip, finished or not, stars and score, attempts, time on the clip (seconds with the page in view), the words saved from it, and the transcript lines the student found hard. The record is `studentProgress/<code>/clips/<clipId>`.

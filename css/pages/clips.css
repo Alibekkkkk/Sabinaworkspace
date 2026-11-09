@@ -1,0 +1,18 @@
+.cl-shell { width: min(1000px, 100% - 2rem); margin: 0 auto; padding: var(--ds-space-4) 0 6rem; color: var(--ds-color-text); font-family: var(--ds-font-body); }
+body { background: var(--ds-color-background); margin: 0; }
+.cl-header { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-3); justify-content: space-between; }
+.cl-header h1 { margin: 0; }
+.cl-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: var(--ds-space-3); align-items: end; margin: var(--ds-space-4) 0; }
+.cl-status { border: 0; margin: 0; padding: 0; display: flex; gap: var(--ds-space-3); flex-wrap: wrap; align-items: center; }
+.cl-status label { display: inline-flex; align-items: center; gap: var(--ds-space-1); min-height: var(--ds-target); }
+.cl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--ds-space-3); }
+.cl-card { display: grid; gap: var(--ds-space-2); padding: var(--ds-space-4); background: var(--ds-color-surface); border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-md); }
+.cl-card h2, .cl-card h3 { margin: 0; font-size: var(--ds-text-lg); }
+.cl-meta { margin: 0; color: var(--ds-color-muted); }
+.cl-badges { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); }
+.cl-badge { padding: 0.1rem 0.6rem; border-radius: var(--ds-radius-pill); border: 1px solid var(--ds-color-border-strong); font-size: var(--ds-text-sm); }
+.cl-badge--due { border-color: var(--ds-color-warning); color: var(--ds-color-warning); font-weight: 700; }
+.cl-badge--done { border-color: var(--ds-color-success); color: var(--ds-color-success); font-weight: 700; }
+.cl-card a.ds-btn { justify-self: start; min-height: var(--ds-target); }
+.cl-card--locked { opacity: 0.85; border-style: dashed; }
+#clSoon { margin-top: var(--ds-space-5); }

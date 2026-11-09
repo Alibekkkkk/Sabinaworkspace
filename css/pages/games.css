@@ -86,3 +86,5 @@ html[data-calm="true"] .gm-boss { transition: none; }
 html[data-calm="true"] .memory-card { transition: none; transform: none !important; }
 @media (prefers-reduced-motion: reduce) { .memory-card { transition: none; transform: none !important; } }
 @media (max-width: 520px) { .gm-columns { grid-template-columns: 1fr; } }
+.gl-clip { margin: var(--ds-space-3, 0.75rem) 0; padding: var(--ds-space-3, 0.75rem) var(--ds-space-4, 1rem); border: 1px solid var(--ds-color-border-strong, #7b8aa3); border-radius: var(--ds-radius-sm, 0.6rem); background: var(--ds-color-surface, #fff); color: var(--ds-color-text, #1d2738); display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-3, 0.75rem); justify-content: space-between; }
+.gl-clip p { margin: 0; font-weight: 600; }

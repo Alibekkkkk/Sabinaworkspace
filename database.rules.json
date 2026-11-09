@@ -871,6 +871,48 @@
             ".validate": "false"
           }
         },
+        "clips": {
+          ".validate": "newData.hasChildren()",
+          "$clipId": {
+            ".validate": "$clipId.matches(/^[A-Za-z0-9][A-Za-z0-9_-]{1,59}$/) && newData.hasChildren(['completedAt', 'score', 'total', 'stars', 'attempts'])",
+            "title": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "completedAt": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            },
+            "score": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500"
+            },
+            "total": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 500"
+            },
+            "stars": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 3"
+            },
+            "lastStars": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 3"
+            },
+            "attempts": {
+              ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100000"
+            },
+            "seconds": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 86400"
+            },
+            "interactive": {
+              ".validate": "newData.isBoolean()"
+            },
+            "weakLines": {
+              ".validate": "newData.hasChildren()",
+              "$index": {
+                ".validate": "$index.matches(/^[0-7]$/) && newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,60}$/)"
+              }
+            },
+            "$other": {
+              ".validate": "false"
+            }
+          }
+        },
         "listening": {
           ".validate": "newData.hasChildren()",
           "$itemKey": {
