@@ -8,6 +8,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { validateLadder } from "../js/grammar-ladder.js";
 import { countWords, readingMinutes, validateSections } from "../js/sections.js";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -31,6 +32,7 @@ function wordForms(word) {
 
 export function lintContent(name, content, { wordlist = null } = {}) {
   const errors = validateSections(content).map(message => `${message}`);
+  if (content.grammarLadder !== undefined) errors.push(...validateLadder(content.grammarLadder).map(message => `grammarLadder: ${message}`));
   const warnings = [];
   const passage = normalise(content.readingHtml);
 

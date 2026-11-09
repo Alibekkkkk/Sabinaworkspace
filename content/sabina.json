@@ -5,6 +5,285 @@
     {"id":"grammar","title":"Grammar","estimatedMinutes":20,"stages":["g6","g7","sbPp","sbPs","g10"]},
     {"id":"reading","title":"Reading Comprehension","estimatedMinutes":20,"stages":["readingHtml","readingQ","contextQ"]}
   ],
+  "grammarLadder": {
+    "status": "draft",
+    "topic": "present perfect",
+    "rule": {
+      "formula": "Subject + have/has + past participle (V3)",
+      "examples": [
+        {
+          "en": "The river has flooded the town three times this year.",
+          "note": "Present perfect: this year is not finished, and the result matters now."
+        },
+        {
+          "en": "The river flooded the town in 2023.",
+          "note": "Past simple: a finished time (2023). We are not connecting it to now."
+        }
+      ],
+      "l1Errors": [
+        {
+          "wrong": "I am live in Almaty since 2019.",
+          "right": "I have lived in Almaty since 2019.",
+          "why": "Russian and Kazakh often use a present-tense verb for a situation that started in the past and goes on. English needs the present perfect with since and for."
+        },
+        {
+          "wrong": "She has went to the shelter.",
+          "right": "She has gone to the shelter.",
+          "why": "After have or has, use the past participle (V3: gone), not the past simple form (V2: went)."
+        }
+      ]
+    },
+    "notice": {
+      "id": "sabina.ladder.notice.001",
+      "prompt": "Tap every word that belongs to a present perfect verb (have or has plus the participle).",
+      "text": "Heavy rain has fallen on Marlowe for three days. The river has flooded two streets, but nobody has been hurt. In 2019 a similar flood destroyed the old bridge.",
+      "targets": [
+        "has fallen",
+        "has flooded",
+        "has been hurt"
+      ],
+      "explanation": "Present perfect is has or have plus the past participle. \"destroyed\" is past simple because 2019 is a finished time."
+    },
+    "complete": [
+      {
+        "id": "sabina.ladder.complete.001",
+        "prompt": "The mayor ___ (visit) the shelter twice this week.",
+        "answers": [
+          "has visited"
+        ],
+        "explanation": "This week is not finished, so use the present perfect: has + visited.",
+        "tags": [
+          "present-perfect",
+          "has-have"
+        ]
+      },
+      {
+        "id": "sabina.ladder.complete.002",
+        "prompt": "Families ___ (not / leave) the town yet.",
+        "answers": [
+          "have not left",
+          "haven't left"
+        ],
+        "explanation": "Yet with a negative sentence needs the present perfect: have not + left (V3).",
+        "tags": [
+          "present-perfect",
+          "negative",
+          "yet"
+        ]
+      },
+      {
+        "id": "sabina.ladder.complete.003",
+        "prompt": "Complete the question: ___ (you / ever / see) a flood?",
+        "answers": [
+          "Have you ever seen"
+        ],
+        "explanation": "A question about experience: Have + subject + ever + V3 (seen).",
+        "tags": [
+          "present-perfect",
+          "question",
+          "ever"
+        ]
+      },
+      {
+        "id": "sabina.ladder.complete.004",
+        "prompt": "My sister ___ (live) here since 2019.",
+        "answers": [
+          "has lived"
+        ],
+        "explanation": "Since a point in time, still true now: present perfect. My sister is she, so has.",
+        "tags": [
+          "present-perfect",
+          "since"
+        ]
+      },
+      {
+        "id": "sabina.ladder.complete.005",
+        "prompt": "They ___ (already / repair) the bridge.",
+        "answers": [
+          "have already repaired",
+          "have repaired already"
+        ],
+        "explanation": "Already goes between have and the participle, or at the end.",
+        "tags": [
+          "present-perfect",
+          "already"
+        ]
+      }
+    ],
+    "build": [
+      {
+        "id": "sabina.ladder.build.001",
+        "prompt": "Build the sentence.",
+        "tiles": [
+          "The",
+          "river",
+          "has",
+          "flooded",
+          "two",
+          "streets",
+          ".",
+          "have",
+          "flood"
+        ],
+        "answers": [
+          "The river has flooded two streets."
+        ],
+        "explanation": "River is singular, so has; the verb after has is flooded (V3). Start with a capital letter and end with a full stop.",
+        "tags": [
+          "present-perfect",
+          "word-order"
+        ]
+      },
+      {
+        "id": "sabina.ladder.build.002",
+        "prompt": "Build the question.",
+        "tiles": [
+          "Have",
+          "you",
+          "ever",
+          "seen",
+          "a",
+          "tornado",
+          "?",
+          "has",
+          "saw"
+        ],
+        "answers": [
+          "Have you ever seen a tornado?"
+        ],
+        "explanation": "Question order: Have + subject + ever + V3. Seen is the participle; saw is past simple.",
+        "tags": [
+          "present-perfect",
+          "question"
+        ]
+      },
+      {
+        "id": "sabina.ladder.build.003",
+        "prompt": "Build the negative sentence.",
+        "tiles": [
+          "We",
+          "have",
+          "not",
+          "heard",
+          "the",
+          "news",
+          "yet",
+          ".",
+          "has"
+        ],
+        "answers": [
+          "We have not heard the news yet."
+        ],
+        "explanation": "Have + not + V3, and yet goes at the end. We takes have, not has.",
+        "tags": [
+          "present-perfect",
+          "negative",
+          "yet"
+        ]
+      }
+    ],
+    "correct": [
+      {
+        "id": "sabina.ladder.correct.001",
+        "prompt": "Find the mistake and write the correct sentence.",
+        "sentence": "She has went to the shelter.",
+        "answers": [
+          "She has gone to the shelter."
+        ],
+        "explanation": "After has or have use the past participle: gone (V3), not went (V2).",
+        "tags": [
+          "present-perfect",
+          "participle"
+        ]
+      },
+      {
+        "id": "sabina.ladder.correct.002",
+        "prompt": "Find the mistake and write the correct sentence.",
+        "sentence": "I am live in Almaty since 2019.",
+        "answers": [
+          "I have lived in Almaty since 2019."
+        ],
+        "explanation": "Since and for with a situation that continues need the present perfect: have lived.",
+        "tags": [
+          "present-perfect",
+          "since",
+          "l1-transfer"
+        ]
+      },
+      {
+        "id": "sabina.ladder.correct.003",
+        "prompt": "Find the mistake and write the correct sentence.",
+        "sentence": "Have the council installed the new alarms?",
+        "answers": [
+          "Has the council installed the new alarms?"
+        ],
+        "explanation": "The council is one group (singular), so the question starts with Has.",
+        "tags": [
+          "present-perfect",
+          "has-have",
+          "question"
+        ]
+      }
+    ],
+    "transform": [
+      {
+        "id": "sabina.ladder.transform.001",
+        "prompt": "Rewrite with the present perfect and already.",
+        "given": "The council repaired the roads.",
+        "answers": [
+          "The council has already repaired the roads.",
+          "The council has repaired the roads already."
+        ],
+        "explanation": "Present perfect: has + repaired. Already goes before the participle or at the end.",
+        "tags": [
+          "present-perfect",
+          "already",
+          "transform"
+        ]
+      },
+      {
+        "id": "sabina.ladder.transform.002",
+        "prompt": "Rewrite as a question with ever.",
+        "given": "You saw a volcano.",
+        "answers": [
+          "Have you ever seen a volcano?"
+        ],
+        "explanation": "Experience question: Have + you + ever + V3 (seen).",
+        "tags": [
+          "present-perfect",
+          "question",
+          "transform"
+        ]
+      },
+      {
+        "id": "sabina.ladder.transform.003",
+        "prompt": "Rewrite in the negative with yet.",
+        "given": "The workers finished the repairs.",
+        "answers": [
+          "The workers have not finished the repairs yet.",
+          "The workers haven't finished the repairs yet."
+        ],
+        "explanation": "Negative present perfect: have not + V3, with yet at the end.",
+        "tags": [
+          "present-perfect",
+          "negative",
+          "transform"
+        ]
+      }
+    ],
+    "produce": {
+      "id": "sabina.ladder.produce.001",
+      "prompt": "Write 2 sentences about a storm, flood or other event you know about. Use the present perfect at least twice.",
+      "minSentences": 2,
+      "checklist": [
+        "I used has or have before the verb.",
+        "The verb after has or have is the past participle (V3).",
+        "Each sentence starts with a capital letter and ends with a full stop."
+      ],
+      "pattern": "\\b(has|have)\\s+(not\\s+|never\\s+|already\\s+|just\\s+|also\\s+)?[a-z]+(ed|en|wn|ne|t)\\b",
+      "model": "The rain has caused a lot of damage this week. Many families have left their homes."
+    }
+  },
   "vocab": [
     { "en": "blizzard", "emoji": "❄️", "meanings": [
       { "context": "a long snowstorm", "pos": "noun", "ru": "снежная буря, пурга", "ex": "A <b>blizzard</b> is a long snowstorm with very strong winds." },
