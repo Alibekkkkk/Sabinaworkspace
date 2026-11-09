@@ -42,17 +42,21 @@ Shared services (`js/games/settings.js`): sound (small WebAudio tones, mute), ha
 
 Modules in `js/games/types/`: speed-quiz, boss-battle, story-choice, error-hunt, word-formation. The other eleven still use the older screens in `js/pages/practice.js`; moving them to modules is the remaining part of Step 1.
 
-## Lesson stages and games (mapping)
-Not converted in this phase; the lesson player is unchanged. Planned mapping, for the next step:
+## Lesson stages and games
+Set per student and lesson by the teacher (dashboard card "Lesson game mode", stored at `studentCurriculum/<code>/<lessonId>/gameMode`; a lesson file may suggest a default with `gameMode`). Default **light**. A re-import of lesson content never overwrites the teacher's choice. **No mode replaces a stage, changes its content key, its grading or its score.**
 
-| Lesson stage | Game framing | Keeps |
-|---|---|---|
-| 1 flashcards | Collect the cards (cards earned by quiz answers) | flip, audio, review flag |
-| 2 matching | Word Match / Memory | content key `matchData`, grading |
-| Reading questions | Mission framing + Error Hunt for True/False/Not Given | long answers stay written and teacher-reviewed |
-| Context and grammar | Gap-fill, Sentence Builder, Word Formation Race | `contextQ`, `g6`, `g7`, `sbPp`, `sbPs`, `g10` |
-| Final test | Boss Battle | time limit and one-attempt rule, set by the teacher |
-| Per lesson | `gameMode: "full" | "light" | "off"` | classic lesson when off |
+| Stage | Off | Light | Full (adds) |
+|---|---|---|---|
+| every stage | classic | a mission line at the top; XP when the stage is finished (about 25 XP per 10-point stage, daily cap applies, no hearts lost) | same |
+| 1 Vocabulary | classic | "Collect the cards": a card map with all words, each collected / in progress / not started, and a meter; flip, audio, review flag and the quiz are untouched | same |
+| 2 Word Match | classic | mission line | same (the stage already is a matching game) |
+| 3 Reading | classic | mission line (look for the evidence); long answers and reading tasks stay as written, teacher-reviewed tasks | **Error Hunt** as collapsed extra practice if the lesson has `errorHunt` (practice only: never changes the stage score) |
+| 4, 5, 6, 7 | classic | mission line | same; Form the word (Phase 2) already covers word formation |
+| 8 Choose the tense | classic | mission line | Error Hunt extra practice |
+| 9 Final test | classic | mission line ("Boss: the unit test") | a second button **Start as a Boss Battle**: the same questions, the same time limit, one attempt, and the same scoring (`round(correct / total * 10)`) through the same end-of-test code. Wrong answers cost a shield and let the boss heal; they never end the test early |
+| Whole lesson | | finishing every stage shows "Lesson complete!" and a big celebration (calm mode respected) | same |
+
+Celebrations: a finished game gets a small one, a finished stage the usual confetti, a finished lesson a big one. They never block the next step, and "reduce animation" turns them off.
 
 ## Rewards
 - **XP:** 10 per correct answer, +5 for a perfect round, +2 for each three answers in a row (at most +10). **Daily cap 400 XP**: after that games still count but pay nothing. One result pays at most 500 XP, and the database accepts at most +600 per write.

@@ -951,3 +951,16 @@ test("progress: stats, badges, avatar, daily and weekly shapes are validated", a
   await assertFails(update(ref(dbA, path), { weekly: { week: "2026-11-09", games: 2, questComplete: false, extra: 1 } }));
   await assertFails(update(ref(testEnv.authenticatedContext("student-b").database(), path), { stats: { games: 1 } }));
 });
+
+test("game mode on a student's lesson: teacher-set, three values, readable by the student", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const path = "studentCurriculum/A111111/lesson-a/gameMode";
+  await assertSucceeds(set(ref(teacher, path), "full"));
+  await assertSucceeds(set(ref(teacher, path), "off"));
+  await assertFails(set(ref(teacher, path), "turbo"));
+  await assertFails(set(ref(teacher, path), 3));
+  await assertFails(set(ref(dbA, path), "full"), "a student cannot switch their own game mode");
+  await assertSucceeds(get(ref(dbA, path)));
+  await assertFails(get(ref(testEnv.authenticatedContext("student-b").database(), path)));
+});

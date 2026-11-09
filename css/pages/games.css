@@ -47,3 +47,19 @@ html[data-calm="true"] .gm-boss { transition: none; }
 .gm-shopitem { display: flex; align-items: center; gap: var(--ds-space-3); flex-wrap: wrap; }
 .gm-shopitem span:nth-child(2) { flex: 1; }
 .gm-subhead { margin: var(--ds-space-3) 0 var(--ds-space-1); font-weight: 700; }
+
+/* Game layer inside the lesson player */
+.gl-mission { margin: var(--ds-space-3, 0.75rem) 0; padding: var(--ds-space-3, 0.75rem) var(--ds-space-4, 1rem); border: 2px solid var(--ds-color-primary, #4257b2); border-radius: var(--ds-radius-sm, 0.6rem); background: var(--ds-color-primary-soft, #e6eafb); color: var(--ds-color-text, #1d2738); display: grid; gap: var(--ds-space-2, 0.5rem); }
+.gl-mission__text { margin: 0; font-weight: 700; }
+.gl-hint { margin: 0; color: var(--ds-color-muted, #59677d); font-size: var(--ds-text-sm, 0.9rem); }
+.gl-deckmap summary { cursor: pointer; font-weight: 600; min-height: 2.75rem; display: flex; align-items: center; }
+.gl-deck { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: var(--ds-space-2, 0.5rem); }
+.gl-card { padding: var(--ds-space-2, 0.5rem) var(--ds-space-3, 0.75rem); border: 1px dashed var(--ds-color-border-strong, #7b8aa3); border-radius: var(--ds-radius-xs, 0.4rem); background: var(--ds-color-surface, #fff); }
+.gl-card--collected { border-style: solid; border-color: var(--ds-color-success, #24744d); background: var(--ds-color-success-soft, #dcf3e6); }
+.gl-card--collected span::before { content: "✓"; margin-right: 0.25rem; }
+.gl-extra { margin-top: var(--ds-space-4, 1rem); border: 1px solid var(--ds-color-border, #d9e0eb); border-radius: var(--ds-radius-sm, 0.6rem); padding: var(--ds-space-2, 0.5rem) var(--ds-space-4, 1rem); background: var(--ds-color-surface, #fff); color: var(--ds-color-text, #1d2738); }
+.gl-extra summary { cursor: pointer; font-weight: 700; min-height: 2.75rem; display: flex; align-items: center; }
+.gl-extra .gm-arena-host, .gl-extra__host .game-card { padding: 0; border: 0; box-shadow: none; background: none; }
+.gl-epic { margin: var(--ds-space-3, 0.75rem) 0; padding: var(--ds-space-4, 1rem); border: 2px solid var(--ds-color-success, #24744d); border-radius: var(--ds-radius-sm, 0.6rem); background: var(--ds-color-success-soft, #dcf3e6); color: var(--ds-color-text, #1d2738); }
+.gl-epic h3 { margin: 0 0 0.25rem; }
+.gm-hint { margin: 0; }

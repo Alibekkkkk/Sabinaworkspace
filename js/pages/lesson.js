@@ -19,6 +19,9 @@ import { familyVisible } from "../word-family.js";
 import { validateReadingTasks } from "../reading-tasks.js";
 import { renderReadingTasks } from "../reading-tasks-ui.js";
 import { renderFamilyPanel, renderFormTheWord } from "../word-family-ui.js";
+import { allStagesDone, modeAllows, resolveGameMode, stageResult } from "../games/game-mode.js";
+import { buildDeck, epicMessage, playInto, renderExtra, renderMission } from "../games/lesson-layer.js";
+import { applyCalm, loadSettings } from "../games/settings.js";
 
 mountOfflineBanner();
 mountBottomNav("lesson");
@@ -113,6 +116,8 @@ function currentSections(){
   return applySectionOverrides(lessonSections || buildSections({ vocab: VOCAB, readingHtml: READING_HTML, readingQ: READING_Q, contextQ: CONTEXT_Q }), overrides);
 }
 let lessonRole='student',lessonCodeGetter=function(){return ''},whiteboard=null;
+let gameMode='light',studentGameMode=null,contentGameMode=null,errorHuntContent=null,bossActive=false;
+applyCalm(loadSettings());
 function startLessonClock(isTeacherView, getCode){
   lessonRole=isTeacherView?'teacher':'student'; lessonCodeGetter=getCode;
   if(lessonClock||!fbDb)return;
@@ -498,6 +503,7 @@ function initFirebase(){
         const selected=lessonSnapshot.val();
         if(!selected)throw new Error('Lesson assignment was not found.');
         if(selected.published===false)throw new Error('This lesson is not published.');
+        studentGameMode=selected.gameMode||null; gameMode=resolveGameMode(studentGameMode,contentGameMode);
         let expectedFile=selected.classworkContentUrl||selected.contentUrl;
         if(!expectedFile) {
           const manifestResponse=await fetch('content/manifest.json',{cache:'no-store'});
@@ -1484,7 +1490,7 @@ function renderStage9(){
   if(state.done[state.currentLessonId+"_9"]) { const score = state.scores[state.currentLessonId+"_9"] || 0; setHtml(document.getElementById('testRoot'), '<div class="complete-banner"><div class="trophy">🏁</div><h3>Test already completed</h3>'+ '<p>You have already finished this test. Your score was: <b>' + score + ' / 10</b>.</p>'+ '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot retake the test, but you can review the grammar stages or practice vocabulary.</p>'+ '<div style="margin-top:20px"><button class="btn ghost" data-action="go-to-stage" data-stage="1">← Back to start</button></div></div>'); }
   else { renderTestIntro(); }
 }
-function renderTestIntro(){ const r=document.getElementById('testRoot');if(!r)return; if(testState.timer){clearInterval(testState.timer);testState.timer=null} testState.active=false; const preview=buildTestQuestions().length; const limitMins = Math.floor(getTestTimeLimit() / 60); setHtml(r, '<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+ '<p>'+preview+' questions · '+limitMins+' minutes · one attempt only</p>'+ '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+ '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" data-action="start-test">▶ Start the test</button></div></div>'); }
+function renderTestIntro(){ const r=document.getElementById('testRoot');if(!r)return; if(testState.timer){clearInterval(testState.timer);testState.timer=null} testState.active=false; const preview=buildTestQuestions().length; const limitMins = Math.floor(getTestTimeLimit() / 60); setHtml(r, '<div class="complete-banner"><div class="trophy">⚡</div><h3>Ready to begin?</h3>'+ '<p>'+preview+' questions · '+limitMins+' minutes · one attempt only</p>'+ '<p style="font-size:14px;color:var(--ink-soft);margin-top:8px">You cannot go back. Each question must be answered before the next one appears.</p>'+ '<div style="margin-top:20px"><button class="btn success" style="font-size:18px;padding:14px 32px" data-action="start-test">▶ Start the test</button>'+(modeAllows(gameMode,'extras')&&!teacherMode?' <button class="btn ghost" style="font-size:18px;padding:14px 32px" data-action="start-boss">⚔ Start as a Boss Battle</button>':'')+'</div></div>'); }
 function startTest(){
   testState={active:true,questions:buildTestQuestions(),idx:0,correct:0,total:0,timeLeft:0,timer:null}; testState.total=testState.questions.length; testState.timeLeft = getTestTimeLimit();
   const limitMins = Math.floor(testState.timeLeft / 60); const limitSecs = testState.timeLeft % 60; const formattedTime = String(limitMins).padStart(2, '0') + ':' + String(limitSecs).padStart(2, '0');
@@ -1516,10 +1522,71 @@ function endTest(timedOut,customReason){
   const elapsed=getTestTimeLimit()-testState.timeLeft; const mins=Math.floor(elapsed/60),secs=elapsed%60; const root=document.getElementById('testRoot');if(!root)return; const msg=customReason?customReason:(timedOut?'You ran out of time.':'Test complete!');
   setHtml(root, '<div class="'+(timedOut||customReason?'test-timeout':'test-result')+'">'+ '<div class="icon">'+(timedOut||customReason?'⏰':'🏁')+'</div>'+ '<h3>'+(customReason?'Test Failed':(timedOut?'Time is up!':'Test complete!'))+'</h3>'+ '<div class="big">'+Number(testState.correct||0)+' / '+Number(total||0)+'</div>'+ '<p>'+escapeHtml(msg)+' You answered <b>'+Number(testState.correct||0)+'</b> correctly in <b>'+mins+'m '+secs+'s</b>.</p>'+ '<p style="color:var(--accent);font-weight:700;margin-top:10px">This test can only be taken once. You cannot retake it.</p>'+ '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px"><button class="btn ghost" data-action="go-to-stage" data-stage="1">← Back to start</button></div></div>');
   if(!timedOut&&!customReason){sWin();confetti();} broadcastAction('test_end','Score: '+testState.correct+'/'+total);
+  if(!customReason)afterStageDone(9);
 }
 
 function updateHUD(){ const maxEl=document.getElementById('scoreMax'); if(maxEl){const lesson=getCurrentLesson(); const max=lesson?resolveMaxScore(lesson):0; maxEl.textContent=max?String(max):'–'} const el=document.getElementById('scoreDisplay'); if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')} const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak; const lesson=getCurrentLesson();if(!lesson)return; const doneCount=lesson.stages.filter(function(s){return state.done[lesson.id+"_"+s.id]}).length; const pct=Math.round((doneCount/lesson.stages.length)*100); const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; }
-function markDone(stageId){ const key=state.currentLessonId+"_"+stageId; if(state.done[key])return; state.done[key]=true; sWin();confetti();renderSidebar();updateHUD();saveState(); broadcastAction('stage_complete','Stage '+stageId+' complete!'); }
+// ---- game layer (mission line, card map, extra games, stage XP). Never changes grading. ----
+function stagePoints(stageId){ const lesson=getCurrentLesson(); const stage=(lesson?stagesOf(lesson):DEFAULT_STAGES).find(function(x){return x.id===stageId}); return stage&&stage.points?stage.points:10; }
+function afterStageDone(stageId){
+  if(!modeAllows(gameMode,'mission')||teacherMode||!studentContext||!fbDb)return;
+  import('../games/progress.js').then(function(mod){
+    return mod.saveGameProgress({db:fbDb,code:studentContext.code,game:{id:'lesson-stage-'+stageId,type:'lesson-stage',title:'Lesson stages'},result:Object.assign({timeSpentSeconds:0},stageResult(stagePoints(stageId))),options:{hearts:false}});
+  }).catch(function(error){console.error('Stage XP could not be saved',error)});
+  const lesson=getCurrentLesson();
+  if(lesson&&allStagesDone(stagesOf(lesson),state.currentLessonId,state.done)){
+    const view=document.querySelector('#main .stage-view'); if(view&&!view.querySelector('.gl-epic'))view.insertBefore(epicMessage(),view.firstChild);
+    import('../celebrate.js').then(function(c){c.confetti(120)});
+  }
+}
+function decorateGameLayer(stageId){
+  if(!modeAllows(gameMode,'mission'))return;
+  const view=document.querySelector('#main .stage-view'); if(!view||view.querySelector('.gl-mission'))return;
+  let deck=null;
+  if(stageId===1&&Array.isArray(VOCAB)&&VOCAB.length&&vocabMode!=='preLearned'){
+    deck=buildDeck(VOCAB.map(function(w){return w.en}),getWordStatus,function(w){return Boolean(vocabState[w])});
+  }
+  const mission=renderMission({stageId:stageId,mode:gameMode,deck:deck});
+  if(mission)view.insertBefore(mission,view.children[1]||null);
+  if(modeAllows(gameMode,'extras')&&errorHuntContent&&(stageId===3||stageId===8)&&!teacherMode)appendErrorHunt(view);
+}
+function appendErrorHunt(view){
+  view.append(renderExtra({
+    title:'Extra practice: Error Hunt', intro:'Find the mistake in each sentence and fix it. This is practice only: it does not change your stage score.',
+    load:async function(host){
+      const engine=await import('../games/engine.js');
+      const game=engine.createPracticeGames({errorHunt:errorHuntContent}).find(function(g){return g.type==='error-hunt'});
+      if(!game){host.textContent='No Error Hunt sentences are ready for this lesson yet.';return}
+      await playInto(host,game,{onResult:function(result){
+        const note=document.createElement('p'); note.className='gl-hint'; note.textContent='You got '+result.score+' of '+result.total+' right.'; host.append(note);
+        if(studentContext&&fbDb)import('../games/progress.js').then(function(mod){return mod.saveGameProgress({db:fbDb,code:studentContext.code,game:game,result:result,options:{hearts:false}})}).catch(function(e){console.error(e)});
+      }});
+    }
+  }));
+}
+function startBoss(){
+  if(!modeAllows(gameMode,'extras')||bossActive)return; bossActive=true;
+  const r=document.getElementById('testRoot'); if(!r)return;
+  const items=[]; import('../games/types/boss-battle.js').then(function(mod){
+    mod.fromContent({testMcq:TEST_MCQ,testShort:TEST_SHORT,testTfng:TEST_TFNG,testComplete:TEST_COMPLETE}).forEach(function(i){items.push(i)});
+    if(!items.length){bossActive=false;return}
+    testState={active:true,questions:items,idx:0,correct:0,total:items.length,timeLeft:getTestTimeLimit(),timer:null};
+    clearElement(r);
+    const hud=document.createElement('p'); hud.className='gl-hint'; hud.setAttribute('aria-live','off'); r.appendChild(hud);
+    const host=document.createElement('div'); r.appendChild(host);
+    const paintTime=function(){const m=String(Math.floor(Math.max(0,testState.timeLeft)/60)).padStart(2,'0'),sec=String(Math.max(0,testState.timeLeft)%60).padStart(2,'0'); hud.textContent='Time left: '+m+':'+sec+' · one attempt only';};
+    paintTime();
+    const game={id:'boss-battle',type:'boss-battle',title:'Final test: Boss Battle',instructions:'Same questions, same time limit, one attempt. Correct answers hurt the boss.',questions:items};
+    playInto(host,game,{
+      reportAnswer:function(correct){ if(correct)testState.correct++; },
+      onResult:function(){ bossActive=false; const pending=document.createElement('p'); host.append(pending); endTest(false); }
+    }).then(function(handle){
+      testState.timer=setInterval(function(){ testState.timeLeft--; paintTime(); if(testState.timeLeft<=0){ if(handle&&handle.destroy)handle.destroy(); bossActive=false; endTest(true); } },1000);
+    });
+  });
+  broadcastAction('test_start','Timed test started (boss battle)');
+}
+function markDone(stageId){ const key=state.currentLessonId+"_"+stageId; if(state.done[key])return; state.done[key]=true; sWin();confetti();renderSidebar();updateHUD();saveState(); broadcastAction('stage_complete','Stage '+stageId+' complete!'); afterStageDone(stageId); }
 function setScore(stageId,amount){ const key=state.currentLessonId+"_"+stageId; state.scores[key]=amount; updateHUD();saveState(); }
 
 let expandedYears=["2026"],expandedMonths=["October"];
@@ -1605,6 +1672,7 @@ function renderStage(){
     const header = document.createElement('div'); header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
     if(stageIndex === 2) header.style.maxWidth = '1400px'; setHtml(header, `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`); main.insertBefore(header, main.firstChild);
     decorateGrammarStage(state.currentStage);
+    decorateGameLayer(state.currentStage);
   }catch(e){ console.error(e); setHtml(main, '<p>Error loading stage.</p>'); }
 }
 function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
@@ -1635,6 +1703,7 @@ async function applyLessonContent(c,sourceFile) {
   vocabMode=c.vocabMode||'tracked';
   schemaVersion=c.schemaVersion||1;
   lessonSections=Array.isArray(c.sections)?c.sections:null;
+  contentGameMode=c.gameMode||null; errorHuntContent=Array.isArray(c.errorHunt)?c.errorHunt:null; gameMode=resolveGameMode(studentGameMode,contentGameMode);
   grammarLadder=null;
   if(c.grammarLadder){
     const ladderErrors=validateLadder(c.grammarLadder);
@@ -1795,6 +1864,7 @@ installDelegatedActions({
     if (stage && currentLesson?.stages?.some(item => item.id === stage)) goToStage(stage);
   }),
   "start-test": clickAction(startTest),
+  "start-boss": clickAction(startBoss),
   "answer-test-mcq": clickAction(element => {
     const question = testState.questions[testState.idx];
     const option = readActionParam(element, "opt", /^[\s\S]{1,500}$/);

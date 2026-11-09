@@ -29,6 +29,7 @@ let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
 const progressTracker = createProgressTracker();
 let dashboardClock = null;
 let dashboardWhiteboard = null;
+let dashboardGameMode = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, activeNotesRef = null;
 let activeCode = null, activeFeedRef = null, activeProgressRef = null;
 let activeGameProgress = {};
@@ -375,6 +376,7 @@ function deselectStudent() {
   if (activeNotesRef) { activeNotesRef.off(); activeNotesRef = null; }
   if (dashboardClock) dashboardClock.hide();
   if (dashboardWhiteboard) dashboardWhiteboard.hide();
+  if (dashboardGameMode) dashboardGameMode.hide();
   activeGameProgress = {};
   document.getElementById('selectedView').style.display = 'none';
   document.getElementById('overviewView').style.display = 'block';
@@ -1171,6 +1173,15 @@ function showLessonClock() {
     .map(function(id) { return { id: id, title: curriculum[id].title || id }; });
   dashboardClock.show(activeCode, lessons);
   showWhiteboardCard(lessons);
+  showGameModeCard(lessons);
+}
+
+async function showGameModeCard(lessons) {
+  const host = document.getElementById('gameModeHost');
+  if (!host || !activeCode) return;
+  const mod = await import('../games/game-mode-card.js');
+  if (!dashboardGameMode) dashboardGameMode = mod.mountGameModeCard({ db: fbDb, host: host, showToast: showToast });
+  dashboardGameMode.show(activeCode, lessons);
 }
 
 // Whiteboard card and the end-of-class snapshot. The whiteboard code is loaded only when it is needed.

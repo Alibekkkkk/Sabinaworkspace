@@ -76,7 +76,7 @@ export function render(container, game, bus) {
     const feedback = el("p", "gm-feedback"); feedback.setAttribute("aria-live", "polite");
     const next = button(index === items.length - 1 ? "See results" : "Next", "button", () => { index += 1; if (index >= items.length) end(); else show(); }); next.hidden = true;
     const settle = (given, correct) => {
-      answers[item.id] = given; const before = battle; const out = strike(battle, correct); battle = out.state;
+      answers[item.id] = given; if (bus.reportAnswer) bus.reportAnswer(correct, item, given); const before = battle; const out = strike(battle, correct); battle = out.state;
       if (!correct) wrong.push({ topic: item.topic });
       bus.services.sound(correct ? (out.event === "defeated" ? "win" : "hit") : "bad"); bus.services.haptic(correct ? 20 : [30, 40, 30]);
       const note = correct ? (out.event === "defeated" ? "The boss is defeated!" : "Direct hit!") : out.event === "shield-lost" ? "Shield cracked." : "The boss heals a little. Keep going, you cannot be locked out.";

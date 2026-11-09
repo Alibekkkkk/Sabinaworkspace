@@ -22,12 +22,12 @@ export function buildResult(game, payload, startedAt, now = Date.now()) {
   return result;
 }
 
-export function playModular({ container, game, settings, onFinish, announce = () => {} }) {
+export function playModular({ container, game, settings, onFinish, announce = () => {}, reportAnswer = null }) {
   const module = moduleFor(game);
   if (!module) throw new Error(`No interactive module for ${game.type}.`);
   const startedAt = Date.now(); let finished = false;
   const bus = {
-    settings, services: createServices(settings), announce,
+    settings, services: createServices(settings), announce, reportAnswer,
     finish(payload) { if (finished) return; finished = true; onFinish(buildResult(game, payload, startedAt)); }
   };
   return module.render(container, game, bus);
