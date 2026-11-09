@@ -1,3 +1,4 @@
+import { safeLocal, safeSession } from "../safe-storage.js";
 // The student's Clips page: every clip assigned through a lesson, with level, kind and grammar filters, due dates from the
 // schedule, and the stars earned. Clip details come from the protected clip record, so a locked clip shows only its title.
 import { firebaseConfig } from "../config.js";
@@ -18,8 +19,8 @@ let lessons = {}; let details = {}; let progress = {}; let code = ""; let entrie
 const filters = { level: "", genre: "", grammar: "", status: "all" };
 
 function rememberedCode() {
-  const remember = localStorage.getItem("nd_remember_student") === "true";
-  const storage = remember ? localStorage : sessionStorage;
+  const remember = safeLocal.getItem("nd_remember_student") === "true";
+  const storage = remember ? safeLocal : safeSession;
   return String(params.get("code") || storage.getItem("nd_student_code") || "").trim().toUpperCase();
 }
 

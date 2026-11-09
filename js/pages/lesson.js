@@ -1,6 +1,9 @@
+import { safeLocal, safeSession } from "../safe-storage.js";
+import { startTabGuard } from "../tab-guard.js";
+startTabGuard("lesson:" + location.search);
 (() => {
 
-  try{const t=localStorage.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
+  try{const t=safeLocal.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 
 })();
 
@@ -366,7 +369,7 @@ function saveImageUrl() {
   if(url && !/^https?:\/\//i.test(url)) { alert('URL must start with http:// or https://'); return; }
   const w = VOCAB.find(x => x.en === currentEditWord); const meaning = w.meanings[currentEditMeaningIdx];
   const displayWord = meaning.displayEn || w.en; const imgKey = displayWord + '_' + currentEditMeaningIdx;
-  const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson')||'lesson_1';
+  const lessonId=new URLSearchParams(window.location.search).get('lesson')||safeLocal.getItem('nd_current_lesson')||'lesson_1';
   fbDb.ref('curriculum/'+lessonId+'/flashcardImages/'+imgKey).set(url || null).then(function(){
     return fbDb.ref('curriculum/'+lessonId).once('value').then(function(snapshot){
       const assignment=snapshot.val()||{};
@@ -408,7 +411,7 @@ function initFirebase(){
     fbApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig);
     fbDb=firebase.database();
     watchConnection(fbDb);
-    const lessonId=new URLSearchParams(window.location.search).get('lesson')||localStorage.getItem('nd_current_lesson');
+    const lessonId=new URLSearchParams(window.location.search).get('lesson')||safeLocal.getItem('nd_current_lesson');
     
     if(lessonId) {
        const c = getSessionCode();
@@ -524,7 +527,7 @@ function initFirebase(){
         fbDb.ref('studentCurriculum/'+context.code).on('value',function(s){updateCurriculumView(s,context.code,false)});
         fbDb.ref('studentCurriculum/'+context.code+'/'+context.lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
         identityVerified=true;
-        storageModule.migrateLegacyValue(context,'state','nd_state_sabina_v6',localStorage.getItem('nd_state_owner_code'));
+        storageModule.migrateLegacyValue(context,'state','nd_state_sabina_v6',safeLocal.getItem('nd_state_owner_code'));
         if(!teacherPreviewRequested)loadState();
         await startStudentSession(context.code);
         renderSidebar();renderStage();startLessonClock(false,function(){return studentContext?studentContext.code:''});updateHUD();
@@ -572,7 +575,7 @@ async function startStudentSession(code){
 }
 function getSessionCode(){if(studentContext)return studentContext.code;if(teacherPreviewRequested)return (new URLSearchParams(location.search).get('code')||'').toUpperCase();return ''}
 function changeSessionCode(){document.getElementById('main').textContent='Student codes can only be changed from the portal.'}
-async function switchStudent(){try{await firebase.auth().signOut()}catch(error){console.error('Unable to sign out before switching student',error)}for(const storage of [localStorage,sessionStorage])for(let i=storage.length-1;i>=0;i--){const key=storage.key(i);if(key&&(key.startsWith('nd_')||key.startsWith('nd:')))storage.removeItem(key)}window.location.href='portal.html'}
+async function switchStudent(){try{await firebase.auth().signOut()}catch(error){console.error('Unable to sign out before switching student',error)}for(const storage of [safeLocal,safeSession])for(let i=storage.length-1;i>=0;i--){const key=storage.key(i);if(key&&(key.startsWith('nd_')||key.startsWith('nd:')))storage.removeItem(key)}window.location.href='portal.html'}
 function updateSyncUI(s){const d=document.getElementById('syncDot');const t=document.getElementById('syncStatus');d.classList.remove('warn','off');if(s==='live')t.textContent='Live · Connected';else if(s==='teacher')t.textContent='Teacher preview';else if(s==='nocode'){d.classList.add('warn');t.textContent='Set code above'}else if(s==='error'){d.classList.add('off');t.textContent='Error'}}
 const COMMAND_MAX_AGE_MS = 60 * 1000;
 let serverTimeOffset = 0;
@@ -1689,7 +1692,7 @@ function renderStage(){
 }
 function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
 function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
-function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
+function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{safeLocal.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
 function closeWhiteboard(){const drawer=document.getElementById('wbDrawer'),toggle=document.getElementById('wbToggle'); if(drawer)drawer.hidden=true; document.body.classList.remove('wb-open'); if(toggle){toggle.setAttribute('aria-expanded','false');toggle.focus()}}
 async function toggleWhiteboard(){
   const drawer=document.getElementById('wbDrawer'),toggle=document.getElementById('wbToggle'); if(!drawer)return;

@@ -21,6 +21,7 @@ This describes what the portal stores about students, where, for how long, and h
 | `studentFeatures/<code>` | Feature switches (manga, Clip Lab, whiteboard, listening) | Teacher | Teacher deletes |
 | `mangaAssignments/<code>` | Manga chapters assigned, with due dates | Teacher | Teacher deletes |
 | `whiteboards/<code>` | Whiteboard drawings, presence, teacher snapshots (images of the board) | Student and teacher | Teacher deletes |
+| `clientErrors/<code>` | Up to 50 small error reports sent by the student's browser: time, diagnostic code, page name, a short message and the first lines of the stack, and the browser name. No answers or personal text | Student (own code); teacher can clear | Teacher deletes |
 | `lessonClock/<code>`, `lessonClockLog/<code>` | Lesson time totals; the log of timer events (who pressed what, when; no student writing) | Teacher | Clock: teacher deletes. **Log: append-only by design; remove in the Firebase console if you must** |
 | `leaderboard/<class>` | Nickname and weekly XP, only if the student opted in | Student, teacher | Student opts out, or teacher removes or deletes |
 | `curriculum` | The teacher's own lesson list | Teacher | Not student data |

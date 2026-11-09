@@ -1,8 +1,9 @@
+import { safeLocal, safeSession } from "../safe-storage.js";
 (() => {
 
 (function(){
   try {
-    var t = localStorage.getItem('teacher_theme') || 'light';
+    var t = safeLocal.getItem('teacher_theme') || 'light';
     document.documentElement.setAttribute('data-theme', t);
   } catch(e) {}
 })();
@@ -31,7 +32,7 @@ let dashboardClock = null;
 let dashboardWhiteboard = null;
 let dashboardGameMode = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, activeNotesRef = null;
-let activeCode = null, activeFeedRef = null, activeProgressRef = null, activeFeaturesRef = null, activeFlags = null;
+let activeCode = null, activeFeedRef = null, activeProgressRef = null, activeFeaturesRef = null, activeFlags = null, activeErrorsRef = null;
 let activeGameProgress = {};
 let activeHistoryItems = [], weeklyHistoryLoaded = false, weeklyProgressLoaded = false;
 let editingLessonId = null, lessonVisibility = 'some', lessonType = 'classwork';
@@ -59,7 +60,7 @@ function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme') || 'light';
   const next = cur === 'light' ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', next);
-  try { localStorage.setItem('teacher_theme', next); } catch (e) {}
+  try { safeLocal.setItem('teacher_theme', next); } catch (e) {}
   updateThemeButton();
 }
 function updateThemeButton() {
@@ -363,6 +364,7 @@ function selectStudent(code) {
   attachHistoryListener();
   attachGameProgressListener();
   attachFeatureListener();
+  attachErrorsListener();
   renderPrivacy();
   attachNotesListener();
   loadLeaderboardCard();
@@ -376,6 +378,7 @@ function deselectStudent() {
   if (activeFeedRef) { activeFeedRef.off(); activeFeedRef = null; }
   if (activeProgressRef) { activeProgressRef.off(); activeProgressRef = null; }
   if (activeFeaturesRef) { activeFeaturesRef.off(); activeFeaturesRef = null; }
+  if (activeErrorsRef) { activeErrorsRef.off(); activeErrorsRef = null; }
   if (activeNotesRef) { activeNotesRef.off(); activeNotesRef = null; }
   if (dashboardClock) dashboardClock.hide();
   if (dashboardWhiteboard) dashboardWhiteboard.hide();
@@ -524,6 +527,17 @@ function attachGameProgressListener() {
     weeklyProgressLoaded = false;
     updateWeeklySummaryAvailability();
   });
+}
+
+function attachErrorsListener() {
+  if (activeErrorsRef) activeErrorsRef.off();
+  const code = activeCode; const host = document.getElementById('errorsHost');
+  activeErrorsRef = fbDb.ref('clientErrors/' + code);
+  activeErrorsRef.on('value', function(snapshot) {
+    import('../error-card.js').then(function(mod) {
+      mod.renderErrorCard(host, { slots: snapshot.val() || {}, clear: function() { return fbDb.ref('clientErrors/' + code).remove(); } });
+    }).catch(function(error) { host.textContent = 'Errors could not be shown: ' + error.message; });
+  }, function(error) { host.textContent = 'Errors could not be loaded: ' + error.message; });
 }
 
 function renderPrivacy() {
@@ -991,7 +1005,7 @@ function deleteStudent() {
 }
 
 function loadUndoStack() {
-  try { undoStack = JSON.parse(sessionStorage.getItem(UNDO_STORAGE_KEY) || '[]'); } catch (e) { undoStack = []; }
+  try { undoStack = JSON.parse(safeSession.getItem(UNDO_STORAGE_KEY) || '[]'); } catch (e) { undoStack = []; }
   updateUndoButton();
 }
 function updateUndoButton() {
@@ -1003,7 +1017,7 @@ function updateUndoButton() {
 function rememberUndo(action) {
   undoStack.push(action);
   if (undoStack.length > 30) undoStack.shift();
-  try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
+  try { safeSession.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
   updateUndoButton();
 }
 function sameValue(a, b) { return JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b); }
@@ -1031,7 +1045,7 @@ function undoLastChange() {
       return c.before === null ? r.remove() : r.set(c.before);
     })).then(function() {
       undoStack.pop();
-      try { sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
+      try { safeSession.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoStack)); } catch (e) {}
       updateUndoButton();
       showToast('Undid: ' + action.label);
     });

@@ -66,7 +66,7 @@ function withDom(run) {
   const done = () => { for (const [key, value] of Object.entries(previous)) Object.defineProperty(globalThis, key, { value, configurable: true, writable: true }); };
   return Promise.resolve(run(dom)).finally(done);
 }
-const fakeDb = () => { let listener; return { ref: path => { assert.equal(path, ".info/connected"); return { on: (event, callback) => { listener = callback; } }; }, set: value => listener({ val: () => value }) }; };
+const fakeDb = () => { const listeners = {}; return { ref: path => ({ on: (event, callback) => { listeners[path] = callback; } }), set: value => listeners[".info/connected"]({ val: () => value }), offset: value => listeners[".info/serverTimeOffset"]({ val: () => value }) }; };
 
 test("the banner follows the database connection: warning on a drop, 'saved' on return, then gone", () => withDom(async () => {
   const db = fakeDb(); watchConnection(db, { hideAfter: 20 });

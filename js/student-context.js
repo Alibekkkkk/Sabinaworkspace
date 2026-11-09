@@ -1,3 +1,5 @@
+import { safeLocal, safeSession } from "./safe-storage.js";
+import { setErrorLogTarget } from "./error-log.js";
 function getAuthUser(auth) {
   if (auth.currentUser) return Promise.resolve(auth.currentUser);
   return new Promise((resolve, reject) => {
@@ -48,7 +50,7 @@ export async function bindStudentCode({ auth, db, code } = {}) {
 
   // Already linked to this account (every page after the first sign-in): nothing to write, and the
   // rules do not allow rewriting a record that already has a uid.
-  if (student.uid === user.uid) return { code: normalizedCode, uid: user.uid, student };
+  if (student.uid === user.uid) { setErrorLogTarget({ db, code: normalizedCode }); return { code: normalizedCode, uid: user.uid, student }; }
 
   let result;
   try {
@@ -67,6 +69,7 @@ export async function bindStudentCode({ auth, db, code } = {}) {
     await rollbackUidBinding(uidRef, normalizedCode);
     throw new Error("Student code is invalid or already linked to another account.");
   }
+  setErrorLogTarget({ db, code: normalizedCode });
   return { code: normalizedCode, uid: user.uid, student: result.snapshot.val() };
 }
 
@@ -82,8 +85,8 @@ async function rollbackUidBinding(uidRef, code, cause) {
 
 function codeFromLocation() {
   const params = new URLSearchParams(window.location.search);
-  const remembered = localStorage.getItem("nd_remember_student") === "true";
-  const storage = remembered ? localStorage : sessionStorage;
+  const remembered = safeLocal.getItem("nd_remember_student") === "true";
+  const storage = remembered ? safeLocal : safeSession;
   return (params.get("code") || storage.getItem("nd_student_code") || "")
     .trim()
     .toUpperCase();
@@ -97,13 +100,13 @@ export async function resolveStudentContext({ auth, db, lessonId, contentId } = 
   const { student, uid } = bound;
   if (student.uid !== uid) throw new Error("Student account verification failed.");
 
-  const previousCode = sessionStorage.getItem("nd_student_code");
+  const previousCode = safeSession.getItem("nd_student_code");
   if (previousCode && previousCode !== code) {
-    sessionStorage.removeItem("nd_student_name");
-    sessionStorage.removeItem("nd_student_code");
+    safeSession.removeItem("nd_student_name");
+    safeSession.removeItem("nd_student_code");
   }
-  sessionStorage.setItem("nd_student_code", code);
-  sessionStorage.setItem("nd_student_name", String(student.name || "Student"));
+  safeSession.setItem("nd_student_code", code);
+  safeSession.setItem("nd_student_name", String(student.name || "Student"));
 
   const resolvedLessonId = lessonId || new URLSearchParams(window.location.search).get("lesson");
   if (!resolvedLessonId) throw new Error("A lesson must be selected.");

@@ -1,3 +1,4 @@
+import { safeLocal, safeSession } from "../safe-storage.js";
 
 import { installDelegatedActions, readActionEnum } from "../delegated-actions.js";
 import { clearElement, safeUrl, setHtml } from "../dom.js";
@@ -30,8 +31,8 @@ function listeningManifest(){
 }
 
 function storedIdentity() {
-  const remember = localStorage.getItem('nd_remember_student') === 'true';
-  const storage = remember ? localStorage : sessionStorage;
+  const remember = safeLocal.getItem('nd_remember_student') === 'true';
+  const storage = remember ? safeLocal : safeSession;
   return {
     code: storage.getItem('nd_student_code') || '',
     name: storage.getItem('nd_student_name') || ''
@@ -48,7 +49,7 @@ const state = {
   clocks: {}
 };
 
-if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
+if (safeLocal.getItem('nd_theme') === 'light') document.body.classList.add('light');
 function applyThemeToggleState(){
   const toggle = document.getElementById('themeToggle');
   if (!toggle) return;
@@ -59,7 +60,7 @@ function applyThemeToggleState(){
 }
 function toggleTheme(){
   document.body.classList.toggle('light');
-  localStorage.setItem('nd_theme', document.body.classList.contains('light') ? 'light' : 'dark');
+  safeLocal.setItem('nd_theme', document.body.classList.contains('light') ? 'light' : 'dark');
   applyThemeToggleState();
 }
 applyThemeToggleState();
@@ -74,8 +75,8 @@ function showAlert(msg, type){
 }
 function saveIdentity(code, name, remember) {
   clearStudentSession();
-  const storage = remember ? localStorage : sessionStorage;
-  localStorage.setItem('nd_remember_student', remember ? 'true' : 'false');
+  const storage = remember ? safeLocal : safeSession;
+  safeLocal.setItem('nd_remember_student', remember ? 'true' : 'false');
   storage.setItem('nd_student_code', code);
   storage.setItem('nd_student_name', name);
 }
@@ -182,7 +183,7 @@ function doRegister(){
 async function doGoogleLogin() {
   try {
     await configReady;
-    await firebase.auth().setPersistence(localStorage.getItem('nd_remember_student') === 'true'
+    await firebase.auth().setPersistence(safeLocal.getItem('nd_remember_student') === 'true'
       ? firebase.auth.Auth.Persistence.LOCAL
       : firebase.auth.Auth.Persistence.SESSION);
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -197,7 +198,7 @@ async function doGoogleLogin() {
       const bound=await bindStudentCode({auth:firebase.auth(),db,code});
       state.currentCode=code;
       state.currentName=bound.student.name||'Student';
-      saveIdentity(code,state.currentName,localStorage.getItem('nd_remember_student')==='true');
+      saveIdentity(code,state.currentName,safeLocal.getItem('nd_remember_student')==='true');
       enterPortal();
       return;
     }
@@ -618,7 +619,7 @@ async function signOut(){
 }
 
 function clearStudentSession() {
-  for (const storage of [localStorage, sessionStorage]) {
+  for (const storage of [safeLocal, safeSession]) {
     for (let index = storage.length - 1; index >= 0; index--) {
       const key = storage.key(index);
       if (key && (key.startsWith('nd_') || key.startsWith('nd:'))) storage.removeItem(key);
@@ -629,7 +630,7 @@ function clearStudentSession() {
 // Removes per-student browser data but keeps UI preferences (theme, remember flag).
 function clearLegacyStudentData() {
   const keep = new Set(['nd_theme', 'nd_remember_student']);
-  for (const storage of [localStorage, sessionStorage]) {
+  for (const storage of [safeLocal, safeSession]) {
     for (let index = storage.length - 1; index >= 0; index--) {
       const key = storage.key(index);
       if (key && (key.startsWith('nd_') || key.startsWith('nd:')) && !keep.has(key)) storage.removeItem(key);
@@ -690,7 +691,7 @@ installDelegatedActions({
 });
 
 configReady.then(async function() {
-  await firebase.auth().setPersistence(localStorage.getItem('nd_remember_student') === 'true'
+  await firebase.auth().setPersistence(safeLocal.getItem('nd_remember_student') === 'true'
     ? firebase.auth.Auth.Persistence.LOCAL
     : firebase.auth.Auth.Persistence.SESSION);
   const identity = storedIdentity();

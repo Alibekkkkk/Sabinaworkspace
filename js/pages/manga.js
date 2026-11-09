@@ -1,3 +1,4 @@
+import { safeLocal, safeSession } from "../safe-storage.js";
 // Manga Reader: the chapters shelf and the reader (scroll, page flip, panel by panel), with a bottom sheet for each bubble,
 // words to learn before and during reading, a small question after each page, chapter questions, a boss fight and a retell
 // task for the teacher. It only opens for students whose teacher switched the mangaReader flag on.
@@ -34,8 +35,8 @@ const answers = { quick: {}, questions: {} }; const savedWords = new Set(); cons
 setInterval(() => { if (document.visibilityState === "visible" && chapter) activeSeconds += 1; }, 1000);
 
 function rememberedCode() {
-  const remember = localStorage.getItem("nd_remember_student") === "true";
-  const storage = remember ? localStorage : sessionStorage;
+  const remember = safeLocal.getItem("nd_remember_student") === "true";
+  const storage = remember ? safeLocal : safeSession;
   return String(params.get("code") || storage.getItem("nd_student_code") || "").trim().toUpperCase();
 }
 const say = (text, kind = "") => { const node = $("status"); node.hidden = !text; node.textContent = text; node.className = `mg-status${kind ? ` ${kind}` : ""}`; };
@@ -216,7 +217,7 @@ function render({ focusStage = false } = {}) {
     if (typeof IntersectionObserver === "function") {
       observer = new IntersectionObserver(entries => {
         const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) { position.page = Number(visible.target.dataset.page); position.panel = 0; reached(); paintPosition(); savePosition(localStorage, positionKey(code, manga.id, chapter.id), position); }
+        if (visible) { position.page = Number(visible.target.dataset.page); position.panel = 0; reached(); paintPosition(); savePosition(safeLocal, positionKey(code, manga.id, chapter.id), position); }
       }, { threshold: [0.4, 0.7] });
       stage.querySelectorAll(".mg-page").forEach(node => observer.observe(node));
     }
@@ -232,7 +233,7 @@ function render({ focusStage = false } = {}) {
   }
   reached(); paintPosition();
   if (focusStage && position.mode !== "scroll") stage.focus({ preventScroll: true });
-  savePosition(localStorage, positionKey(code, manga.id, chapter.id), position);
+  savePosition(safeLocal, positionKey(code, manga.id, chapter.id), position);
 }
 
 function reached() {
@@ -358,7 +359,7 @@ function showReader(chapterId) {
   document.title = `${chapter.title} | Manga Reader`;
   $("readerStory").textContent = manga.title; $("chapterTitle").textContent = chapter.title;
   paintCredits(); applyPrefs();
-  const saved = loadPosition(localStorage, positionKey(code, manga.id, chapter.id), chapter, direction);
+  const saved = loadPosition(safeLocal, positionKey(code, manga.id, chapter.id), chapter, direction);
   const mode = (saved && saved.mode) || defaultMode(manga, prefs);
   position = { page: saved ? saved.page : 0, panel: saved ? saved.panel : 0, mode: MODES.includes(mode) ? mode : "flip" };
   if (manga.readingDirection === "vertical") position.mode = saved && saved.mode ? saved.mode : "scroll";

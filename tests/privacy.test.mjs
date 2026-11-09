@@ -15,7 +15,7 @@ function fakeDb(data) {
 }
 
 test("every node that holds student data is in the privacy inventory, and the inventory is the rules' view of the database", () => {
-  const studentKeyed = ["students", "studentByUid", "pendingStudents", "sessions", "sessionSummary", "studentProgress", "studentCurriculum", "studentFeatures", "mangaAssignments", "whiteboards", "lessonClock", "lessonClockLog", "leaderboard"];
+  const studentKeyed = ["students", "studentByUid", "pendingStudents", "sessions", "sessionSummary", "studentProgress", "studentCurriculum", "studentFeatures", "clientErrors", "mangaAssignments", "whiteboards", "lessonClock", "lessonClockLog", "leaderboard"];
   const notStudentData = ["curriculum", "protectedContent", "admins"];
   for (const name of Object.keys(rules).filter(key => !key.startsWith("."))) {
     assert.ok(studentKeyed.includes(name) || notStudentData.includes(name), `${name} is a new top-level node: decide whether it holds student data and add it to docs/PRIVACY.md and js/privacy/student-data.js`);
@@ -26,7 +26,7 @@ test("every node that holds student data is in the privacy inventory, and the in
 
 test("the plan covers every student-keyed path, plus the sign-in link and leaderboard entry when they are known", () => {
   const plan = planFor("ANNA1", { uid: "u-1", classId: "main" });
-  assert.deepEqual(plan.map(item => item.path), ["students/ANNA1", "sessions/ANNA1", "studentProgress/ANNA1", "sessionSummary/ANNA1", "studentCurriculum/ANNA1", "studentFeatures/ANNA1", "mangaAssignments/ANNA1", "whiteboards/ANNA1", "lessonClock/ANNA1", "lessonClockLog/ANNA1", "studentByUid/u-1", "leaderboard/main/members/u-1"]);
+  assert.deepEqual(plan.map(item => item.path), ["students/ANNA1", "sessions/ANNA1", "studentProgress/ANNA1", "sessionSummary/ANNA1", "studentCurriculum/ANNA1", "studentFeatures/ANNA1", "mangaAssignments/ANNA1", "whiteboards/ANNA1", "clientErrors/ANNA1", "lessonClock/ANNA1", "lessonClockLog/ANNA1", "studentByUid/u-1", "leaderboard/main/members/u-1"]);
   assert.equal(plan.find(item => item.key === "lessonClockLog").deletable, false);
   assert.equal(planFor("ANNA1", {}).length, NODES.length, "no uid, no identity or leaderboard path");
   assert.throws(() => planFor("a/b"), /valid student code/); assert.throws(() => planFor("../x"), /valid student code/);

@@ -25,6 +25,7 @@
   <link rel="modulepreload" href="js/lesson-clock.js">
   <link rel="modulepreload" href="js/listening-card.js">
   <link rel="modulepreload" href="js/listening-summary.js">
+  <link rel="modulepreload" href="js/safe-storage.js">
   <link rel="modulepreload" href="js/schedule.js">
   <link rel="modulepreload" href="js/sections.js">
   <link rel="modulepreload" href="js/ui.js">
@@ -221,6 +222,11 @@
             <h2>Feature flags</h2>
             <p class="hint">Switch parts of the portal on or off for this student. Manga reading is off until you switch it on.</p>
             <div id="featureSummary" aria-live="polite">Loading…</div>
+          </div>
+
+          <div class="card" id="errorsCard">
+            <h2>Recent errors</h2>
+            <div id="errorsHost" aria-live="polite">Loading…</div>
           </div>
 
           <div class="card" id="privacyCard">

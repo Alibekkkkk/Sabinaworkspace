@@ -68,6 +68,23 @@
           }
       }
     },
+    "clientErrors": {
+      "$code": {
+        ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        ".write": "auth != null && (root.child('students').child($code).child('uid').val() === auth.uid || (root.child('admins').child(auth.uid).val() === true && !newData.exists()))",
+        ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && newData.hasChildren()",
+        "$slot": {
+          ".validate": "$slot.matches(/^([0-9]|[1-4][0-9])$/) && newData.hasChildren(['ts', 'diag', 'page', 'message'])",
+          "ts": { ".validate": "newData.isNumber() && newData.val() > 0" },
+          "diag": { ".validate": "newData.isString() && newData.val().matches(/^E-[0-9A-Z]{6}$/)" },
+          "page": { ".validate": "newData.isString() && newData.val().length <= 80" },
+          "message": { ".validate": "newData.isString() && newData.val().length <= 200" },
+          "stack": { ".validate": "newData.isString() && newData.val().length <= 600" },
+          "agent": { ".validate": "newData.isString() && newData.val().length <= 120" },
+          "$other": { ".validate": "false" }
+        }
+      }
+    },
     "studentFeatures": {
       "$code": {
         ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('students').child($code).child('uid').val() === auth.uid)",

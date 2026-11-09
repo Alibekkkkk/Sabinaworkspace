@@ -1147,3 +1147,25 @@ test("the teacher can read a student's whole whiteboard node (for export); other
   await assertSucceeds(get(ref(teacher, "whiteboards/A111111")));
   await assertFails(get(ref(dbB, "whiteboards/A111111")));
 });
+
+test("client error reports: own code only, fifty slots, bounded fields, teacher reads and clears", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const report = { ts: 1790000000000, diag: "E-1A2B3C", page: "lesson.html", message: "x is not a function", stack: "at a\nat b", agent: "Mozilla/5.0" };
+  await assertSucceeds(set(ref(dbA, "clientErrors/A111111/0"), report));
+  await assertSucceeds(set(ref(dbA, "clientErrors/A111111/49"), { ts: 1, diag: "E-000000", page: "p", message: "m" }));
+  await assertFails(set(ref(dbA, "clientErrors/A111111/50"), report), "only slots 0 to 49 exist, so the list cannot grow");
+  await assertFails(set(ref(dbA, "clientErrors/A111111/abc"), report));
+  await assertFails(set(ref(dbB, "clientErrors/A111111/1"), report), "another student cannot write it");
+  await assertFails(set(ref(dbA, "clientErrors/B222222/1"), report), "or write under another code");
+  await assertFails(get(ref(dbA, "clientErrors/A111111")), "students cannot read the reports back");
+  await assertFails(set(ref(dbA, "clientErrors/A111111/2"), { ...report, message: "m".repeat(201) }));
+  await assertFails(set(ref(dbA, "clientErrors/A111111/2"), { ...report, stack: "s".repeat(601) }));
+  await assertFails(set(ref(dbA, "clientErrors/A111111/2"), { ...report, diag: "oops" }));
+  await assertFails(set(ref(dbA, "clientErrors/A111111/2"), { ...report, extra: "<b>" }));
+  await assertFails(set(ref(dbA, "clientErrors/A111111/2"), { ts: 1, diag: "E-000000", page: "p" }), "message is required");
+  await assertSucceeds(get(ref(teacher, "clientErrors/A111111")));
+  await assertFails(set(ref(teacher, "clientErrors/A111111/3"), report), "a teacher reads and clears but does not write reports");
+  await assertSucceeds(remove(ref(teacher, "clientErrors/A111111")));
+});

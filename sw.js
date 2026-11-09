@@ -8,7 +8,7 @@
 // so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
 // The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
 // BEGIN GENERATED (scripts/build-sw-manifest.mjs)
-const CACHE_VERSION = "67797fdbb1";
+const CACHE_VERSION = "04effd637d";
 const SHELL_URLS = [
   "clip.html",
   "clips.html",
@@ -83,7 +83,10 @@ const SHELL_URLS = [
   "js/dashboard-clock.js",
   "js/dashboard-status.js",
   "js/delegated-actions.js",
+  "js/diagnostic.js",
   "js/dom.js",
+  "js/error-card.js",
+  "js/error-log.js",
   "js/feature-gate.js",
   "js/features.js",
   "js/games/engine.js",
@@ -113,6 +116,7 @@ const SHELL_URLS = [
   "js/grammar-ladder-ui.js",
   "js/grammar-ladder.js",
   "js/homework-answers.js",
+  "js/i18n.js",
   "js/leaderboard.js",
   "js/lesson-clock-ui.js",
   "js/lesson-clock.js",
@@ -135,6 +139,7 @@ const SHELL_URLS = [
   "js/manga/schema-v2.js",
   "js/manga/schema.js",
   "js/manga/shelf.js",
+  "js/notices.js",
   "js/pages/clip.js",
   "js/pages/clips.js",
   "js/pages/dashboard.js",
@@ -159,6 +164,7 @@ const SHELL_URLS = [
   "js/reading-prefs.js",
   "js/reading-tasks-ui.js",
   "js/reading-tasks.js",
+  "js/safe-storage.js",
   "js/sanitize-html.js",
   "js/schedule.js",
   "js/sections.js",
@@ -166,6 +172,7 @@ const SHELL_URLS = [
   "js/storage.js",
   "js/student-code.js",
   "js/student-context.js",
+  "js/tab-guard.js",
   "js/theme.js",
   "js/ui.js",
   "js/weekly-summary.js",
@@ -183,6 +190,9 @@ const SHELL_URLS = [
   "js/whiteboard/templates.js",
   "js/word-family-ui.js",
   "js/word-family.js",
+  "locales/en.json",
+  "locales/kk.json",
+  "locales/ru.json",
   "manifest.webmanifest"
 ];
 // END GENERATED

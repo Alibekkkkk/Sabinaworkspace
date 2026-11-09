@@ -12,6 +12,7 @@ export const NODES = Object.freeze([
   { key: "features", path: code => `studentFeatures/${code}`, label: "Feature switches" },
   { key: "mangaAssignments", path: code => `mangaAssignments/${code}`, label: "Manga chapters assigned with due dates" },
   { key: "whiteboards", path: code => `whiteboards/${code}`, label: "Whiteboard drawings and snapshots" },
+  { key: "clientErrors", path: code => `clientErrors/${code}`, label: "Error reports sent by the student's browser (code, page, message)" },
   { key: "lessonClock", path: code => `lessonClock/${code}`, label: "Lesson clock totals" },
   { key: "lessonClockLog", path: code => `lessonClockLog/${code}`, label: "Lesson clock event log", deletable: false, reason: "The log is append-only by design (timing events only, no student writing). Remove it in the Firebase console if you must." }
 ]);

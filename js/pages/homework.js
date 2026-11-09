@@ -1,6 +1,9 @@
+import { safeLocal, safeSession } from "../safe-storage.js";
+import { startTabGuard } from "../tab-guard.js";
+startTabGuard("homework:" + location.search);
 (() => {
 
-  try{const t=localStorage.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
+  try{const t=safeLocal.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 
 })();
 
@@ -88,7 +91,7 @@ function deleteCurrentNote() { if(activeNoteId) deleteNoteById(activeNoteId); }
 function saveAnnotations() { if(fbDb && code && !teacherMode) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(serializeChildren(document.getElementById('passageBody'))).then(()=>{ if(typeof showToast === 'function') showToast('Annotations saved'); }); } }
 
 /* ================== FIREBASE ================== */
-function toggleTheme(){ document.documentElement.classList.toggle('dark'); const dark=document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){} const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme'; }
+function toggleTheme(){ document.documentElement.classList.toggle('dark'); const dark=document.documentElement.classList.contains('dark'); try{safeLocal.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){} const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme'; }
 document.getElementById('themeButton').textContent=document.documentElement.classList.contains('dark')?'☀️ Theme':'🌙 Theme';
 
 let answers={}; let submitted=false; let saveTimeout;
@@ -172,7 +175,7 @@ function undoHomeworkQuestion(idx) {
 
 async function switchStudent() {
   try { await firebase.auth().signOut(); } catch(error) { console.error('Unable to sign out before switching student',error); }
-  for(const storage of [localStorage,sessionStorage]) {
+  for(const storage of [safeLocal,safeSession]) {
     for(let index=storage.length-1;index>=0;index--) {
       const key=storage.key(index);
       if(key&&(key.startsWith('nd_')||key.startsWith('nd:')))storage.removeItem(key);
