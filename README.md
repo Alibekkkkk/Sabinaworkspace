@@ -59,3 +59,10 @@ This starts the Firebase Realtime Database and Auth emulators (needs Java 21+), 
 Clip metadata and study prompts in `content/clips/` are public static files, so they must not contain answer keys. Add correct answers in the teacher-only answer-key field in `tools/import-content.html`; the importer stores them only in `protectedContent/<lessonId>/clip`. See the authoring instructions in [Teacher setup](TEACHER_SETUP.md).
 
 The full visual redesign of the legacy lesson/homework/dashboard pages is not implemented yet. The weekly summary is teacher-only; parent accounts or automatic report sharing are not provided. Production deployment is paused while protected static lesson content is migrated and Firebase access is verified; see the [security migration runbook](docs/SECURITY.md) before republishing Pages. See [Teacher setup](TEACHER_SETUP.md) for current authoring limitations.
+
+
+## Whiteboard
+
+A drawing board for class and for practice on your own: pen, highlighter, erasers, laser pointer, shapes, text, sticky notes, pictures, English templates, pages, zoom and pan, undo and redo, export to PNG, SVG and PDF. Open it from the pen button in a lesson, from `whiteboard.html?lesson=<id>` (students) or `whiteboard.html?code=<STUDENTCODE>&lesson=<id>` (teacher). Code is in `js/whiteboard/`, no dependencies, no build step. Design notes: `docs/adr/0001-whiteboard.md`, research: `docs/WHITEBOARD_RESEARCH.md`, evidence: `docs/PHASE4-REPORT.md`.
+
+Checks: `npm test` (unit), `npm run test:rules` (database rules), with `npm run dev` running: `npm run test:whiteboard-e2e` and `npm run test:whiteboard-devices-e2e`.

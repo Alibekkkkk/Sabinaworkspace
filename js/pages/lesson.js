@@ -112,7 +112,9 @@ function currentSections(){
   const overrides = curriculumCache && curriculumCache[state.currentLessonId] ? curriculumCache[state.currentLessonId].sectionOverrides : null;
   return applySectionOverrides(lessonSections || buildSections({ vocab: VOCAB, readingHtml: READING_HTML, readingQ: READING_Q, contextQ: CONTEXT_Q }), overrides);
 }
+let lessonRole='student',lessonCodeGetter=function(){return ''},whiteboard=null;
 function startLessonClock(isTeacherView, getCode){
+  lessonRole=isTeacherView?'teacher':'student'; lessonCodeGetter=getCode;
   if(lessonClock||!fbDb)return;
   lessonClock=initLessonClock({
     db:fbDb, auth:firebase.auth(), isTeacher:isTeacherView,
@@ -1608,6 +1610,22 @@ function renderStage(){
 function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
 function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
 function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{localStorage.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
+function closeWhiteboard(){const drawer=document.getElementById('wbDrawer'),toggle=document.getElementById('wbToggle'); if(drawer)drawer.hidden=true; document.body.classList.remove('wb-open'); if(toggle){toggle.setAttribute('aria-expanded','false');toggle.focus()}}
+async function toggleWhiteboard(){
+  const drawer=document.getElementById('wbDrawer'),toggle=document.getElementById('wbToggle'); if(!drawer)return;
+  if(!drawer.hidden){closeWhiteboard();return}
+  const code=lessonCodeGetter(), user=window.firebase&&firebase.auth().currentUser;
+  if(!code||!fbDb||!user){ if(typeof showToast==='function')showToast('Open the lesson with a student code first.'); return }
+  drawer.hidden=false; document.body.classList.add('wb-open'); if(toggle)toggle.setAttribute('aria-expanded','true');
+  const lessonId=state.currentLessonId;
+  if(whiteboard&&(whiteboard.code!==code||whiteboard.lessonId!==lessonId)){whiteboard.handle.destroy();whiteboard=null}
+  if(!whiteboard){
+    const host=document.getElementById('wbDrawerHost'); const mod=await import('../whiteboard/app.js');
+    const handle=mod.mountWhiteboard({host:host,db:fbDb,code:code,lessonId:lessonId,uid:user.uid,role:lessonRole,name:lessonRole==='teacher'?'Teacher':((studentContext&&studentContext.name)||'Student'),onBack:closeWhiteboard});
+    whiteboard={code:code,lessonId:lessonId,handle:handle};
+  } else whiteboard.handle.resize();
+  const first=drawer.querySelector('.wb'); if(first)first.focus();
+}
 function toggleNotes(){const np=document.getElementById('notesPanel');if(np)np.classList.toggle('open')}
 document.getElementById('notesArea').addEventListener('input',function(){saveState();broadcast('notes',{text:this.value})});
 
@@ -1668,6 +1686,7 @@ installDelegatedActions({
   "toggle-sound": clickAction(toggleSound),
   "toggle-dark": clickAction(toggleDark),
   "toggle-notes": clickAction(toggleNotes),
+  "toggle-whiteboard": clickAction(toggleWhiteboard),
   "switch-student": clickAction(switchStudent),
   "delete-current-note": clickAction(deleteCurrentNote),
   "close-sticky-note": clickAction(closeStickyNote),

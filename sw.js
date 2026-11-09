@@ -1,4 +1,4 @@
-const CACHE_NAME = "learning-studio-shell-v7";
+const CACHE_NAME = "learning-studio-shell-v8";
 const AUDIO_CACHE = "learning-studio-audio-v1";
 const SHELL_URLS = [
   "index.html",
@@ -11,6 +11,7 @@ const SHELL_URLS = [
   "homework.html",
   "practice.html",
   "listening.html",
+  "whiteboard.html",
   "clip.html",
   "manga.html",
   "offline.html",
@@ -49,6 +50,20 @@ const SHELL_URLS = [
   "js/listening/character.js",
   "js/listening/dictation.js",
   "js/listening/speaking.js",
+  "js/whiteboard/app.js",
+  "js/whiteboard/board.js",
+  "js/whiteboard/dashboard-card.js",
+  "js/whiteboard/export.js",
+  "js/whiteboard/geometry.js",
+  "js/whiteboard/history.js",
+  "js/whiteboard/images.js",
+  "js/whiteboard/model.js",
+  "js/whiteboard/renderer.js",
+  "js/whiteboard/snapshot.js",
+  "js/whiteboard/sync.js",
+  "js/whiteboard/templates.js",
+  "js/pages/whiteboard.js",
+  "css/pages/whiteboard.css",
   "js/clips/schema.js",
   "js/manga/schema.js",
   "js/pages/clip.js",
@@ -93,6 +108,7 @@ const SHELL_DOCUMENTS = new Set([
   "homework.html",
   "practice.html",
   "listening.html",
+  "whiteboard.html",
   "clip.html",
   "manga.html"
 ]);

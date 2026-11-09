@@ -28,6 +28,7 @@ let firebaseConfig = null;
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
 const progressTracker = createProgressTracker();
 let dashboardClock = null;
+let dashboardWhiteboard = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, activeNotesRef = null;
 let activeCode = null, activeFeedRef = null, activeProgressRef = null;
 let activeGameProgress = {};
@@ -373,6 +374,7 @@ function deselectStudent() {
   if (activeProgressRef) { activeProgressRef.off(); activeProgressRef = null; }
   if (activeNotesRef) { activeNotesRef.off(); activeNotesRef = null; }
   if (dashboardClock) dashboardClock.hide();
+  if (dashboardWhiteboard) dashboardWhiteboard.hide();
   activeGameProgress = {};
   document.getElementById('selectedView').style.display = 'none';
   document.getElementById('overviewView').style.display = 'block';
@@ -1148,11 +1150,30 @@ function openCurrentHomeworkInTab() {
 function showLessonClock() {
   const host = document.getElementById('lessonClockHost');
   if (!host || !activeCode) return;
-  if (!dashboardClock) dashboardClock = mountDashboardClock({ db: fbDb, auth: firebase.auth(), host: host, showToast: showToast });
+  if (!dashboardClock) dashboardClock = mountDashboardClock({ db: fbDb, auth: firebase.auth(), host: host, showToast: showToast, onStopped: saveWhiteboardSnapshot });
   const lessons = Object.keys(curriculum || {})
     .filter(function(id) { return !curriculum[id].homework && isLessonVisibleTo(curriculum[id], activeCode); })
     .map(function(id) { return { id: id, title: curriculum[id].title || id }; });
   dashboardClock.show(activeCode, lessons);
+  showWhiteboardCard(lessons);
+}
+
+// Whiteboard card and the end-of-class snapshot. The whiteboard code is loaded only when it is needed.
+async function showWhiteboardCard(lessons) {
+  const host = document.getElementById('whiteboardCardHost');
+  if (!host || !activeCode) return;
+  const mod = await import('../whiteboard/dashboard-card.js');
+  if (!dashboardWhiteboard) dashboardWhiteboard = mod.mountDashboardWhiteboard({ db: fbDb, auth: firebase.auth(), host: host, showToast: showToast });
+  dashboardWhiteboard.show(activeCode, lessons);
+}
+async function saveWhiteboardSnapshot(info) {
+  try {
+    const mod = await import('../whiteboard/snapshot.js');
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    const result = await mod.snapshotOnStop({ db: fbDb, code: info.code, lessonId: info.lessonId, uid: user.uid });
+    if (result && result.ok) showToast('Whiteboard snapshot saved for ' + info.code);
+  } catch (error) { console.error('Whiteboard snapshot failed', error); }
 }
 
 function classTimesForSummary() {

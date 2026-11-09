@@ -790,3 +790,128 @@ test("per-student section overrides are teacher-written, bounded and readable by
   await assertFails(set(ref(teacher, `${base}/order/0`), "<b>x</b>"));
   await assertFails(set(ref(teacher, `${base}/unknown`), 1));
 });
+
+// ---- whiteboards ---------------------------------------------------------------------------------------------------
+const wbObject = (extra = {}) => ({ t: "stroke", k: "pen", z: 1, x: 10, y: 10, w: 50, h: 20, p: "0,0,5 3c,14,5", s: { c: "auto", w: 4, o: 1, fs: 24 }, by: "student-a", at: 1, ...extra });
+
+test("whiteboard: the teacher sets the mode and the student can only draw when it is draw", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const base = "whiteboards/A111111/lesson-a";
+  await assertSucceeds(set(ref(teacher, `${base}/mode`), "view"));
+  await assertFails(set(ref(dbA, `${base}/mode`), "draw"));
+  await assertFails(set(ref(teacher, `${base}/mode`), "everybody"));
+  await assertSucceeds(set(ref(teacher, `${base}/boards/shared/pages/p1/objects/t1`), wbObject({ by: "teacher" })));
+  await assertSucceeds(get(ref(dbA, `${base}/boards/shared/pages/p1/objects`)));
+  await assertFails(set(ref(dbA, `${base}/boards/shared/pages/p1/objects/s1`), wbObject()));
+  await assertSucceeds(set(ref(teacher, `${base}/mode`), "draw"));
+  await assertSucceeds(set(ref(dbA, `${base}/boards/shared/pages/p1/objects/s1`), wbObject()));
+  await assertSucceeds(set(ref(teacher, `${base}/mode`), "view"));
+  await assertFails(set(ref(dbA, `${base}/boards/shared/pages/p1/objects/s2`), wbObject()));
+});
+
+test("whiteboard: teacher-only hides the shared board from the student but not their own board", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const base = "whiteboards/A111111/lesson-a";
+  await assertSucceeds(set(ref(teacher, `${base}/mode`), "teacher-only"));
+  await assertFails(get(ref(dbA, `${base}/boards/shared/pages`)));
+  await assertSucceeds(get(ref(teacher, `${base}/boards/shared/pages`)));
+  await assertSucceeds(set(ref(dbA, `${base}/boards/personal/pages/p1/objects/m1`), wbObject()));
+  await assertSucceeds(get(ref(dbA, `${base}/boards/personal/pages`)));
+  await assertSucceeds(get(ref(teacher, `${base}/boards/personal/pages`)));
+  await assertSucceeds(get(ref(dbA, `${base}/mode`)));
+  await assertSucceeds(set(ref(teacher, `${base}/mode`), "view"));
+});
+
+test("whiteboard: students are isolated from each other, and the teacher can read but not write a personal board", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const anon = testEnv.unauthenticatedContext().database();
+  await assertSucceeds(set(ref(dbA, "whiteboards/A111111/lesson-a/boards/personal/pages/p1/objects/iso"), wbObject()));
+  await assertFails(get(ref(dbB, "whiteboards/A111111/lesson-a/boards/personal/pages/p1/objects/iso")));
+  await assertFails(set(ref(dbB, "whiteboards/A111111/lesson-a/boards/personal/pages/p1/objects/x"), wbObject({ by: "student-b" })));
+  await assertFails(get(ref(dbB, "whiteboards/A111111/lesson-a/boards/shared")));
+  await assertFails(set(ref(dbB, "whiteboards/A111111/lesson-a/presence/student-b"), { name: "B", colour: "#1c7ed6", x: 1, y: 1, at: 1 }));
+  await assertFails(get(ref(anon, "whiteboards/A111111/lesson-a/boards/personal")));
+  await assertSucceeds(get(ref(teacher, "whiteboards/A111111/lesson-a/boards/personal/pages/p1/objects/iso")));
+  await assertFails(set(ref(teacher, "whiteboards/A111111/lesson-a/boards/personal/pages/p1/objects/by-teacher"), wbObject({ by: "teacher" })));
+});
+
+test("whiteboard: in draw mode a student edits only their own objects and cannot touch pages or the mode", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const base = "whiteboards/A111111/lesson-b/boards/shared";
+  await assertSucceeds(set(ref(teacher, "whiteboards/A111111/lesson-b/mode"), "draw"));
+  await assertSucceeds(set(ref(teacher, `${base}/index/p1`), { title: "Page 1", bg: "grid", paper: "light", order: 0 }));
+  await assertSucceeds(set(ref(teacher, `${base}/pages/p1/meta`), { title: "Page 1", bg: "grid", paper: "light", order: 0 }));
+  await assertSucceeds(set(ref(teacher, `${base}/pages/p1/objects/teacherObj`), wbObject({ by: "teacher" })));
+  await assertSucceeds(set(ref(dbA, `${base}/pages/p1/objects/mine`), wbObject()));
+  await assertSucceeds(update(ref(dbA, `${base}/pages/p1`), { "objects/mine": wbObject({ x: 99, at: 2 }), "meta/updatedAt": 5 }));
+  await assertFails(set(ref(dbA, `${base}/pages/p1/objects/teacherObj`), wbObject({ by: "student-a" })));
+  await assertFails(set(ref(dbA, `${base}/pages/p1/objects/teacherObj`), null));
+  await assertFails(set(ref(dbA, `${base}/pages/p1/objects/forged`), wbObject({ by: "teacher" })));
+  await assertFails(set(ref(dbA, `${base}/pages/p1/objects`), null));
+  await assertFails(set(ref(dbA, `${base}/index/p2`), { title: "Mine", order: 1 }));
+  await assertFails(set(ref(dbA, `${base}/pages/p1/meta/bg`), "dots"));
+  await assertFails(set(ref(dbA, "whiteboards/A111111/lesson-b/mode"), "draw"));
+  await assertSucceeds(set(ref(teacher, `${base}/pages/p1/objects/mine`), { t: "stroke", by: "student-a", at: 9, del: true, z: 0 }));
+  await assertSucceeds(set(ref(teacher, `${base}/pages/p1/objects`), null));
+});
+
+test("whiteboard: object shape, size and type are validated", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const base = "whiteboards/A111111/lesson-c/boards/personal/pages/p1";
+  await assertSucceeds(set(ref(dbA, `${base}/objects/ok`), wbObject()));
+  await assertFails(set(ref(dbA, `${base}/objects/badtype`), wbObject({ t: "script" })));
+  await assertFails(set(ref(dbA, `${base}/objects/oversize`), wbObject({ p: "a".repeat(5601) })));
+  await assertSucceeds(set(ref(dbA, `${base}/objects/maxsize`), wbObject({ p: "a".repeat(5600) })));
+  await assertFails(set(ref(dbA, `${base}/objects/bigtext`), wbObject({ t: "text", tx: "x".repeat(1501) })));
+  await assertFails(set(ref(dbA, `${base}/objects/badcolour`), wbObject({ s: { c: "red; x:url(1)", w: 4, o: 1 } })));
+  await assertFails(set(ref(dbA, `${base}/objects/farout`), wbObject({ x: 1e9 })));
+  await assertFails(set(ref(dbA, `${base}/objects/unknownfield`), wbObject({ onclick: "x" })));
+  await assertFails(set(ref(dbA, `${base}/objects/nogeom`), { t: "stroke", by: "student-a", at: 1 }));
+  await assertSucceeds(set(ref(dbA, `${base}/objects/tomb`), { t: "stroke", by: "student-a", at: 3, del: true, z: 0 }));
+  await assertFails(set(ref(dbA, `${base}/objects/bad id!`), wbObject()));
+  await assertFails(set(ref(dbA, `${base}/surprise`), 1));
+  await assertFails(set(ref(teacher, "whiteboards/A111111/lesson-c/boards/other/pages/p1/objects/x"), wbObject({ by: "teacher" })));
+  const png = "data:image/png;base64,iVBORw0KGgo=";
+  await assertSucceeds(set(ref(dbA, `${base}/images/im1`), png));
+  await assertFails(set(ref(dbA, `${base}/images/im2`), "data:image/svg+xml;base64,PHN2Zz4="));
+  await assertFails(set(ref(dbA, `${base}/images/im3`), "data:image/png;base64," + "A".repeat(250000)));
+  await assertFails(set(ref(dbA, `${base}/images/im4`), "https://example.com/x.png"));
+  const picture = { t: "image", im: "im1", alt: "A river", z: 1, x: 0, y: 0, w: 50, h: 50, s: { c: "auto", w: 4, o: 1, fs: 24 }, by: "student-a", at: 1 };
+  await assertSucceeds(set(ref(dbA, `${base}/objects/img`), picture));
+});
+
+test("whiteboard: presence and live strokes are writable only by their own uid", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const base = "whiteboards/A111111/lesson-d";
+  await assertSucceeds(set(ref(teacher, `${base}/mode`), "draw"));
+  const me = { name: "Anna", colour: "#1c7ed6", x: 10, y: 20, tool: "laser", at: 5, laser: [[1, 2, 3], [4, 5, 6]] };
+  await assertSucceeds(set(ref(dbA, `${base}/presence/student-a`), me));
+  await assertFails(set(ref(dbA, `${base}/presence/teacher`), me));
+  await assertFails(set(ref(dbA, `${base}/presence/student-a`), { ...me, colour: "red" }));
+  await assertFails(set(ref(dbA, `${base}/presence/student-a`), { ...me, name: "n".repeat(41) }));
+  await assertSucceeds(get(ref(teacher, `${base}/presence`)));
+  await assertSucceeds(set(ref(dbA, `${base}/boards/shared/pages/p1/live/student-a`), wbObject()));
+  await assertFails(set(ref(dbA, `${base}/boards/shared/pages/p1/live/teacher`), wbObject()));
+  await assertSucceeds(set(ref(teacher, `${base}/mode`), "view"));
+  await assertFails(set(ref(dbA, `${base}/boards/shared/pages/p1/live/student-a`), wbObject()));
+});
+
+test("whiteboard: snapshots are teacher-written JPEGs the student can read", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const path = "whiteboards/A111111/lesson-e/snapshots/s1";
+  const snapshot = { at: 5, by: "teacher", label: "End of class", pages: { p1: "data:image/jpeg;base64,/9j/4AAQ" } };
+  await assertSucceeds(set(ref(teacher, path), snapshot));
+  await assertFails(set(ref(dbA, "whiteboards/A111111/lesson-e/snapshots/s2"), snapshot));
+  await assertSucceeds(get(ref(dbA, path)));
+  await assertFails(get(ref(dbB, path)));
+  await assertFails(set(ref(teacher, "whiteboards/A111111/lesson-e/snapshots/s3"), { ...snapshot, pages: { p1: "data:text/html;base64,PGI+" } }));
+});

@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="css/components/feedback.css">
 <link rel="stylesheet" href="css/components/page-aliases.css">
 <link rel="stylesheet" href="css/pages/lesson.css">
+<link rel="stylesheet" href="css/pages/whiteboard.css">
 </head>
 <body class="lesson-page">
 
@@ -44,6 +45,7 @@
   <button class="icon-btn" id="darkToggle" data-action="toggle-dark" title="Dark">🌙</button>
   <button class="icon-btn" data-action="toggle-reading-prefs" aria-expanded="false" aria-controls="readingPrefs" aria-label="Reading settings" title="Reading settings">Aa</button>
   <button class="icon-btn" data-action="toggle-notes" title="Notes">📝</button>
+  <button class="icon-btn" id="wbToggle" data-action="toggle-whiteboard" aria-expanded="false" aria-controls="wbDrawer" aria-label="Whiteboard" title="Whiteboard">🖍️</button>
 </div>
 
 <div class="ds-lesson-bar" id="lessonBarSlot"></div>
@@ -64,6 +66,11 @@
   <h3>📝 My Notes</h3>
   <p class="sub">Jot down words, questions, or your own examples.</p>
   <textarea id="notesArea" placeholder="Type your notes here..."></textarea>
+</aside>
+
+<aside class="wb-drawer" id="wbDrawer" aria-label="Whiteboard" hidden>
+  <div class="wb-drawer__bar"><h2>Whiteboard</h2></div>
+  <div class="wb-host" id="wbDrawerHost"></div>
 </aside>
 
 <div id="customContextMenu" class="context-menu"></div>

@@ -82,3 +82,12 @@ The pilot is enabled only for Gaziz by `features.mangaReader` in the `gaziz` ent
 Create a draft in the Manga Reader section of `tools/import-content.html`. Panel data must use local SVG paths, alt text, bubble text, simplified explanations, vocabulary, and chapter checks. Download the JSON into `content/manga/`, set its `mangaFile` and `mangaId` in the matching manifest entry, and provide answers only in the separate private Manga answer-key field. Use **Import content** for first-time import and **Save Manga Reader changes** for an explicit protected-content replacement. The portal displays the reader only when the student's assigned curriculum view has the manga feature flag; other students do not receive the link.
 
 The sample is tagged A2 for its short sentences, but `content/gaziz.json` has no explicit CEFR field. Review the story difficulty with Gaziz before treating that tag as an individually assessed placement.
+
+
+## Whiteboard (teacher)
+
+- In the dashboard, open a student: the **Whiteboard** card shows live pictures of their class board and their own board (read only). **Give control** lets the student draw on the class board; **Take control** returns it to watch-only. The drop-down also has **Hidden from the student** for preparing a board in private.
+- The student always sees the board only for the lessons they are assigned. Students can only change what they drew themselves; you can change or erase anything and clear a page.
+- Stopping the lesson clock saves a picture of every page of the class board for that student (they find it under **Snapshots from your teacher**). **Save as, Send snapshot to student** does the same at any time.
+- Students cannot add pages to the class board; you can. Each student also has a private board that only they and you can read.
+- Deploy: the new database rules (`whiteboards`) must be published with the rest of `database.rules.json`.

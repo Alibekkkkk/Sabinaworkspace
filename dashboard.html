@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="css/components/feedback.css">
 <link rel="stylesheet" href="css/components/page-aliases.css">
 <link rel="stylesheet" href="css/pages/dashboard.css">
+<link rel="stylesheet" href="css/pages/whiteboard.css">
 </head>
 <body class="dashboard-page">
 
@@ -142,6 +143,12 @@
             <h2>Lesson clock</h2>
             <p class="hint">Starts, pauses and stops the class timer for this student. The student sees the same time live, and the saved duration appears in history, the portal, the weekly summary and the CSV.</p>
             <div id="lessonClockHost"></div>
+          </div>
+
+          <div class="card" id="whiteboardCard">
+            <h2>Whiteboard</h2>
+            <p class="hint">A live picture of this student's boards. Choose whether they can draw on the class board, open the full board, or send them a snapshot. A snapshot of the class board is also saved automatically when you stop the lesson clock.</p>
+            <div id="whiteboardCardHost"></div>
           </div>
 
           <div class="card" id="scheduleCard">

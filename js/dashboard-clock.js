@@ -15,7 +15,7 @@ function el(tag, className, text) {
   return element;
 }
 
-export function mountDashboardClock({ db, auth, host, showToast }) {
+export function mountDashboardClock({ db, auth, host, showToast, onStopped }) {
   const select = el("select", "ds-select");
   select.setAttribute("aria-label", "Lesson");
   const selectLabel = el("label", "ds-field__label", "Lesson");
@@ -145,7 +145,12 @@ export function mountDashboardClock({ db, auth, host, showToast }) {
     container: controlsHost,
     sections,
     getSnapshot: () => snapshot,
-    run: (action, extra) => runClockAction({ db, auth, code, lessonId: currentLesson(), action, offset: snapshot.offset, clock: snapshot.clock, ...extra })
+    run: async (action, extra) => {
+      const stoppedCode = code; const stoppedLesson = currentLesson();
+      const result = await runClockAction({ db, auth, code, lessonId: stoppedLesson, action, offset: snapshot.offset, clock: snapshot.clock, ...extra });
+      if (action === "stop" && result && result.ok && onStopped) { try { onStopped({ code: stoppedCode, lessonId: stoppedLesson }); } catch (error) { console.error("Stop hook failed", error); } }
+      return result;
+    }
   });
 
   select.addEventListener("change", async () => { subscribe(); await loadSections(); });

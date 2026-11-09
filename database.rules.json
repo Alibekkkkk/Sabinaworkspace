@@ -345,6 +345,326 @@
         }
       }
     },
+    "whiteboards": {
+      "$code": {
+        "$lessonId": {
+          ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && $lessonId.matches(/^[A-Za-z0-9_-]{1,64}$/)",
+          "mode": {
+            ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('students').child($code).child('uid').val() === auth.uid)",
+            ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+            ".validate": "newData.isString() && newData.val().matches(/^(view|draw|teacher-only)$/)"
+          },
+          "presence": {
+            ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('students').child($code).child('uid').val() === auth.uid)",
+            "$uid": {
+              ".write": "auth != null && $uid === auth.uid && (root.child('admins').child(auth.uid).val() === true || root.child('students').child($code).child('uid').val() === auth.uid)",
+              ".validate": "$uid.matches(/^[A-Za-z0-9_-]{1,128}$/) && newData.hasChildren(['name', 'colour', 'x', 'y', 'at'])",
+              "name": {
+                ".validate": "newData.isString() && newData.val().length <= 40"
+              },
+              "colour": {
+                ".validate": "newData.isString() && newData.val().matches(/^#[0-9a-fA-F]{6}$/)"
+              },
+              "x": {
+                ".validate": "newData.isNumber() && newData.val() >= -20000 && newData.val() <= 20000"
+              },
+              "y": {
+                ".validate": "newData.isNumber() && newData.val() >= -20000 && newData.val() <= 20000"
+              },
+              "tool": {
+                ".validate": "newData.isString() && newData.val().length <= 20"
+              },
+              "at": {
+                ".validate": "newData.isNumber()"
+              },
+              "laser": {
+                ".validate": "newData.hasChildren()",
+                "$i": {
+                  "0": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "1": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  "2": {
+                    ".validate": "newData.isNumber()"
+                  },
+                  ".validate": "newData.hasChildren(['0', '1', '2'])",
+                  "$other": {
+                    ".validate": "false"
+                  }
+                }
+              },
+              "$other": {
+                ".validate": "false"
+              }
+            }
+          },
+          "snapshots": {
+            ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('students').child($code).child('uid').val() === auth.uid)",
+            ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+            "$snapshotId": {
+              ".validate": "newData.hasChildren(['at', 'by', 'label', 'pages'])",
+              "at": {
+                ".validate": "newData.isNumber() && newData.val() >= 0"
+              },
+              "by": {
+                ".validate": "newData.isString() && newData.val().length <= 128"
+              },
+              "label": {
+                ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 80"
+              },
+              "pages": {
+                ".validate": "newData.hasChildren()",
+                "$pageId": {
+                  ".validate": "$pageId.matches(/^[A-Za-z0-9_-]{1,40}$/) && newData.isString() && newData.val().beginsWith('data:image/jpeg;base64,') && newData.val().length <= 250000"
+                }
+              },
+              "$other": {
+                ".validate": "false"
+              }
+            }
+          },
+          "boards": {
+            "$scope": {
+              ".validate": "$scope === 'shared' || $scope === 'personal'",
+              ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('students').child($code).child('uid').val() === auth.uid && ($scope === 'personal' || root.child('whiteboards').child($code).child($lessonId).child('mode').val() !== 'teacher-only')))",
+              ".write": "auth != null && (($scope === 'shared' && root.child('admins').child(auth.uid).val() === true) || ($scope === 'personal' && root.child('students').child($code).child('uid').val() === auth.uid))",
+              "index": {
+                "$pageId": {
+                  ".validate": "$pageId.matches(/^[A-Za-z0-9_-]{1,40}$/) && newData.hasChildren(['title', 'order'])",
+                  "title": {
+                    ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+                  },
+                  "bg": {
+                    ".validate": "newData.isString() && newData.val().matches(/^(blank|grid|dots|ruled)$/)"
+                  },
+                  "paper": {
+                    ".validate": "newData.isString() && newData.val().matches(/^(light|dark)$/)"
+                  },
+                  "order": {
+                    ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000"
+                  },
+                  "$other": {
+                    ".validate": "false"
+                  }
+                }
+              },
+              "pages": {
+                "$pageId": {
+                  ".validate": "$pageId.matches(/^[A-Za-z0-9_-]{1,40}$/)",
+                  "meta": {
+                    ".validate": "newData.hasChildren(['title', 'order'])",
+                    "title": {
+                      ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+                    },
+                    "bg": {
+                      ".validate": "newData.isString() && newData.val().matches(/^(blank|grid|dots|ruled)$/)"
+                    },
+                    "paper": {
+                      ".validate": "newData.isString() && newData.val().matches(/^(light|dark)$/)"
+                    },
+                    "order": {
+                      ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000"
+                    },
+                    "updatedAt": {
+                      ".write": "auth != null && ((($scope === 'shared' && root.child('admins').child(auth.uid).val() === true) || ($scope === 'personal' && root.child('students').child($code).child('uid').val() === auth.uid)) || ($scope === 'shared' && root.child('students').child($code).child('uid').val() === auth.uid && root.child('whiteboards').child($code).child($lessonId).child('mode').val() === 'draw'))",
+                      ".validate": "newData.isNumber() && newData.val() >= 0"
+                    },
+                    "$other": {
+                      ".validate": "false"
+                    }
+                  },
+                  "objects": {
+                    "$objectId": {
+                      ".write": "auth != null && ((($scope === 'shared' && root.child('admins').child(auth.uid).val() === true) || ($scope === 'personal' && root.child('students').child($code).child('uid').val() === auth.uid)) || ($scope === 'shared' && root.child('students').child($code).child('uid').val() === auth.uid && root.child('whiteboards').child($code).child($lessonId).child('mode').val() === 'draw' && (!data.exists() || data.child('by').val() === auth.uid) && (!newData.exists() || newData.child('by').val() === auth.uid)))",
+                      ".validate": "$objectId.matches(/^[A-Za-z0-9_-]{1,40}$/) && newData.hasChildren(['t', 'by', 'at']) && (newData.child('del').val() === true || newData.hasChildren(['x', 'y', 'w', 'h', 'z', 's']))",
+                      "t": {
+                        ".validate": "newData.isString() && newData.val().matches(/^(stroke|shape|text|sticky|image)$/)"
+                      },
+                      "k": {
+                        ".validate": "newData.isString() && newData.val().matches(/^(pen|hl|line|arrow|rect|ellipse|triangle)$/)"
+                      },
+                      "z": {
+                        ".validate": "newData.isNumber() && newData.val() >= -1000000000 && newData.val() <= 1000000000"
+                      },
+                      "x": {
+                        ".validate": "newData.isNumber() && newData.val() >= -20000 && newData.val() <= 20000"
+                      },
+                      "y": {
+                        ".validate": "newData.isNumber() && newData.val() >= -20000 && newData.val() <= 20000"
+                      },
+                      "w": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20000"
+                      },
+                      "h": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20000"
+                      },
+                      "r": {
+                        ".validate": "newData.isNumber() && newData.val() >= -7 && newData.val() <= 7"
+                      },
+                      "p": {
+                        ".validate": "newData.isString() && newData.val().length <= 5600"
+                      },
+                      "tx": {
+                        ".validate": "newData.isString() && newData.val().length <= 1500"
+                      },
+                      "alt": {
+                        ".validate": "newData.isString() && newData.val().length <= 200"
+                      },
+                      "im": {
+                        ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,40}$/)"
+                      },
+                      "lk": {
+                        ".validate": "newData.isBoolean() && newData.val() === true"
+                      },
+                      "del": {
+                        ".validate": "newData.isBoolean() && newData.val() === true"
+                      },
+                      "by": {
+                        ".validate": "newData.isString() && newData.val().length <= 128"
+                      },
+                      "at": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0"
+                      },
+                      "s": {
+                        ".validate": "newData.hasChildren()",
+                        "c": {
+                          ".validate": "newData.isString() && newData.val().matches(/^(auto|#[0-9a-fA-F]{6})$/)"
+                        },
+                        "w": {
+                          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 64"
+                        },
+                        "o": {
+                          ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 1"
+                        },
+                        "f": {
+                          ".validate": "newData.isString() && newData.val().matches(/^#[0-9a-fA-F]{6}$/)"
+                        },
+                        "fs": {
+                          ".validate": "newData.isNumber() && newData.val() >= 8 && newData.val() <= 200"
+                        },
+                        "b": {
+                          ".validate": "newData.isBoolean()"
+                        },
+                        "u": {
+                          ".validate": "newData.isBoolean()"
+                        },
+                        "$other": {
+                          ".validate": "false"
+                        }
+                      },
+                      "$other": {
+                        ".validate": "false"
+                      }
+                    }
+                  },
+                  "images": {
+                    "$imageId": {
+                      ".write": "auth != null && ((($scope === 'shared' && root.child('admins').child(auth.uid).val() === true) || ($scope === 'personal' && root.child('students').child($code).child('uid').val() === auth.uid)) || ($scope === 'shared' && root.child('students').child($code).child('uid').val() === auth.uid && root.child('whiteboards').child($code).child($lessonId).child('mode').val() === 'draw'))",
+                      ".validate": "$imageId.matches(/^[A-Za-z0-9_-]{1,40}$/) && newData.isString() && newData.val().length <= 250000 && (newData.val().beginsWith('data:image/jpeg;base64,') || newData.val().beginsWith('data:image/png;base64,') || newData.val().beginsWith('data:image/webp;base64,'))"
+                    }
+                  },
+                  "live": {
+                    "$liveUid": {
+                      ".write": "$liveUid === auth.uid && (((($scope === 'shared' && root.child('admins').child(auth.uid).val() === true) || ($scope === 'personal' && root.child('students').child($code).child('uid').val() === auth.uid)) || ($scope === 'shared' && root.child('students').child($code).child('uid').val() === auth.uid && root.child('whiteboards').child($code).child($lessonId).child('mode').val() === 'draw')))",
+                      ".validate": "newData.hasChildren(['t', 'by', 'at']) && (newData.child('del').val() === true || newData.hasChildren(['x', 'y', 'w', 'h', 'z', 's']))",
+                      "t": {
+                        ".validate": "newData.isString() && newData.val().matches(/^(stroke|shape|text|sticky|image)$/)"
+                      },
+                      "k": {
+                        ".validate": "newData.isString() && newData.val().matches(/^(pen|hl|line|arrow|rect|ellipse|triangle)$/)"
+                      },
+                      "z": {
+                        ".validate": "newData.isNumber() && newData.val() >= -1000000000 && newData.val() <= 1000000000"
+                      },
+                      "x": {
+                        ".validate": "newData.isNumber() && newData.val() >= -20000 && newData.val() <= 20000"
+                      },
+                      "y": {
+                        ".validate": "newData.isNumber() && newData.val() >= -20000 && newData.val() <= 20000"
+                      },
+                      "w": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20000"
+                      },
+                      "h": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20000"
+                      },
+                      "r": {
+                        ".validate": "newData.isNumber() && newData.val() >= -7 && newData.val() <= 7"
+                      },
+                      "p": {
+                        ".validate": "newData.isString() && newData.val().length <= 5600"
+                      },
+                      "tx": {
+                        ".validate": "newData.isString() && newData.val().length <= 1500"
+                      },
+                      "alt": {
+                        ".validate": "newData.isString() && newData.val().length <= 200"
+                      },
+                      "im": {
+                        ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,40}$/)"
+                      },
+                      "lk": {
+                        ".validate": "newData.isBoolean() && newData.val() === true"
+                      },
+                      "del": {
+                        ".validate": "newData.isBoolean() && newData.val() === true"
+                      },
+                      "by": {
+                        ".validate": "newData.isString() && newData.val().length <= 128"
+                      },
+                      "at": {
+                        ".validate": "newData.isNumber() && newData.val() >= 0"
+                      },
+                      "s": {
+                        ".validate": "newData.hasChildren()",
+                        "c": {
+                          ".validate": "newData.isString() && newData.val().matches(/^(auto|#[0-9a-fA-F]{6})$/)"
+                        },
+                        "w": {
+                          ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 64"
+                        },
+                        "o": {
+                          ".validate": "newData.isNumber() && newData.val() >= 0.05 && newData.val() <= 1"
+                        },
+                        "f": {
+                          ".validate": "newData.isString() && newData.val().matches(/^#[0-9a-fA-F]{6}$/)"
+                        },
+                        "fs": {
+                          ".validate": "newData.isNumber() && newData.val() >= 8 && newData.val() <= 200"
+                        },
+                        "b": {
+                          ".validate": "newData.isBoolean()"
+                        },
+                        "u": {
+                          ".validate": "newData.isBoolean()"
+                        },
+                        "$other": {
+                          ".validate": "false"
+                        }
+                      },
+                      "$other": {
+                        ".validate": "false"
+                      }
+                    }
+                  },
+                  "$other": {
+                    ".validate": "false"
+                  }
+                }
+              },
+              "$other": {
+                ".validate": "false"
+              }
+            }
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        }
+      }
+    },
     "sessionSummary": {
     ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
     "$code": {
