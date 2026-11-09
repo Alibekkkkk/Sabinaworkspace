@@ -224,3 +224,81 @@ test("speaking comparison: highlights missed words, ignores case and punctuation
   assert.equal(compareSpoken("", "anything").total, 0);
   assert.equal(compareSpoken("The colour red.", "the color red").score, 100, "UK/US spelling is accepted");
 });
+
+// ---- audio: voice choice and the generation pipeline ----------------------------------------------------------
+
+import { pickBritishVoice, wordIndexAt } from "../js/listening/audio.js";
+import { azureRequest, buildRequest, buildSsml, elevenLabsRequest, estimateWordTimings, googleRequest, loudnormArgs, slowArgs, withinBudget } from "../scripts/tts-providers.mjs";
+import { spawnSync } from "node:child_process";
+
+test("voice choice prefers a British neural voice and matches the character's gender", () => {
+  const voices = [
+    { name: "Microsoft David - English (United States)", lang: "en-US" },
+    { name: "Google UK English Male", lang: "en-GB" },
+    { name: "Microsoft Sonia Online (Natural) - English (United Kingdom)", lang: "en-GB", localService: false },
+    { name: "Microsoft Ryan Online (Natural) - English (United Kingdom)", lang: "en-GB", localService: false },
+    { name: "Anna", lang: "de-DE" }
+  ];
+  assert.match(pickBritishVoice(voices, "nora").name, /Sonia/);
+  assert.match(pickBritishVoice(voices, "arthur").name, /Ryan/);
+  assert.match(pickBritishVoice(voices.slice(0, 2), "nora").name, /Google UK English Male/, "a British voice beats an American one even with the wrong gender");
+  assert.match(pickBritishVoice([voices[0]], "nora").name, /David/, "any English voice is better than none");
+  assert.equal(pickBritishVoice([voices[4]], "nora"), null);
+  assert.equal(pickBritishVoice([], "nora"), null);
+  assert.equal(pickBritishVoice(undefined), null);
+  assert.match(pickBritishVoice([{ name: "x", lang: "en_GB" }, { name: "y", lang: "en-US" }]).name, /x/, "en_GB spelling is understood");
+});
+
+test("speech boundary character index maps to the right word", () => {
+  const text = "The river has flooded.";
+  assert.equal(wordIndexAt(text, 0), 0);
+  assert.equal(wordIndexAt(text, 4), 1);
+  assert.equal(wordIndexAt(text, 8), 1);
+  assert.equal(wordIndexAt(text, 10), 2);
+  assert.equal(wordIndexAt(text, 14), 3);
+  assert.equal(wordIndexAt(text, 99), 3);
+});
+
+test("TTS requests: SSML is escaped and British, slow means -25%, keys only travel in headers or the provider URL", () => {
+  const ssml = buildSsml('Tom & "Jerry" <run>', "en-GB-SoniaNeural", 0.75);
+  assert.match(ssml, /xml:lang="en-GB"/);
+  assert.match(ssml, /rate="-25%"/);
+  assert.ok(ssml.includes("Tom &amp; &quot;Jerry&quot; &lt;run&gt;"), "text is escaped");
+  assert.match(buildSsml("x", "v", 1), /rate="\+0%"/);
+  const azure = azureRequest({ text: "Hello", voice: "en-GB-RyanNeural", region: "uksouth", key: "SECRET", rate: 1 });
+  assert.equal(azure.url, "https://uksouth.tts.speech.microsoft.com/cognitiveservices/v1");
+  assert.equal(azure.init.headers["Ocp-Apim-Subscription-Key"], "SECRET");
+  assert.ok(!azure.url.includes("SECRET"));
+  assert.throws(() => azureRequest({ text: "x", voice: "v", region: "evil.com/x", key: "k" }), /TTS_REGION/);
+  const google = googleRequest({ text: "Hello", voice: "en-GB-Neural2-A", key: "K E Y", rate: 0.75 });
+  assert.ok(google.url.endsWith("key=K%20E%20Y"));
+  assert.equal(JSON.parse(google.init.body).audioConfig.speakingRate, 0.75);
+  assert.equal(JSON.parse(google.init.body).voice.languageCode, "en-GB");
+  const eleven = elevenLabsRequest({ text: "Hi", voice: "abc", key: "K" });
+  assert.equal(eleven.init.headers["xi-api-key"], "K");
+  assert.ok(!eleven.url.includes("K="));
+  assert.throws(() => buildRequest("robot", {}), /Unknown TTS_PROVIDER/);
+  assert.deepEqual(slowArgs("a.mp3", "b.mp3").filter(arg => arg.startsWith("atempo")), ["atempo=0.75"]);
+  assert.ok(loudnormArgs("a.mp3", "b.mp3").includes("loudnorm=I=-16:TP=-1.5:LRA=11"));
+});
+
+test("estimated word timings cover the audio, stay in order and are always flagged by the script", () => {
+  const timings = estimateWordTimings("The river has flooded the main road again.", 3.2);
+  assert.equal(timings.length, 8);
+  assert.equal(timings[0].start, 0);
+  assert.ok(Math.abs(timings.at(-1).end - 3.2) < 0.01);
+  for (let index = 1; index < timings.length; index++) assert.ok(timings[index].start >= timings[index - 1].end - 0.002);
+  assert.ok(timings.every(timing => timing.end > timing.start));
+  assert.equal(withinBudget(60 * 1024), true);
+  assert.equal(withinBudget(60 * 1024 + 1), false);
+  const source = readFileSync(fileURLToPath(new URL("../scripts/generate-listening-audio.mjs", import.meta.url)), "utf8");
+  assert.match(source, /timingsEstimated = true/);
+});
+
+test("the audio script refuses to run without a key and writes nothing", () => {
+  const env = { ...process.env }; delete env.TTS_KEY; delete env.TTS_PROVIDER;
+  const run = spawnSync(process.execPath, [fileURLToPath(new URL("../scripts/generate-listening-audio.mjs", import.meta.url)), fileURLToPath(new URL("../content/listening/sabina.json", import.meta.url))], { env, encoding: "utf8" });
+  assert.equal(run.status, 2);
+  assert.match(run.stderr, /NEEDS KEY/);
+  assert.equal(JSON.parse(readFileSync(fileURLToPath(new URL("../content/listening/sabina.json", import.meta.url)), "utf8")).items[0].audio, undefined, "no audio is faked");
+});

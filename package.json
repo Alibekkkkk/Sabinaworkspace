@@ -10,6 +10,7 @@
     "check:visual": "node scripts/visual-check.mjs",
     "lint:content": "node scripts/lint-content.mjs",
     "test:clock-e2e": "node scripts/clock-e2e.mjs",
+    "lint:listening": "node scripts/lint-listening.mjs",
     "test:ladder-e2e": "node scripts/ladder-e2e.mjs",
     "test:wordfamily-e2e": "node scripts/word-family-e2e.mjs",
     "test:reading-e2e": "node scripts/reading-tasks-e2e.mjs",
