@@ -688,3 +688,71 @@ test("scheduled assignments: protected content unlocks at availableFrom on the s
   await assertSucceeds(set(ref(dbA, "sessions/A111111/homework/hw-open"), { version: 1, answers: { q_one: "on time" }, submitted: false }));
   await assertSucceeds(set(ref(teacher, "sessions/A111111/homework/hw-closed"), { version: 1, submitted: false }));
 });
+
+test("lesson clock: only teachers write, the state machine and revisions are enforced, the stopped total is frozen", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const now = { ".sv": "timestamp" };
+  const clock = ref(teacher, "lessonClock/A111111/lesson-a");
+  const idle = { state: "idle", accumulatedMs: 0, rev: 0, currentSection: "vocabulary" };
+
+  await assertFails(set(ref(dbA, "lessonClock/A111111/lesson-a"), idle));
+  await assertFails(set(ref(dbB, "lessonClock/A111111/lesson-a"), idle));
+  await assertSucceeds(set(clock, idle));
+  await assertSucceeds(get(ref(dbA, "lessonClock/A111111/lesson-a")));
+  await assertFails(get(ref(dbB, "lessonClock/A111111/lesson-a")));
+  await assertFails(set(ref(dbA, "lessonClock/A111111/lesson-a/state"), "stopped"));
+  await assertFails(set(ref(dbA, "lessonClock/A111111/lesson-a/accumulatedMs"), 99));
+
+  // start (rev must go up by exactly one, runningSince must be a real server time)
+  await assertFails(set(clock, { ...idle, state: "running", rev: 5, runningSince: now, startedAt: now, sections: { vocabulary: { accumulatedMs: 0, runningSince: now } } }));
+  await assertFails(set(clock, { ...idle, state: "running", rev: 1, runningSince: Date.now() + 600000, startedAt: now }));
+  await assertFails(set(clock, { ...idle, state: "running", rev: 1, startedAt: now, runningSince: now, extra: true }));
+  await assertSucceeds(set(clock, { ...idle, state: "running", rev: 1, runningSince: now, startedAt: now, sections: { vocabulary: { accumulatedMs: 0, runningSince: now } } }));
+
+  // running -> paused banks time and clears runningSince; a paused clock cannot keep runningSince
+  await assertFails(set(clock, { state: "paused", accumulatedMs: 60000, rev: 2, currentSection: "vocabulary", runningSince: now, startedAt: now }));
+  await assertFails(set(clock, { state: "paused", accumulatedMs: -1, rev: 2, currentSection: "vocabulary", startedAt: now }));
+  await assertFails(set(clock, { state: "paused", accumulatedMs: 60000, rev: 2, currentSection: "Bad Section", startedAt: now }));
+  await assertFails(set(clock, { state: "paused", accumulatedMs: 60000, rev: 2, currentSection: "grammar", totalMs: 1, startedAt: now }));
+  await assertSucceeds(set(clock, { state: "paused", accumulatedMs: 60000, rev: 2, currentSection: "vocabulary", startedAt: now, sections: { vocabulary: { accumulatedMs: 60000 } } }));
+  await assertSucceeds(set(clock, { state: "running", accumulatedMs: 60000, rev: 3, currentSection: "vocabulary", startedAt: now, runningSince: now }));
+  await assertFails(set(clock, { state: "idle", accumulatedMs: 0, rev: 4, currentSection: "vocabulary" }));
+
+  // stop freezes the total
+  await assertFails(set(clock, { state: "stopped", accumulatedMs: 120000, rev: 4, currentSection: "vocabulary", startedAt: now, stoppedAt: now }));
+  await assertSucceeds(set(clock, { state: "stopped", accumulatedMs: 120000, rev: 4, currentSection: "vocabulary", startedAt: now, stoppedAt: now, totalMs: 120000 }));
+  await assertFails(set(clock, { state: "running", accumulatedMs: 120000, rev: 5, currentSection: "vocabulary", startedAt: now, runningSince: now }));
+  await assertFails(set(clock, { state: "stopped", accumulatedMs: 999999, rev: 5, currentSection: "vocabulary", startedAt: now, stoppedAt: now, totalMs: 999999 }));
+  await assertSucceeds(set(clock, { state: "stopped", accumulatedMs: 120000, rev: 5, currentSection: "vocabulary", startedAt: now, stoppedAt: now, totalMs: 120000 }));
+  // an adjustment must carry the previous value, and revisions cannot be replayed
+  const adjusted = { state: "stopped", accumulatedMs: 180000, totalMs: 180000, rev: 6, currentSection: "vocabulary", startedAt: now, stoppedAt: now, lastAdjust: { previousMs: 120000, at: now, reason: "Forgot to stop" } };
+  await assertFails(set(clock, { ...adjusted, lastAdjust: { previousMs: 5, at: now } }));
+  await assertFails(set(clock, { ...adjusted, rev: 5 }));
+  await assertSucceeds(set(clock, adjusted));
+  // wrong lesson id shape and the other student's clock
+  await assertFails(set(ref(teacher, "lessonClock/A111111/bad lesson"), idle));
+  await assertFails(get(ref(dbB, "lessonClock/A111111")));
+});
+
+test("lesson clock log is append-only, teacher-only, stamped with the server time and the teacher's uid", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const now = { ".sv": "timestamp" };
+  const event = { type: "start", at: now, by: "teacher", fromState: "idle", toState: "running" };
+  const entry = ref(teacher, "lessonClockLog/A111111/lesson-a/evt-1");
+
+  await assertSucceeds(set(entry, event));
+  await assertFails(set(entry, { ...event, type: "pause" }));
+  await assertFails(set(entry, null));
+  await assertFails(set(ref(teacher, "lessonClockLog/A111111/lesson-a/evt-2"), { ...event, at: Date.now() - 5000 }));
+  await assertFails(set(ref(teacher, "lessonClockLog/A111111/lesson-a/evt-3"), { ...event, by: "somebody-else" }));
+  await assertFails(set(ref(teacher, "lessonClockLog/A111111/lesson-a/evt-4"), { ...event, type: "explode" }));
+  await assertFails(set(ref(teacher, "lessonClockLog/A111111/lesson-a/evt-5"), { ...event, injected: "<b>" }));
+  await assertFails(set(ref(teacher, "lessonClockLog/A111111/lesson-a/bad id"), event));
+  await assertSucceeds(set(ref(teacher, "lessonClockLog/A111111/lesson-a/evt-6"), { type: "adjust", at: now, by: "teacher", fromState: "stopped", toState: "stopped", deltaMs: 60000, previousMs: 120000, note: "Forgot to stop" }));
+  await assertSucceeds(get(ref(teacher, "lessonClockLog/A111111/lesson-a")));
+  await assertFails(get(ref(dbA, "lessonClockLog/A111111/lesson-a")));
+  await assertFails(set(ref(dbA, "lessonClockLog/A111111/lesson-a/evt-7"), event));
+});
