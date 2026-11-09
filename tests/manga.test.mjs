@@ -3,15 +3,16 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { addProtectedMangaAnswers, validateManga } from "../js/manga/schema.js";
 
-const draft = JSON.parse(readFileSync(new URL("../content/manga/gaziz-demo.json", import.meta.url), "utf8"));
-const manifest = JSON.parse(readFileSync(new URL("../content/manifest.json", import.meta.url), "utf8"));
+const read = path => JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
+const draft = read("./fixtures/manga-v1.json"); // the original version 1 story, kept to prove old records still load
+const manifest = read("../content/manifest.json");
 const answers = {
   "garden-purpose": "vegetables",
   "fill-bubble": "share",
   "chapter-boss": "They worked and shared food together."
 };
 
-test("Gaziz manga draft validates without exposing answer keys", () => {
+test("a version 1 manga draft validates without exposing answer keys", () => {
   assert.doesNotThrow(() => validateManga(draft, { requireAnswers: false }));
   for (const chapter of draft.chapters) {
     for (const check of chapter.checks) assert.equal(Object.hasOwn(check, "answer"), false);
@@ -30,14 +31,14 @@ test("Manga Reader is feature-flagged only for Gaziz in the manifest", () => {
   for (const [, entry] of enabled) assert.equal(entry.mangaFeatureFor, "gaziz");
 });
 
-test("private answers are merged into protected manga records", () => {
+test("private answers are merged into protected version 1 manga records", () => {
   const protectedManga = addProtectedMangaAnswers(draft, answers);
   assert.doesNotThrow(() => validateManga(protectedManga));
   assert.equal(protectedManga.chapters[0].checks[1].answer, "share");
   assert.throws(() => addProtectedMangaAnswers(draft, {}), /must match the checks/);
 });
 
-test("manga schema rejects remote images and missing answers", () => {
+test("version 1 rejects remote images and missing answers", () => {
   const badImage = {
     ...draft,
     chapters: draft.chapters.map(chapter => ({

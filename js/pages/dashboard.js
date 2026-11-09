@@ -31,7 +31,7 @@ let dashboardClock = null;
 let dashboardWhiteboard = null;
 let dashboardGameMode = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, activeNotesRef = null;
-let activeCode = null, activeFeedRef = null, activeProgressRef = null;
+let activeCode = null, activeFeedRef = null, activeProgressRef = null, activeFeaturesRef = null, activeFlags = null;
 let activeGameProgress = {};
 let activeHistoryItems = [], weeklyHistoryLoaded = false, weeklyProgressLoaded = false;
 let editingLessonId = null, lessonVisibility = 'some', lessonType = 'classwork';
@@ -362,6 +362,7 @@ function selectStudent(code) {
   renderSelectedView();
   attachHistoryListener();
   attachGameProgressListener();
+  attachFeatureListener();
   attachNotesListener();
   loadLeaderboardCard();
   renderScheduleList();
@@ -373,6 +374,7 @@ function deselectStudent() {
   activeCode = null;
   if (activeFeedRef) { activeFeedRef.off(); activeFeedRef = null; }
   if (activeProgressRef) { activeProgressRef.off(); activeProgressRef = null; }
+  if (activeFeaturesRef) { activeFeaturesRef.off(); activeFeaturesRef = null; }
   if (activeNotesRef) { activeNotesRef.off(); activeNotesRef = null; }
   if (dashboardClock) dashboardClock.hide();
   if (dashboardWhiteboard) dashboardWhiteboard.hide();
@@ -514,12 +516,69 @@ function attachGameProgressListener() {
     renderListening();
     renderMastery();
     renderClips();
+    renderManga();
     renderPlacementCard();
   }, function(error) {
     host.textContent = 'Practice data could not be loaded: ' + error.message;
     weeklyProgressLoaded = false;
     updateWeeklySummaryAvailability();
   });
+}
+
+function attachFeatureListener() {
+  if (activeFeaturesRef) activeFeaturesRef.off();
+  const code = activeCode;
+  activeFlags = null;
+  activeFeaturesRef = fbDb.ref('studentFeatures/' + code);
+  activeFeaturesRef.on('value', function(snapshot) { activeFlags = snapshot.val() || null; renderFeatures(); renderManga(); },
+    function(error) { const host = document.getElementById('featureSummary'); if (host) host.textContent = 'Feature flags could not be loaded: ' + error.message; });
+}
+
+function renderFeatures() {
+  const host = document.getElementById('featureSummary');
+  if (!host || !activeCode) return;
+  const code = activeCode;
+  Promise.all([import('../feature-card.js'), import('../features.js')]).then(function(mods) {
+    mods[0].renderFeatureCard(host, {
+      flags: activeFlags,
+      lessonFeatures: mods[1].mergeLessonFeatures(curriculum),
+      onChange: function(name, value) {
+        const ref = fbDb.ref('studentFeatures/' + code + '/' + name);
+        return value === null ? ref.remove() : ref.set(value);
+      }
+    });
+  }).catch(function(error) { host.textContent = 'Feature flags could not be shown: ' + error.message; });
+}
+
+// Manga: the story the student is assigned (from their curriculum), its progress, due dates and written answers to review.
+function renderManga() {
+  const card = document.getElementById('mangaCard'); const host = document.getElementById('mangaSummary');
+  if (!card || !host || !activeCode) return;
+  const code = activeCode;
+  const lessonId = Object.keys(curriculum || {}).find(function(id) { const lesson = curriculum[id]; return lesson && lesson.mangaId && isLessonVisibleTo(lesson, code); });
+  const lesson = lessonId ? curriculum[lessonId] : null;
+  Promise.all([import('../features.js'), import('../manga/dashboard-card.js'), import('../manga/schema.js'), import('../manga/schema-v2.js')]).then(function(mods) {
+    const on = mods[0].hasFeature(activeFlags, 'mangaReader', lesson && lesson.features);
+    card.hidden = !(on && lesson);
+    if (card.hidden) return null;
+    return Promise.all([
+      fbDb.ref('protectedContent/' + lessonId + '/manga/content').once('value'),
+      fbDb.ref('mangaAssignments/' + code).once('value'),
+      fbDb.ref('sessions/' + code + '/reviewQueue').once('value')
+    ]).then(function(snaps) {
+      if (code !== activeCode) return;
+      let story = null;
+      try { story = snaps[0].exists() ? mods[2].validateManga(snaps[0].val()) : null; if (story && story.schemaVersion === 1) story = mods[2].validateManga(mods[3].migrateV1(story)); } catch (error) { story = null; }
+      const mangaId = story ? story.id : lesson.mangaId;
+      mods[1].renderMangaCard(host, {
+        story: story, progress: activeGameProgress || {}, assignments: (snaps[1].val() || {})[mangaId] || {}, reviewItems: Object.values(snaps[2].val() || {}),
+        actions: {
+          assign: function(chapterId, dueAt) { const value = { assignedAt: Date.now() }; if (dueAt) value.dueAt = dueAt; return fbDb.ref('mangaAssignments/' + code + '/' + mangaId + '/' + chapterId).set(value).then(renderManga); },
+          clear: function(chapterId) { return fbDb.ref('mangaAssignments/' + code + '/' + mangaId + '/' + chapterId).remove().then(renderManga); }
+        }
+      });
+    });
+  }).catch(function(error) { host.textContent = 'Manga results could not be shown: ' + error.message; });
 }
 
 function visibleLessonsWithClips() {

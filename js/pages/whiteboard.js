@@ -4,6 +4,7 @@ import { firebaseConfig } from "../config.js";
 import { isTeacher } from "../auth.js";
 import { resolveStudentContext } from "../student-context.js";
 import { mountWhiteboard } from "../whiteboard/app.js";
+import { featureEnabled, showNotEnabled } from "../feature-gate.js";
 
 const query = new URLSearchParams(location.search);
 const status = document.getElementById("status");
@@ -28,6 +29,7 @@ async function boot() {
     } else {
       const context = await resolveStudentContext({ auth, db, lessonId });
       code = context.code; uid = context.uid; name = context.name;
+      if (!(await featureEnabled(db, code, "whiteboard"))) { showNotEnabled(status, "whiteboard"); return; }
     }
     document.getElementById("pageTitle").textContent = role === "teacher" ? "Whiteboard · " + code : "Whiteboard";
     status.hidden = true;

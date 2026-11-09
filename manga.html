@@ -11,62 +11,139 @@
   <script src="js/pwa.js" defer></script>
   <script src="js/theme.js" defer></script>
   <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components/controls.css">
+  <link rel="stylesheet" href="css/components/surfaces.css">
+  <link rel="stylesheet" href="css/components/feedback.css">
+  <link rel="stylesheet" href="css/components/progress.css">
+  <link rel="stylesheet" href="css/pages/games.css">
   <link rel="stylesheet" href="css/pages/manga.css">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <main class="shell">
-    <nav class="topbar" aria-label="Manga reader navigation">
-      <a id="backLink" href="portal.html">← Learning portal</a>
-      <a id="practiceLink" href="practice.html">Practice games</a>
+  <main class="mg-shell" id="main">
+    <nav class="mg-topbar" aria-label="Manga reader navigation">
+      <a id="backLink" class="ds-btn ds-btn--secondary ds-btn--small" href="portal.html">← Learning portal</a>
+      <a id="shelfLink" class="ds-btn ds-btn--secondary ds-btn--small" href="manga.html" hidden>All chapters</a>
+      <a id="practiceLink" class="ds-btn ds-btn--secondary ds-btn--small" href="practice.html">Practice games</a>
       <button class="theme-toggle" type="button" data-theme-toggle>☀️ Light mode</button>
     </nav>
-    <p id="status" class="status" role="status" aria-live="polite">Loading your assigned story…</p>
-    <article id="readerContent" hidden>
-      <header class="hero">
-        <div class="eyebrow">Gaziz’s Manga Reader · <span id="level"></span></div>
-        <h1 id="title"></h1>
-        <p>Original teacher-created story · Tap a speech bubble for an explanation or tap a word to save it.</p>
-        <div class="controls" role="group" aria-label="Reading mode">
-          <button type="button" class="mode" data-mode="vertical" aria-pressed="true">Vertical scroll</button>
-          <button type="button" class="mode" data-mode="page-flip" aria-pressed="false">Page flip</button>
+    <p id="status" class="mg-status" role="status" aria-live="polite">Loading your story…</p>
+
+    <!-- The chapters shelf -->
+    <section id="shelf" hidden aria-labelledby="storyTitle">
+      <header class="mg-hero">
+        <p class="mg-eyebrow">Manga Reader · <span id="storyLevel"></span></p>
+        <h1 id="storyTitle"></h1>
+        <p id="storyCredits" class="mg-credits"></p>
+        <p id="adaptNote" class="mg-note"></p>
+        <a id="continueLink" class="ds-btn ds-btn--primary" href="manga.html">Start reading</a>
+      </header>
+      <h2>Chapters</h2>
+      <ul id="chapterList" class="mg-chapters"></ul>
+      <h2>Your reading badges</h2>
+      <ul id="badgeList" class="mg-badges"></ul>
+      <section id="storyPicker" hidden aria-labelledby="pickerTitle"><h2 id="pickerTitle">Other stories</h2><ul id="pickerList" class="mg-chapters"></ul></section>
+    </section>
+
+    <!-- The reader -->
+    <article id="reader" hidden aria-labelledby="chapterTitle">
+      <header class="mg-readerhead">
+        <div>
+          <p class="mg-eyebrow"><span id="readerStory"></span></p>
+          <h1 id="chapterTitle"></h1>
+        </div>
+        <div class="mg-tools">
+          <div class="mg-group" role="group" aria-label="Reading mode" id="modeGroup"></div>
+          <button id="dirButton" class="ds-btn ds-btn--secondary ds-btn--small" type="button" aria-pressed="false">Right to left</button>
+          <button id="aidsButton" class="ds-btn ds-btn--secondary ds-btn--small" type="button" aria-haspopup="dialog">Reading aids</button>
         </div>
       </header>
-      <h2 id="chapterTitle"></h2>
-      <section id="panels" class="reader vertical" aria-label="Comic panels"></section>
-      <div id="pageControls" class="controls" hidden>
-        <button id="previousPage" type="button">Previous panel</button>
-        <span id="pageNumber" aria-live="polite"></span>
-        <button id="nextPage" type="button">Next panel</button>
-      </div>
-      <section class="panel chapter-checks" aria-labelledby="checksHeading">
-        <h2 id="checksHeading">Chapter challenge</h2>
-        <p>Finish the comprehension checks, fill the speech bubble, and defeat the chapter boss to earn XP.</p>
-        <div id="checks"></div>
-        <button id="completeChapter" type="button" disabled>Finish chapter</button>
-        <p id="result" class="status" role="status" aria-live="polite"></p>
+
+      <section id="preReading" class="ds-card mg-card" hidden aria-labelledby="preTitle">
+        <h2 id="preTitle">Words to know before you read</h2>
+        <p class="mg-note">Look at these words first. Tap Save to keep a word in your vocabulary.</p>
+        <ul id="preList" class="mg-words"></ul>
+        <div class="mg-actions"><button id="startReading" class="ds-btn ds-btn--primary" type="button">Start reading</button></div>
       </section>
+
+      <section id="stageWrap" hidden>
+        <div class="mg-pager" id="pagerTop">
+          <button id="prevBtn" class="ds-btn ds-btn--secondary" type="button">Previous</button>
+          <p id="position" class="mg-position" role="status" aria-live="polite"></p>
+          <button id="nextBtn" class="ds-btn ds-btn--primary" type="button">Next</button>
+        </div>
+        <div id="stage" class="mg-stage" tabindex="-1"></div>
+        <div id="pageQuiz"></div>
+      </section>
+
+      <section id="chapterEnd" class="ds-card mg-card" hidden aria-labelledby="endTitle">
+        <h2 id="endTitle">Chapter questions</h2>
+        <div id="questions"></div>
+        <div id="bossArea" class="mg-boss" hidden>
+          <h3>Chapter boss</h3>
+          <p class="mg-note">Fight the chapter boss with the questions you have just read about. It is a bonus: you can finish the chapter without it.</p>
+          <button id="startBoss" class="ds-btn ds-btn--secondary" type="button">Start the boss fight</button>
+          <div id="bossHost" class="gm-arena-host"></div>
+        </div>
+        <div id="retellArea" hidden>
+          <h3>Retell the chapter</h3>
+          <label class="ds-field"><span id="retellPrompt" class="ds-field__label"></span>
+            <textarea id="retellText" class="ds-textarea" rows="4" maxlength="300"></textarea></label>
+          <p id="retellHint" class="mg-note" aria-live="polite"></p>
+          <button id="retellSend" class="ds-btn ds-btn--secondary" type="button">Send to my teacher</button>
+        </div>
+        <div class="mg-actions"><button id="finishChapter" class="ds-btn ds-btn--primary" type="button" disabled>Finish chapter</button></div>
+        <p id="result" class="mg-status" role="status" aria-live="polite"></p>
+        <a id="nextChapterLink" class="ds-btn ds-btn--primary" href="manga.html" hidden>Next chapter</a>
+      </section>
+
+      <details id="creditsBox" class="mg-credits-box">
+        <summary>Credits and rights</summary>
+        <dl id="creditList"></dl>
+      </details>
     </article>
   </main>
-  <dialog id="bubbleDialog" aria-labelledby="bubbleHeading">
-    <h2 id="bubbleHeading">Speech bubble</h2>
-    <p id="bubbleExplanation"></p>
-    <button id="readBubble" type="button">Read aloud</button>
-    <p id="bubbleStatus" class="status" role="status" aria-live="polite"></p>
-    <div class="dialog-actions"><button id="closeBubble" type="button">Close</button></div>
-  </dialog>
-  <dialog id="wordDialog" aria-labelledby="wordHeading">
-    <h2 id="wordHeading"></h2>
-    <p id="wordTranslation"></p>
-    <p id="wordDefinition"></p>
-    <div class="dialog-actions">
-      <button id="saveWord" type="button">Save word</button>
-      <button id="closeWord" type="button">Close</button>
+
+  <!-- Bottom sheet for a bubble -->
+  <dialog id="sheet" class="mg-sheet" aria-labelledby="sheetTitle">
+    <header class="mg-sheethead"><h2 id="sheetTitle"></h2><button id="sheetClose" class="ds-btn ds-btn--ghost ds-btn--small" type="button">Close</button></header>
+    <p class="mg-label">Original</p>
+    <p id="sheetOriginal" class="mg-original"></p>
+    <p class="mg-label">In simpler English</p>
+    <p id="sheetSimple"></p>
+    <div id="sheetTranslationBox" hidden>
+      <button id="translationToggle" class="ds-btn ds-btn--ghost ds-btn--small" type="button" aria-expanded="false" aria-controls="sheetTranslation">Show translation</button>
+      <p id="sheetTranslation" hidden></p>
     </div>
-    <p id="wordStatus" class="status" aria-live="polite"></p>
+    <p id="sheetGrammar" class="mg-grammar" hidden></p>
+    <div class="mg-actions">
+      <button id="sheetRead" class="ds-btn ds-btn--secondary" type="button">Read aloud</button>
+      <button id="sheetSave" class="ds-btn ds-btn--secondary" type="button">Save sentence</button>
+    </div>
+    <p id="sheetStatus" class="mg-note" role="status" aria-live="polite"></p>
   </dialog>
+
+  <dialog id="wordDialog" class="mg-sheet" aria-labelledby="wordTitle">
+    <header class="mg-sheethead"><h2 id="wordTitle"></h2><button id="wordClose" class="ds-btn ds-btn--ghost ds-btn--small" type="button">Close</button></header>
+    <p id="wordTranslation" class="mg-original"></p>
+    <p id="wordMeaning"></p>
+    <p id="wordExample" class="mg-note"></p>
+    <div class="mg-actions"><button id="wordSave" class="ds-btn ds-btn--primary" type="button">Save word</button></div>
+    <p id="wordStatus" class="mg-note" role="status" aria-live="polite"></p>
+  </dialog>
+
+  <dialog id="aidsDialog" class="mg-sheet" aria-labelledby="aidsTitle">
+    <header class="mg-sheethead"><h2 id="aidsTitle">Reading aids</h2><button id="aidsClose" class="ds-btn ds-btn--ghost ds-btn--small" type="button">Done</button></header>
+    <label class="ds-field"><span class="ds-field__label">Text size</span>
+      <select id="aidFont" class="ds-select"><option value="0.85">Small</option><option value="1">Normal</option><option value="1.2">Large</option><option value="1.45">Extra large</option></select></label>
+    <label class="mg-check"><input type="checkbox" id="aidContrast"> High contrast</label>
+    <label class="mg-check"><input type="checkbox" id="aidHide"> Hide the text in bubbles until I tap them</label>
+    <label class="mg-check"><input type="checkbox" id="aidTranslate"> Show the translation straight away</label>
+    <p class="mg-note">Your choices are remembered on this device.</p>
+  </dialog>
+
   <script type="module" src="js/pages/manga.js"></script>
 </body>
 </html>

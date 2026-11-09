@@ -1,67 +1,156 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "gaziz-demo",
   "title": "The Garden Above the City",
   "level": "A2",
+  "genre": ["slice-of-life"],
+  "credits": {
+    "author": "Teacher-written story",
+    "artist": "Placeholder art drawn for this demo (scripts/make-manga-art.mjs)",
+    "licence": "Original text and original simple artwork, made for this lesson. Free to reuse (CC0).",
+    "rights": "original"
+  },
+  "readingDirection": "ltr",
   "chapters": [
     {
       "id": "first-seeds",
       "title": "Chapter 1: The first seeds",
-      "panels": [
+      "summary": "Aida wants to turn an empty roof into a garden, and her neighbours help her plant it.",
+      "estimatedMinutes": 8,
+      "vocabulary": [
+        { "word": "rooftop", "meaning": "The flat top of a building.", "translation": "крыша", "example": "We sat on the rooftop and looked at the city." },
+        { "word": "garden", "meaning": "A place where people grow plants.", "translation": "сад", "example": "My grandmother has a small garden." },
+        { "word": "share", "meaning": "To use or have something together with other people.", "translation": "делиться", "example": "Let's share the pizza." },
+        { "word": "vegetables", "meaning": "Plants that people grow and eat.", "translation": "овощи", "example": "Carrots are vegetables." },
+        { "word": "seed", "meaning": "A small hard part of a plant that can grow into a new plant.", "translation": "семя", "example": "Plant one seed in each pot." },
+        { "word": "soil", "meaning": "The brown earth where plants grow.", "translation": "почва", "example": "The soil was wet after the rain." },
+        { "word": "block", "meaning": "A group of buildings in a city, with streets around it.", "translation": "квартал", "example": "I live on this block." },
+        { "word": "community", "meaning": "People who live or work in the same area.", "translation": "сообщество", "example": "The whole community came to the party." }
+      ],
+      "pages": [
         {
-          "id": "rooftop",
-          "imageUrl": "assets/manga/garden-rooftop.svg",
-          "alt": "A student stands on a city rooftop beside an empty garden bed.",
-          "bubbleText": "This roof could become a garden for everyone.",
-          "simplifiedExplanation": "The student has an idea: people can grow plants together on the roof.",
-          "vocabulary": [
-            { "word": "rooftop", "translation": "крыша", "definition": "The outside surface on top of a building." },
-            { "word": "garden", "translation": "сад", "definition": "A place where people grow plants." }
-          ]
+          "id": "p1", "image": "assets/manga/garden-p1.svg", "width": 800, "height": 1200,
+          "alt": "Page 1. Aida stands on a city rooftop next to two empty garden beds. A neighbour waits at a door. Later they stand together by the beds.",
+          "panels": [
+            { "id": "p1a", "bbox": [20, 20, 760, 380], "summary": "Aida stands on a rooftop above the city.", "bubbles": [
+              { "id": "b1", "type": "speech", "speaker": "Aida", "text": "This roof could become a garden for everyone.", "simplified": "Aida has an idea: people can grow plants together on the roof.", "translation": "Эта крыша может стать садом для всех.", "at": [60, 40, 330, 110], "grammarNote": "\"Could\" talks about something that is possible, not certain.", "vocabulary": [
+                { "word": "roof", "meaning": "The top of a building.", "translation": "крыша" },
+                { "word": "garden", "meaning": "A place where people grow plants.", "translation": "сад" } ] } ] },
+            { "id": "p1b", "bbox": [20, 420, 370, 380], "summary": "Two empty garden beds on the roof.", "bubbles": [
+              { "id": "b2", "type": "narration", "text": "The beds were empty, but the sun was warm.", "simplified": "There was no garden yet, but the weather was good.", "translation": "Грядки были пустыми, но солнце грело.", "at": [40, 440, 240, 90], "vocabulary": [
+                { "word": "empty", "meaning": "With nothing inside.", "translation": "пустой" } ] } ] },
+            { "id": "p1c", "bbox": [410, 420, 370, 380], "summary": "Marat, a neighbour, stands by a door.", "bubbles": [
+              { "id": "b3", "type": "speech", "speaker": "Marat", "text": "A garden? I would love to help!", "simplified": "Marat likes the idea. He wants to join Aida.", "translation": "Сад? Я бы с удовольствием помог!", "at": [430, 440, 330, 90], "grammarNote": "\"I would love to\" is a polite way to say \"I really want to\".", "vocabulary": [] } ] },
+            { "id": "p1d", "bbox": [20, 820, 760, 360], "summary": "Aida and Marat stand on either side of a bed and make a plan.", "bubbles": [
+              { "id": "b4", "type": "speech", "speaker": "Aida", "text": "We can share the work and the vegetables.", "simplified": "Everyone will do some work, and everyone will get some food.", "translation": "Мы можем поделить работу и овощи.", "at": [80, 840, 340, 100], "vocabulary": [
+                { "word": "share", "meaning": "To use or have something together with other people.", "translation": "делиться" },
+                { "word": "vegetables", "meaning": "Plants that people grow and eat.", "translation": "овощи" } ] },
+              { "id": "b5", "type": "speech", "speaker": "Marat", "text": "Then let's plant the first seeds tomorrow.", "simplified": "They will start planting the next day.", "translation": "Тогда давай посадим первые семена завтра.", "at": [430, 840, 320, 100], "vocabulary": [
+                { "word": "seeds", "meaning": "Small hard parts of a plant that can grow into new plants.", "translation": "семена" } ] } ] }
+          ],
+          "quick": { "id": "p1-who", "type": "who-said", "prompt": "Who says this?", "bubbleId": "b3", "speakers": ["Aida", "Marat"] }
         },
         {
-          "id": "neighbors",
-          "imageUrl": "assets/manga/garden-neighbors.svg",
-          "alt": "Two neighbors carry small plant pots toward the rooftop garden.",
-          "bubbleText": "We can share the work and the vegetables.",
-          "simplifiedExplanation": "The neighbors agree to help. They will work together and share what they grow.",
-          "vocabulary": [
-            { "word": "share", "translation": "делиться", "definition": "To use or have something together with other people." },
-            { "word": "vegetables", "translation": "овощи", "definition": "Plants that people grow and eat." }
-          ]
+          "id": "p2", "image": "assets/manga/garden-p2.svg", "width": 800, "height": 1200,
+          "alt": "Page 2. Three neighbours carry pots to the roof, Aida plants seeds in a long bed, the sun shines on a rainy window, and plants start to grow.",
+          "panels": [
+            { "id": "p2a", "bbox": [20, 20, 760, 340], "summary": "Three neighbours carry flower pots.", "bubbles": [
+              { "id": "b6", "type": "narration", "text": "The next day, the neighbours carried pots to the roof.", "simplified": "The next morning, people brought pots up to the roof.", "translation": "На следующий день соседи принесли горшки на крышу.", "at": [40, 40, 360, 110], "vocabulary": [] },
+              { "id": "b7", "type": "speech", "speaker": "Mrs Lee", "text": "I brought tomato seeds from my kitchen.", "simplified": "Mrs Lee has tomato seeds from her home.", "translation": "Я принесла семена помидоров со своей кухни.", "at": [430, 40, 320, 110], "grammarNote": "\"Brought\" is the past of \"bring\".", "vocabulary": [] } ] },
+            { "id": "p2b", "bbox": [20, 380, 760, 400], "summary": "Aida shows how to plant seeds in a long bed.", "bubbles": [
+              { "id": "b8", "type": "speech", "speaker": "Aida", "text": "Make a small hole, put in the seed, and cover it with soil.", "simplified": "Dig a little hole, drop the seed in, and put earth on top.", "translation": "Сделайте маленькую ямку, положите семечко и засыпьте землёй.", "at": [260, 400, 440, 100], "vocabulary": [
+                { "word": "seed", "meaning": "A small hard part of a plant that can grow into a new plant.", "translation": "семя" },
+                { "word": "soil", "meaning": "The brown earth where plants grow.", "translation": "почва" } ] } ] },
+            { "id": "p2c", "bbox": [20, 800, 370, 380], "summary": "Rain and sun over the roof.", "bubbles": [
+              { "id": "b9", "type": "narration", "text": "Sun and water will help them grow.", "simplified": "Plants need light and water to get bigger.", "translation": "Солнце и вода помогут им расти.", "at": [40, 1090, 320, 70], "vocabulary": [] } ] },
+            { "id": "p2d", "bbox": [410, 800, 370, 380], "summary": "Small green plants grow in the bed.", "bubbles": [
+              { "id": "b10", "type": "speech", "speaker": "Marat", "text": "How long will we wait?", "simplified": "Marat wants to know how many days or weeks the plants need.", "translation": "Как долго нам ждать?", "at": [430, 820, 330, 100], "vocabulary": [] } ] }
+          ],
+          "quick": { "id": "p2-gap", "type": "fill-bubble", "prompt": "Fill the gap in Aida's sentence.", "bubbleId": "b8", "hide": [7] }
         },
         {
-          "id": "harvest",
-          "imageUrl": "assets/manga/garden-harvest.svg",
-          "alt": "The neighbors pick vegetables from a thriving rooftop garden.",
-          "bubbleText": "Our small garden has brought the block together.",
-          "simplifiedExplanation": "The garden gives the neighbors food and helps them become a closer community.",
-          "vocabulary": [
-            { "word": "block", "translation": "квартал", "definition": "A group of buildings in a city." },
-            { "word": "community", "translation": "сообщество", "definition": "People who live or work in the same area." }
-          ]
+          "id": "p3", "image": "assets/manga/garden-p3.svg", "width": 800, "height": 1200,
+          "alt": "Page 3. Six weeks later the bed is full of red tomatoes. The neighbours eat around a table. Aida and Marat talk about inviting the building.",
+          "panels": [
+            { "id": "p3a", "bbox": [20, 20, 760, 420], "summary": "The bed is full of ripe red tomatoes.", "bubbles": [
+              { "id": "b11", "type": "narration", "text": "Six weeks later, the garden was full of tomatoes.", "simplified": "After six weeks, there were many tomatoes.", "translation": "Шесть недель спустя сад был полон помидоров.", "at": [380, 40, 380, 110], "vocabulary": [] } ] },
+            { "id": "p3b", "bbox": [20, 460, 760, 420], "summary": "Three neighbours eat together at a table.", "bubbles": [
+              { "id": "b12", "type": "speech", "speaker": "Marat", "text": "These vegetables taste better than the shop ones!", "simplified": "Food from the garden tastes nicer than food from the shop.", "translation": "Эти овощи вкуснее магазинных!", "at": [40, 480, 340, 100], "grammarNote": "\"Better than\" compares two things.", "vocabulary": [] },
+              { "id": "b13", "type": "speech", "speaker": "Mrs Lee", "text": "Our small garden has brought the block together.", "simplified": "The garden helped the neighbours become friends.", "translation": "Наш маленький сад сплотил весь квартал.", "at": [420, 480, 340, 100], "vocabulary": [
+                { "word": "block", "meaning": "A group of buildings in a city, with streets around it.", "translation": "квартал" } ] } ] },
+            { "id": "p3c", "bbox": [20, 900, 760, 280], "summary": "Aida and Marat smile and plan the next step.", "bubbles": [
+              { "id": "b14", "type": "speech", "speaker": "Aida", "text": "Next week we will invite the whole building.", "simplified": "Aida wants everyone in the building to come.", "translation": "На следующей неделе мы пригласим весь дом.", "at": [180, 920, 440, 100], "vocabulary": [
+                { "word": "community", "meaning": "People who live or work in the same area.", "translation": "сообщество" } ] } ] }
+          ],
+          "quick": { "id": "p3-who", "type": "who-said", "prompt": "Who says this?", "bubbleId": "b13", "speakers": ["Aida", "Marat", "Mrs Lee"] }
         }
       ],
-      "checks": [
+      "questions": [
+        { "id": "q-main-idea", "type": "gist", "prompt": "What is the story mostly about?", "options": ["Neighbours make a garden on a roof", "A student loses her keys", "A shop opens in the city"] },
+        { "id": "q-share", "type": "vocab", "prompt": "What does \"share\" mean here?", "bubbleId": "b4", "options": ["Use something together", "Throw something away", "Hide something"] },
+        { "id": "q-seeds", "type": "detail", "prompt": "What did Mrs Lee bring?", "bubbleId": "b7" },
+        { "id": "q-closer", "type": "gist", "prompt": "How did the garden change the neighbours?", "bubbleId": "b13", "options": ["It brought them closer together", "It made them move away", "It made them argue"] },
+        { "id": "q-where", "type": "detail", "prompt": "Where is the garden?", "panelId": "p1a" },
+        { "id": "q-wait", "type": "inference", "prompt": "Marat asks, \"How long will we wait?\" How do you think he feels? Why?", "bubbleId": "b10", "rubric": { "minWords": 6, "groups": [["excited", "impatient", "curious", "eager", "want", "wants"], ["wait", "waiting", "soon", "grow", "plants", "tomatoes"]] } }
+      ],
+      "boss": { "questionIds": ["q-main-idea", "q-share", "q-seeds", "q-closer", "q-where"] },
+      "retell": { "prompt": "Retell the chapter in your own words in three to five sentences. Try to use two new words.", "minWords": 15 }
+    },
+    {
+      "id": "little-market",
+      "title": "Chapter 2: The little market",
+      "summary": "The garden gives more tomatoes than the neighbours can eat, so they open a small market.",
+      "estimatedMinutes": 6,
+      "vocabulary": [
+        { "word": "market", "meaning": "A place where people buy and sell things.", "translation": "рынок", "example": "We buy fruit at the market." },
+        { "word": "sell", "meaning": "To give something to someone for money.", "translation": "продавать", "example": "She sells flowers." },
+        { "word": "customer", "meaning": "A person who buys something.", "translation": "покупатель", "example": "The shop has many customers." },
+        { "word": "sign", "meaning": "A board with words that gives information.", "translation": "вывеска", "example": "The sign says OPEN." },
+        { "word": "pay", "meaning": "To give money for something.", "translation": "платить", "example": "I pay for my coffee." },
+        { "word": "fantastic", "meaning": "Very, very good.", "translation": "потрясающий", "example": "The film was fantastic." },
+        { "word": "spring", "meaning": "The season after winter.", "translation": "весна", "example": "Flowers come out in spring." },
+        { "word": "grow", "meaning": "To get bigger, or to make plants get bigger.", "translation": "расти", "example": "Tomatoes grow in the sun." }
+      ],
+      "pages": [
         {
-          "id": "garden-purpose",
-          "type": "comprehension",
-          "prompt": "What do the neighbors grow on the roof?",
-          "options": ["vegetables", "cars", "books"]
+          "id": "p4", "image": "assets/manga/garden-p4.svg", "width": 800, "height": 1200,
+          "alt": "Page 4. In autumn there are too many tomatoes. Marat and Aida stand under a sign. Mrs Lee and Aida stand by a table of tomatoes.",
+          "panels": [
+            { "id": "p4a", "bbox": [20, 20, 760, 560], "summary": "Marat and Aida stand under a blank sign on the roof.", "bubbles": [
+              { "id": "b15", "type": "narration", "text": "In autumn, the garden had too many tomatoes.", "simplified": "The neighbours could not eat all the tomatoes.", "translation": "Осенью в саду было слишком много помидоров.", "at": [40, 40, 360, 100], "vocabulary": [] },
+              { "id": "b16", "type": "speech", "speaker": "Marat", "text": "Let's sell some at a small market.", "simplified": "Marat wants to sell a few tomatoes.", "translation": "Давайте продадим немного на маленьком рынке.", "at": [420, 40, 340, 100], "vocabulary": [
+                { "word": "sell", "meaning": "To give something to someone for money.", "translation": "продавать" } ] } ] },
+            { "id": "p4b", "bbox": [20, 600, 760, 580], "summary": "A table with a row of red tomatoes. Mrs Lee and Aida stand behind it.", "bubbles": [
+              { "id": "b17", "type": "speech", "speaker": "Mrs Lee", "text": "I will make a sign: Fresh tomatoes from the roof!", "simplified": "Mrs Lee will write a board to tell people about the tomatoes.", "translation": "Я сделаю вывеску: свежие помидоры с крыши!", "at": [40, 620, 340, 100], "vocabulary": [
+                { "word": "sign", "meaning": "A board with words that gives information.", "translation": "вывеска" } ] },
+              { "id": "b18", "type": "speech", "speaker": "Aida", "text": "People will pay for good food.", "simplified": "People give money for food they like.", "translation": "Люди заплатят за хорошую еду.", "at": [420, 620, 340, 100], "vocabulary": [] } ] }
+          ],
+          "quick": { "id": "p4-predict", "type": "predict", "prompt": "What do you think will happen at the market?", "options": ["Many people will buy tomatoes", "Nobody will come", "It will rain all day"] }
         },
         {
-          "id": "fill-bubble",
-          "type": "fill-bubble",
-          "prompt": "Complete the bubble: “We can ____ the work.”",
-          "options": ["share", "forget", "hide"]
-        },
-        {
-          "id": "chapter-boss",
-          "type": "boss-quiz",
-          "prompt": "Why did the garden bring the neighbors together?",
-          "options": ["They worked and shared food together.", "They moved to another city.", "They stopped talking."]
+          "id": "p5", "image": "assets/manga/garden-p5.svg", "width": 800, "height": 1200,
+          "alt": "Page 5. Four customers visit the market. In the last panel, a full garden bed is ready for spring.",
+          "panels": [
+            { "id": "p5a", "bbox": [20, 20, 760, 540], "summary": "Four customers stand in a line at the market.", "bubbles": [
+              { "id": "b19", "type": "speech", "speaker": "Customer", "text": "These tomatoes are fantastic!", "simplified": "The customer thinks the tomatoes are very good.", "translation": "Эти помидоры потрясающие!", "at": [40, 40, 360, 100], "vocabulary": [
+                { "word": "fantastic", "meaning": "Very, very good.", "translation": "потрясающий" } ] },
+              { "id": "b20", "type": "speech", "speaker": "Aida", "text": "Thank you! We grew them ourselves.", "simplified": "Aida says the neighbours grew the tomatoes by themselves.", "translation": "Спасибо! Мы вырастили их сами.", "at": [430, 40, 330, 100], "grammarNote": "\"Grew\" is the past of \"grow\".", "vocabulary": [] } ] },
+            { "id": "p5b", "bbox": [20, 580, 760, 600], "summary": "A bed full of red tomatoes with Aida behind it.", "bubbles": [
+              { "id": "b21", "type": "narration", "text": "With the money, they bought more seeds for spring.", "simplified": "They used the money to buy seeds for the next season.", "translation": "На вырученные деньги они купили больше семян на весну.", "at": [120, 600, 560, 110], "vocabulary": [
+                { "word": "spring", "meaning": "The season after winter.", "translation": "весна" } ] } ] }
+          ],
+          "quick": { "id": "p5-who", "type": "who-said", "prompt": "Who says this?", "bubbleId": "b20", "speakers": ["Aida", "Customer"] }
         }
-      ]
+      ],
+      "questions": [
+        { "id": "q-why-market", "type": "gist", "prompt": "Why did the neighbours open a market?", "options": ["They had too many tomatoes", "They wanted to close the garden", "They lost their seeds"] },
+        { "id": "q-sell", "type": "vocab", "prompt": "What does \"sell\" mean?", "bubbleId": "b16", "options": ["Give something for money", "Break something", "Draw something"] },
+        { "id": "q-sign", "type": "detail", "prompt": "Who makes the sign?", "bubbleId": "b17" },
+        { "id": "q-money", "type": "gist", "prompt": "What do they buy with the money?", "bubbleId": "b21", "options": ["More seeds", "A new roof", "A car"] },
+        { "id": "q-proud", "type": "inference", "prompt": "How do you think Aida feels when the customer says \"fantastic\"? Why?", "bubbleId": "b19", "rubric": { "minWords": 6, "groups": [["proud", "happy", "pleased", "glad", "excited"], ["garden", "tomatoes", "work", "grew", "food"]] } }
+      ],
+      "boss": { "questionIds": ["q-why-market", "q-sell", "q-sign", "q-money"] },
+      "retell": { "prompt": "Tell the story of the market in three to five sentences.", "minWords": 15 }
     }
   ]
 }

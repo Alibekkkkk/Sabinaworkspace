@@ -8,6 +8,7 @@ import { clipEmbedUrl, validateClip } from "../clips/schema.js";
 import { clipWarnings, migrateV1 } from "../clips/schema-v2.js";
 import { completionRecord, summarise } from "../clips/exercises.js";
 import { mountBottomNav, mountOfflineBanner } from "../shell.js";
+import { featureEnabled, revealMangaTab, showNotEnabled } from "../feature-gate.js";
 import { renderExercise } from "../clips/exercise-ui.js";
 import { createClipPlayer, loadYouTubeApi } from "../clips/player.js";
 import { wordsOf } from "../clips/lines.js";
@@ -187,6 +188,8 @@ async function initialize() {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
   context = await resolveStudentContext({ auth: firebase.auth(), db, lessonId });
+  revealMangaTab(db, context.code);
+  if (!(await featureEnabled(db, context.code, "clipLab"))) { showNotEnabled(status, "clipLab", { backHref: `portal.html?code=${encodeURIComponent(context.code)}` }); return; }
   const [record, lessonSnapshot] = await Promise.all([loadProtectedContent(db, context.lessonId, "clip"), db.ref(`studentCurriculum/${context.code}/${context.lessonId}`).once("value")]);
   const stored = record.content;
   clip = validateClip(stored); if (clip.schemaVersion === 1) clip = migrateV1(clip);

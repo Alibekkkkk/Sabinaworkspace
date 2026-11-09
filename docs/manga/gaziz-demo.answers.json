@@ -1,0 +1,13 @@
+{
+  "gaziz-demo": {
+    "q-main-idea": "Neighbours make a garden on a roof",
+    "q-share": "Use something together",
+    "q-seeds": ["tomato seeds", "seeds", "tomato seed", "seed"],
+    "q-closer": "It brought them closer together",
+    "q-where": ["on the roof", "the roof", "roof", "on a roof", "on the rooftop", "rooftop"],
+    "q-why-market": "They had too many tomatoes",
+    "q-sell": "Give something for money",
+    "q-sign": ["Mrs Lee", "mrs lee", "Lee"],
+    "q-money": "More seeds"
+  }
+}

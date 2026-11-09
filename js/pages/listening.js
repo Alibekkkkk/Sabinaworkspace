@@ -2,6 +2,7 @@
 // them in place, gets per-word feedback, taps words to save them, and finishes a round with a summary.
 import { firebaseConfig } from "../config.js";
 import { resolveStudentContext } from "../student-context.js";
+import { featureEnabled, showNotEnabled } from "../feature-gate.js";
 import { loadProtectedContent } from "../protected-content.js";
 import { progressPath, saveGameProgress, saveVocabularyWord } from "../games/progress.js";
 import { createPlayer, speechSupported } from "../listening/audio.js";
@@ -402,6 +403,7 @@ async function boot() {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     database = firebase.database();
     context = await resolveStudentContext({ auth: firebase.auth(), db: database, lessonId: query.get("lesson") });
+    if (!(await featureEnabled(database, context.code, "listeningTrainer"))) { showNotEnabled(status, "listeningTrainer"); return; }
     const manifest = await (await fetch(new URL("../../content/manifest.json", import.meta.url))).json();
     const entry = manifest[context.lessonId];
     if (!entry || !entry.listeningFile) { status.textContent = "Your teacher has not added listening sentences to this lesson yet."; return; }

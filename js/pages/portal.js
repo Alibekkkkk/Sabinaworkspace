@@ -5,6 +5,7 @@ import { resolveMaxScore } from "../lesson-meta.js";
 import { generateStudentCode } from "../student-code.js";
 import { assessPlacement, canRetake, nextRetakeAt } from "../placement.js";
 import { dueState } from "../schedule.js";
+import { hasFeature } from "../features.js";
 import { classRows, lastClass, monthlyTotalSeconds } from "../clock-report.js";
 import { formatDuration } from "../lesson-clock.js";
 import { DEFAULT_CLASS_ID, encouragement, isoWeekId, previousWeekId, rankEntries, validateNickname, weeklyXpSince } from "../leaderboard.js";
@@ -255,6 +256,13 @@ function loadLessons(){
   };
   progressRef.on('value',progressListener);
   portalListeners.push({ref:progressRef,event:'value',callback:progressListener});
+  const featuresRef=db.ref('studentFeatures/' + state.currentCode);
+  const featuresListener=featureSnap => {
+    state.features = featureSnap.val() || null;
+    renderLessons();
+  };
+  featuresRef.on('value',featuresListener,function(){state.features=null});
+  portalListeners.push({ref:featuresRef,event:'value',callback:featuresListener});
   const gameProgressRef=db.ref('studentProgress/' + state.currentCode);
   const gameProgressListener=progressSnap => {
     state.gameProgress = progressSnap.val() || {};
@@ -530,7 +538,7 @@ function renderLessons(){
       practiceLinks.append(practiceLink);
       listeningManifest().then(function(manifest){
         const entry=manifest[lessonId];
-        if(!entry||!entry.listeningFile)return;
+        if(!entry||!entry.listeningFile||!hasFeature(state.features,'listeningTrainer'))return;
         const listenUrl=new URL('listening.html',window.location.href);
         listenUrl.searchParams.set('code',state.currentCode);
         listenUrl.searchParams.set('lesson',lessonId);
@@ -541,7 +549,7 @@ function renderLessons(){
         practiceLinks.append(listenLink);
       });
     }
-    if (lesson.clipId) {
+    if (lesson.clipId && hasFeature(state.features, 'clipLab', lesson.features)) {
       const clipUrl=new URL('clip.html',window.location.href);
       clipUrl.searchParams.set('code',state.currentCode);
       clipUrl.searchParams.set('lesson',lessonId);
@@ -551,7 +559,7 @@ function renderLessons(){
       clipLink.textContent='🎬 Clip Lab '+(lesson.title||'lesson');
       practiceLinks.append(clipLink);
     }
-    if (lesson.features && lesson.features.mangaReader === true && lesson.mangaId) {
+    if (lesson.mangaId && hasFeature(state.features, 'mangaReader', lesson.features)) {
       const mangaUrl=new URL('manga.html',window.location.href);
       mangaUrl.searchParams.set('code',state.currentCode);
       mangaUrl.searchParams.set('lesson',lessonId);

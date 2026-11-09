@@ -8,6 +8,7 @@ import { migrateV1 } from "../clips/schema-v2.js";
 import { buildEntries, clipSummary, comingUp, describe, facets, filterEntries, sortEntries, starsText } from "../clips/catalog.js";
 import { localZone } from "../schedule.js";
 import { mountBottomNav, mountOfflineBanner, showErrorPage } from "../shell.js";
+import { featureEnabled, revealMangaTab, showNotEnabled } from "../feature-gate.js";
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -81,6 +82,8 @@ async function start() {
   const bound = await bindStudentCode({ auth: firebase.auth(), db, code: rememberedCode() });
   code = bound.code;
   $("backLink").href = `portal.html?code=${encodeURIComponent(code)}`;
+  revealMangaTab(db, code);
+  if (!(await featureEnabled(db, code, "clipLab"))) { for (const id of ["clFilters", "clList", "clSoon"]) $(id).hidden = true; showNotEnabled($("status"), "clipLab", { backHref: $("backLink").href }); return; }
   db.ref(`studentCurriculum/${code}`).on("value", async snapshot => { lessons = snapshot.val() || {}; await loadDetails(db); paint(); }, error => showErrorPage($("status"), error, { title: "Your clips could not load" }));
   db.ref(`studentProgress/${code}/clips`).on("value", snapshot => { progress = snapshot.val() || {}; paint(); });
   for (const [id, key] of [["fLevel", "level"], ["fGenre", "genre"], ["fGrammar", "grammar"]]) $(id).addEventListener("change", () => { filters[key] = $(id).value; paint(); });

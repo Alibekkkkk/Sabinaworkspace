@@ -70,7 +70,7 @@
 
   <section aria-labelledby="mangaAuthorTitle">
     <h2 id="mangaAuthorTitle">Create or update a Manga Reader draft</h2>
-    <p>Use original, teacher-created or openly licensed panels only. Add original panel SVG files under <code>assets/manga/</code>; manga JSON must reference those local SVGs.</p>
+    <p>Use original, teacher-created or openly licensed panels only. Add original page images (SVG, WebP, AVIF, PNG or JPG, each under 250 kB) to <code>assets/manga/</code>; manga JSON must reference those local files. Never use commercial scans. Rules and the file format: <code>docs/MANGA.md</code>.</p>
     <label for="mangaDraft">Panel, bubble, vocabulary and question data (JSON)</label>
     <textarea id="mangaDraft" spellcheck="false"></textarea>
     <button id="validateMangaButton" type="button">Validate manga draft</button>
@@ -79,6 +79,35 @@
     <label for="mangaAnswerKeys">Manga answer keys for protected Firebase import (JSON; keep private)</label>
     <textarea id="mangaAnswerKeys" spellcheck="false" autocomplete="off" placeholder='{"manga-id":{"question-id":"correct answer"}}'></textarea>
     <p>Correct answers are merged into the protected Firebase record and are not written to the public manga JSON.</p>
+  </section>
+  <section aria-labelledby="mangaMakerTitle" id="mangaMaker">
+    <h2 id="mangaMakerTitle">Make a manga draft (script, CSV and visual editor)</h2>
+    <p>Write the story as a script or a spreadsheet, turn it into a draft, then draw the panel and bubble boxes on each page. Everything stays in this browser until you download the JSON.</p>
+    <h3>1. Script or CSV</h3>
+    <label for="mmScript">Script (plain text) or CSV rows</label>
+    <textarea id="mmScript" spellcheck="false"></textarea>
+    <p><label for="mmFile">Or open a .txt, .md or .csv file</label> <input id="mmFile" type="file" accept=".txt,.md,.csv,text/plain,text/csv"></p>
+    <button id="mmExample" type="button">Show an example script</button>
+    <button id="mmConvert" type="button">Turn it into a draft</button>
+    <p id="mmScriptStatus" role="status">Nothing converted yet.</p>
+    <h3>2. Draw boxes on a page</h3>
+    <label for="mmChapter">Chapter in the draft</label> <select id="mmChapter"></select>
+    <label for="mmPageId">Page id</label> <input id="mmPageId" type="text" autocomplete="off" value="p1">
+    <label for="mmImage">Image file (for example assets/manga/garden-p1.svg)</label> <input id="mmImage" type="text" autocomplete="off">
+    <label for="mmAlt">Alt text for the whole page</label> <input id="mmAlt" type="text" autocomplete="off">
+    <button id="mmLoad" type="button">Load the page</button>
+    <p id="mmLoadStatus" role="status">No page loaded.</p>
+    <fieldset id="mmTools"><legend>What to draw</legend>
+      <label><input type="radio" name="mmTool" value="panel" checked> Panel (drag a box around one comic panel)</label>
+      <label><input type="radio" name="mmTool" value="bubble"> Bubble (drag a box over a speech bubble)</label>
+      <button id="mmAddPanel" type="button">Add a panel box without dragging</button>
+      <button id="mmAddBubble" type="button">Add a bubble box without dragging</button>
+    </fieldset>
+    <div id="mmStage" aria-label="Page preview. Drag to draw a box." tabindex="0"></div>
+    <div id="mmItems"></div>
+    <ul id="mmProblems" aria-live="polite"></ul>
+    <button id="mmAddToDraft" type="button" disabled>Put this page in the draft above</button>
+    <p id="mmDraftStatus" role="status"></p>
   </section>
   <section aria-labelledby="wordFamilyTitle">
     <h2 id="wordFamilyTitle">Word family helper</h2>
@@ -116,5 +145,6 @@
   <script type="module" src="../js/pages/tools-word-family.js"></script>
   <script type="module" src="../js/pages/tools-listening.js"></script>
   <script type="module" src="../js/pages/tools-clips.js"></script>
+  <script type="module" src="../js/pages/tools-manga.js"></script>
 </body>
 </html>

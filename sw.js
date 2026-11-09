@@ -1,4 +1,5 @@
-const CACHE_NAME = "learning-studio-shell-v13";
+const CACHE_NAME = "learning-studio-shell-v14";
+const MANGA_CACHE = "learning-studio-manga-v1";
 const AUDIO_CACHE = "learning-studio-audio-v1";
 const SHELL_URLS = [
   "index.html",
@@ -98,6 +99,17 @@ const SHELL_URLS = [
   "js/clips/exercise-ui.js",
   "js/clips/player.js",
   "js/manga/schema.js",
+  "js/manga/schema-v2.js",
+  "js/manga/geometry.js",
+  "js/manga/reader-state.js",
+  "js/manga/learning.js",
+  "js/manga/learning-ui.js",
+  "js/manga/reader-ui.js",
+  "js/manga/adaptation.js",
+  "js/manga/shelf.js",
+  "js/features.js",
+  "js/feature-gate.js",
+  "js/feature-card.js",
   "js/pages/clip.js",
   "js/pages/clips.js",
   "css/pages/clips.css",
@@ -130,7 +142,12 @@ const SHELL_URLS = [
   "assets/pwa/icon.svg",
   "assets/manga/garden-rooftop.svg",
   "assets/manga/garden-neighbors.svg",
-  "assets/manga/garden-harvest.svg"
+  "assets/manga/garden-harvest.svg",
+  "assets/manga/garden-p1.svg",
+  "assets/manga/garden-p2.svg",
+  "assets/manga/garden-p3.svg",
+  "assets/manga/garden-p4.svg",
+  "assets/manga/garden-p5.svg"
 ];
 const SHELL_ASSETS = new Set(SHELL_URLS);
 const SHELL_DOCUMENTS = new Set([
@@ -177,6 +194,17 @@ self.addEventListener("fetch", event => {
   if (url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
 
   const relativePath = url.pathname.slice(scope.pathname.length);
+  // Manga pages saved for offline reading live in their own cache (the reader puts them there); other pages are cached as they are seen.
+  if (relativePath.startsWith("assets/manga/") && /\.(svg|webp|avif|png|jpe?g)$/.test(relativePath)) {
+    event.respondWith(caches.open(MANGA_CACHE).then(async cache => {
+      const cached = await cache.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      const response = await fetch(request);
+      if (response.ok && response.type === "basic" && response.status === 200) await cache.put(request, response.clone());
+      return response;
+    }));
+    return;
+  }
   // Listening: packs are network-first, audio is cache-first in its own cache so rounds work offline once heard.
   if (relativePath.startsWith("content/audio/") && /\.mp3$/.test(relativePath)) {
     event.respondWith(caches.open(AUDIO_CACHE).then(async cache => {

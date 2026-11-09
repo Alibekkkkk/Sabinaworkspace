@@ -7,3 +7,16 @@
   
 .listening-gap-easy { font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; }
 .listening-gap-medium { text-decoration: underline dotted; }
+
+/* Manga maker */
+#mmStage { position: relative; display: block; max-width: 640px; margin: 12px 0; border: 2px solid #8b95a7; touch-action: none; cursor: crosshair; user-select: none; }
+#mmStage img { display: block; width: 100%; height: auto; pointer-events: none; }
+.mm-box { position: absolute; box-sizing: border-box; pointer-events: none; }
+.mm-box--panel { border: 3px solid #1d4ed8; background: rgba(29, 78, 216, 0.08); }
+.mm-box--bubble { border: 3px solid #c2410c; background: rgba(194, 65, 12, 0.12); }
+.mm-box--draft { border: 2px dashed #111827; }
+.mm-item { margin: 12px 0; padding: 10px; border: 1px solid #c9d1de; border-radius: 8px; }
+.mm-item label { display: block; margin: 6px 0 2px; font-weight: 600; }
+.mm-item input[type="text"], .mm-item select { width: 100%; max-width: 560px; font: inherit; padding: 6px; }
+.mm-nums input { width: 5.5em; }
+.mm-bubble { margin-left: 20px; border-left: 4px solid #c2410c; }

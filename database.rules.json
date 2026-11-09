@@ -68,11 +68,49 @@
           }
       }
     },
+    "studentFeatures": {
+      "$code": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('students').child($code).child('uid').val() === auth.uid)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && newData.hasChildren()",
+        "mangaReader": {
+          ".validate": "newData.isBoolean()"
+        },
+        "clipLab": {
+          ".validate": "newData.isBoolean()"
+        },
+        "whiteboard": {
+          ".validate": "newData.isBoolean()"
+        },
+        "listeningTrainer": {
+          ".validate": "newData.isBoolean()"
+        },
+        "$other": {
+          ".validate": "false"
+        }
+      }
+    },
+    "mangaAssignments": {
+      "$code": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('students').child($code).child('uid').val() === auth.uid)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        ".validate": "$code.matches(/^[A-Z0-9]{4,12}$/) && newData.hasChildren()",
+        "$mangaId": {
+          ".validate": "$mangaId.matches(/^[A-Za-z0-9][A-Za-z0-9_-]{0,59}$/) && newData.hasChildren()",
+          "$chapterId": {
+            ".validate": "$chapterId.matches(/^[A-Za-z0-9][A-Za-z0-9_-]{0,59}$/) && newData.hasChildren(['assignedAt'])",
+            "assignedAt": { ".validate": "newData.isNumber() && newData.val() > 0" },
+            "dueAt": { ".validate": "newData.isNumber() && newData.val() > 0" },
+            "$other": { ".validate": "false" }
+          }
+        }
+      }
+    },
     "protectedContent": {
       "$lessonId": {
         ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
         "$kind": {
-          ".read": "auth != null && ((root.child('admins').child(auth.uid).val() === true) || (root.child('studentByUid').child(auth.uid).exists() && root.child('students').child(root.child('studentByUid').child(auth.uid).val()).child('uid').val() === auth.uid && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('published').val() !== false && (!root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('availableFrom').exists() || now >= root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('availableFrom').val()) && (($kind === 'classwork' || $kind === 'homework' || $kind === 'clip') || ($kind === 'manga' && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('features').child('mangaReader').val() === true))))"
+          ".read": "auth != null && ((root.child('admins').child(auth.uid).val() === true) || (root.child('studentByUid').child(auth.uid).exists() && root.child('students').child(root.child('studentByUid').child(auth.uid).val()).child('uid').val() === auth.uid && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('published').val() !== false && (!root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('availableFrom').exists() || now >= root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('availableFrom').val()) && (($kind === 'classwork' || $kind === 'homework' || $kind === 'clip') || ($kind === 'manga' && (root.child('studentFeatures').child(root.child('studentByUid').child(auth.uid).val()).child('mangaReader').val() === true || (!root.child('studentFeatures').child(root.child('studentByUid').child(auth.uid).val()).child('mangaReader').exists() && root.child('studentCurriculum').child(root.child('studentByUid').child(auth.uid).val()).child($lessonId).child('features').child('mangaReader').val() === true))))))"
         }
       }
     },
@@ -910,6 +948,34 @@
             },
             "$other": {
               ".validate": "false"
+            }
+          }
+        },
+        "manga": {
+          ".validate": "newData.hasChildren()",
+          "$mangaId": {
+            ".validate": "$mangaId.matches(/^[A-Za-z0-9][A-Za-z0-9_-]{0,59}$/) && newData.hasChildren()",
+            "$chapterId": {
+              ".validate": "$chapterId.matches(/^[A-Za-z0-9][A-Za-z0-9_-]{0,59}$/) && newData.hasChildren(['lastAt', 'pagesRead', 'pagesTotal'])",
+              "title": { ".validate": "newData.isString() && newData.val().length <= 80" },
+              "lastAt": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9000000000000.0" },
+              "completedAt": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999999999999" },
+              "pagesRead": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "pagesTotal": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 500" },
+              "seconds": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 8640000" },
+              "quickScore": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "quickTotal": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "qScore": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "qTotal": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "bossScore": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "bossTotal": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "bossWon": { ".validate": "newData.isBoolean()" },
+              "retell": { ".validate": "newData.isBoolean()" },
+              "words": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 500" },
+              "stars": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 3" },
+              "attempts": { ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 100000" },
+              "mode": { ".validate": "newData.isString() && newData.val().matches(/^(scroll|flip|panel)$/)" },
+              "$other": { ".validate": "false" }
             }
           }
         },

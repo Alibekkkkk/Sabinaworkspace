@@ -6,7 +6,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment
 } from "@firebase/rules-unit-testing";
-import { get, ref, set, update } from "firebase/database";
+import { get, ref, remove, set, update } from "firebase/database";
 
 const projectId = "sabinaworkspace-rules-test";
 let testEnv;
@@ -986,4 +986,91 @@ test("clip completion records: own progress only, bounded, stars 1 to 3, at most
   await assertFails(set(ref(dbA, path), { ...record, extra: 1 }));
   await assertFails(set(ref(dbA, path), { score: 1 }));
   await assertFails(set(ref(dbA, "studentProgress/A111111/clips/x"), record));
+});
+
+test("feature flags: teacher-written, readable by the student, and the manga content follows them", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  await assertSucceeds(set(ref(teacher, "studentFeatures/A111111/mangaReader"), true));
+  await assertSucceeds(set(ref(teacher, "studentFeatures/A111111/clipLab"), false));
+  await assertFails(set(ref(teacher, "studentFeatures/A111111/mangaReader"), "yes"));
+  await assertFails(set(ref(teacher, "studentFeatures/A111111/unknownFlag"), true));
+  await assertFails(set(ref(dbA, "studentFeatures/A111111/mangaReader"), true), "a student cannot switch their own features on");
+  await assertSucceeds(get(ref(dbA, "studentFeatures/A111111")));
+  await assertFails(get(ref(dbB, "studentFeatures/A111111")));
+  // protected manga follows the student-level flag, and an explicit false beats the lesson's own marker
+  await testEnv.withSecurityRulesDisabled(async context => {
+    const db = context.database();
+    await set(ref(db, "protectedContent/lesson-a/manga"), { sourceFile: "manga/x.json", content: { id: "x" } });
+    await set(ref(db, "studentCurriculum/A111111/lesson-a/features/mangaReader"), true);
+    await set(ref(db, "studentCurriculum/B222222/lesson-a/features/mangaReader"), true);
+  });
+  await assertSucceeds(get(ref(dbA, "protectedContent/lesson-a/manga")));
+  await assertSucceeds(set(ref(teacher, "studentFeatures/A111111/mangaReader"), false));
+  await assertFails(get(ref(dbA, "protectedContent/lesson-a/manga")), "switched off by the teacher, so the content is denied even though the lesson says yes");
+  await assertSucceeds(get(ref(dbB, "protectedContent/lesson-a/manga")), "a student with no explicit flag keeps the lesson's marker (the older way)");
+  await assertSucceeds(set(ref(teacher, "studentFeatures/B222222/mangaReader"), false));
+  await assertFails(get(ref(dbB, "protectedContent/lesson-a/manga")));
+  await assertSucceeds(set(ref(teacher, "studentFeatures/A111111/mangaReader"), true));
+  await testEnv.withSecurityRulesDisabled(async context => { await set(ref(context.database(), "studentCurriculum/A111111/lesson-a/features/mangaReader"), null); });
+  await assertSucceeds(get(ref(dbA, "protectedContent/lesson-a/manga")), "the student-level flag alone is enough");
+});
+
+test("manga chapter records: own progress only, bounded numbers, a fixed set of fields", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const path = "studentProgress/A111111/manga/gaziz-demo/first-seeds";
+  const record = { title: "Chapter 1", lastAt: 1790000000000, completedAt: 1790000000000, pagesRead: 3, pagesTotal: 3, seconds: 400, quickScore: 2, quickTotal: 2, qScore: 4, qTotal: 5, bossScore: 4, bossTotal: 5, bossWon: true, retell: true, words: 4, stars: 3, attempts: 1, mode: "panel" };
+  await testEnv.withSecurityRulesDisabled(async context => { await set(ref(context.database(), "studentProgress/A111111"), { xp: 0, level: 1 }); });
+  await assertSucceeds(set(ref(dbA, path), record));
+  await assertSucceeds(get(ref(teacher, path)));
+  await assertFails(set(ref(teacher, path), record), "teachers read progress but never write it");
+  await assertFails(set(ref(dbB, path), record));
+  await assertFails(get(ref(dbB, path)));
+  await assertSucceeds(set(ref(dbA, path), { lastAt: 1790000000001, pagesRead: 1, pagesTotal: 3 }), "a record with only the reading fields is fine while the chapter is unfinished");
+  await assertFails(set(ref(dbA, path), { ...record, stars: 4 }));
+  await assertFails(set(ref(dbA, path), { ...record, stars: 0 }));
+  await assertFails(set(ref(dbA, path), { ...record, pagesTotal: 0 }));
+  await assertFails(set(ref(dbA, path), { ...record, pagesRead: 501 }));
+  await assertFails(set(ref(dbA, path), { ...record, seconds: 8640001 }));
+  await assertFails(set(ref(dbA, path), { ...record, mode: "fly" }));
+  await assertFails(set(ref(dbA, path), { ...record, bossWon: "yes" }));
+  await assertFails(set(ref(dbA, path), { ...record, extra: 1 }));
+  await assertFails(set(ref(dbA, path), { pagesRead: 1 }), "lastAt, pagesRead and pagesTotal are required");
+  await assertFails(set(ref(dbA, "studentProgress/A111111/manga/gaziz-demo/bad chapter!"), record));
+  await assertFails(set(ref(dbA, "studentProgress/A111111/manga/gaziz-demo/first-seeds/title"), "x".repeat(81)));
+});
+
+test("manga assignments: the teacher assigns chapters with due dates, only that student reads them", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const path = "mangaAssignments/A111111/gaziz-demo/little-market";
+  await assertSucceeds(set(ref(teacher, path), { assignedAt: 1790000000000, dueAt: 1790600000000 }));
+  await assertSucceeds(set(ref(teacher, "mangaAssignments/A111111/gaziz-demo/first-seeds"), { assignedAt: 1790000000000 }), "the due date is optional");
+  await assertSucceeds(get(ref(dbA, "mangaAssignments/A111111")));
+  await assertFails(get(ref(dbB, "mangaAssignments/A111111")));
+  await assertFails(set(ref(dbA, path), { assignedAt: 1790000000000 }), "a student cannot assign or change their own chapters");
+  await assertFails(remove(ref(dbA, path)));
+  await assertFails(set(ref(teacher, path), { dueAt: 1790600000000 }), "assignedAt is required");
+  await assertFails(set(ref(teacher, path), { assignedAt: 0 }));
+  await assertFails(set(ref(teacher, path), { assignedAt: 1790000000000, note: "x" }));
+  await assertSucceeds(remove(ref(teacher, path)));
+});
+
+test("manga: a student whose teacher did not switch it on cannot read the story, even by its address", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const dbB = testEnv.authenticatedContext("student-b").database();
+  await testEnv.withSecurityRulesDisabled(async context => {
+    const db = context.database();
+    await set(ref(db, "protectedContent/lesson-g/manga"), { sourceFile: "manga/gaziz-demo.json", content: { id: "gaziz-demo" } });
+    await set(ref(db, "studentCurriculum/A111111/lesson-g"), { title: "Manga lesson", published: true, mangaId: "gaziz-demo" });
+    await set(ref(db, "studentCurriculum/B222222/lesson-g"), { title: "Manga lesson", published: true, mangaId: "gaziz-demo" });
+    await set(ref(db, "studentFeatures/A111111/mangaReader"), true);
+  });
+  await assertSucceeds(get(ref(dbA, "protectedContent/lesson-g/manga")));
+  await assertFails(get(ref(dbB, "protectedContent/lesson-g/manga")), "no flag anywhere: denied by default");
+  await assertFails(get(ref(dbB, "protectedContent/lesson-g/manga/content")));
 });

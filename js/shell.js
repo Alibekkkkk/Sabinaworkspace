@@ -26,7 +26,7 @@ export function mountBottomNav(current, { manga = false } = {}) {
   const tabs = manga ? [...TABS.slice(0, 4), { id: "manga", label: "Manga", icon: "\u{1F4D6}", href: "manga.html" }, ...TABS.slice(4)] : TABS;
   for (const tab of tabs) {
     const link = document.createElement("a");
-    link.href = tab.href;
+    link.href = tab.href; link.dataset.tab = tab.id;
     if (tab.id === current) link.setAttribute("aria-current", "page");
     const icon = document.createElement("span");
     icon.setAttribute("aria-hidden", "true");
@@ -38,6 +38,19 @@ export function mountBottomNav(current, { manga = false } = {}) {
   }
   document.body.append(nav);
   document.body.classList.add("has-bottom-nav");
+}
+
+// Adds one tab to the bottom navigation after the tab with id `after` (or at the end). Does nothing if it is already there.
+export function addNavTab(tab, after) {
+  const nav = document.querySelector(".ds-bottom-nav");
+  if (!nav || nav.querySelector(`[data-tab="${tab.id}"]`)) return;
+  const link = document.createElement("a");
+  link.href = tab.href; link.dataset.tab = tab.id;
+  const icon = document.createElement("span"); icon.setAttribute("aria-hidden", "true"); icon.textContent = tab.icon;
+  const label = document.createElement("span"); label.textContent = tab.label;
+  link.append(icon, label);
+  const anchor = after ? [...nav.children].find(child => child.dataset.tab === after) : null;
+  if (anchor) anchor.after(link); else nav.append(link);
 }
 
 export function mountOfflineBanner() {

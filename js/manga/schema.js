@@ -1,3 +1,5 @@
+import { addProtectedAnswersV2, validateMangaV2 } from "./schema-v2.js";
+
 const CEFR_LEVELS = new Set(["A1", "A2", "B1", "B2", "C1", "C2"]);
 const PANEL_IMAGE_PATTERN = /^assets\/manga\/[a-z0-9-]+\.svg$/i;
 
@@ -13,6 +15,7 @@ export function validateManga(manga, { requireAnswers = true } = {}) {
   if (!manga || typeof manga !== "object" || Array.isArray(manga)) {
     throw new Error("Manga content must be a JSON object.");
   }
+  if (manga.schemaVersion === 2) return validateMangaV2(manga, { requireAnswers });
   if (manga.schemaVersion !== 1) throw new Error("Unsupported manga schema version.");
   if (!/^[a-z0-9][a-z0-9-]{1,59}$/i.test(String(manga.id || ""))) {
     throw new Error("Manga content needs a valid ID.");
@@ -78,6 +81,7 @@ export function validateManga(manga, { requireAnswers = true } = {}) {
 }
 
 export function addProtectedMangaAnswers(manga, answers) {
+  if (manga && manga.schemaVersion === 2) return addProtectedAnswersV2(manga, answers);
   validateManga(manga, { requireAnswers: false });
   if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
     throw new Error(`Private answer keys are required for manga ${manga.id}.`);
