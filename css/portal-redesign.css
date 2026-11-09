@@ -340,3 +340,5 @@ body.portal-page.light .due-tag.due-overdue { border-color: #b00020; color: #b00
 .lesson-card.locked { opacity: 0.7; cursor: not-allowed; }
 /* Dark theme: the accent is a light lavender, so primary buttons need dark text (axe: 1.95:1 with white). */
 body.portal-page:not(.light) .btn:not(.ghost):not(.google) { color: #10162b; }
+
+.last-class { margin: 0.25rem 0; font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; }

@@ -418,7 +418,7 @@ function initFirebase(){
             fbDb.ref('students/' + code).once('value').then(snap => { document.getElementById('workspaceName').textContent = snap.val() ? snap.val().name : 'Student'; });
           } else { document.getElementById('workspaceName').textContent = 'Teacher Workspace'; }
           updateSyncUI('teacher');
-          startLessonClock(true,getSessionCode); document.getElementById('scorePill').style.display='none'; document.getElementById('streakPill').style.display='none';
+          startLessonClock(true,getSessionCode); { const identityBanner=document.getElementById('studentIdentityBanner'); if(identityBanner)identityBanner.style.display='none'; } document.getElementById('scorePill').style.display='none'; document.getElementById('streakPill').style.display='none';
           renderStage();
         }
         else{teacherMode=true;updateSyncUI('error');setHtml(document.getElementById('main'), '<div class="card"><h2>Teacher sign-in required</h2></div>')}

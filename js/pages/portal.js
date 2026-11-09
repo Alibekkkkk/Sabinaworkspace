@@ -5,6 +5,8 @@ import { resolveMaxScore } from "../lesson-meta.js";
 import { generateStudentCode } from "../student-code.js";
 import { assessPlacement, canRetake, nextRetakeAt } from "../placement.js";
 import { dueState } from "../schedule.js";
+import { classRows, lastClass, monthlyTotalSeconds } from "../clock-report.js";
+import { formatDuration } from "../lesson-clock.js";
 import { DEFAULT_CLASS_ID, encouragement, isoWeekId, previousWeekId, rankEntries, validateNickname, weeklyXpSince } from "../leaderboard.js";
 
 let db = null;
@@ -31,7 +33,8 @@ const state = {
   lessons: {},
   progress: { scores: {}, done: {} },
   homework: {},
-  gameProgress: {}
+  gameProgress: {},
+  clocks: {}
 };
 
 if (localStorage.getItem('nd_theme') === 'light') document.body.classList.add('light');
@@ -252,6 +255,15 @@ function loadLessons(){
   };
   gameProgressRef.on('value',gameProgressListener);
   portalListeners.push({ref:gameProgressRef,event:'value',callback:gameProgressListener});
+  // Saved class durations (read-only for students): "Last class 52:08" and this month's total.
+  const clockRef=db.ref('lessonClock/' + state.currentCode);
+  const clockListener=clockSnap => {
+    state.clocks = clockSnap.val() || {};
+    renderLessons();
+    renderGameStats();
+  };
+  clockRef.on('value',clockListener,error=>console.error('Class times unavailable',error));
+  portalListeners.push({ref:clockRef,event:'value',callback:clockListener});
 }
 
 let placementBank = null;
@@ -424,7 +436,8 @@ function renderGameStats(){
     ['Level',progress.level||1],
     ['XP',progress.xp||0],
     ['Gems',progress.gems||0],
-    ['Daily streak',String(progress.streak||0)+' days']
+    ['Daily streak',String(progress.streak||0)+' days'],
+    ['Class time this month',formatDuration(monthlyTotalSeconds(classRows(state.currentCode,state.clocks))*1000)]
   ];
   summary.replaceChildren();
   values.forEach(([label,value])=>{
@@ -543,6 +556,7 @@ function renderLessons(){
     card.href = targetUrl.href;
     setHtml(card, (isPrivate ? '<div class="private-tag">🔒 Personal</div>' : '') +
       (lesson.homework ? '<div class="homework-tag">📌 Homework' + (lesson.homeworkDue ? ' · ' + escapeHtml(lesson.homeworkDue) : '') + '</div>' : '') +
+      (function(){ const row=classRows(state.currentCode,state.clocks).find(function(entry){return entry.lessonId===lessonId}); return row ? '<div class="last-class">⏱ Last class ' + escapeHtml(formatDuration(row.durationSeconds*1000)) + '</div>' : ''; })() +
       (due.label ? '<div class="due-tag due-' + escapeHtml(due.state) + '">' + (due.state === 'locked' ? '🔒 ' : due.state === 'overdue' ? '⚠️ ' : '⏰ ') + escapeHtml(due.label) + '</div>' : '') +
       '<div class="icon">' + escapeHtml(lesson.icon || '📘') + '</div>' +
       '<div class="title">' + escapeHtml(lesson.title || 'Untitled lesson') + '</div>' +

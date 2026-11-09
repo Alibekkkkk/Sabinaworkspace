@@ -91,3 +91,11 @@ test("weekly summary lists overdue and upcoming assignments but not finished or 
   assert.match(summary, /Due soon \(2\): Quiz - Due tomorrow; x bell - Due today\./);
   assert.doesNotMatch(summary, /Done task|Later|No date/);
 });
+
+test("weekly summary reports class times from the lesson clock", () => {
+  const summary = createSummary({ studentName: "Sabina", studentCode: "A111111", now: Date.UTC(2026, 0, 10), classTimes: [{ title: "Lesson 5", seconds: 3128 }, { title: "Lesson 6", seconds: 2400 }, { title: "bad", seconds: -5 }, null] });
+  assert.match(summary, /Classes this week: 2, 92:08 minutes in total\./);
+  assert.match(summary, /- Lesson 5: 52:08 minutes/);
+  assert.doesNotMatch(summary, /bad/);
+  assert.match(createSummary({ studentName: "S", studentCode: "A1", now: 1 }), /Classes this week: none recorded\./);
+});

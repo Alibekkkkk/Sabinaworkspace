@@ -24,6 +24,7 @@
     history = [],
     streak = 0,
     assignments = [],
+    classTimes = [],
     now = Date.now()
   }) {
     if (!String(studentCode || "").trim()) throw new Error("Select a student before generating a weekly summary.");
@@ -62,6 +63,16 @@
       `Practice: ${recentAttempts.length} games completed, ${totalQuestions ? Math.round(totalScore / totalQuestions * 100) : 0}% average accuracy, ${Math.round(timeSpent / 60)} minutes tracked.`,
       `Current streak: ${Math.max(0, finiteNumber(streak))} days.`
     ];
+
+    const classes = (Array.isArray(classTimes) ? classTimes : []).filter(item => item && Number.isFinite(Number(item.seconds)) && Number(item.seconds) >= 0);
+    if (classes.length) {
+      const totalSeconds = classes.reduce((sum, item) => sum + Number(item.seconds), 0);
+      const format = seconds => `${Math.floor(seconds / 60)}:${String(Math.round(seconds % 60)).padStart(2, "0")}`;
+      lines.push(`Classes this week: ${classes.length}, ${format(totalSeconds)} minutes in total.`);
+      classes.slice(0, 5).forEach(item => lines.push(`- ${cleanText(item.title, 80)}: ${format(Number(item.seconds))} minutes`));
+    } else {
+      lines.push("Classes this week: none recorded.");
+    }
 
     if (homeworkItems.length) {
       lines.push("Current homework status (all assignments):");

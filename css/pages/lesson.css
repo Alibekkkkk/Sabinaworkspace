@@ -343,3 +343,7 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .clock-controls__adjust summary { cursor: pointer; font-weight: 700; min-height: var(--ds-target); display: flex; align-items: center; }
 .clock-controls__warnings:empty { display: none; }
 @media (max-width: 700px) { .clock-panel { bottom: calc(4.75rem + env(safe-area-inset-bottom)); } .clock-chip { display: none; } .clock-pill[data-clock-state="paused"] .clock-chip, .clock-pill[data-clock-state="stopped"] .clock-chip { display: inline-flex; } }
+
+.clock-panel__title { margin: 0; }
+.clock-panel__toggle { width: 100%; text-align: start; min-height: var(--ds-target); padding: 0; border: 0; background: transparent; color: var(--ds-color-text); font: 700 var(--ds-text-md) var(--ds-font-body); cursor: pointer; }
+.clock-panel [hidden] { display: none; }

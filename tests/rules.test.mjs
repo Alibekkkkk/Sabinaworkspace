@@ -756,3 +756,19 @@ test("lesson clock log is append-only, teacher-only, stamped with the server tim
   await assertFails(get(ref(dbA, "lessonClockLog/A111111/lesson-a")));
   await assertFails(set(ref(dbA, "lessonClockLog/A111111/lesson-a/evt-7"), event));
 });
+
+test("per-student section overrides are teacher-written, bounded and readable by the student", async () => {
+  const teacher = testEnv.authenticatedContext("teacher").database();
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  const base = "studentCurriculum/A111111/lesson-a/sectionOverrides";
+  await assertSucceeds(set(ref(teacher, `${base}/estimatedMinutes/grammar`), 35));
+  await assertSucceeds(set(ref(teacher, `${base}/order`), ["reading", "vocabulary", "grammar"]));
+  await assertSucceeds(get(ref(dbA, base)));
+  await assertFails(set(ref(dbA, `${base}/estimatedMinutes/grammar`), 5));
+  await assertFails(set(ref(teacher, `${base}/estimatedMinutes/grammar`), 0));
+  await assertFails(set(ref(teacher, `${base}/estimatedMinutes/grammar`), 500));
+  await assertFails(set(ref(teacher, `${base}/estimatedMinutes/Bad Id`), 20));
+  await assertFails(set(ref(teacher, `${base}/estimatedMinutes/grammar`), "twenty"));
+  await assertFails(set(ref(teacher, `${base}/order/0`), "<b>x</b>"));
+  await assertFails(set(ref(teacher, `${base}/unknown`), 1));
+});

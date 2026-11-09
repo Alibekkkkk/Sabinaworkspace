@@ -198,3 +198,21 @@ body{font-family:var(--ds-font-body);background:var(--bg);color:var(--ink);min-h
 .student-item .dot.stuck { background: var(--ds-color-danger); border-radius: 2px; }
 .tab { min-width: 0; overflow-wrap: anywhere; }
 @media (max-width: 420px) { .tab { padding: 10px 6px; font-size: 13px; } .tabs { gap: 4px; padding: 4px; } }
+
+.dash-clock__display { display: flex; align-items: center; gap: var(--ds-space-3); margin: var(--ds-space-3) 0; flex-wrap: wrap; }
+.dash-clock__display .clock-value { font: 700 2rem / 1 var(--ds-font-mono); font-variant-numeric: tabular-nums; }
+.dash-clock__estimates { margin: var(--ds-space-3) 0; }
+.dash-clock__estimates summary { cursor: pointer; font-weight: 700; min-height: var(--ds-target); display: flex; align-items: center; }
+.dash-clock__estimate { display: grid; grid-template-columns: 1fr 6rem; gap: var(--ds-space-2); align-items: center; margin: var(--ds-space-1) 0; }
+.dash-clock__table { width: 100%; border-collapse: collapse; font-size: var(--ds-text-sm); }
+.dash-clock__table th, .dash-clock__table td { text-align: left; padding: var(--ds-space-1) var(--ds-space-2); border-bottom: 1px solid var(--border); }
+.dash-clock__month { font-weight: 700; margin: var(--ds-space-3) 0 var(--ds-space-2); }
+.clock-controls { display: grid; gap: var(--ds-space-2); }
+.clock-controls__row { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); align-items: center; }
+.clock-controls__adjust { display: grid; gap: var(--ds-space-2); }
+.clock-controls__warnings:empty { display: none; }
+.clock-chip { font-size: var(--ds-text-xs); font-weight: 700; padding: 0.15rem 0.6rem; border-radius: var(--ds-radius-pill); border: 1px solid var(--ds-color-border-strong); }
+.clock-chip[data-state="running"] { background: var(--ds-color-success-soft); color: var(--ds-color-success); border-color: var(--ds-color-success); }
+.clock-chip[data-state="paused"] { background: var(--ds-color-warning-soft); color: var(--ds-color-warning); border-color: var(--ds-color-warning); }
+.clock-chip[data-state="stopped"] { background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); border-color: var(--ds-color-primary); }
+.clock-hint { font-size: var(--ds-text-xs); color: var(--ds-color-warning); font-weight: 700; }

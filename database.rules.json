@@ -54,7 +54,16 @@
           "$lessonId": {
             "availableFrom": { ".validate": "newData.isNumber() && newData.val() >= 0" },
             "dueAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
-            "closesAt": { ".validate": "newData.isNumber() && newData.val() >= 0" }
+            "closesAt": { ".validate": "newData.isNumber() && newData.val() >= 0" },
+            "sectionOverrides": {
+              "estimatedMinutes": {
+                "$sectionId": { ".validate": "$sectionId.matches(/^[a-z0-9_-]{1,32}$/) && newData.isNumber() && newData.val() >= 1 && newData.val() <= 120" }
+              },
+              "order": {
+                "$index": { ".validate": "$index.matches(/^[0-9]{1,2}$/) && newData.isString() && newData.val().matches(/^[a-z0-9_-]{1,32}$/)" }
+              },
+              "$other": { ".validate": "false" }
+            }
           }
       }
     },

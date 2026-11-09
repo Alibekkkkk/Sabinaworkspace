@@ -20,6 +20,14 @@ Tokens live in `css/design-system.css` (the only file with raw colours) and comp
 
 With `npm run dev` running, `npm run check:visual` screenshots lesson, homework and dashboard in both themes at 320/390/768/1440 px and fails on horizontal scroll, clipped text or overlapping controls; `npm run audit:signed-in` runs Lighthouse and axe on those pages while signed in as the demo users.
 
+## Lesson clock and sections
+
+The teacher starts, pauses, resumes and stops a class clock from the dashboard (Lesson clock card) or the floating panel on the lesson page; the student sees the same time live, and the saved duration appears in the portal, history, weekly summary and a CSV export. Each lesson has three timed sections (Vocabulary, Grammar, Reading Comprehension) with planned, actual and remaining time always visible. See [docs/PHASE2-REPORT.md](docs/PHASE2-REPORT.md).
+
+- `npm run migrate:sections` (add `-- --dry-run` first) adds schema v2 sections to lesson files; `npm run lint:content` checks them; proposals for your approval are in [docs/CONTENT_REVIEW.md](docs/CONTENT_REVIEW.md).
+- With `npm run dev` running, `npm run test:clock-e2e` runs a teacher and a student in separate browser sessions (the student's device clock 10 minutes fast) through start, pause, refresh, resume and stop.
+- After migrating lesson files, run **Import Content** so each student's protected copy gets the new fields.
+
 ## Try it locally with demo data
 
 ```powershell

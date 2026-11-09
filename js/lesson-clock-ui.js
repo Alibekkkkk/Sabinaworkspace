@@ -141,8 +141,18 @@ export function initLessonClock(options) {
   if (isTeacher) {
     panel = el("aside", "ds-card clock-panel");
     panel.setAttribute("aria-label", "Lesson clock controls");
-    const title = el("h2", "clock-panel__title", "Lesson clock");
+    const title = el("h2", "clock-panel__title");
+    const toggle = el("button", "clock-panel__toggle", "Lesson clock");
+    toggle.type = "button";
+    title.append(toggle);
     const body = el("div");
+    body.id = "clockPanelBody";
+    toggle.setAttribute("aria-controls", body.id);
+    // Open by default on wide screens; collapsed on phones so it never covers the lesson.
+    const startOpen = window.matchMedia ? !window.matchMedia("(max-width: 700px)").matches : true;
+    const setOpen = open => { body.hidden = !open; toggle.setAttribute("aria-expanded", String(open)); toggle.textContent = open ? "Lesson clock \u25BE" : "Lesson clock \u25B8"; };
+    toggle.addEventListener("click", () => setOpen(body.hidden));
+    setOpen(startOpen);
     panel.append(title, body);
     document.body.append(panel);
     controls = createClockControls({

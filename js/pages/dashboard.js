@@ -16,6 +16,8 @@ import { installDelegatedActions, readActionEnum, readActionInteger, readActionP
 import { appendHtml, safeUrl, setHtml } from "../dom.js";
 import { DEFAULT_CLASS_ID, validateNickname } from "../leaderboard.js";
 import { barChart, sparkline } from "../charts.js";
+import { mountDashboardClock } from "../dashboard-clock.js";
+import { classesInLastDays } from "../clock-report.js";
 import { createProgressTracker, STATUS_LABELS, studentStatus, todaySummary, trackProgress } from "../dashboard-status.js";
 import { compareByDue, dueState, duplicateScheduleToNextWeek, formatInZone, localInputToTimestamp, localZone, timestampToLocalInput, validateSchedule } from "../schedule.js";
 import { showToast } from "../ui.js";
@@ -24,6 +26,7 @@ let firebaseConfig = null;
 
 let fbApp = null, fbAuth = null, fbDb = null, teacherUid = null;
 const progressTracker = createProgressTracker();
+let dashboardClock = null;
 let studentsMap = {}, studentMeta = {}, curriculum = {}, pendingMap = {}, activeNotesRef = null;
 let activeCode = null, activeFeedRef = null, activeProgressRef = null;
 let activeGameProgress = {};
@@ -359,6 +362,7 @@ function selectStudent(code) {
   attachNotesListener();
   loadLeaderboardCard();
   renderScheduleList();
+  showLessonClock();
   renderClassworkTree();
 }
 
@@ -367,6 +371,7 @@ function deselectStudent() {
   if (activeFeedRef) { activeFeedRef.off(); activeFeedRef = null; }
   if (activeProgressRef) { activeProgressRef.off(); activeProgressRef = null; }
   if (activeNotesRef) { activeNotesRef.off(); activeNotesRef = null; }
+  if (dashboardClock) dashboardClock.hide();
   activeGameProgress = {};
   document.getElementById('selectedView').style.display = 'none';
   document.getElementById('overviewView').style.display = 'block';
@@ -616,6 +621,7 @@ function generateWeeklySummary() {
         const progress = ((studentMeta[activeCode] || {}).homework || {})[id];
         return { title: lesson.title || id, state: state.state, label: state.label, completed: lesson.homework ? Boolean(progress && progress.submitted) : false };
       }),
+      classTimes: classTimesForSummary(),
       history: activeHistoryItems,
       streak: activeGameProgress.streak
     });
@@ -1127,6 +1133,21 @@ function openCurrentHomeworkInTab() {
 }
 
 // ---- schedule list for the selected student ----------------------------------------------
+function showLessonClock() {
+  const host = document.getElementById('lessonClockHost');
+  if (!host || !activeCode) return;
+  if (!dashboardClock) dashboardClock = mountDashboardClock({ db: fbDb, auth: firebase.auth(), host: host, showToast: showToast });
+  const lessons = Object.keys(curriculum || {})
+    .filter(function(id) { return !curriculum[id].homework && isLessonVisibleTo(curriculum[id], activeCode); })
+    .map(function(id) { return { id: id, title: curriculum[id].title || id }; });
+  dashboardClock.show(activeCode, lessons);
+}
+
+function classTimesForSummary() {
+  if (!dashboardClock) return [];
+  return classesInLastDays(dashboardClock.rows(), 7).map(function(row) { return { title: row.title, seconds: row.durationSeconds, endedAt: row.stoppedAt }; });
+}
+
 function renderScheduleList() {
   const host = document.getElementById('scheduleList');
   if (!host) return;
