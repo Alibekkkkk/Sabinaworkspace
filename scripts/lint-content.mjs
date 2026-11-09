@@ -9,6 +9,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateLadder } from "../js/grammar-ladder.js";
+import { validateReadingTasks } from "../js/reading-tasks.js";
 import { parseDerivations, validateWordFamilies } from "../js/word-family.js";
 import { countWords, readingMinutes, validateSections } from "../js/sections.js";
 
@@ -40,6 +41,7 @@ function wordForms(word) {
 export function lintContent(name, content, { wordlist = null, derivations = new Set() } = {}) {
   const errors = validateSections(content).map(message => `${message}`);
   if (content.grammarLadder !== undefined) errors.push(...validateLadder(content.grammarLadder).map(message => `grammarLadder: ${message}`));
+  if (content.readingTasks !== undefined) errors.push(...validateReadingTasks(content.readingTasks, content.readingHtml).map(message => `readingTasks: ${message}`));
   const warnings = [];
   const families = validateWordFamilies(content.vocab, { derivations });
   errors.push(...families.errors);

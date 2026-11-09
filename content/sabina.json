@@ -387,6 +387,101 @@
     { "id": "sabina.readingQ.009", "type": "mcq", "prompt": "What is the town planning to build?", "ru": "Что город планирует построить?", "options": ["New defences","A new hospital","A new school"], "correct": "New defences", "exp": "The town wants to build new defences." },
     { "id": "sabina.readingQ.010", "type": "short", "prompt": "Complete: The council provided free ______ and water.", "ru": "Дополните: Совет предоставил бесплатную ______ и воду.", "answers": ["food"], "exp": "The council provided free food." }
   ],
+  "readingTasks": {
+    "status": "draft",
+    "tasks": [
+      {
+        "id": "sabina.rt.tfng.001",
+        "type": "tfng",
+        "prompt": "The river overflowed on the third day.",
+        "answer": "True",
+        "evidence": "On the third day, the river overflowed.",
+        "explanation": "The text says the river overflowed on the third day."
+      },
+      {
+        "id": "sabina.rt.tfng.002",
+        "type": "tfng",
+        "prompt": "Rescue teams used helicopters to reach people.",
+        "answer": "False",
+        "evidence": "Rescue teams used small boats to travel through the streets.",
+        "explanation": "The text says they used small boats, not helicopters."
+      },
+      {
+        "id": "sabina.rt.tfng.003",
+        "type": "tfng",
+        "prompt": "The council gave money to every family.",
+        "answer": "Not Given",
+        "explanation": "The text says the council gave free food and water. It does not mention money."
+      },
+      {
+        "id": "sabina.rt.find.001",
+        "type": "find",
+        "prompt": "Find the sentence that says how long the water stayed in the town.",
+        "evidence": "The water stayed in the town for a whole week.",
+        "explanation": "This sentence gives the time: a whole week."
+      },
+      {
+        "id": "sabina.rt.find.002",
+        "type": "find",
+        "prompt": "Find the sentence that says what the town wants to do in the future.",
+        "evidence": "They want to build new defences to protect the town from future floods.",
+        "explanation": "This sentence says the plan: build new defences."
+      },
+      {
+        "id": "sabina.rt.long.001",
+        "type": "long",
+        "prompt": "What did the council do to help the people of Marlowe? Write 2 or 3 sentences.",
+        "rubric": [
+          {
+            "criterion": "The council told people to evacuate",
+            "keywords": [
+              [
+                "evacuate",
+                "evacuated",
+                "leave"
+              ]
+            ]
+          },
+          {
+            "criterion": "The council gave free food and water",
+            "keywords": [
+              [
+                "food",
+                "water"
+              ]
+            ]
+          },
+          {
+            "criterion": "The town is planning new defences",
+            "keywords": [
+              [
+                "defences",
+                "defense",
+                "defenses",
+                "plan"
+              ]
+            ]
+          }
+        ],
+        "modelAnswer": "The council told everyone to evacuate and later provided free food and water. Now the town is making a plan to build new defences.",
+        "wordGuide": {
+          "min": 15,
+          "max": 50
+        },
+        "explanation": "A good answer mentions the evacuation order, the free food and water, and the plan for new defences."
+      },
+      {
+        "id": "sabina.rt.apply.001",
+        "type": "apply",
+        "prompt": "Think about a natural disaster or very bad weather in Kazakhstan or near you. What has happened there? Write 2 sentences with the present perfect (has or have + past participle).",
+        "pattern": "\\b(has|have)\\s+(not\\s+|never\\s+|already\\s+|just\\s+)?[a-z]+(ed|en|wn|ne|t)\\b",
+        "minSentences": 2,
+        "structureHint": "Use the present perfect: has or have + past participle, for example \"Floods have damaged many villages.\"",
+        "modelAnswer": "Floods have damaged many villages in Kazakhstan. My family has never seen a tornado.",
+        "explanation": "The present perfect links the past to now: has or have + past participle."
+      }
+    ]
+  },
   "contextQ": [
     { "id": "sabina.contextQ.001", "prompt": "In paragraph A, \"overflowed\" means...", "ru": "В параграфе A слово \"overflowed\" означает...", "options": ["spilled over the edge","dried up","froze"], "correct": "spilled over the edge", "exp": "The river spilled over its banks." },
     { "id": "sabina.contextQ.002", "prompt": "In paragraph B, \"evacuate\" means...", "ru": "В параграфе B слово \"evacuate\" означает...", "options": ["move to a safe place","stay at home","buy food"], "correct": "move to a safe place", "exp": "Evacuate means to leave a dangerous place." },

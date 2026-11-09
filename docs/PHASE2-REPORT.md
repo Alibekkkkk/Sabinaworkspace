@@ -1,4 +1,4 @@
-# Phase 2 report: lesson clock and standard sections
+﻿# Phase 2 report: lesson clock and standard sections
 
 ## What works now
 
@@ -26,12 +26,20 @@
 
 **Word families (Part B2)**
 - Every target word can carry `vocab[].forms`: noun, verb, adjective, adverb, negative and one `other` form (each with an example sentence), plus `affixes` (part, prefix or suffix, meaning). A flashcard shows a "Word family" button that lists the forms, examples and word parts, with a Back button to the quiz.
-- "Form the word" sits under the flashcards: `Humid → (noun) ______`. The type rotates between choose, type and build from morphemes (tap prefix, root and suffix tiles, with distractor pieces). Wrong answers explain where the word comes from. Progress is saved in the lesson draft.
+- "Form the word" sits under the flashcards: `Humid в†’ (noun) ______`. The type rotates between choose, type and build from morphemes (tap prefix, root and suffix tiles, with distractor pieces). Wrong answers explain where the word comes from. Progress is saved in the lesson draft.
 - **Validation without a dictionary:** no openly licensed derivation list was available offline, so nothing is guessed. A form must share a stem (4+ letters) with the headword, spell out its `parts` (which must add up to the word), or be listed in an optional `content/wordlists/derivations.txt` (one word per line, record its licence). Anything else is a lint error that tells the author to list it under `forms.review`; review items are hidden from students and appear as warnings.
 - **Approval gate:** `forms.status` is `draft` or `approved` per word; students see approved families only. Seven of Sabina's words (flood, volcano, eruption, humid, deforestation, atmosphere, evacuation) have a draft family that needs your review; the other 13 words have no real derived forms and were left alone.
 - Authoring: the import tool (`tools/import-content.html`) has a "Word family helper". It proposes candidate forms from suffix and prefix patterns (not checked against a dictionary), the teacher ticks the real ones and writes examples, and it prints a `forms` block to paste into the lesson file.
 - Evidence: 7 unit tests; `npm run test:wordfamily-e2e` (15 checks: draft hidden from student, panel, all three exercise types solved, wrong answer explains, saved and restored after refresh); axe clean and no horizontal scroll at 1440/390/320.
 - **Fixed on the way:** flashcards could not be opened at all, because `openQuiz` assigned an undeclared variable (`s1CurrentIdx`), which throws in module code. It is now declared.
+
+**Reading tasks (Part B4)**
+- A new "Part C вЂ” Go deeper" block sits under the existing questions on the reading stage. It lives in the lesson file under `readingTasks` (`status`, `tasks[]`) so the existing short-answer, multiple-choice and context questions, their scoring and the stage completion are untouched. It does not change any score.
+- Four task types: **True / False / Not Given with evidence** (after the right answer the student must tap the sentence that proves it; Not Given has no evidence), **find the sentence** (tap it in a clickable copy of the passage, grouped by paragraph A, B, C), **long answer** (word guide, a rubric self-check that shows which points were found, then sent to the review queue, with the model answer shown afterwards) and an **application question** (a regular expression for the target structure is required before sending; if it is missing the structure hint explains why).
+- The linter and the page both validate `readingTasks` against the passage: every evidence sentence must be an exact sentence of the text, a Not Given statement cannot carry evidence, each model answer must satisfy its own rubric or structure, and word guides must fit the 300-character review queue limit.
+- The rubric is advisory (key-word groups, simple plurals and phrases); it never blocks sending. The teacher reads the full answer.
+- **Approval gate:** `status` is `draft` or `approved`. Sabina's seven tasks (3 True/False/Not Given, 2 find, 1 long, 1 application using the present perfect) are drafts for you to review.
+- Evidence: 9 unit tests; `npm run test:reading-e2e` (22 checks: draft hidden from student, wrong answers explained, evidence required, rubric self-check, length gate, structure gate, review queue entries with task id and type, saved and restored after refresh, sent answers stay locked); axe clean and no horizontal scroll at 1440/390/320.
 
 ## Evidence
 
@@ -52,9 +60,8 @@ Revision conflicts: a write is only accepted when its `rev` is the stored `rev` 
 
 ## Not done
 
-- **The new reading question types** (B4 in the brief). They add lesson content and authoring tools and need your approval of the content design; see section 5 of `docs/CONTENT_REVIEW.md`.
+- **Click-a-word definitions limited to the lesson vocabulary and per-paragraph audio** in the reading section (the rest of B4 is built).
 - **CEFR word-level check** (needs an openly licensed word list saved locally) and the **grammar-structure check** (needs a `topic` on each grammar section).
 - **"Lock while paused"** toggle (optional in the brief) and the **per-stage time-on-stage analytics derived from section events**; the existing per-stage views are unchanged.
 - **Final-test countdown** still has its own timer; it was left as the brief asked and is not tied to the lesson clock.
-- Per-paragraph reading audio and click-a-word definitions in the reading section.
 - The teacher "forgot to stop" recovery is the stop-then-adjust flow with a logged reason; there is no separate wizard.

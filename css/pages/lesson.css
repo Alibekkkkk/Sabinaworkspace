@@ -396,3 +396,22 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .wf-affixes { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: var(--ds-space-2); }
 .wf-affix { border: 1px solid var(--ds-color-border-strong); border-radius: var(--ds-radius-pill); padding: 0.2rem 0.7rem; font-size: var(--ds-text-sm); }
 @media (max-width: 480px) { .wf-forms__row { grid-template-columns: 1fr; gap: 0; } }
+
+/* ---- reading tasks ---- */
+.rt { margin-top: var(--ds-space-6); display: grid; gap: var(--ds-space-3); }
+.rt__title { margin: 0; }
+.rt__progress { margin: 0; font-weight: 700; }
+.rt-proof { display: grid; gap: var(--ds-space-2); }
+.rt-proof[hidden] { display: none; }
+.rt-proof__ask { margin: 0; font-weight: 700; }
+.rt-sentences { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--ds-space-1); }
+.rt-sentence { width: 100%; text-align: left; min-height: var(--ds-target); padding: var(--ds-space-2) var(--ds-space-3); border: 2px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); background: var(--ds-color-surface); color: var(--ds-color-text); font: 500 var(--ds-text-md) var(--ds-font-body); cursor: pointer; }
+.rt-sentence__para { font-weight: 800; color: var(--ds-color-primary); }
+.rt-sentence[aria-pressed="true"] { border-color: var(--ds-color-primary); }
+.rt-sentence[data-state="correct"] { border-color: var(--ds-color-success); }
+.rt-sentence[data-state="wrong"] { border-color: var(--ds-color-danger); border-style: dashed; }
+.rt-sentence:disabled { cursor: default; }
+.rt-rubric { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--ds-space-1); }
+.rt-rubric:empty { display: none; }
+.rt-rubric__item { font-weight: 600; }
+.rt-rubric__item[data-met="true"] { color: var(--ds-color-success); }

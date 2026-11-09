@@ -16,6 +16,8 @@ import { applySectionOverrides, buildSections } from "../sections.js";
 import { validateLadder } from "../grammar-ladder.js";
 import { renderGrammarLadder, renderRuleCard } from "../grammar-ladder-ui.js";
 import { familyVisible } from "../word-family.js";
+import { validateReadingTasks } from "../reading-tasks.js";
+import { renderReadingTasks } from "../reading-tasks-ui.js";
 import { renderFamilyPanel, renderFormTheWord } from "../word-family-ui.js";
 
 mountOfflineBanner();
@@ -64,6 +66,20 @@ function getCurrentLesson(){
 function stagesOf(lesson){ return lesson && Array.isArray(lesson.stages) && lesson.stages.length ? lesson.stages : DEFAULT_STAGES; }
 // ---- lesson clock (teacher-controlled, shared by teacher and student) ----
 // ---- grammar ladder (rule card on the first grammar stage, six production steps after the last) ----
+let readingTasks = null;
+function appendReadingTasks(){
+  if(!readingTasks)return;
+  const column=document.querySelector('#main .reading-questions'); if(!column)return;
+  const block=renderReadingTasks({
+    block:readingTasks, passageHtml:READING_HTML, isTeacher:teacherMode,
+    store:{
+      get:function(key){return draftAnswers[key]},
+      set:function(key,value){ if(teacherMode)return; draftAnswers[key]=value; debouncedSaveDraft(); }
+    },
+    flag:function(id,prompt,answer,auto,extra){ flagForReview(id,prompt,answer,auto,3,extra); }
+  });
+  if(block)column.append(block);
+}
 let grammarLadder = null;
 function ladderShown(){ return Boolean(grammarLadder) && (grammarLadder.status==='approved' || teacherMode); }
 function decorateGrammarStage(stageId){
@@ -926,7 +942,7 @@ function renderStage3(){
   READING_Q.forEach(function(_,i){ if(draftAnswers['r'+i+'_ok'] === true) s4Answers['r'+i]=true; });
   CONTEXT_Q.forEach(function(_,i){ if(draftAnswers['c'+i+'_ok'] === true) s4Answers['c'+i]=true; });
   
-  renderReadingQuestions(); renderContextQ(); updateS3Progress(); checkS4(true); 
+  renderReadingQuestions(); renderContextQ(); updateS3Progress(); checkS4(true); appendReadingTasks(); 
   
   if(fbConnected && sessionRef) {
      sessionRef.child('annotations/'+state.currentLessonId).once('value').then(snap => {
@@ -1600,6 +1616,12 @@ async function applyLessonContent(c,sourceFile) {
     const ladderErrors=validateLadder(c.grammarLadder);
     if(ladderErrors.length)console.warn('Grammar ladder ignored:',ladderErrors);
     else grammarLadder=c.grammarLadder;
+  }
+  readingTasks=null;
+  if(c.readingTasks){
+    const taskErrors=validateReadingTasks(c.readingTasks,c.readingHtml);
+    if(taskErrors.length)console.warn('Reading tasks ignored:',taskErrors);
+    else readingTasks=c.readingTasks;
   }
   if(lessonClock)lessonClock.refreshSections();
   if(crypto&&crypto.subtle){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(c)));contentHash=Array.from(new Uint8Array(bytes)).map(b=>b.toString(16).padStart(2,'0')).join('')}
