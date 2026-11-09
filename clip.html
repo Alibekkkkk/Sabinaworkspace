@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#141a25">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.youtube.com; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
   <link rel="manifest" href="manifest.webmanifest">
   <title>Clip Lab</title>
   <script src="js/pwa.js" defer></script>
   <script src="js/theme.js" defer></script>
   <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/pages/clip.css">
+  <link rel="stylesheet" href="css/pages/games.css">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -29,44 +30,47 @@
         <div class="eyebrow">Clip Lab · <span id="level"></span></div>
         <h1 id="title"></h1>
         <p id="description"></p>
+        <p id="rights" class="note"></p>
         <div id="tags" class="tags"></div>
       </header>
+      <div id="warnings" class="note" role="note" hidden></div>
       <div class="layout">
-        <section class="panel" aria-labelledby="videoHeading">
-          <h2 id="videoHeading">Watch the official video segment</h2>
+        <section class="panel video-panel" aria-labelledby="videoHeading">
+          <h2 id="videoHeading">Watch</h2>
           <div id="media" class="media">
             <button id="loadVideo" type="button" aria-label="Load the official video player">Load video</button>
           </div>
-          <div class="controls" aria-label="Video controls">
-            <label for="speed">Playback speed</label>
-            <select id="speed">
-              <option value="0.75">0.75×</option>
-              <option value="1" selected>1×</option>
-              <option value="1.25">1.25×</option>
-              <option value="1.5">1.5×</option>
-            </select>
+          <div class="controls" role="group" aria-label="Video controls">
+            <button id="playPause" type="button" disabled>Play</button>
+            <button id="prevLine" type="button" disabled>Previous line</button>
+            <button id="nextLine" type="button" disabled>Next line</button>
+            <button id="loopLine" type="button" aria-pressed="false" disabled>Loop line</button>
+            <label for="speed">Speed</label>
+            <select id="speed"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option></select>
           </div>
-          <p id="playerStatus" class="feedback" aria-live="polite">The video loads only after you choose to play it.</p>
-          <section aria-labelledby="transcriptHeading">
-            <h2 id="transcriptHeading">Study text</h2>
-            <p id="transcriptNote" class="note"></p>
-            <div class="track-switch" role="group" aria-label="Study text language">
-              <button type="button" data-track="en" aria-pressed="true">English</button>
-              <button type="button" data-track="native" aria-pressed="false">Translation</button>
-              <button type="button" data-track="none" aria-pressed="false">Hide</button>
-            </div>
-            <ol id="transcript" class="transcript"></ol>
-          </section>
+          <p class="hint" id="shortcuts">Keys: Space play or pause, Left and Right arrows change line, L loops the line.</p>
+          <p id="playerStatus" class="feedback" role="status" aria-live="polite">The video loads only after you choose to play it.</p>
+          <p><a id="openVideo" href="#" target="_blank" rel="noopener noreferrer">Open the video</a></p>
         </section>
-        <aside class="panel">
-          <h2>Quick check</h2>
-          <p>Answer the questions to finish this clip lesson and earn learning points.</p>
-          <div id="exercises"></div>
-          <button id="complete" class="completion" type="button" disabled>Complete clip lesson</button>
-          <p id="result" class="feedback" aria-live="polite"></p>
-          <p id="shadowNotice" class="note"></p>
-        </aside>
+        <section class="panel transcript-panel" aria-labelledby="transcriptHeading">
+          <h2 id="transcriptHeading">Study text</h2>
+          <p id="transcriptNote" class="note"></p>
+          <div class="track-switch" role="group" aria-label="Study text language">
+            <button type="button" data-track="en" aria-pressed="true">English</button>
+            <button type="button" data-track="native" aria-pressed="false">Translation</button>
+            <button type="button" data-track="reveal" aria-pressed="false">Reveal as I go</button>
+            <button type="button" data-track="none" aria-pressed="false">Hide</button>
+          </div>
+          <ol id="transcript" class="transcript"></ol>
+        </section>
       </div>
+      <section class="panel" aria-labelledby="exercisesHeading">
+        <h2 id="exercisesHeading">Practise</h2>
+        <p>Do the activities in order. Your answers are saved when you finish.</p>
+        <div id="exercises"></div>
+        <button id="complete" class="completion" type="button" disabled>Complete clip lesson</button>
+        <p id="result" class="feedback" role="status" aria-live="polite"></p>
+      </section>
     </article>
   </main>
   <dialog id="vocabularyDialog" aria-labelledby="vocabularyWord">

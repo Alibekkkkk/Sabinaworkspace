@@ -1,3 +1,5 @@
+import { addProtectedAnswersV2, validateClipV2 } from "./schema-v2.js";
+
 const CEFR_LEVELS = new Set(["A1", "A2", "B1", "B2", "C1", "C2"]);
 const YOUTUBE_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
 const TAG_PATTERN = /^[a-z0-9][a-z0-9 -]{0,59}$/i;
@@ -17,6 +19,7 @@ export function validateClip(clip, { requireAnswers = true } = {}) {
   if (!clip || typeof clip !== "object" || Array.isArray(clip)) {
     throw new Error("Clip must be a JSON object.");
   }
+  if (clip.schemaVersion === 2) return validateClipV2(clip, { requireAnswers });
   if (clip.schemaVersion !== 1) throw new Error("Unsupported clip schema version.");
   if (!/^[a-z0-9][a-z0-9-]{1,59}$/i.test(String(clip.id || ""))) {
     throw new Error("Clip needs a valid ID.");
@@ -102,6 +105,7 @@ export function validateClip(clip, { requireAnswers = true } = {}) {
 }
 
 export function addProtectedClipAnswers(clip, answers) {
+  if (clip && clip.schemaVersion === 2) return addProtectedAnswersV2(clip, answers);
   validateClip(clip, { requireAnswers: false });
   if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
     throw new Error(`Private answer keys are required for clip ${clip.id}.`);
@@ -123,10 +127,13 @@ export function addProtectedClipAnswers(clip, answers) {
 }
 
 export function clipEmbedUrl(clip) {
-  validateClip(clip);
-  const url = new URL(`https://www.youtube-nocookie.com/embed/${clip.source.videoId}`);
-  url.searchParams.set("start", String(clip.startSeconds));
-  url.searchParams.set("end", String(clip.endSeconds));
+  const source = clip && clip.source;
+  if (!source || source.provider !== "youtube") throw new Error("Only YouTube clips can be embedded.");
+  if (!YOUTUBE_ID_PATTERN.test(String(source.videoId || ""))) throw new Error("Clip source must use an official YouTube video ID.");
+  if (!Number.isFinite(clip.startSeconds) || !Number.isFinite(clip.endSeconds) || clip.endSeconds <= clip.startSeconds) throw new Error("Clip needs a valid time window.");
+  const url = new URL(`https://www.youtube-nocookie.com/embed/${source.videoId}`);
+  url.searchParams.set("start", String(Math.floor(clip.startSeconds)));
+  url.searchParams.set("end", String(Math.ceil(clip.endSeconds)));
   url.searchParams.set("rel", "0");
   url.searchParams.set("enablejsapi", "1");
   return url.href;

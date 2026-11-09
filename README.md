@@ -66,3 +66,8 @@ The full visual redesign of the legacy lesson/homework/dashboard pages is not im
 A drawing board for class and for practice on your own: pen, highlighter, erasers, laser pointer, shapes, text, sticky notes, pictures, English templates, pages, zoom and pan, undo and redo, export to PNG, SVG and PDF. Open it from the pen button in a lesson, from `whiteboard.html?lesson=<id>` (students) or `whiteboard.html?code=<STUDENTCODE>&lesson=<id>` (teacher). Code is in `js/whiteboard/`, no dependencies, no build step. Design notes: `docs/adr/0001-whiteboard.md`, research: `docs/WHITEBOARD_RESEARCH.md`, evidence: `docs/PHASE4-REPORT.md`.
 
 Checks: `npm test` (unit), `npm run test:rules` (database rules), with `npm run dev` running: `npm run test:whiteboard-e2e` and `npm run test:whiteboard-devices-e2e`.
+
+
+## Clip Lab
+
+Short official video moments with interactive study text and nine kinds of exercise. Rules and how to make a clip: `docs/CLIP_LAB.md`; checking clips: `npm run check:clips`; with `npm run dev` running: `npm run test:clips-e2e`.

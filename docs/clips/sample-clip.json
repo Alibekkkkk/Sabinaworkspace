@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 2,
+  "id": "sample-flood-night",
+  "title": "Sample: a flood night (test fixture)",
+  "level": "B1",
+  "genre": [
+    "documentary"
+  ],
+  "grammarPoints": [
+    "past simple"
+  ],
+  "vocabularyThemes": [
+    "floods"
+  ],
+  "source": {
+    "provider": "youtube",
+    "videoId": "4PXj7bOD7IY",
+    "sourceUrl": "https://www.youtube.com/watch?v=4PXj7bOD7IY",
+    "channel": "National Geographic",
+    "videoTitle": "Floods 101",
+    "rights": "official-embed",
+    "attribution": "Floods 101, National Geographic (official YouTube video, embedded with the official player)",
+    "reviewedAt": "2026-11-09"
+  },
+  "startSeconds": 10,
+  "endSeconds": 70,
+  "transcriptType": "original",
+  "transcriptNote": "Original practice text written for teaching. This SAMPLE is a test fixture: its line times are invented, not checked against the video.",
+  "timingVerified": true,
+  "transcript": [
+    {
+      "id": "l1",
+      "start": 10,
+      "end": 16,
+      "text": "The river rose quickly last night.",
+      "translation": "(translation)",
+      "speaker": "Anna"
+    },
+    {
+      "id": "l2",
+      "start": 16,
+      "end": 22,
+      "text": "Did the water reach the road?",
+      "translation": "(translation)",
+      "speaker": "Ben"
+    },
+    {
+      "id": "l3",
+      "start": 22,
+      "end": 28,
+      "text": "Yes, and the shops closed early.",
+      "translation": "(translation)",
+      "speaker": "Anna"
+    },
+    {
+      "id": "l4",
+      "start": 28,
+      "end": 34,
+      "text": "Everyone waited for the rain to stop.",
+      "translation": "(translation)",
+      "speaker": "Ben"
+    },
+    {
+      "id": "l5",
+      "start": 34,
+      "end": 40,
+      "text": "Then the volunteers brought sandbags.",
+      "translation": "(translation)",
+      "speaker": "Anna"
+    },
+    {
+      "id": "l6",
+      "start": 40,
+      "end": 46,
+      "text": "They worked until the morning came.",
+      "translation": "(translation)",
+      "speaker": "Ben"
+    },
+    {
+      "id": "l7",
+      "start": 46,
+      "end": 52,
+      "text": "By noon the water had gone down.",
+      "translation": "(translation)",
+      "speaker": "Anna"
+    },
+    {
+      "id": "l8",
+      "start": 52,
+      "end": 58,
+      "text": "The town was safe again.",
+      "translation": "(translation)",
+      "speaker": "Ben"
+    }
+  ],
+  "vocabulary": [
+    {
+      "word": "sandbags",
+      "meaning": "bags filled with sand, used to stop water",
+      "translation": "мешки с песком",
+      "example": "They stacked the sandbags by the door.",
+      "lineId": "l5"
+    },
+    {
+      "word": "volunteers",
+      "meaning": "people who help without being paid",
+      "translation": "добровольцы",
+      "lineId": "l5"
+    }
+  ],
+  "exercises": [
+    {
+      "id": "bw",
+      "type": "before-watch",
+      "prompt": "What do you think happens during a flood?",
+      "words": [
+        "sandbags",
+        "volunteers"
+      ]
+    },
+    {
+      "id": "g1",
+      "type": "gist",
+      "prompt": "What is the clip about?",
+      "options": [
+        "a flood in a town",
+        "a school trip",
+        "a birthday party"
+      ]
+    },
+    {
+      "id": "gap",
+      "type": "line-gap",
+      "prompt": "Type the missing words.",
+      "lineId": "l1",
+      "hide": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "dic",
+      "type": "dictation",
+      "prompt": "Listen and type the line.",
+      "lineId": "l3"
+    },
+    {
+      "id": "ord",
+      "type": "order-lines",
+      "prompt": "Put the lines in the order you hear them.",
+      "lineIds": [
+        "l1",
+        "l2",
+        "l3",
+        "l4"
+      ]
+    },
+    {
+      "id": "who",
+      "type": "who-said",
+      "prompt": "Who said each line?",
+      "lineIds": [
+        "l1",
+        "l2",
+        "l3",
+        "l4"
+      ],
+      "speakers": [
+        "Anna",
+        "Ben"
+      ]
+    },
+    {
+      "id": "sh",
+      "type": "shadowing",
+      "prompt": "Say this line after the video.",
+      "lineId": "l2"
+    },
+    {
+      "id": "gs",
+      "type": "grammar-spotter",
+      "prompt": "Tap the past simple verbs.",
+      "target": "past simple verbs",
+      "lineIds": [
+        "l1",
+        "l3",
+        "l6"
+      ]
+    },
+    {
+      "id": "pr",
+      "type": "production",
+      "prompt": "Write two or three sentences about what happened.",
+      "minWords": 10
+    }
+  ]
+}

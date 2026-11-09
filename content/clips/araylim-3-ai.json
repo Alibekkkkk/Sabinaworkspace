@@ -1,36 +1,54 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "araylim-3-ai",
   "title": "How NASA uses artificial intelligence",
+  "level": "B1",
+  "genre": [
+    "science explainer"
+  ],
+  "grammarPoints": [
+    "present simple",
+    "purpose infinitive"
+  ],
+  "vocabularyThemes": [
+    "artificial intelligence",
+    "space"
+  ],
   "source": {
     "provider": "youtube",
     "videoId": "q6VDPqRQo90",
+    "sourceUrl": "https://www.youtube.com/watch?v=q6VDPqRQo90",
     "channel": "Learn With NASA",
     "videoTitle": "From Earth to Mars: How NASA Uses AI",
-    "sourceUrl": "https://www.youtube.com/watch?v=q6VDPqRQo90",
     "rights": "official-embed",
+    "attribution": "From Earth to Mars: How NASA Uses AI, Learn With NASA (official YouTube video, embedded with the official player)",
     "reviewedAt": "2026-11-04"
   },
   "startSeconds": 0,
   "endSeconds": 30,
-  "level": "B1",
-  "genre": ["science explainer"],
-  "grammarPoints": ["present simple", "purpose infinitive"],
-  "vocabularyThemes": ["artificial intelligence", "space"],
-  "transcriptType": "teacher-created",
+  "transcriptType": "original",
   "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "timingVerified": false,
   "transcript": [
     {
       "id": "nasa-ai",
-      "startSeconds": 0,
-      "endSeconds": 15,
+      "start": 0,
+      "end": 15,
       "text": "Artificial intelligence can help scientists explore Mars.",
       "translation": "Искусственный интеллект может помочь учёным исследовать Марс."
     }
   ],
   "vocabulary": [
-    { "word": "artificial intelligence", "translation": "искусственный интеллект", "definition": "Computer systems that perform tasks linked to human thinking." },
-    { "word": "explore", "translation": "исследовать", "definition": "To learn about a place by travelling through it or studying it." }
+    {
+      "word": "artificial intelligence",
+      "meaning": "Computer systems that perform tasks linked to human thinking.",
+      "translation": "искусственный интеллект"
+    },
+    {
+      "word": "explore",
+      "meaning": "To learn about a place by travelling through it or studying it.",
+      "translation": "исследовать"
+    }
   ],
   "exercises": [
     {

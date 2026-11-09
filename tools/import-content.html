@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://www.youtube.com; style-src 'self' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://www.youtube.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com; frame-src https://www.youtube-nocookie.com https://accounts.google.com https://*.firebaseapp.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com; worker-src 'self'; manifest-src 'self'">
   <meta name="robots" content="noindex, nofollow">
   <title>Protected Content Migration</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -32,6 +32,42 @@
     <textarea id="clipAnswerKeys" spellcheck="false" placeholder='{"clip-id":{"exercise-id":"correct answer"}}'></textarea>
     <p>Answer keys are merged into the protected Firebase record during import and are never added to the downloadable clip JSON.</p>
   </section>
+  <section aria-labelledby="clipMakerTitle" id="clipMaker">
+    <h2 id="clipMakerTitle">Make a Clip Lab clip (no JSON needed)</h2>
+    <p>Paste an official video address, mark the window, stamp the lines while the video plays, and download the finished clip. Only official embeddable players, your own videos or openly licensed videos are allowed. Never type captions word for word from someone else's video: write your own words. Rules: <code>docs/CLIP_LAB.md</code>.</p>
+    <div class="cm-row"><label for="cmUrl">Video address</label><input id="cmUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off"><button id="cmLookup" type="button">Look up the video</button></div>
+    <p id="cmLookupStatus" role="status">No video chosen yet.</p>
+    <div class="cm-grid">
+      <label>Clip id<input id="cmId" type="text" placeholder="sabina-floods-2"></label>
+      <label>Title<input id="cmTitle" type="text"></label>
+      <label>Level<select id="cmLevel"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option><option>C2</option></select></label>
+      <label>Genre<select id="cmGenre"><option>anime</option><option>cartoon</option><option>film</option><option>series</option><option selected>documentary</option><option>science explainer</option><option>language lesson</option><option>news</option></select></label>
+      <label>Grammar point<input id="cmGrammar" type="text" placeholder="past simple"></label>
+      <label>Channel<input id="cmChannel" type="text"></label>
+      <label>Video title<input id="cmVideoTitle" type="text"></label>
+      <label>Rights<select id="cmRights"><option value="official-embed">Official embed (the owner allows embedding)</option><option value="owned">I own this video</option><option value="CC-BY">Creative Commons (CC BY)</option><option value="public-domain">Public domain</option></select></label>
+      <label>Licence (needed for Creative Commons and public domain)<input id="cmLicence" type="text" placeholder="CC BY 4.0 https://creativecommons.org/licenses/by/4.0/"></label>
+      <label>The text I write is<select id="cmTranscriptType"><option value="original">Original: my own words about the scene</option><option value="excerpt">A short excerpt used for teaching</option><option value="licensed">Licensed text I may copy</option></select></label>
+    </div>
+    <h3>1. Mark the window (10 to 90 seconds)</h3>
+    <div id="cmPlayer" class="cm-player"></div>
+    <p><button id="cmMarkStart" type="button" disabled>Mark start here</button> <button id="cmMarkEnd" type="button" disabled>Mark end here</button> <button id="cmPlayWindow" type="button" disabled>Play the window</button> <output id="cmWindow">Start 0:00.0 · End 0:00.0</output></p>
+    <h3>2. Add the lines while the video plays</h3>
+    <label>What is said (write it in your own words)<input id="cmLineText" type="text" maxlength="400"></label>
+    <label>Who says it (optional)<input id="cmLineSpeaker" type="text" maxlength="40"></label>
+    <label>Translation (optional)<input id="cmLineTranslation" type="text" maxlength="400"></label>
+    <p><button id="cmStampStart" type="button" disabled>Stamp start now</button> <button id="cmStampEnd" type="button" disabled>Stamp end now and add the line</button> <output id="cmStampInfo">Line starts at the beginning of the window.</output></p>
+    <table id="cmLines"><caption>Lines (times are in seconds and can be edited)</caption><thead><tr><th>#</th><th>Start</th><th>End</th><th>Text</th><th>Remove</th></tr></thead><tbody></tbody></table>
+    <p id="cmLineProblems" role="status"></p>
+    <h3>3. Words, questions and checking</h3>
+    <label>Vocabulary, one per line as <code>word = meaning</code><textarea id="cmVocab" rows="3"></textarea></label>
+    <label>Gist question (the first answer is the right one)<input id="cmGist" type="text" placeholder="What is the clip about?"></label>
+    <label>Three possible answers, one per line<textarea id="cmGistOptions" rows="3"></textarea></label>
+    <label><input id="cmTiming" type="checkbox"> I watched the clip and the line times match the video</label>
+    <p><button id="cmBuild" type="button">Check the clip</button> <button id="cmDownload" type="button" disabled>Download the clip and its answer keys</button></p>
+    <ul id="cmMessages" aria-live="polite"></ul>
+  </section>
+
   <section aria-labelledby="mangaAuthorTitle">
     <h2 id="mangaAuthorTitle">Create or update a Manga Reader draft</h2>
     <p>Use original, teacher-created or openly licensed panels only. Add original panel SVG files under <code>assets/manga/</code>; manga JSON must reference those local SVGs.</p>
@@ -79,5 +115,6 @@
   <script type="module" src="../js/pages/tools-import-content.js"></script>
   <script type="module" src="../js/pages/tools-word-family.js"></script>
   <script type="module" src="../js/pages/tools-listening.js"></script>
+  <script type="module" src="../js/pages/tools-clips.js"></script>
 </body>
 </html>

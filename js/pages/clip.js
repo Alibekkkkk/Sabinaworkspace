@@ -1,420 +1,204 @@
+// Clip Lab student page: official embedded video (privacy-enhanced), an interactive transcript that follows the video,
+// and nine kinds of exercise. The video is never downloaded or re-hosted; if it cannot play, the lesson still works.
+import { firebaseConfig } from "../config.js";
+import { resolveStudentContext } from "../student-context.js";
+import { loadProtectedContent } from "../protected-content.js";
+import { appendBoundedRealtimeRecord } from "../bounded-realtime-list.js";
+import { clipEmbedUrl, validateClip } from "../clips/schema.js";
+import { clipWarnings, migrateV1 } from "../clips/schema-v2.js";
+import { summarise } from "../clips/exercises.js";
+import { renderExercise } from "../clips/exercise-ui.js";
+import { createClipPlayer, loadYouTubeApi } from "../clips/player.js";
+import { wordsOf } from "../clips/lines.js";
+import { saveGameProgress, saveVocabularyWord } from "../games/progress.js";
+import { createServices, loadSettings } from "../games/settings.js";
 
-    import { firebaseConfig } from "../config.js";
-    import { resolveStudentContext } from "../student-context.js";
-    import { loadProtectedContent } from "../protected-content.js";
-    import { clipEmbedUrl, validateClip } from "../clips/schema.js";
-    import { evaluateGame, normalizeAnswer } from "../games/engine.js";
-    import { saveGameProgress, saveVocabularyWord } from "../games/progress.js";
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const lessonId = params.get("lesson");
+const status = $("status");
+let context; let clip; let player = null; let activeLine = -1; let mode = "en"; let selectedWord = null;
+const responses = {}; const savedWords = new Set(); const startedAt = Date.now(); const lineNodes = [];
+let exerciseCount = 0;
 
-    const element = id => document.getElementById(id);
-    const params = new URLSearchParams(location.search);
-    const lessonId = params.get("lesson");
-    const status = element("status");
-    let context;
-    let clip;
-    let player;
-    let answers = {};
-    let gameStartedAt = Date.now();
-    let selectedVocabulary;
-    let loopTimer;
-    let videoRequested = false;
-    const savedWords = new Set();
-    const tracks = { en: "text", native: "translation", none: null };
+const showError = error => { status.textContent = `Clip Lab could not load: ${error.message}`; status.classList.add("error"); };
+const wordKey = word => word.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const el = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
 
-    function showError(error) {
-      status.textContent = `Clip Lab could not load: ${error.message}`;
-      status.classList.add("error");
-    }
+// ---- transcript ---------------------------------------------------------------------------------------------------
+function vocabularyPattern() {
+  const terms = (clip.vocabulary || []).map(item => item.word).sort((a, b) => b.length - a.length);
+  return terms.length ? new RegExp(`(${terms.map(term => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi") : null;
+}
 
-    function wordKey(word) {
-      return word.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    }
+function paintLine(content, line, index) {
+  content.replaceChildren();
+  const revealed = content.dataset.revealed === "true";
+  if (mode === "none") { content.textContent = "Study text hidden."; return; }
+  if (mode === "reveal" && !revealed && index !== activeLine) { content.append(button("Reveal this line", "word", () => { content.dataset.revealed = "true"; paintLine(content, line, index); })); return; }
+  const value = mode === "native" ? line.translation : line.text;
+  if (!value) { content.textContent = "Translation not provided."; return; }
+  const pattern = vocabularyPattern();
+  if (!pattern) { content.textContent = value; return; }
+  value.split(pattern).forEach(part => {
+    const item = (clip.vocabulary || []).find(entry => entry.word.toLocaleLowerCase() === part.toLocaleLowerCase());
+    if (!item) { content.append(document.createTextNode(part)); return; }
+    content.append(button(part, "word", () => openVocabulary(item), { "aria-label": `Meaning of ${part}` }));
+  });
+}
 
-    function makeTranscriptLine(line) {
-      const item = document.createElement("li");
-      item.className = "transcript-line";
-      const time = document.createElement("span");
-      time.className = "line-time";
-      time.textContent = clip.transcriptType === "verified"
-        ? `${line.startSeconds}s–${line.endSeconds}s`
-        : "Teacher-created practice line · video timing not verified";
-      const content = document.createElement("span");
-      content.className = "line-text";
-      content.dataset.lineId = line.id;
-      const actions = document.createElement("div");
-      actions.className = "line-actions";
-      const shadow = document.createElement("button");
-      shadow.type = "button";
-      shadow.textContent = "Shadow this line";
-      const shadowFeedback = document.createElement("span");
-      shadowFeedback.className = "feedback";
-      shadowFeedback.setAttribute("aria-live", "polite");
-      const readAloud = document.createElement("button");
-      readAloud.type = "button";
-      readAloud.textContent = "Read aloud";
-      readAloud.addEventListener("click", () => {
-        if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
-          shadowFeedback.textContent = "Text-to-speech is not available in this browser.";
-          return;
-        }
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(line.text);
-        utterance.lang = "en-US";
-        utterance.onerror = event => {
-          shadowFeedback.textContent = `Text-to-speech failed: ${event.error}.`;
-          shadowFeedback.classList.add("error");
-        };
-        window.speechSynthesis.speak(utterance);
-      });
-      shadow.addEventListener("click", () => shadowPractice(line, shadowFeedback));
-      actions.append(readAloud, shadow);
-      if (clip.transcriptType === "verified") {
-        const loop = document.createElement("button");
-        loop.type = "button";
-        loop.textContent = "Loop this line";
-        loop.addEventListener("click", () => startLoop(line, loop).catch(error => {
-          element("playerStatus").textContent = `Could not loop line: ${error.message}`;
-        }));
-        actions.append(loop);
-      }
-      item.append(time, content, actions, shadowFeedback);
-      updateTranscriptLine(content, line, "en");
-      return item;
-    }
+function button(label, className, handler, attributes = {}) {
+  const node = document.createElement("button"); node.type = "button"; node.textContent = label; if (className) node.className = className;
+  for (const [name, value] of Object.entries(attributes)) node.setAttribute(name, value);
+  if (handler) node.addEventListener("click", handler); return node;
+}
 
-    function shadowPractice(line, feedback) {
-      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!Recognition) {
-        feedback.textContent = "Speech recognition is not available. Read the line aloud and compare it with the text.";
-        return;
-      }
-      const recognition = new Recognition();
-      recognition.lang = "en-US";
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-      feedback.textContent = "Listening… say the practice line.";
-      recognition.onresult = event => {
-        const spoken = event.results[0][0].transcript;
-        const correct = normalizeAnswer(spoken) === normalizeAnswer(line.text);
-        feedback.textContent = correct ? "Nice shadowing!" : `Heard: “${spoken}”. Try once more.`;
-        feedback.classList.toggle("success", correct);
-      };
-      recognition.onerror = event => {
-        feedback.textContent = `Speech recognition failed: ${event.error}. You can still read the line aloud.`;
-        feedback.classList.add("error");
-      };
-      try {
-        recognition.start();
-      } catch (error) {
-        feedback.textContent = `Could not start speech recognition: ${error.message}. You can still read the line aloud.`;
-        feedback.classList.add("error");
-      }
-    }
+function buildTranscript() {
+  const list = $("transcript"); list.replaceChildren(); lineNodes.length = 0;
+  clip.transcript.forEach((line, index) => {
+    const item = el("li", "transcript-line"); item.dataset.index = String(index);
+    const verified = clip.timingVerified;
+    const header = el("div", "line-head");
+    if (verified) header.append(button(`Play from ${Math.floor(line.start)}s`, "line-time", () => seekTo(index)));
+    else header.append(el("span", "line-time", `Line ${index + 1}`));
+    if (line.speaker) header.append(el("span", "line-speaker", line.speaker));
+    const content = el("div", "line-text"); content.dataset.lineId = line.id;
+    const actions = el("div", "line-actions");
+    if (verified) actions.append(button("Loop this line", "", () => loopLine(index), { "aria-pressed": "false" }));
+    actions.append(button("Read aloud", "", () => { if (!window.speechSynthesis) return; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(line.text); u.lang = "en-GB"; window.speechSynthesis.speak(u); }));
+    item.append(header, content, actions); list.append(item); lineNodes.push({ item, content, line });
+    paintLine(content, line, index);
+  });
+}
 
-    function updateTranscriptLine(content, line, track) {
-      content.replaceChildren();
-      const text = tracks[track] ? line[tracks[track]] : "Study text hidden.";
-      if (!text) {
-        content.textContent = "Translation not provided.";
-        return;
-      }
-      const terms = clip.vocabulary.map(item => item.word).sort((a, b) => b.length - a.length);
-      if (!terms.length) {
-        content.textContent = text;
-        return;
-      }
-      const pattern = new RegExp(`(${terms.map(term => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi");
-      text.split(pattern).forEach(part => {
-        const vocabulary = clip.vocabulary.find(item => item.word.toLocaleLowerCase() === part.toLocaleLowerCase());
-        if (!vocabulary) {
-          content.append(document.createTextNode(part));
-          return;
-        }
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "word";
-        button.textContent = part;
-        button.setAttribute("aria-label", `Define ${part}`);
-        button.addEventListener("click", () => openVocabulary(vocabulary));
-        content.append(button);
-      });
-    }
+function highlight(index) {
+  activeLine = index;
+  lineNodes.forEach((node, i) => { node.item.classList.toggle("is-active", i === index); if (i === index) node.item.setAttribute("aria-current", "true"); else node.item.removeAttribute("aria-current"); if (mode === "reveal") paintLine(node.content, node.line, i); });
+  const node = lineNodes[index]; if (node && typeof node.item.scrollIntoView === "function") node.item.scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+}
 
-    function openVocabulary(item) {
-      selectedVocabulary = item;
-      element("vocabularyWord").textContent = item.word;
-      element("vocabularyTranslation").textContent = item.translation;
-      element("vocabularyDefinition").textContent = item.definition;
-      element("vocabularyStatus").textContent = "";
-      element("saveWord").disabled = savedWords.has(item.word);
-      element("saveWord").textContent = savedWords.has(item.word) ? "Saved" : "Save word";
-      element("vocabularyDialog").showModal();
-    }
+function seekTo(index) { if (player && player.ready) player.seekToLine(index, { play: true }); else $("playerStatus").textContent = "Load the video first."; }
+function loopLine(index) {
+  if (!player || !player.ready) { $("playerStatus").textContent = "Load the video first."; return; }
+  const on = player.loop(index);
+  document.querySelectorAll(".line-actions button[aria-pressed]").forEach((node, i) => { node.setAttribute("aria-pressed", String(on && i === index)); node.textContent = on && i === index ? "Stop looping" : "Loop this line"; });
+  $("loopLine").setAttribute("aria-pressed", String(on)); $("playerStatus").textContent = on ? `Looping line ${index + 1}.` : "Loop stopped.";
+}
 
-    async function saveVocabulary() {
-      if (!selectedVocabulary) return;
-      const key = wordKey(selectedVocabulary.word);
-      if (!key) throw new Error("This word cannot be saved.");
-      await saveVocabularyWord({
-        db: firebase.database(),
-        code: context.code,
-        key: key.slice(0, 64),
-        entry: {
-          ...selectedVocabulary,
-          savedAt: new Date().toISOString(),
-          sourceClipId: clip.id
-        }
-      });
-      savedWords.add(selectedVocabulary.word);
-      element("saveWord").disabled = true;
-      element("saveWord").textContent = "Saved";
-      element("vocabularyStatus").textContent = "Saved to your vocabulary deck.";
-    }
+// ---- vocabulary ------------------------------------------------------------------------------------------------------
+function openVocabulary(item) {
+  selectedWord = item; $("vocabularyWord").textContent = item.word; $("vocabularyTranslation").textContent = item.translation || ""; $("vocabularyDefinition").textContent = item.meaning;
+  $("vocabularyStatus").textContent = ""; $("saveWord").disabled = savedWords.has(item.word); $("saveWord").textContent = savedWords.has(item.word) ? "Saved" : "Save word";
+  $("vocabularyDialog").showModal();
+}
+async function saveVocabulary() {
+  if (!selectedWord) return; const key = wordKey(selectedWord.word); if (!key) throw new Error("This word cannot be saved.");
+  await saveVocabularyWord({ db: firebase.database(), code: context.code, key: key.slice(0, 64), entry: { word: selectedWord.word.slice(0, 100), translation: (selectedWord.translation || "").slice(0, 300), definition: selectedWord.meaning.slice(0, 1000), savedAt: new Date().toISOString(), sourceClipId: clip.id.slice(0, 80) } });
+  savedWords.add(selectedWord.word); $("saveWord").disabled = true; $("saveWord").textContent = "Saved"; $("vocabularyStatus").textContent = "Saved to your vocabulary deck.";
+}
 
-    function addVideoFallback() {
-      const iframe = document.createElement("iframe");
-      const source = new URL(clipEmbedUrl(clip));
-      source.searchParams.set("origin", location.origin);
-      iframe.src = source.href;
-      iframe.title = `Official video: ${clip.source.videoTitle}`;
-      iframe.loading = "lazy";
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      iframe.allowFullscreen = true;
-      element("media").replaceChildren(iframe);
-      element("playerStatus").textContent = "Video controls are available in the official player. Advanced playback controls are unavailable.";
-    }
+// ---- video ----------------------------------------------------------------------------------------------------------------
+function linkOut() { const link = $("openVideo"); link.href = clip.source.provider === "youtube" ? clip.source.sourceUrl : clip.source.url; link.textContent = clip.source.provider === "youtube" ? "Open the video on YouTube" : "Open the video"; }
 
-    function loadYouTubeApi() {
-      if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
-      return new Promise((resolve, reject) => {
-        const previousReady = window.onYouTubeIframeAPIReady;
-        const script = document.createElement("script");
-        script.src = "https://www.youtube.com/iframe_api";
-        script.onerror = () => reject(new Error("The official video player could not be loaded."));
-        window.onYouTubeIframeAPIReady = () => {
-          if (typeof previousReady === "function") previousReady();
-          resolve(window.YT);
-        };
-        document.head.append(script);
-      });
-    }
+function fallbackFrame() {
+  if (clip.source.provider !== "youtube") return;
+  const iframe = document.createElement("iframe"); const source = new URL(clipEmbedUrl(clip)); source.searchParams.set("origin", location.origin);
+  iframe.src = source.href; iframe.title = `Official video: ${clip.source.videoTitle}`; iframe.loading = "lazy"; iframe.referrerPolicy = "strict-origin-when-cross-origin"; iframe.allowFullscreen = true;
+  iframe.allow = "encrypted-media; picture-in-picture; web-share"; $("media").replaceChildren(iframe);
+}
 
-    async function startVideo() {
-      if (videoRequested) return;
-      videoRequested = true;
-      element("playerStatus").textContent = "Loading the official video player…";
-      try {
-        const youtube = await loadYouTubeApi();
-        const target = document.createElement("div");
-        target.id = "youtubePlayer";
-        element("media").replaceChildren(target);
-        player = new youtube.Player("youtubePlayer", {
-          videoId: clip.source.videoId,
-          playerVars: {
-            start: clip.startSeconds,
-            end: clip.endSeconds,
-            rel: 0,
-            playsinline: 1,
-            origin: location.origin
-          },
-          events: {
-            onReady: event => {
-              element("playerStatus").textContent = "Video ready. Select a transcript line to read it aloud, or play the clip.";
-              event.target.setPlaybackRate(Number(element("speed").value));
-            },
-            onError: () => {
-              element("playerStatus").textContent = "The video is unavailable in the official player. Open the source video in a new tab.";
-              const link = document.createElement("a");
-              link.href = clip.source.sourceUrl;
-              link.target = "_blank";
-              link.rel = "noopener noreferrer";
-              link.textContent = "Open official video";
-              element("playerStatus").append(" ", link);
-            }
-          }
-        });
-      } catch (error) {
-        element("playerStatus").textContent = error.message;
-        addVideoFallback();
-      }
-    }
+function enableControls(on) { for (const id of ["playPause", "prevLine", "nextLine"]) $(id).disabled = !on; $("loopLine").disabled = !(on && clip.timingVerified); }
 
-    async function startLoop(line, button) {
-      if (clip.transcriptType !== "verified") return;
-      if (loopTimer) {
-        clearInterval(loopTimer);
-        loopTimer = null;
-        if (player) player.pauseVideo();
-        button.textContent = "Loop this line";
-        element("playerStatus").textContent = "Line loop stopped.";
-        return;
-      }
-      if (!player) await startVideo();
-      if (!player) return;
-      clearInterval(loopTimer);
-      player.seekTo(line.startSeconds, true);
-      player.playVideo();
-      loopTimer = setInterval(() => {
-        if (player.getCurrentTime() >= line.endSeconds) player.seekTo(line.startSeconds, true);
-      }, 250);
-      button.textContent = "Stop looping";
-      element("playerStatus").textContent = "Looping the selected verified transcript line.";
-    }
+async function startVideo() {
+  $("loadVideo").disabled = true; $("playerStatus").textContent = "Loading the official video player…";
+  try {
+    const YT = await loadYouTubeApi();
+    const target = document.createElement("div"); target.id = "youtubePlayer"; $("media").replaceChildren(target);
+    player = createClipPlayer({
+      clip, target: "youtubePlayer", YT, origin: location.origin,
+      whenLine: index => { if (index >= 0) highlight(index); },
+      whenState: state => { $("playPause").textContent = state === "playing" || state === "looping" ? "Pause" : "Play"; if (state === "ready") { enableControls(true); $("playerStatus").textContent = clip.timingVerified ? "Video ready. The line being spoken is highlighted." : "Video ready. The line timing is not checked yet, so lines are not highlighted."; } if (state === "ended") $("playerStatus").textContent = "The clip has ended. Press Play to watch it again."; },
+      whenError: error => { $("playerStatus").textContent = `${error.message} You can still use the study text and the activities.`; enableControls(false); }
+    });
+  } catch (error) { $("playerStatus").textContent = `${error.message} The study text and activities still work.`; fallbackFrame(); }
+}
 
-    function renderExercises() {
-      const root = element("exercises");
-      root.replaceChildren();
-      answers = {};
-      clip.exercises.forEach((exercise, index) => {
-        const section = document.createElement("section");
-        section.className = "exercise";
-        const label = document.createElement("label");
-        label.textContent = `${index + 1}. ${exercise.prompt}`;
-        label.htmlFor = `answer-${exercise.id}`;
-        const feedback = document.createElement("p");
-        feedback.className = "feedback";
-        feedback.id = `feedback-${exercise.id}`;
-        if (["listen-pick", "check-understanding"].includes(exercise.type)) {
-          const options = document.createElement("div");
-          options.className = "options";
-          exercise.options.forEach(option => {
-            const button = document.createElement("button");
-            button.type = "button";
-            button.textContent = option;
-            button.addEventListener("click", () => {
-              answers[exercise.id] = option;
-              options.querySelectorAll("button").forEach(candidate => candidate.disabled = true);
-              feedback.textContent = normalizeAnswer(option) === normalizeAnswer(exercise.answer) ? "Correct!" : "Try again next time.";
-              feedback.classList.toggle("success", normalizeAnswer(option) === normalizeAnswer(exercise.answer));
-              checkComplete();
-            });
-            options.append(button);
-          });
-          section.append(label, options, feedback);
-        } else {
-          const input = document.createElement("input");
-          input.id = `answer-${exercise.id}`;
-          input.autocomplete = "off";
-          input.setAttribute("aria-label", exercise.prompt);
-          const submit = document.createElement("button");
-          submit.type = "button";
-          submit.textContent = "Check";
-          submit.addEventListener("click", () => {
-            if (!input.value.trim()) {
-              feedback.textContent = "Enter an answer first.";
-              input.focus();
-              return;
-            }
-            answers[exercise.id] = input.value;
-            input.disabled = true;
-            submit.disabled = true;
-            const correct = normalizeAnswer(input.value) === normalizeAnswer(exercise.answer);
-            feedback.textContent = correct ? "Correct!" : "Answer saved for your review.";
-            feedback.classList.toggle("success", correct);
-            checkComplete();
-          });
-          section.append(label, input, submit, feedback);
-        }
-        root.append(section);
-      });
-      element("complete").disabled = clip.exercises.length === 0;
-    }
+function wireControls() {
+  $("loadVideo").addEventListener("click", startVideo);
+  $("playPause").addEventListener("click", () => player && player.toggle());
+  $("prevLine").addEventListener("click", () => player && player.previousLine());
+  $("nextLine").addEventListener("click", () => player && player.nextLine());
+  $("loopLine").addEventListener("click", () => loopLine(activeLine >= 0 ? activeLine : 0));
+  $("speed").addEventListener("change", () => { if (player) player.setSpeed(Number($("speed").value)); });
+  document.addEventListener("keydown", event => {
+    if (!player || !player.ready || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.target instanceof HTMLElement && event.target.closest("input, textarea, select, dialog, [contenteditable='true']")) return;
+    if (event.key === " " && !(event.target instanceof HTMLElement && event.target.closest("button, a, summary"))) { event.preventDefault(); player.toggle(); }
+    else if (event.key === "ArrowRight" && clip.timingVerified) { event.preventDefault(); player.nextLine(); }
+    else if (event.key === "ArrowLeft" && clip.timingVerified) { event.preventDefault(); player.previousLine(); }
+    else if ((event.key === "l" || event.key === "L") && clip.timingVerified) { event.preventDefault(); loopLine(activeLine >= 0 ? activeLine : 0); }
+  });
+  document.querySelectorAll("[data-track]").forEach(node => node.addEventListener("click", () => {
+    mode = node.dataset.track; document.querySelectorAll("[data-track]").forEach(item => item.setAttribute("aria-pressed", String(item === node)));
+    lineNodes.forEach((entry, i) => { entry.content.dataset.revealed = "false"; paintLine(entry.content, entry.line, i); });
+  }));
+  $("saveWord").addEventListener("click", () => saveVocabulary().catch(error => { $("vocabularyStatus").textContent = `Could not save word: ${error.message}`; }));
+  $("closeDialog").addEventListener("click", () => $("vocabularyDialog").close());
+  $("complete").addEventListener("click", () => completeLesson().catch(error => { $("result").textContent = `Could not save progress: ${error.message}`; $("result").classList.add("error"); }));
+}
 
-    function checkComplete() {
-      element("complete").disabled = Object.keys(answers).length !== clip.exercises.length;
-    }
+// ---- exercises ---------------------------------------------------------------------------------------------------------------
+async function sendForReview(exercise, text) {
+  await appendBoundedRealtimeRecord(firebase.database().ref(`sessions/${context.code}/reviewQueue`), { stage: 3, questionId: `${clip.id}:${exercise.id}`.slice(0, 100), prompt: exercise.prompt.slice(0, 120), studentAnswer: text.slice(0, 300), autoResult: false, ts: Date.now(), extra: `Clip Lab: ${clip.title}`.slice(0, 300) });
+}
 
-    async function completeLesson() {
-      const questions = clip.exercises.map(exercise => ({
-        id: exercise.id,
-        prompt: exercise.prompt,
-        answer: exercise.answer,
-        options: exercise.options
-      }));
-      const game = { id: clip.id, type: "fill-gap", title: `Clip Lab: ${clip.title}`, questions };
-      const result = evaluateGame(game, answers);
-      result.timeSpentSeconds = Math.round((Date.now() - gameStartedAt) / 1000);
-      await saveGameProgress({ db: firebase.database(), code: context.code, game, result });
-      element("complete").disabled = true;
-      element("result").textContent = `Lesson complete: ${result.score}/${result.total} correct. XP and review progress saved.`;
-      element("result").classList.add("success");
-    }
+function renderExercises() {
+  const root = $("exercises"); root.replaceChildren(); const exercises = clip.exercises || []; exerciseCount = exercises.length;
+  const ctx = { clip, get player() { return player; }, sendForReview };
+  exercises.forEach((exercise, index) => {
+    root.append(renderExercise(ctx, exercise, index + 1, response => { responses[exercise.id] = response; $("complete").disabled = Object.keys(responses).length < exerciseCount; }));
+  });
+  $("complete").disabled = exerciseCount === 0;
+}
 
-    async function initialize() {
-      if (!lessonId || !/^[A-Za-z0-9_-]+$/.test(lessonId)) throw new Error("A valid lesson is required.");
-      firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
-      const db = firebase.database();
-      context = await resolveStudentContext({ auth, db, lessonId });
-      const [record, lessonSnapshot] = await Promise.all([
-        loadProtectedContent(db, context.lessonId, "clip"),
-        db.ref(`studentCurriculum/${context.code}/${context.lessonId}`).once("value")
-      ]);
-      clip = validateClip(record.content);
-      const lesson = lessonSnapshot.val();
-      if (!lesson || lesson.published === false || lesson.clipId !== clip.id) {
-        throw new Error("This clip is not assigned to your account.");
-      }
-      element("backLink").href = `portal.html?code=${encodeURIComponent(context.code)}`;
-      element("practiceLink").href = `practice.html?code=${encodeURIComponent(context.code)}&lesson=${encodeURIComponent(context.lessonId)}`;
-      element("title").textContent = clip.title;
-      element("level").textContent = clip.level;
-      element("description").textContent = `${clip.source.channel} · ${clip.source.videoTitle}`;
-      element("transcriptNote").textContent = clip.transcriptNote;
-      const tags = [...clip.genre, ...clip.grammarPoints, ...clip.vocabularyThemes];
-      tags.forEach(value => {
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = value;
-        element("tags").append(tag);
-      });
-      clip.transcript.forEach(line => element("transcript").append(makeTranscriptLine(line)));
-      renderExercises();
-      element("speed").addEventListener("change", () => {
-        if (player && typeof player.setPlaybackRate === "function") player.setPlaybackRate(Number(element("speed").value));
-      });
-      document.querySelectorAll("[data-track]").forEach(button => button.addEventListener("click", () => {
-        document.querySelectorAll("[data-track]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
-        const track = button.dataset.track;
-        document.querySelectorAll(".line-text").forEach(content => {
-          const line = clip.transcript.find(item => item.id === content.dataset.lineId);
-          updateTranscriptLine(content, line, track);
-        });
-      }));
-      element("saveWord").addEventListener("click", () => saveVocabulary().catch(error => {
-        element("vocabularyStatus").textContent = `Could not save word: ${error.message}`;
-        element("vocabularyStatus").classList.add("error");
-      }));
-      element("closeDialog").addEventListener("click", () => element("vocabularyDialog").close());
-      element("complete").addEventListener("click", () => completeLesson().catch(error => {
-        element("result").textContent = `Could not save progress: ${error.message}`;
-        element("result").classList.add("error");
-      }));
-      element("shadowNotice").textContent = window.SpeechRecognition || window.webkitSpeechRecognition
-        ? "Tap a word to open its vocabulary card. Read the practice sentence aloud to shadow it."
-        : "Speech recognition is not available in this browser. You can read the practice sentence aloud without automatic feedback.";
-      element("status").hidden = true;
-      element("clipContent").hidden = false;
-    }
+const stars = accuracy => (accuracy >= 0.9 ? 3 : accuracy >= 0.7 ? 2 : 1);
 
-    element("loadVideo").addEventListener("click", startVideo, { once: true });
-    initialize().catch(showError);
-  
+async function completeLesson() {
+  $("complete").disabled = true;
+  const summary = summarise(clip, responses); const total = Math.max(1, summary.total); const score = summary.total ? summary.score : 1;
+  const game = { id: clip.id.slice(0, 60), type: "clip-lab", title: `Clip Lab: ${clip.title}`.slice(0, 80) };
+  const result = { score, total, mistakes: summary.mistakes, timeSpentSeconds: Math.round((Date.now() - startedAt) / 1000), kind: "game" };
+  const saved = await saveGameProgress({ db: firebase.database(), code: context.code, game, result, options: { hearts: false } });
+  const earned = stars(score / total); const info = saved._info || {};
+  $("result").textContent = `Clip complete: ${summary.total ? `${summary.score} of ${summary.total} correct. ` : ""}${"★".repeat(earned)}${"☆".repeat(3 - earned)} scene ${earned === 3 ? "mastered" : "practised"}. +${info.xpEarned || 0} XP.${summary.pending ? " Your writing was sent to your teacher." : ""}`;
+  $("result").classList.add("success"); createServices(loadSettings()).celebrate(earned === 3 ? "big" : "small");
+}
 
-if (typeof showError === "function") globalThis["showError"] = showError;
-if (typeof wordKey === "function") globalThis["wordKey"] = wordKey;
-if (typeof makeTranscriptLine === "function") globalThis["makeTranscriptLine"] = makeTranscriptLine;
-if (typeof shadowPractice === "function") globalThis["shadowPractice"] = shadowPractice;
-if (typeof updateTranscriptLine === "function") globalThis["updateTranscriptLine"] = updateTranscriptLine;
-if (typeof openVocabulary === "function") globalThis["openVocabulary"] = openVocabulary;
-if (typeof saveVocabulary === "function") globalThis["saveVocabulary"] = saveVocabulary;
-if (typeof addVideoFallback === "function") globalThis["addVideoFallback"] = addVideoFallback;
-if (typeof loadYouTubeApi === "function") globalThis["loadYouTubeApi"] = loadYouTubeApi;
-if (typeof startVideo === "function") globalThis["startVideo"] = startVideo;
-if (typeof startLoop === "function") globalThis["startLoop"] = startLoop;
-if (typeof renderExercises === "function") globalThis["renderExercises"] = renderExercises;
-if (typeof checkComplete === "function") globalThis["checkComplete"] = checkComplete;
-if (typeof completeLesson === "function") globalThis["completeLesson"] = completeLesson;
-if (typeof initialize === "function") globalThis["initialize"] = initialize;
-if (typeof element === "function") globalThis["element"] = element;
+// ---- start ---------------------------------------------------------------------------------------------------------------------
+async function initialize() {
+  if (!lessonId || !/^[A-Za-z0-9_-]+$/.test(lessonId)) throw new Error("A valid lesson is required.");
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  context = await resolveStudentContext({ auth: firebase.auth(), db, lessonId });
+  const [record, lessonSnapshot] = await Promise.all([loadProtectedContent(db, context.lessonId, "clip"), db.ref(`studentCurriculum/${context.code}/${context.lessonId}`).once("value")]);
+  const stored = record.content;
+  clip = validateClip(stored); if (clip.schemaVersion === 1) clip = migrateV1(clip);
+  const lesson = lessonSnapshot.val();
+  if (!lesson || lesson.published === false || lesson.clipId !== clip.id) throw new Error("This clip is not assigned to your account.");
+  $("backLink").href = `portal.html?code=${encodeURIComponent(context.code)}`;
+  $("practiceLink").href = `practice.html?code=${encodeURIComponent(context.code)}&lesson=${encodeURIComponent(context.lessonId)}`;
+  $("title").textContent = clip.title; $("level").textContent = clip.level;
+  $("description").textContent = `${clip.source.channel} · ${clip.source.videoTitle}`;
+  $("rights").textContent = `${clip.source.attribution}. ${clip.source.provider === "youtube" ? "Played with YouTube's official player; nothing is copied or saved." : "This video opens on its own site."}`;
+  $("transcriptNote").textContent = clip.transcriptNote;
+  for (const value of [...clip.genre, ...(clip.grammarPoints || []), ...(clip.vocabularyThemes || [])]) $("tags").append(el("span", "tag", value));
+  const warnings = clipWarnings(clip).filter(text => /not been checked/.test(text));
+  if (warnings.length) { $("warnings").hidden = false; $("warnings").textContent = "Your teacher is still checking the timing of this clip, so the lines are not highlighted and cannot be looped. The activities work as normal."; }
+  linkOut();
+  if (clip.source.provider !== "youtube") { $("media").replaceChildren(el("p", "", `This video cannot be played here. ${clip.source.where || ""}`)); }
+  buildTranscript(); renderExercises(); wireControls();
+  status.hidden = true; $("clipContent").hidden = false;
+  void wordsOf;
+}
+
+initialize().catch(showError);

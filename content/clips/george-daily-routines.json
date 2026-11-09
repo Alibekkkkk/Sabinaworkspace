@@ -1,36 +1,54 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "george-daily-routines",
   "title": "Present simple daily routines",
+  "level": "A1",
+  "genre": [
+    "English lesson"
+  ],
+  "grammarPoints": [
+    "present simple",
+    "daily routines"
+  ],
+  "vocabularyThemes": [
+    "sports",
+    "daily activities"
+  ],
   "source": {
     "provider": "youtube",
     "videoId": "yaLiJwRIe1Q",
+    "sourceUrl": "https://www.youtube.com/watch?v=yaLiJwRIe1Q",
     "channel": "My English Center Online",
     "videoTitle": "Present simple - Daily Routine Verbs - English ESL",
-    "sourceUrl": "https://www.youtube.com/watch?v=yaLiJwRIe1Q",
     "rights": "official-embed",
+    "attribution": "Present simple - Daily Routine Verbs - English ESL, My English Center Online (official YouTube video, embedded with the official player)",
     "reviewedAt": "2026-11-04"
   },
   "startSeconds": 0,
   "endSeconds": 30,
-  "level": "A1",
-  "genre": ["English lesson"],
-  "grammarPoints": ["present simple", "daily routines"],
-  "vocabularyThemes": ["sports", "daily activities"],
-  "transcriptType": "teacher-created",
+  "transcriptType": "original",
   "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "timingVerified": false,
   "transcript": [
     {
       "id": "daily-sport",
-      "startSeconds": 0,
-      "endSeconds": 15,
+      "start": 0,
+      "end": 15,
       "text": "I play sports after school.",
       "translation": "Я занимаюсь спортом после школы."
     }
   ],
   "vocabulary": [
-    { "word": "play sports", "translation": "заниматься спортом", "definition": "To take part in a sport or sports activity." },
-    { "word": "after school", "translation": "после школы", "definition": "The time after classes finish for the day." }
+    {
+      "word": "play sports",
+      "meaning": "To take part in a sport or sports activity.",
+      "translation": "заниматься спортом"
+    },
+    {
+      "word": "after school",
+      "meaning": "The time after classes finish for the day.",
+      "translation": "после школы"
+    }
   ],
   "exercises": [
     {

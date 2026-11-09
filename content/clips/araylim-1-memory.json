@@ -1,36 +1,54 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "araylim-1-memory",
   "title": "How does memory work?",
+  "level": "B1",
+  "genre": [
+    "science explainer"
+  ],
+  "grammarPoints": [
+    "present simple",
+    "question forms"
+  ],
+  "vocabularyThemes": [
+    "memory",
+    "the brain"
+  ],
   "source": {
     "provider": "youtube",
     "videoId": "TUoJc0NPajQ",
+    "sourceUrl": "https://www.youtube.com/watch?v=TUoJc0NPajQ",
     "channel": "BBC Earth Science",
     "videoTitle": "How does your memory work? | Head Squeeze",
-    "sourceUrl": "https://www.youtube.com/watch?v=TUoJc0NPajQ",
     "rights": "official-embed",
+    "attribution": "How does your memory work? | Head Squeeze, BBC Earth Science (official YouTube video, embedded with the official player)",
     "reviewedAt": "2026-11-04"
   },
   "startSeconds": 0,
   "endSeconds": 30,
-  "level": "B1",
-  "genre": ["science explainer"],
-  "grammarPoints": ["present simple", "question forms"],
-  "vocabularyThemes": ["memory", "the brain"],
-  "transcriptType": "teacher-created",
+  "transcriptType": "original",
   "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "timingVerified": false,
   "transcript": [
     {
       "id": "memory-question",
-      "startSeconds": 0,
-      "endSeconds": 14,
+      "start": 0,
+      "end": 14,
       "text": "The brain helps us keep and remember information.",
       "translation": "Мозг помогает нам сохранять и вспоминать информацию."
     }
   ],
   "vocabulary": [
-    { "word": "information", "translation": "информация", "definition": "Facts or knowledge about something." },
-    { "word": "brain", "translation": "мозг", "definition": "The organ that controls thought and memory." }
+    {
+      "word": "information",
+      "meaning": "Facts or knowledge about something.",
+      "translation": "информация"
+    },
+    {
+      "word": "brain",
+      "meaning": "The organ that controls thought and memory.",
+      "translation": "мозг"
+    }
   ],
   "exercises": [
     {

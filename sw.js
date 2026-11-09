@@ -1,4 +1,4 @@
-const CACHE_NAME = "learning-studio-shell-v11";
+const CACHE_NAME = "learning-studio-shell-v12";
 const AUDIO_CACHE = "learning-studio-audio-v1";
 const SHELL_URLS = [
   "index.html",
@@ -89,8 +89,15 @@ const SHELL_URLS = [
   "js/pages/whiteboard.js",
   "css/pages/whiteboard.css",
   "js/clips/schema.js",
+  "js/clips/schema-v2.js",
+  "js/clips/lines.js",
+  "js/clips/exercises.js",
+  "js/clips/exercise-ui.js",
+  "js/clips/player.js",
   "js/manga/schema.js",
   "js/pages/clip.js",
+  "js/pages/tools-clips.js",
+  "js/clips/authoring.js",
   "css/pages/clip.css",
   "js/pages/dashboard.js",
   "css/pages/dashboard.css",

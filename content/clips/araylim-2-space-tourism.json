@@ -1,43 +1,65 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "araylim-2-space-tourism",
   "title": "Private astronauts travel to the space station",
+  "level": "B1",
+  "genre": [
+    "science news"
+  ],
+  "grammarPoints": [
+    "past simple",
+    "compound adjectives"
+  ],
+  "vocabularyThemes": [
+    "space travel",
+    "tourism"
+  ],
   "source": {
     "provider": "youtube",
     "videoId": "I69Cz4zJJes",
+    "sourceUrl": "https://www.youtube.com/watch?v=I69Cz4zJJes",
     "channel": "NASA",
     "videoTitle": "The Second All-Private Astronaut Mission to the Space Station",
-    "sourceUrl": "https://www.youtube.com/watch?v=I69Cz4zJJes",
     "rights": "official-embed",
+    "attribution": "The Second All-Private Astronaut Mission to the Space Station, NASA (official YouTube video, embedded with the official player)",
     "reviewedAt": "2026-11-04"
   },
   "startSeconds": 0,
   "endSeconds": 30,
-  "level": "B1",
-  "genre": ["science news"],
-  "grammarPoints": ["past simple", "compound adjectives"],
-  "vocabularyThemes": ["space travel", "tourism"],
-  "transcriptType": "teacher-created",
+  "transcriptType": "original",
   "transcriptNote": "Original practice text by the teacher, not a verbatim caption transcript. Its timing is not verified against the video.",
+  "timingVerified": false,
   "transcript": [
     {
       "id": "private-mission",
-      "startSeconds": 0,
-      "endSeconds": 15,
+      "start": 0,
+      "end": 15,
       "text": "A team of astronauts travels to a space station.",
       "translation": "Команда астронавтов отправляется на космическую станцию."
     }
   ],
   "vocabulary": [
-    { "word": "astronauts", "translation": "астронавты", "definition": "People trained to travel and work in space." },
-    { "word": "space station", "translation": "космическая станция", "definition": "A large spacecraft where people can live and work in orbit." }
+    {
+      "word": "astronauts",
+      "meaning": "People trained to travel and work in space.",
+      "translation": "астронавты"
+    },
+    {
+      "word": "space station",
+      "meaning": "A large spacecraft where people can live and work in orbit.",
+      "translation": "космическая станция"
+    }
   ],
   "exercises": [
     {
       "id": "space-pick",
-      "type": "check-understanding",
+      "type": "gist",
       "prompt": "Where does the team travel?",
-      "options": ["to the space station", "to the Moon's surface", "to an airport"]
+      "options": [
+        "to the space station",
+        "to the Moon's surface",
+        "to an airport"
+      ]
     }
   ]
 }
