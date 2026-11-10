@@ -13,7 +13,9 @@ Checked against production on 2026-11-10 (read-only queries with the Firebase CL
 - 2026-11-10: the site is published to Firebase Hosting at `https://sabina-s-workspace.web.app`. Checked live: the security headers are on every page, the microphone is allowed only on clip, lesson, listening, manga and practice, `sw.js` and the manifest are `no-cache`, and tests, scripts, docs, rules and package files return 404. The portal loads with no console errors and the service worker registers. (`firebase.json` header order was fixed so the general `*.js` caching rule no longer overrides `sw.js`.)
 - 2026-11-10: steps 1 to 3 done. Backups of the old rules and the whole database are in `C:\Users\Alibek\Documents\Sabina-backups\2026-11-10\` (outside the repository). `admins` holds the UIDs of alibek.alpysbayev@gmail.com and aalpysbayev2@gmail.com (checked against the Auth user list). The new rules are published (67 KB); anonymous reads of admins, students, protectedContent, sessions, clientErrors, studentFeatures and curriculum return 401.
 - 2026-11-10: the teacher signed in on the live dashboard and it loads (step 3 checked).
-- **Still to do:** steps 5 and 6. The old GitHub Pages site now also runs against the new rules.
+- 2026-11-10: the screenshot fixes deployed: the dashboard preview frame, clickable section cards, no extra-tab warning for teachers, and a preview timeout.
+- 2026-11-10: Phase 9 deployed (rules backed up first to `rules-before-phase9.json`): lesson sections v3, rules allowing sections up to 40. Content snapshots now return 404.
+- **Still to do:** steps 5 and 6. Re-importing content brings the v3 grammar topics into the protected copies. Until then, lessons borrow them from the published files. The old GitHub Pages site now also runs against the new rules.
 
 ## Order (each step depends on the previous one)
 1. **Teacher accounts in `admins`.** For each teacher account: Firebase console > Authentication > Users > copy the UID; Realtime Database > Data > add `admins/<UID>` = `true`. (Clients cannot write this node.)
