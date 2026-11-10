@@ -12,6 +12,23 @@ Decisions taken: listening transcription runs **in the browser** (free, Whisper 
 
 After a deploy, an open site keeps the old version until the **"New version available → Reload"** banner is pressed or all its tabs are closed.
 
+## Phase 9: done (2026-11-10)
+- **Sections:** every classwork lesson lists Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N and Test Your Knowledge (content schema v3, `js/lesson-plan.js`). Close Reading is gone.
+- **Grammar:** the grammar sections come from each lesson's `grammar` list, named after the topic: Sabina has three, Araylim 1 has five. The per-student titles hard-coded in the lesson page are removed; they had been wrong for Araylim 2 and George.
+- **Games and Listening Training** run inside the lesson. In the teacher preview they are read-only, and a finished round marks the section done.
+- **Whiteboard:** a labelled **Whiteboard** button on every section.
+- **Clock:** cards for Vocabulary, Reading, Games, Listening, Grammar and Test.
+- **Dashboard:** section names in the student list and the "send to section" buttons.
+- **Rules:** sections up to 40.
+- **Old imports:** lessons imported before v3 take their grammar topics from the published lesson file, so names are right before re-importing.
+- **Security:** old content snapshots, which held earlier answer keys, are no longer published.
+- **Tests:** browser test `scripts/lesson-sections-e2e.mjs`.
+- **Known gaps for Phase 10:**
+  - Only Sabina has a listening set, and it is still a draft.
+  - The linter flags reading passages that miss target words or the grammar structure (Sabina: 18 words and no present perfect; Gaziz: 13 words).
+  - Gaziz's "Local volunteers ___ (clean) the riverbank every spring" expects "have cleaned".
+- Still flaky, as before, for Phase 13: `whiteboard-devices-e2e` (stylus/palm, pressure).
+
 ## Phases
 **Phase 9: lesson structure (requests 3 and 6).**
 - Fixed section order in every classwork: Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N, Test Your Knowledge. Close Reading is removed.

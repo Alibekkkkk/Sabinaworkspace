@@ -47,5 +47,5 @@ test("the microphone is blocked everywhere except the pages that can use speech 
 test("the service worker is never cached by the browser, and development files are not published", () => {
   assert.match(header(rule("/sw.js"), "Cache-Control"), /no-cache/);
   for (const pattern of ["**/node_modules/**", "tests/**", "scripts/**", "docs/**", "database.rules.json", "package.json", "**/.*", "*.log"]) assert.ok(hosting.ignore.includes(pattern), `${pattern} is not published`);
-  assert.ok(!hosting.ignore.some(pattern => /^(tools|content|js|css|assets)\//.test(pattern)), "the files the site needs are published");
+  assert.ok(!hosting.ignore.some(pattern => pattern !== "content/_snapshots/**" && /^(tools|content|js|css|assets)\//.test(pattern)), "the files the site needs are published (old content snapshots are the one exception)");
 });

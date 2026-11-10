@@ -82,12 +82,12 @@ try {
   check(await student.evaluate(() => /link every word/i.test(document.querySelector(".gl-mission").textContent) && Boolean(document.getElementById("ddWords"))), "every stage gets its own mission and keeps its content (Word Match)");
   await openStage("Test Your Knowledge");
   check(await student.evaluate(() => !/Boss Battle/.test(document.getElementById("testRoot").textContent)), "mode LIGHT: no Boss Battle yet");
-  await openStage("Interactive Video");
+  await openStage("Reading Comprehension");
   check(await student.evaluate(() => !document.querySelector(".gl-extra")), "mode LIGHT: no extra games yet");
 
   check(await setMode("full"), "the teacher can switch the lesson to full game mode");
   await openLesson();
-  await openStage("Interactive Video");
+  await openStage("Reading Comprehension");
   check(await student.evaluate(() => Boolean(document.querySelector(".gl-extra")) && /Error Hunt/.test(document.querySelector(".gl-extra summary").textContent)), "mode FULL: the reading stage offers Error Hunt as extra practice");
   const stageBefore = await rest(`sessions/${anna.code}/state/scores`);
   await student.evaluate(() => { document.querySelector(".gl-extra").open = true; });

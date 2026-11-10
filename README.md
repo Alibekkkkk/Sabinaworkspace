@@ -55,9 +55,12 @@ With `npm run dev` running, `npm run check:visual` screenshots lesson, homework 
 
 ## Lesson clock and sections
 
-The teacher starts, pauses, resumes and stops a class clock from the dashboard (Lesson clock card) or the floating panel on the lesson page; the student sees the same time live, and the saved duration appears in the portal, history, weekly summary and a CSV export. Each lesson has three timed sections (Vocabulary, Grammar, Reading Comprehension) with planned, actual and remaining time always visible. See [docs/PHASE2-REPORT.md](docs/PHASE2-REPORT.md).
+Every classwork lesson has the same sections, in this order: **Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N, Test Your Knowledge** (content schema v3, `js/lesson-plan.js`). The grammar sections come from the lesson's `grammar` list: one per topic, named after it ("Grammar II: Past Passive"), with its rule and the exercises it uses, so the number of grammar sections varies by student. Games and Listening Training run inside the lesson; the whiteboard is a button on every section; the Manga reader stays off until the teacher switches it on for a student.
 
-- `npm run migrate:sections` (add `-- --dry-run` first) adds schema v2 sections to lesson files; `npm run lint:content` checks them; proposals for your approval are in [docs/CONTENT_REVIEW.md](docs/CONTENT_REVIEW.md).
+The teacher starts, pauses, resumes and stops a class clock from the dashboard (Lesson clock card) or the floating panel on the lesson page, and clicks a section card at the top of the lesson to time that section. The student sees the same time live, and the saved duration appears in the portal, history, weekly summary and a CSV export. The clock cards are Vocabulary, Reading Comprehension, Games, Listening Training, Grammar and Test Your Knowledge, with planned, actual and remaining time always visible. See [docs/PHASE2-REPORT.md](docs/PHASE2-REPORT.md).
+
+- `npm run migrate:sections` (add `-- --dry-run` first) moves lesson files to schema v3, taking grammar topics from `scripts/data/grammar-v3.json`; `npm run lint:content` checks them.
+- With `npm run dev` running, `npm run test:lesson-sections-e2e` checks the section order, a grammar section, games and listening inside the lesson, the teacher preview and the dashboard's preview frame.
 - With `npm run dev` running, `npm run test:clock-e2e` runs a teacher and a student in separate browser sessions (the student's device clock 10 minutes fast) through start, pause, refresh, resume and stop.
 - After migrating lesson files, run **Import Content** so each student's protected copy gets the new fields.
 

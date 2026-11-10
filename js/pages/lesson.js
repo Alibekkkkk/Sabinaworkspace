@@ -754,7 +754,7 @@ function renderStage1(){
   detectListening(state.currentLessonId);
   const main=document.getElementById('main'); if(!main)return; clearElement(main); loadVocabStateLocal();
   const v=document.createElement('div');v.className='stage-view active'; const counts=getVocabCounts(); const showPractice=shouldShowPractice(); const listeningHref=listeningAvailable?'listening.html?code='+encodeURIComponent(studentContext?studentContext.code:'')+'&lesson='+encodeURIComponent(state.currentLessonId):'';
-  setHtml(v, '<div class="eyebrow">Stage 1 — Vocabulary Quiz</div><h2>🌪️ Adaptive Vocabulary</h2>'+
+  setHtml(v, '<div class="eyebrow">Vocabulary</div><h2>🌪️ Adaptive Vocabulary</h2>'+
   '<div class="lead">Every card is a small quiz. Choose the correct translation for each meaning of the word. Your answers automatically sort cards into three sections — <b>Learning</b>, <b>Learned</b>, and <b>Need Practice</b>.<span class="ru">Каждая карточка — небольшой тест. Ваши ответы автоматически сортируют карточки по трём разделам.</span></div>'+
   '<div class="flash-toolbar">'+
   '<button class="filt '+(s1Filter==='learning'?'active':'')+'" data-action="set-vocab-filter" data-filter="learning">📖 Learning ('+counts.learning+')</button>'+
@@ -905,7 +905,7 @@ function fcPrev(){quizPrev()} function fcNext(){quizNext()} function fcReveal(){
 function renderStage2(){
   const main=document.getElementById('main'); if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active';
-  setHtml(v, '<div class="eyebrow">Stage 2 — Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
+  setHtml(v, '<div class="eyebrow">Word Match</div><h2>🔗 Drag & Drop Match</h2>'+
   '<div class="lead">Drag each English word onto its meaning.<span class="ru">Перетащите слово к его значению.</span></div>'+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:14px;font-weight:700;color:var(--ink-soft)">Matched: <span id="s2count" style="color:var(--accent);font-size:18px">0</span> / '+MATCH_DATA.length+'</div><button class="btn ghost small" data-action="reset-stage-2">↻ Reset</button></div>'+
   '<div class="dd-area"><div><div class="dd-col-title">English Words</div><div class="dd-words" id="ddWords"></div></div><div><div class="dd-col-title">Meaning</div><div class="dd-slots" id="ddSlots"></div></div></div>');
@@ -962,7 +962,7 @@ let s4Answers={};
 function renderStage3(){
   const main=document.getElementById('main'); if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active';
-  setHtml(v, '<div class="eyebrow">Stage 3 — Interactive Video & Questions</div><h2>📖 Read the Article & Answer</h2>'+
+  setHtml(v, '<div class="eyebrow">Reading Comprehension</div><h2>📖 Read the Article & Answer</h2>'+
   '<div class="lead">Watch the video, read the article on the left, and highlight text to save notes. Answer every question on the right — the article stays visible so you can look back.<span class="ru">Смотрите видео, читайте текст слева, выделяйте важное, отвечайте на вопросы справа.</span></div>'+
   '<div class="reading-split">'+
     '<section class="reading-pane">'+
@@ -1369,7 +1369,7 @@ function buildTestQuestions(){ const qs=[]; TEST_MCQ.forEach(function(q){qs.push
 function renderStage9(){
   const main=document.getElementById('main');if(!main)return; clearElement(main);
   const v=document.createElement('div');v.className='stage-view active'; const limitMins = Math.floor(getTestTimeLimit() / 60);
-  setHtml(v, '<div class="eyebrow">Stage 9 — Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
+  setHtml(v, '<div class="eyebrow">Test Your Knowledge</div><h2>⚡ Lesson 1 — Timed Test</h2>'+
   '<div class="lead">This is a strict, timed test. You have <b>'+limitMins+' minutes</b> in total. You can only take this test <b>once</b>. After time runs out, the test closes automatically.<span class="ru">Строгий тест на время: '+limitMins+' минут, одна попытка.</span></div>'+
   '<div id="testRoot"></div>');
   main.appendChild(v);
@@ -1626,6 +1626,15 @@ async function applyLessonContent(c,sourceFile) {
   VOCAB         = c.vocab; MATCH_DATA    = c.matchData; READING_HTML  = c.readingHtml; READING_Q     = c.readingQ; CONTEXT_Q     = c.contextQ;
   G6            = c.g6; G7            = c.g7; SB_PP         = c.sbPp; SB_PS         = c.sbPs; G10           = c.g10;
   TEST_MCQ      = c.testMcq; TEST_SHORT    = c.testShort; TEST_TFNG     = c.testTfng; TEST_COMPLETE = c.testComplete;
+  // Copies imported before content v3 have no grammar topics: borrow them from the published lesson file of the same name,
+  // as long as they name exercises this copy has. Re-importing the content makes this unnecessary.
+  if(!Array.isArray(c.grammar)&&/^[a-z0-9_-]+$/i.test(activeContentName||'')){
+    try{
+      const response=await fetch('content/'+activeContentName+'.json');
+      const published=response.ok?await response.json():null;
+      if(published&&Array.isArray(published.grammar)&&published.grammar.every(function(topic){return Array.isArray(topic.exercises)&&topic.exercises.every(function(key){return c[key]})}))c=Object.assign({},c,{grammar:published.grammar});
+    }catch(error){ console.warn('Grammar topics could not be loaded; generic grammar sections are shown.',error); }
+  }
   LESSON_CONTENT = c; PLAN = buildLessonPlan(c);
   state.currentStage = resolveSectionId(PLAN, state.currentStage);
   if(lessonClock)lessonClock.refreshSections();

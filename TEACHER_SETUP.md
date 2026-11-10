@@ -131,3 +131,9 @@ Firebase does not give you a one-click restore for the Realtime Database by defa
 ## Before the first deployment
 
 Read `docs/SECURITY.md` (runbook, headers, offline and protected content) and `docs/KNOWN-LIMITATIONS.md`. Nothing is deployed from this repository automatically.
+
+## Lesson sections and grammar topics
+
+Every classwork lesson shows Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I, II, III … and Test Your Knowledge. The grammar sections are the `grammar` list at the top of the lesson file in `content/`: each entry has an `id`, a `title` (the section is called "Grammar II: <title>"), a `rule` (`formula` plus a few `points`, where `<b>` is allowed), a one-line `lead`, and the `exercises` it uses (keys such as `g6` for complete-the-sentence or `sbPp` for sentence builder). Add, remove or reorder entries to change the grammar sections for that student, run `npm run lint:content`, then **Import content** so the student gets the new version.
+
+In the lesson, click a section card at the top (teacher preview) to time that section, and use the **Whiteboard** button to draw beside any section. Games and Listening Training open inside the lesson; in your preview they are read-only.

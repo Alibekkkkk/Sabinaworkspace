@@ -33,7 +33,7 @@ await setStatus("draft");
 const browser = await puppeteer.launch({ executablePath: executable, headless: true, args: ["--no-sandbox", "--lang=en-US"] });
 const openReading = async page => {
   await page.waitForSelector("#stageList .stage-sub-item", { timeout: 25000 });
-  await page.evaluate(() => { [...document.querySelectorAll("#stageList .stage-sub-item")].find(item => item.textContent.includes("Interactive Video")).click(); });
+  await page.evaluate(() => { [...document.querySelectorAll("#stageList .stage-sub-item")].find(item => item.textContent.includes("Reading Comprehension")).click(); });
   await page.waitForSelector("#readingQ .q-card", { timeout: 15000 });
   await sleep(500);
 };

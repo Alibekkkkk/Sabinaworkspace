@@ -28,7 +28,7 @@ const browser = await puppeteer.launch({ executablePath: executable, headless: t
 const problems = [];
 const watch = (page, label) => {
   page.on("pageerror", error => problems.push(`${label} pageerror: ${error.message}`));
-  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource/i.test(text)) problems.push(`${label}: ${text}`); });
+  page.on("console", message => { const text = message.text(); if (message.type() === "error" && !/favicon|Tracking Prevention|404|Failed to load resource|Framing 'http:\/\/127\.0\.0\.1/i.test(text)) problems.push(`${label}: ${text}`); });
   page.on("dialog", async dialog => { await dialog.accept(); });
 };
 const url = (extra = "") => `${BASE}whiteboard.html?code=${anna.code}&lesson=${anna.lessonId}&board=personal${extra}`;

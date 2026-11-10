@@ -93,13 +93,13 @@ try {
   check(await page.evaluate(() => document.querySelector(".ls-gap").autocapitalize === "none" && document.querySelector(".ls-gap").spellcheck === false && document.querySelector(".ls-gap").autocomplete === "off"), "gap inputs switch off autocapitalise, spellcheck and autocomplete (phone keyboards)");
   const gapWords = shown.tokens.map((token, index) => (token === "_" ? bare(item.text.split(/\s+/)[index]) : null)).filter(Boolean);
   await page.keyboard.type(gapWords[0]);
-  await sleep(80);
-  check(await page.evaluate(() => /Gap 2 of/.test(document.activeElement.getAttribute("aria-label") || "")), "typing the full word moves to the next gap");
+  const focusOn = gap => page.waitForFunction(text => new RegExp(`${text} of`).test(document.activeElement.getAttribute("aria-label") || ""), { timeout: 2000 }, gap).then(() => true, () => false);
+  check(await focusOn("Gap 2"), "typing the full word moves to the next gap");
   await page.keyboard.press("Backspace");
-  check(await page.evaluate(() => /Gap 1 of/.test(document.activeElement.getAttribute("aria-label") || "")), "Backspace in an empty gap goes back to the previous gap");
+  check(await focusOn("Gap 1"), "Backspace in an empty gap goes back to the previous gap");
   await page.evaluate(() => document.querySelectorAll(".ls-gap")[0].select());
   await page.keyboard.type(gapWords[0]);
-  await sleep(60);
+  await focusOn("Gap 2");
   check(await page.evaluate(() => document.querySelector(".ls-controls button.ds-btn--primary:not([hidden])").disabled), "Check stays disabled until every gap has text");
   for (const word of gapWords.slice(1)) { await page.keyboard.type(word); await sleep(40); if ((await page.evaluate(() => document.activeElement.className)) === "ls-gap" && !(await page.evaluate(() => document.activeElement.value))) await page.keyboard.press("Enter"); }
   await sleep(100);

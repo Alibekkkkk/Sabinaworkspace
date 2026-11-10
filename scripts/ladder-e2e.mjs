@@ -42,9 +42,9 @@ try {
   await teacher.goto(`${BASE}portal.html`, { waitUntil: "networkidle2" });
   await teacher.evaluate(async credentials => { await firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password); }, DEMO_TEACHER);
   await teacher.goto(`${lessonUrl}&teacher=1`, { waitUntil: "networkidle2" });
-  await openStage(teacher, "Completing Sentence 1");
+  await openStage(teacher, "Grammar I:");
   check(await teacher.evaluate(() => !!document.querySelector(".ladder-rule")), "teacher sees the rule card on the first grammar stage (draft)");
-  await openStage(teacher, "Choose the Tense");
+  await openStage(teacher, "Grammar III:");
   check(await teacher.evaluate(() => !!document.querySelector(".ladder") && /Draft/.test(document.querySelector(".ladder .ds-banner").textContent)), "teacher sees the ladder with the draft banner");
   check(await teacher.evaluate(() => document.querySelectorAll(".ladder-step").length === 6), "all six steps are listed");
   check(await teacher.evaluate(() => [...document.querySelectorAll(".ladder-step__body")].every(body => !body.hidden)), "the teacher sees every step unlocked");
@@ -57,18 +57,18 @@ try {
   await student.evaluate(code => { document.getElementById("rememberMe").checked = true; document.getElementById("loginCode").value = code; document.querySelector('[data-action="login"]').click(); }, anna.code);
   await student.waitForFunction(() => getComputedStyle(document.getElementById("lessonsScreen")).display !== "none", { timeout: 20000 });
   await student.goto(lessonUrl, { waitUntil: "networkidle2" });
-  await openStage(student, "Choose the Tense");
+  await openStage(student, "Grammar III:");
   check(await student.evaluate(() => !document.querySelector(".ladder")), "a draft ladder is NOT shown to the student");
-  await openStage(student, "Completing Sentence 1");
+  await openStage(student, "Grammar I:");
   check(await student.evaluate(() => !document.querySelector(".ladder-rule")), "a draft rule card is NOT shown to the student");
 
   // ---- approve, then the student works through it
   await rest(`protectedContent/${anna.lessonId}/classwork/content/grammarLadder/status`, "PUT", "approved");
   await student.reload({ waitUntil: "networkidle2" });
-  await openStage(student, "Completing Sentence 1");
+  await openStage(student, "Grammar I:");
   check(await student.evaluate(() => !!document.querySelector(".ladder-rule") && /has\/have|have\/has/.test(document.querySelector(".ladder-formula").textContent)), "approved: the student sees the rule card with the formula");
   check(await student.evaluate(() => document.querySelectorAll(".ladder-l1__entry").length === 2), "the rule card lists the common L1 mistakes");
-  await openStage(student, "Choose the Tense");
+  await openStage(student, "Grammar III:");
   const state = () => student.evaluate(() => [...document.querySelectorAll(".ladder-step")].map(step => ({ state: step.dataset.state, hidden: step.querySelector(".ladder-step__body").hidden })));
   let steps = await state();
   check(steps[0].state === "open" && steps.slice(1).every(step => step.state === "locked" && step.hidden), "only step 1 is open; steps 2 to 6 are locked");
@@ -141,7 +141,7 @@ try {
 
   // refresh keeps everything
   await student.reload({ waitUntil: "networkidle2" });
-  await openStage(student, "Choose the Tense");
+  await openStage(student, "Grammar III:");
   steps = await state();
   check(steps.every(step => step.state === "done"), "after a refresh all six steps are still done");
   check(await student.evaluate(() => document.querySelector(".ladder-textarea").disabled), "the sent answer stays locked after a refresh");

@@ -56,6 +56,8 @@ flowchart TB
 Rule of thumb: a student writes only under their own code, with bounded values; a teacher reads everything and writes the teacher-owned nodes (never a student's progress); protected content is readable only when the lesson is assigned, published, available, and (for manga) the student's feature flag is on. Every node is listed with owner and retention in [PRIVACY.md](PRIVACY.md); threats and checks are in [SECURITY.md](SECURITY.md).
 
 ## Content
+A classwork lesson's sections come from `js/lesson-plan.js` (schema v3): Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, one Grammar section per entry of the lesson's `grammar` list, and Test Your Knowledge. Section ids are numbers (1, 2, 3, 10, 11, 21–29, 9); a grammar exercise scores on section × 10 + its position (210, 211 …). Games and Listening Training embed `practice.html` and `listening.html` with `?embed=1` (`js/embed.js`); a finished round posts `section-complete` to the lesson, same site only.
+
 Teachers edit JSON (`content/`), validated by schema modules (`js/clips/schema*.js`, `js/manga/schema*.js`, `js/listening/schema.js`, `scripts/lint-content.mjs`), and import it with `tools/import-content.html`, which merges private answer keys and writes the protected copy. Public files never contain answer keys.
 
 ## Generated files
