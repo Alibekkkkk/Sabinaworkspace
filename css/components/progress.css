@@ -9,7 +9,7 @@
     <ol class="ds-path"><li class="ds-path__step" data-state="done|current|locked|mastered"><span class="ds-path__dot"></span>...</li></ol>
 */
 .ds-progress { height: 0.75rem; overflow: hidden; border-radius: var(--ds-radius-pill); background: var(--ds-color-border); }
-.ds-progress__fill { display: block; height: 100%; border-radius: inherit; background: var(--ds-color-primary); transition: width var(--ds-motion-base) var(--ds-ease-out); }
+.ds-progress__fill { display: block; height: 100%; border-radius: inherit; background: var(--ds-color-highlight); box-shadow: 0 0 10px var(--ds-color-glow); transition: width var(--ds-motion-base) var(--ds-ease-out); }
 .ds-progress--success .ds-progress__fill { background: var(--ds-color-success); }
 
 .ds-ring { position: relative; display: inline-grid; place-items: center; width: 4.5rem; height: 4.5rem; }
@@ -61,7 +61,7 @@
   font: 700 var(--ds-text-md) var(--ds-font-body); text-decoration: none; cursor: pointer;
 }
 .ds-nav a:hover, .ds-nav button:hover { background: var(--ds-color-surface-raised); }
-.ds-nav [aria-current="page"] { background: var(--ds-color-primary-soft); color: var(--ds-color-primary-strong); }
+.ds-nav [aria-current="page"] { background: var(--ds-color-highlight); color: var(--ds-color-on-highlight); box-shadow: var(--ds-shadow-glow); }
 
 .ds-bottom-nav {
   position: fixed; inset: auto 0 0 0; z-index: var(--ds-z-nav); display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
@@ -71,7 +71,7 @@
   display: grid; justify-items: center; align-content: center; gap: 0.1rem; min-height: 3.5rem; padding: var(--ds-space-1);
   color: var(--ds-color-muted); font: 700 var(--ds-text-xs) var(--ds-font-body); text-decoration: none;
 }
-.ds-bottom-nav [aria-current="page"] { color: var(--ds-color-primary-strong); background: var(--ds-color-primary-soft); }
+.ds-bottom-nav [aria-current="page"] { color: var(--ds-color-on-highlight); background: var(--ds-color-highlight); box-shadow: var(--ds-shadow-glow); }
 
 @media (min-width: 1024px) {
   .ds-bottom-nav { display: none; }

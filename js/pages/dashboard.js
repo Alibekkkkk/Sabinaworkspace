@@ -1,12 +1,7 @@
 import { safeLocal, safeSession } from "../safe-storage.js";
 (() => {
 
-(function(){
-  try {
-    var t = safeLocal.getItem('teacher_theme') || 'light';
-    document.documentElement.setAttribute('data-theme', t);
-  } catch(e) {}
-})();
+// The theme is set by js/theme.js (shared by every page).
 
 })();
 
@@ -60,17 +55,14 @@ const STAGE_LIST = [
 const isListedStage = stage => STAGE_LIST.some(item => item.id === stage);
 
 function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'light';
-  const next = cur === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', next);
-  try { safeLocal.setItem('teacher_theme', next); } catch (e) {}
+  if (window.LSTheme) window.LSTheme.toggle();
   updateThemeButton();
 }
 function updateThemeButton() {
   const btn = document.getElementById('themeToggle');
   if (!btn) return;
-  const cur = document.documentElement.getAttribute('data-theme') || 'light';
-  btn.textContent = cur === 'light' ? '🌙' : '☀️';
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  btn.textContent = cur === 'light' ? 'Dark' : 'Light';
   btn.title = cur === 'light' ? 'Switch to dark theme' : 'Switch to light theme';
 }
 

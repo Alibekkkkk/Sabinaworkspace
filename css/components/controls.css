@@ -31,7 +31,7 @@
 .ds-btn:active:not(:disabled) { transform: translateY(1px); }
 .ds-btn:disabled, .ds-btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
 .ds-btn--primary { background: var(--ds-color-primary); color: var(--ds-color-on-primary); }
-.ds-btn--primary:hover:not(:disabled):not([aria-busy="true"]) { background: var(--ds-color-primary-strong); border-color: transparent; }
+.ds-btn--primary:hover:not(:disabled):not([aria-busy="true"]) { background: var(--ds-color-primary-strong); border-color: transparent; box-shadow: var(--ds-shadow-glow); }
 .ds-btn--secondary { background: transparent; border-color: var(--ds-color-border-strong); }
 .ds-btn--ghost { background: transparent; color: var(--ds-color-primary); }
 .ds-btn--danger { background: var(--ds-color-danger-soft); color: var(--ds-color-danger); border-color: var(--ds-color-danger); }

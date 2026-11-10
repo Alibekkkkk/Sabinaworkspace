@@ -5,7 +5,6 @@ import { startTabGuard } from "../tab-guard.js";
 if (new URLSearchParams(location.search).get("teacher") !== "1") startTabGuard("lesson:" + location.search);
 (() => {
 
-  try{const t=safeLocal.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 
 })();
 
@@ -697,7 +696,7 @@ function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbCon
 function pushFullState(){if(teacherMode||!fbConnected||!sessionRef)return;broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:clockSeconds(),contentFile:contentFile,contentHash:contentHash,schemaVersion:schemaVersion})}
 function broadcastAction(type,detail){ state.lastAction=detail; const payload = { stage:state.currentStage, type:type, detail:detail, score:totalScore(), ts:Date.now(), actor: teacherMode ? 'teacher' : 'student' }; broadcast('action', payload); }
 function saveState(){ if(!teacherMode&&studentStorage) { try { studentStorage.set('state',{currentStage:state.currentStage,scores:state.scores,done:state.done,notes:document.getElementById('notesArea').value,dark:document.documentElement.classList.contains('dark'),soundOn:soundOn}); } catch(e) { console.error('Unable to save lesson state',e); } } if(identityVerified)broadcast('state',{stage:state.currentStage,score:totalScore(),streak:state.streak,done:state.done,scores:state.scores,notes:document.getElementById('notesArea').value,elapsed:clockSeconds()}); }
-function loadState(){try{if(!studentStorage)return;const p=studentStorage.get('state');if(!p)return;if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.dark)document.documentElement.classList.add('dark');if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){console.error('Unable to load lesson state',e)}}
+function loadState(){try{if(!studentStorage)return;const p=studentStorage.get('state');if(!p)return;if(p.currentStage)state.currentStage=p.currentStage;if(p.scores)Object.assign(state.scores,p.scores);if(p.done)Object.assign(state.done,p.done);if(p.notes)document.getElementById('notesArea').value=p.notes;if(p.soundOn!==undefined)soundOn=p.soundOn}catch(e){console.error('Unable to load lesson state',e)}}
 let customImages={};
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
@@ -1559,7 +1558,8 @@ function goToStage(n){
   if(testState.active){ if(!confirm('⚠️ You are in the middle of a timed test. Leaving this page will abandon your test and discard your progress. Are you sure you want to leave?')) return; endTest(true, 'Test aborted: you navigated away.'); }
   state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n);
 }
-const SECTION_ICONS={vocab:'🌪️',match:'🔗',reading:'📖',games:'🎮',listening:'🎧',grammar:'⏳',test:'⚡'};
+// Each section kind has an original illustration (assets/illustrations/<kind>.svg) beside the lesson title.
+const SECTION_ART={vocab:'vocab',match:'match',reading:'reading',games:'games',listening:'listening',grammar:'grammar',test:'test'};
 function renderStage(){
   const main=document.getElementById('main');if(!main)return;
   if(!PLAN.length)return; // the content has not loaded yet: keep the loading placeholders
@@ -1573,7 +1573,7 @@ function renderStage(){
     const title=lesson?lesson.title:'Lesson';
     const header=document.createElement('div'); header.className='lesson-heading';
     if(section.kind==='reading')header.classList.add('lesson-heading--wide');
-    setHtml(header,'<span class="lesson-heading__icon" aria-hidden="true">'+(SECTION_ICONS[section.kind]||'📘')+'</span> <span>'+escapeHtml(title)+'</span>');
+    setHtml(header,'<img class="lesson-heading__art" src="assets/illustrations/'+(SECTION_ART[section.kind]||'reading')+'.svg" alt="" width="84" height="63"> <span>'+escapeHtml(title)+'</span>');
     main.insertBefore(header,main.firstChild);
     decorateGrammarStage(state.currentStage);
     decorateGameLayer(state.currentStage);
@@ -1583,7 +1583,7 @@ function renderStage(){
 
 function stageFooter(prevId,nextId,extraHTML){ if(PLAN.length){ const near=neighbours(PLAN,state.currentStage); prevId=near.previous?near.previous.id:null; nextId=near.next?near.next.id:null; } const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
 function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
-function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{safeLocal.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
+function toggleDark(){ if(window.LSTheme)window.LSTheme.toggle(); const dark = document.documentElement.dataset.theme !== 'light'; const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
 function closeWhiteboard(){const drawer=document.getElementById('wbDrawer'),toggle=document.getElementById('wbToggle'); if(drawer)drawer.hidden=true; document.body.classList.remove('wb-open'); if(toggle){toggle.setAttribute('aria-expanded','false');toggle.focus()}}
 async function toggleWhiteboard(){
   const drawer=document.getElementById('wbDrawer'),toggle=document.getElementById('wbToggle'); if(!drawer)return;

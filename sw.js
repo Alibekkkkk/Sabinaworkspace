@@ -8,7 +8,7 @@
 // so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
 // The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
 // BEGIN GENERATED (scripts/build-sw-manifest.mjs)
-const CACHE_VERSION = "5c7c19e2db";
+const CACHE_VERSION = "12738b575e";
 const SHELL_URLS = [
   "clip.html",
   "clips.html",
@@ -25,9 +25,17 @@ const SHELL_URLS = [
   "portal.html",
   "practice.html",
   "whiteboard.html",
+  "assets/icons.svg",
   "assets/illustrations/celebrate.svg",
   "assets/illustrations/empty.svg",
+  "assets/illustrations/games.svg",
+  "assets/illustrations/grammar.svg",
+  "assets/illustrations/listening.svg",
   "assets/illustrations/mascot.svg",
+  "assets/illustrations/match.svg",
+  "assets/illustrations/reading.svg",
+  "assets/illustrations/test.svg",
+  "assets/illustrations/vocab.svg",
   "assets/manga/garden-harvest.svg",
   "assets/manga/garden-neighbors.svg",
   "assets/manga/garden-p1.svg",
@@ -121,6 +129,7 @@ const SHELL_URLS = [
   "js/grammar-ladder.js",
   "js/homework-answers.js",
   "js/i18n.js",
+  "js/icons.js",
   "js/leaderboard.js",
   "js/lesson-clock-ui.js",
   "js/lesson-clock.js",

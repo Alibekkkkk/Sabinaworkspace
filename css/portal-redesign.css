@@ -4,8 +4,8 @@ body.portal-page {
   --panel-2: var(--ds-color-surface-raised);
   --ink: var(--ds-color-text);
   --ink-soft: var(--ds-color-muted);
-  --accent: var(--ds-color-primary);
-  --accent-dark: #34479a;
+  --accent: var(--ds-color-highlight);
+  --accent-dark: var(--ds-color-primary-strong);
   --border: var(--ds-color-border);
   --bg-light: var(--ds-color-background);
   --panel-light: var(--ds-color-surface);
@@ -15,21 +15,14 @@ body.portal-page {
   display: block;
   padding: clamp(1rem, 3vw, 2.5rem) 1rem 2rem;
   background:
-    radial-gradient(ellipse at 12% 0%, rgb(87 111 209 / 13%), transparent 34rem),
+    radial-gradient(ellipse at 12% 0%, color-mix(in srgb, var(--ds-color-highlight) 9%, transparent), transparent 34rem),
     var(--bg);
 }
 
+/* Lime Light: the design tokens change with the theme, so only the page wash is set here. */
 body.portal-page.light {
-  --bg: #f5f7fb;
-  --panel: #fff;
-  --panel-2: #eef2fa;
-  --ink: #1d2738;
-  --ink-soft: #59677d;
-  --accent: #4257b2;
-  --accent-dark: #34479a;
-  --border: #d9e0eb;
   background:
-    radial-gradient(ellipse at 12% 0%, rgb(87 111 209 / 11%), transparent 34rem),
+    radial-gradient(ellipse at 12% 0%, color-mix(in srgb, var(--ds-color-accent-strong) 8%, transparent), transparent 34rem),
     var(--bg);
 }
 
@@ -50,8 +43,9 @@ body.portal-page.light {
   margin: 0 auto 1.25rem;
   border: 1px solid var(--border);
   border-radius: 1.6rem;
-  background: linear-gradient(145deg, var(--panel), var(--panel-2));
-  box-shadow: var(--ds-shadow-md);
+  background: var(--ds-color-highlight);
+  color: var(--ds-color-on-highlight);
+  box-shadow: var(--ds-shadow-glow);
 }
 
 .portal-page .header h1 {
@@ -85,7 +79,7 @@ body.portal-page.light {
 
 .portal-page .lesson-card::before {
   height: 0.3rem;
-  background: linear-gradient(90deg, #6d79e7, #37a991);
+  background: linear-gradient(90deg, var(--ds-color-highlight), var(--ds-color-accent-strong));
 }
 
 .portal-page .lesson-card:hover {
@@ -296,11 +290,12 @@ body.portal-page.light {
 .portal-page .tab.active,
 .portal-page .tab[aria-pressed="true"] {
   background: var(--accent);
-  color: #10162b;
+  color: var(--ds-color-on-highlight);
   border-color: var(--accent);
+  box-shadow: var(--ds-shadow-glow);
 }
 body.portal-page.light .tab.active,
-body.portal-page.light .tab[aria-pressed="true"] { color: #fff; }
+body.portal-page.light .tab[aria-pressed="true"] { color: var(--ds-color-on-highlight); }
 .portal-page .tab:hover:not(.active):not([aria-pressed="true"]) { color: var(--ink); border-color: var(--ink-soft); }
 .portal-page .tab:disabled { opacity: 0.55; cursor: not-allowed; }
 .portal-page .tab:focus-visible,
@@ -318,27 +313,32 @@ body.portal-page.light .tab[aria-pressed="true"] { color: #fff; }
 .portal-page .remember-row label { margin: 0; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 1rem; font-weight: 700; }
 .portal-page .remember-help { margin: 0 0 1rem; font-size: 0.875rem; color: var(--ink-soft); }
 .portal-page .theme-toggle { min-width: 2.75rem; min-height: 2.75rem; }
-body.portal-page.light .btn:not(.ghost) { color: #fff; }
+body.portal-page.light .btn:not(.ghost):not(.google) { color: var(--ds-color-on-highlight); }
 body.portal-page.light .btn.ghost { color: var(--ink); }
 
 /* Phase 0b: leaderboard and placement panels */
 #leaderboardPanel [hidden], .placement-panel[hidden] { display: none; }
 .lb-tabs { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 .lb-tabs .btn { width: auto; flex: 1; min-height: 2.75rem; margin: 0; }
-.lb-tabs .btn[aria-pressed="true"] { background: var(--accent); color: #10162b; }
-body.portal-page.light .lb-tabs .btn[aria-pressed="true"] { color: #fff; }
+.lb-tabs .btn[aria-pressed="true"] { background: var(--accent); color: var(--ds-color-on-highlight); }
+body.portal-page.light .lb-tabs .btn[aria-pressed="true"] { color: var(--ds-color-on-highlight); }
 .lb-list { margin: 0.5rem 0; padding-left: 2rem; display: grid; gap: 0.35rem; }
 .lb-list li { padding: 0.35rem 0.6rem; border-radius: 0.5rem; }
 .lb-list li > span { margin-right: 0.75rem; }
-.lb-list li.lb-own { background: rgb(166 182 255 / 18%); font-weight: 700; }
+.lb-list li.lb-own { background: var(--ds-color-primary-soft); font-weight: 700; }
 .placement-level-line { font-size: 1.2rem; font-weight:700; margin: 0.25rem 0; }
 
 .due-tag { display: inline-block; margin: 0.25rem 0; padding: 0.15rem 0.6rem; border-radius: 999px; border: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; }
-.due-tag.due-overdue { border-color: #ff8a80; color: #ff8a80; }
-body.portal-page.light .due-tag.due-overdue { border-color: #b00020; color: #b00020; }
+.due-tag.due-overdue { border-color: var(--ds-color-danger); color: var(--ds-color-danger); }
 .due-tag.due-due-today, .due-tag.due-due-soon { border-color: var(--accent); }
 .lesson-card.locked { opacity: 0.7; cursor: not-allowed; }
-/* Dark theme: the accent is a light lavender, so primary buttons need dark text (axe: 1.95:1 with white). */
-body.portal-page:not(.light) .btn:not(.ghost):not(.google) { color: #10162b; }
+/* Primary buttons are lime in both themes and always carry dark text. Google's sign-in button keeps Google's own colours. */
+body.portal-page .btn:not(.ghost):not(.google) { color: var(--ds-color-on-highlight); }
+.portal-page .btn.google { background: #ffffff; color: #1f1f1f; border: 1px solid #dadce0; box-shadow: var(--ds-shadow-sm); }
+.portal-page .btn.google:hover { background: #f8f9fa; }
 
 .last-class { margin: 0.25rem 0; font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Phase 12: the logo icon fills its tile; the theme button and the language picker share the top-right corner. */
+.portal-page .header .logo .ds-icon { width: 2.6rem; height: 2.6rem; stroke-width: 2.4; }
+.portal-page #languageCorner { top: 20px !important; right: 76px !important; }

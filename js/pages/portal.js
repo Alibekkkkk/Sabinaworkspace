@@ -51,7 +51,7 @@ const state = {
   clocks: {}
 };
 
-if (safeLocal.getItem('nd_theme') === 'light') document.body.classList.add('light');
+// The theme (body.light on the portal) is set by js/theme.js, shared by every page.
 function applyThemeToggleState(){
   const toggle = document.getElementById('themeToggle');
   if (!toggle) return;
@@ -61,12 +61,11 @@ function applyThemeToggleState(){
   toggle.firstElementChild.textContent = isLight ? '☀️' : '🌙';
 }
 function toggleTheme(){
-  document.body.classList.toggle('light');
-  safeLocal.setItem('nd_theme', document.body.classList.contains('light') ? 'light' : 'dark');
+  if (window.LSTheme) window.LSTheme.toggle();
   applyThemeToggleState();
 }
 applyThemeToggleState();
-if (document.body.classList.contains('light')) document.querySelector('.theme-toggle').textContent = '☀️';
+
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
 function showAlert(msg, type){

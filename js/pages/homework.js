@@ -3,7 +3,6 @@ import { startTabGuard } from "../tab-guard.js";
 if (new URLSearchParams(location.search).get("teacher") !== "1") startTabGuard("homework:" + location.search);
 (() => {
 
-  try{const t=safeLocal.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
 
 })();
 
@@ -91,7 +90,7 @@ function deleteCurrentNote() { if(activeNoteId) deleteNoteById(activeNoteId); }
 function saveAnnotations() { if(fbDb && code && !teacherMode) { fbDb.ref('sessions/'+code+'/homework_annotations/'+homeworkId).set(serializeChildren(document.getElementById('passageBody'))).then(()=>{ if(typeof showToast === 'function') showToast('Annotations saved'); }); } }
 
 /* ================== FIREBASE ================== */
-function toggleTheme(){ document.documentElement.classList.toggle('dark'); const dark=document.documentElement.classList.contains('dark'); try{safeLocal.setItem('nd_homework_theme_v2',dark?'dark':'light')}catch(e){} const b=document.getElementById('themeButton');if(b)b.textContent=dark?'☀️ Theme':'🌙 Theme'; }
+function toggleTheme(){ if(window.LSTheme)window.LSTheme.toggle(); const dark=document.documentElement.dataset.theme!=='light'; const b=document.getElementById('themeButton');if(b)b.textContent=dark?'Light theme':'Dark theme'; }
 document.getElementById('themeButton').textContent=document.documentElement.classList.contains('dark')?'☀️ Theme':'🌙 Theme';
 
 let answers={}; let submitted=false; let saveTimeout;

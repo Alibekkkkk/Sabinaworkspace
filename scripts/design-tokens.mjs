@@ -15,6 +15,7 @@ export const PAIRS = [
   ["primary", "surface", 4.5, "Links and primary text on cards"],
   ["primary", "background", 4.5, "Links on the page"],
   ["on-primary", "primary", 4.5, "Text on primary buttons"],
+  ["on-highlight", "highlight", 4.5, "Text on lime highlights (current section, check buttons)"],
   ["text", "primary-soft", 4.5, "Text on selected / soft brand chips"],
   ["primary-strong", "primary-soft", 4.5, "Brand text on soft brand chips"],
   ["accent", "surface", 4.5, "Accent text on cards"],
@@ -43,8 +44,9 @@ export function readThemes(css = readFileSync(cssPath, "utf8")) {
     blocks.filter(block => predicate(block[1].trim()))
       .flatMap(block => [...block[2].matchAll(/--ds-(?:color|mark|note)-([a-z-]+):\s*(#[0-9a-fA-F]{6})/g)].map(match => [match[0].includes("--ds-mark") ? `mark-${match[1]}` : match[0].includes("--ds-note") ? `note-${match[1]}` : match[1], match[2]]))
   );
-  const light = read(selector => selector.startsWith(":root"));
-  const dark = { ...light, ...read(selector => selector.includes('html[data-theme="dark"]')) };
+  // Lime Night (dark) is the base block (:root); Lime Light overrides it under html[data-theme="light"].
+  const dark = read(selector => selector.startsWith(":root"));
+  const light = { ...dark, ...read(selector => selector.includes('html[data-theme="light"]')) };
   return { light, dark };
 }
 
@@ -82,7 +84,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     "",
     "## Scales", "",
     "- **Neutral:** `background` < `surface` < `surface-raised`, with `border` and `border-strong`; `text` and `muted` for copy.",
-    "- **Brand:** `primary`, `primary-strong`, `primary-soft`, `on-primary`, plus `accent` / `accent-soft`.",
+    "- **Brand:** `primary`, `primary-strong`, `primary-soft`, `on-primary`; `highlight` / `on-highlight` (the lime fills) with `glow`; `accent`, `accent-strong`, `accent-soft`.",
     "- **Status:** `success`, `warning`, `danger` each with a `-soft` background; `info-soft`.",
     "- **Highlighters:** `mark-yellow|green|blue|pink` always carry `mark-ink` text.",
     "- **Type:** fluid `--ds-text-xs` to `--ds-text-3xl` (clamp), reading size and measure tokens. **Space:** 4-point grid `--ds-space-1..8`. **Radius:** xs to pill. **Elevation:** sm/md/lg. **Motion:** fast/base/slow + `ease-out`/`ease-spring`. **Layers:** base, sticky, nav, drawer, modal, toast.", ""

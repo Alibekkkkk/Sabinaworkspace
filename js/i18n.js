@@ -56,6 +56,9 @@ export function setLanguage(language, { reload = true } = {}) {
 export function mountLanguageSwitch(host) {
   if (typeof document === "undefined") return null;
   if (document.getElementById("languageSwitch")) return null;
+  // A page can mark the bar the picker belongs in (data-language-host); otherwise it sits beside the theme button.
+  const marked = !host && document.querySelector("[data-language-host]");
+  if (marked) host = marked;
   let place = host || document.querySelector("[data-theme-toggle]");
   if (!place && document.body) { // pages without a theme button get a small picker in the top corner
     place = document.createElement("div"); place.id = "languageCorner";

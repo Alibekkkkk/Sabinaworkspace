@@ -1,6 +1,6 @@
 # Lighthouse and axe baseline
 
-Commit: `b768fdb` · Generated: 2026-11-10T16:41:12.716Z · Browser: `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe` · Served from a local static server (no CDN, no HTTP caching headers, no compression), so performance numbers are indicative, not production numbers.
+Commit: `ae08a66` · Generated: 2026-11-10T18:31:30.501Z · Browser: `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe` · Served from a local static server (no CDN, no HTTP caching headers, no compression), so performance numbers are indicative, not production numbers.
 
 Reproduce with `npm run audit:web` (optionally `-- portal.html placement.html`; a subset run replaces the report with only those pages).
 
@@ -8,15 +8,15 @@ Scores are Lighthouse 0-100. P = Performance, A = Accessibility, BP = Best Pract
 
 | Page | Mobile P | A | BP | SEO | Desktop P | A | BP | SEO | axe serious/critical |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Login / portal (`portal.html`) | 91 | 96 | 96 | 54 | 100 | 96 | 93 | 54 | 0 |
-| Placement (`placement.html`) | 100 | 100 | 93 | 54 | 100 | 100 | 96 | 54 | 0 |
-| Practice (`practice.html`) | 91 | 100 | 93 | 54 | 100 | 100 | 93 | 54 | 0 |
-| Clip Lab (`clip.html`) | 88 | 96 | 96 | 54 | 99 | 96 | 96 | 54 | 0 |
-| Manga reader (`manga.html`) | 80 | 100 | 93 | 54 | 99 | 100 | 93 | 54 | 0 |
-| Lesson (`lesson.html`) | 69 | 100 | 93 | 54 | 97 | 100 | 93 | 54 | 0 |
-| Homework (`homework.html`) | 93 | 100 | 93 | 54 | 100 | 100 | 93 | 54 | 0 |
+| Login / portal (`portal.html`) | 96 | 100 | 93 | 54 | 100 | 100 | 93 | 54 | 0 |
+| Placement (`placement.html`) | 100 | 94 | 93 | 54 | 100 | 94 | 96 | 54 | 1 |
+| Practice (`practice.html`) | 89 | 100 | 93 | 54 | 100 | 100 | 93 | 54 | 0 |
+| Clip Lab (`clip.html`) | 86 | 96 | 96 | 54 | 99 | 96 | 96 | 54 | 0 |
+| Manga reader (`manga.html`) | 78 | 100 | 93 | 54 | 99 | 100 | 93 | 54 | 0 |
+| Lesson (`lesson.html`) | 71 | 100 | 93 | 54 | 97 | 100 | 93 | 54 | 0 |
+| Homework (`homework.html`) | 91 | 100 | 93 | 54 | 100 | 100 | 93 | 54 | 0 |
 | Teacher dashboard (`dashboard.html`) | 78 | 100 | 96 | 54 | 99 | 100 | 96 | 54 | 0 |
-| Import tool (`tools/import-content.html`) | 100 | 96 | 96 | 54 | 100 | 96 | 96 | 54 | 1 |
+| Import tool (`tools/import-content.html`) | 99 | 96 | 96 | 54 | 100 | 96 | 96 | 54 | 1 |
 
 ## axe-core violations (390px wide, anonymous visitor)
 
@@ -26,7 +26,7 @@ Scores are Lighthouse 0-100. P = Performance, A = Accessibility, BP = Best Pract
 
 ### Placement (`placement.html`)
 
-No violations.
+- **serious** `color-contrast` — Elements must meet minimum color contrast ratio thresholds (1 element; e.g. `#startButton`)
 
 ### Practice (`practice.html`)
 
@@ -43,7 +43,6 @@ No violations.
 ### Lesson (`lesson.html`)
 
 - **moderate** `page-has-heading-one` — Page should contain a level-one heading (1 element; e.g. `html`)
-- **moderate** `region` — All page content should be contained by landmarks (1 element; e.g. `#languageCorner`)
 
 ### Homework (`homework.html`)
 
