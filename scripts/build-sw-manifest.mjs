@@ -13,7 +13,9 @@ const BEGIN = "// BEGIN GENERATED (scripts/build-sw-manifest.mjs)"; const END = 
 // Left out of the precache on purpose: teacher-only tools and development pages. Students never open them.
 export const EXCLUDED = Object.freeze([
   /^js\/pages\/tools-.*\.js$/, /^js\/clips\/authoring\.js$/, /^js\/manga\/authoring\.js$/, /^js\/manga\/dashboard-card\.js$/, /^js\/clips\/dashboard-card\.js$/,
-  /^js\/feature-card\.js$/, /^styleguide\.html$/, /^css\/pages\/styleguide\.css$/, /^css\/pages\/tools-/
+  /^js\/feature-card\.js$/, /^styleguide\.html$/, /^css\/pages\/styleguide\.css$/, /^css\/pages\/tools-/,
+  // teacher-only tools and the archived first version: never downloaded to a student's device
+  /^js\/listening\/whisper\.js$/, /^js\/content-sync\.js$/, /^css\/pages\/listening-recording\.css$/, /legacy-index\.(js|css)$/
 ]);
 const TOP_FILES = ["manifest.webmanifest", "content/manifest.json"];
 const DIRECTORIES = ["js", "css", "assets", "locales"];

@@ -164,9 +164,14 @@ try {
   // Pronunciation (typing is the fallback; coaching, so misses are not queued)
   const queueBefore = Object.values((await rest(`studentProgress/${anna.code}/reviewQueue`)) || {}).length;
   await play("Pronunciation Challenge"); await page.waitForSelector(".gm-input");
+  let previousTarget = "";
   for (let i = 0; i < 6; i++) {
-    await page.waitForSelector(".gm-input:not([disabled])"); await page.evaluate(() => document.querySelector(".gm-input").focus());
-    const target = await page.evaluate(() => document.querySelector(".gm-prompt").textContent.replace(/^Say:\s*/, ""));
+    // wait for the next word and for the game's own focus (it focuses "Speak the word" a moment later), then type instead
+    await page.waitForFunction(previous => { const prompt = document.querySelector(".gm-prompt"); const input = document.querySelector(".gm-input:not([disabled])"); return prompt && input && prompt.textContent !== previous && document.querySelector("#gameView").contains(document.activeElement); }, { timeout: 10000 }, previousTarget);
+    await sleep(150);
+    await page.evaluate(() => document.querySelector(".gm-input").focus());
+    previousTarget = await page.evaluate(() => document.querySelector(".gm-prompt").textContent);
+    const target = previousTarget.replace(/^Say:\s*/, "");
     if (i === 5) { for (let t = 0; t < 3; t++) { await page.waitForSelector(".gm-input:not([disabled])"); await page.evaluate(() => document.querySelector(".gm-input").focus()); await page.keyboard.type("zzz"); await press("Enter"); if (t < 2) await sleep(150); } }
     else { await page.keyboard.type(target); await press("Enter"); }
     await nextFocused(); await press("Enter");

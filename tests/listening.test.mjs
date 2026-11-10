@@ -21,6 +21,7 @@ test("every student has a valid, original, approved listening set that the manif
     assert.equal(set.status, "approved", name);
     assert.ok(set.items.length >= 10 && set.items.every(entry => /^original/.test(entry.credits) && entry.translation && entry.translation.ru), name);
     assert.equal(manifest[name].listeningFile, `listening/${name}.json`, name);
+    assert.ok(set.items.every(entry => entry.gaps.easy.length >= 2), `${name}: every Easy sentence practises at least two words`);
   }
   assert.deepEqual(validateListeningPack(pack, { fileExists: path => existsSync(root + path) }), []);
   assert.equal(pack.items.length, 10);

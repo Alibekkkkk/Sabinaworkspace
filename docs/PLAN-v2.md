@@ -80,6 +80,12 @@ After a deploy, an open site keeps the old version until the **"New version avai
   - screenshots of the lesson, dashboard and portal.
 - **Not done:** vocabulary flashcards still use each word's emoji as its picture. Real images per word can be set with **Set image**.
 
+## Phase 13: done (2026-11-11)
+- Improvement sweep and final list: [IMPROVEMENTS.md](IMPROVEMENTS.md) (36 items). Limitations: [KNOWN-LIMITATIONS.md](KNOWN-LIMITATIONS.md).
+- **Import tool:** Check for lesson updates / Update lessons, with a backup first. The manga button is fixed.
+- **Fixes:** palm rejection; versioned app shell; accessibility sweep fixes; two Easy gaps per listening sentence; Lime Night browser colours; teacher tools and the archived first version are no longer downloaded to students' devices.
+- **Tests:** the three intermittent browser tests are fixed at their causes. New tests: `import-update-e2e`, `a11y-sweep`, `content-sync`.
+
 ## Phases
 **Phase 9: lesson structure (requests 3 and 6).**
 - Fixed section order in every classwork: Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N, Test Your Knowledge. Close Reading is removed.

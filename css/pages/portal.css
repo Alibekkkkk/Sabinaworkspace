@@ -16,7 +16,7 @@ body.light .card{background:var(--panel-light);border-color:var(--border-light);
 body.light .tabs{border-color:var(--border-light)}
 .tab{flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--ink-soft);font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s}
 body.light .tab{border-color:var(--border-light);color:var(--ink-soft-light)}
-.tab:hover{color:var(--accent);border-color:var(--accent)}
+.tab:hover{color: var(--ds-color-primary);border-color:var(--accent)}
 .tab.active{background:var(--accent);color:var(--ds-color-on-highlight);box-shadow:var(--ds-shadow-glow);border-color:var(--accent)}
 label{display:block;font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px}
 body.light label{color:var(--ink-soft-light)}
@@ -31,7 +31,7 @@ input.code-input{font-family:var(--ds-font-mono);text-transform:uppercase;letter
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--border);box-shadow:none}
 body.light .btn.ghost{color:var(--ink-light);border-color:var(--border-light)}
-.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn.ghost:hover{border-color:var(--accent);color: var(--ds-color-primary)}
 .btn.google{background:#fff;color:#333;border:1px solid #ddd;box-shadow:0 2px 5px rgba(0,0,0,.1);font-weight:700;}
 .btn.google:hover{background:#f9f9f9;box-shadow:0 2px 8px rgba(0,0,0,.15);}
 .g-icon{width:20px;height:20px;background:#fff;border-radius:4px;display:grid;place-items:center;font-weight:700;color:#4285f4;font-family:Arial,sans-serif;font-size:14px}
@@ -61,7 +61,7 @@ body.light .lesson-card{background:var(--panel-light);border-color:var(--border-
 body.light .lesson-card .desc{color:var(--ink-soft-light)}
 .lesson-card .meta{display:flex;gap:14px;font-size:14px;color:var(--ink-soft);font-weight:700;margin-bottom:14px;flex-wrap:wrap}
 body.light .lesson-card .meta{color:var(--ink-soft-light)}
-.lesson-card .meta b{color:var(--accent)}
+.lesson-card .meta b{color: var(--ds-color-primary)}
 .lesson-card .progress-rail{height:8px;background:var(--bg);border-radius:6px;overflow:hidden;margin-bottom:12px}
 body.light .lesson-card .progress-rail{background:var(--ds-color-border)}
 .lesson-card .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-dark));border-radius:6px;transition:width .4s}
@@ -76,8 +76,8 @@ body.light .empty{color:var(--ink-soft-light)}
 .actions-bar{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
 .actions-bar button{padding:10px 20px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--ink-soft);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
 body.light .actions-bar button{border-color:var(--border-light);color:var(--ink-soft-light)}
-.actions-bar button:hover{color:var(--accent);border-color:var(--accent)}
-.code-badge{display:inline-block;padding:10px 20px;background:var(--bg);border:2px dashed var(--accent);border-radius:12px;font-family:var(--ds-font-mono);font-size:22px;font-weight:700;letter-spacing:4px;color:var(--accent);margin:10px 0 16px}
+.actions-bar button:hover{color: var(--ds-color-primary);border-color:var(--accent)}
+.code-badge{display:inline-block;padding:10px 20px;background:var(--bg);border:2px dashed var(--accent);border-radius:12px;font-family:var(--ds-font-mono);font-size:22px;font-weight:700;letter-spacing:4px;color: var(--ds-color-primary);margin:10px 0 16px}
 body.light .code-badge{background:var(--ds-color-surface-raised)}
 .theme-toggle{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--panel);border:1px solid var(--border);color:var(--ink);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:10}
 body.light .theme-toggle{background:var(--panel-light);border-color:var(--border-light);color:var(--ink-light)}

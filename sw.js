@@ -8,7 +8,7 @@
 // so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
 // The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
 // BEGIN GENERATED (scripts/build-sw-manifest.mjs)
-const CACHE_VERSION = "f833ea6a00";
+const CACHE_VERSION = "ab73fe59db";
 const SHELL_URLS = [
   "clip.html",
   "clips.html",
@@ -62,9 +62,7 @@ const SHELL_URLS = [
   "css/pages/dashboard.css",
   "css/pages/games.css",
   "css/pages/homework.css",
-  "css/pages/legacy-index.css",
   "css/pages/lesson.css",
-  "css/pages/listening-recording.css",
   "css/pages/listening.css",
   "css/pages/manga.css",
   "css/pages/offline.css",
@@ -91,7 +89,6 @@ const SHELL_URLS = [
   "js/clock-service.js",
   "js/clock-ui.js",
   "js/config.js",
-  "js/content-sync.js",
   "js/dashboard-clock.js",
   "js/dashboard-status.js",
   "js/delegated-actions.js",
@@ -147,7 +144,6 @@ const SHELL_URLS = [
   "js/listening/recording.js",
   "js/listening/schema.js",
   "js/listening/speaking.js",
-  "js/listening/whisper.js",
   "js/manga/adaptation.js",
   "js/manga/geometry.js",
   "js/manga/learning-ui.js",
@@ -163,7 +159,6 @@ const SHELL_URLS = [
   "js/pages/dashboard.js",
   "js/pages/homework.js",
   "js/pages/index.js",
-  "js/pages/legacy-index.js",
   "js/pages/lesson_abay.js",
   "js/pages/lesson_gaziz.js",
   "js/pages/lesson.js",

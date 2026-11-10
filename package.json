@@ -34,6 +34,7 @@
     "test:lesson-sections-e2e": "node scripts/lesson-sections-e2e.mjs",
     "test:listening-recording-e2e": "node scripts/listening-recording-e2e.mjs",
     "test:import-update-e2e": "node scripts/import-update-e2e.mjs",
+    "test:a11y": "node scripts/a11y-sweep.mjs",
     "coverage": "node scripts/coverage.mjs",
     "test:clips-e2e": "node scripts/clips-e2e.mjs",
     "check:clips": "node scripts/check-clips.mjs",

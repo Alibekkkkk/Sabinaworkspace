@@ -87,7 +87,8 @@
       "text": "They play a match every Saturday.",
       "gaps": {
         "easy": [
-          3
+          3,
+          4
         ],
         "medium": [
           3,
@@ -181,6 +182,7 @@
       "text": "He hurt his ankle in October.",
       "gaps": {
         "easy": [
+          1,
           5
         ],
         "medium": [
@@ -201,6 +203,7 @@
       "text": "A healthy breakfast gives athletes energy.",
       "gaps": {
         "easy": [
+          1,
           4
         ],
         "medium": [

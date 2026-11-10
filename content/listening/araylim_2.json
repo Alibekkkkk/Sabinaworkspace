@@ -132,7 +132,8 @@
       "text": "The journey will last three days.",
       "gaps": {
         "easy": [
-          1
+          1,
+          3
         ],
         "medium": [
           1,

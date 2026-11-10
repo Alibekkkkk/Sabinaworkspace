@@ -35,17 +35,18 @@ const url = (extra = "") => `${BASE}listening.html?code=${anna.code}&lesson=${an
 
 // What the page shows right now: the sentence with "_" for gaps (so we can find the item) and the gap inputs.
 const snapshot = page => page.evaluate(() => {
-  const tokens = [...document.querySelectorAll(".ls-sentence .ls-token")].map(token => { const gap = token.querySelector(".ls-gap"); return gap ? "_" : token.textContent.trim(); });
+  // a gap is "_", or "_5" when its label gives the letter count (on Hard every word is a gap, so the counts tell sentences apart)
+  const tokens = [...document.querySelectorAll(".ls-sentence .ls-token")].map(token => { const gap = token.querySelector(".ls-gap"); if (!gap) return token.textContent.trim(); const letters = (gap.getAttribute("aria-label") || "").match(/(\d+) letters/); return letters ? `_${letters[1]}` : "_"; });
   return { tokens, gaps: document.querySelectorAll(".ls-gap").length, active: document.activeElement && document.activeElement.className, count: document.querySelector(".ls-count")?.textContent, chip: document.querySelector(".ls-chip")?.textContent };
 });
 const findItem = shown => pack.items.find(item => {
   const words = item.text.split(/\s+/);
-  return words.length === shown.length && shown.every((token, index) => token === "_" || token === words[index] || token.replace(/[^A-Za-z0-9’']/g, "") === words[index].replace(/[^A-Za-z0-9’']/g, ""));
+  return words.length === shown.length && shown.every((token, index) => token === "_" || (/^_\d+$/.test(token) && Number(token.slice(1)) === bare(words[index]).length) || token === words[index] || token.replace(/[^A-Za-z0-9’']/g, "") === words[index].replace(/[^A-Za-z0-9’']/g, ""));
 });
 const bare = token => token.toLowerCase().replace(/[’‘]/g, "'").replace(/^[^a-z0-9']+|[^a-z0-9']+$/g, "");
 // Types the gap answers with the keyboard: `wrong` is a set of gap positions to get wrong.
 async function answer(page, item, shown, wrong = new Set()) {
-  const gapWords = shown.map((token, index) => (token === "_" ? bare(item.text.split(/\s+/)[index]) : null)).filter(Boolean);
+  const gapWords = shown.map((token, index) => (token.startsWith("_") ? bare(item.text.split(/\s+/)[index]) : null)).filter(Boolean);
   for (const [position, word] of gapWords.entries()) {
     await page.keyboard.type(wrong.has(position) ? `${word.slice(0, -1)}x` : word);
     await sleep(40);
@@ -102,7 +103,7 @@ try {
   check(shown.active === "ls-gap", "the first gap has focus when the sentence appears");
   check(await page.evaluate(() => /^Gap 1 of \d+, \d+ letters$/.test(document.querySelector(".ls-gap").getAttribute("aria-label")) && document.querySelector(".ls-gap").placeholder === "*".repeat(Number(document.querySelector(".ls-gap").getAttribute("aria-label").match(/(\d+) letters/)[1]))), "gaps are labelled 'Gap n of m, k letters' and show one star per letter");
   check(await page.evaluate(() => document.querySelector(".ls-gap").autocapitalize === "none" && document.querySelector(".ls-gap").spellcheck === false && document.querySelector(".ls-gap").autocomplete === "off"), "gap inputs switch off autocapitalise, spellcheck and autocomplete (phone keyboards)");
-  const gapWords = shown.tokens.map((token, index) => (token === "_" ? bare(item.text.split(/\s+/)[index]) : null)).filter(Boolean);
+  const gapWords = shown.tokens.map((token, index) => (token.startsWith("_") ? bare(item.text.split(/\s+/)[index]) : null)).filter(Boolean);
   await page.keyboard.type(gapWords[0]);
   const focusOn = gap => page.waitForFunction(text => new RegExp(`${text} of`).test(document.activeElement.getAttribute("aria-label") || ""), { timeout: 2000 }, gap).then(() => true, () => false);
   check(await focusOn("Gap 2"), "typing the full word moves to the next gap");
@@ -112,10 +113,15 @@ try {
   await page.keyboard.type(gapWords[0]);
   await focusOn("Gap 2");
   check(await page.evaluate(() => document.querySelector(".ls-controls button.ds-btn--primary:not([hidden])").disabled), "Check stays disabled until every gap has text");
-  for (const word of gapWords.slice(1)) { await page.keyboard.type(word); await sleep(40); if ((await page.evaluate(() => document.activeElement.className)) === "ls-gap" && !(await page.evaluate(() => document.activeElement.value))) await page.keyboard.press("Enter"); }
+  // fill each remaining gap in its own input (auto-advance is checked above; here every gap must end up filled)
+  for (const [index, word] of gapWords.entries()) { if (index === 0) continue; await page.evaluate(position => { const gap = document.querySelectorAll(".ls-gap")[position]; gap.focus(); gap.select(); }, index); await page.keyboard.type(word); }
+  await page.evaluate(() => { const gaps = document.querySelectorAll(".ls-gap"); gaps[gaps.length - 1].focus(); });
   await sleep(100);
   await page.keyboard.press("Enter");
-  await page.waitForSelector(".ls-word-btn", { timeout: 5000 });
+  await page.waitForSelector(".ls-word-btn", { timeout: 5000 }).catch(async error => {
+    console.log("gaps:", JSON.stringify(await page.evaluate(() => [...document.querySelectorAll(".ls-gap")].map(gap => gap.value))), "| expected:", JSON.stringify(gapWords), "| sentence:", JSON.stringify(item.text), "| page:", await page.evaluate(() => (document.querySelector(".ls-feedback") || document.body).textContent.replace(/\s+/g, " ").slice(0, 200)));
+    throw error;
+  });
   check(await page.evaluate(() => document.querySelectorAll('.ls-word[data-state="ok"], .ls-word-btn[data-state="ok"]').length > 0 && !document.querySelector('[data-state="wrong"]')), "all words are marked correct after Enter in the last gap");
   check(await page.evaluate(() => /Well heard/.test(document.querySelector(".ls-feedback").textContent)), "one calm feedback sheet says the sentence was well heard");
   check(await page.evaluate(() => document.querySelector("#lsStage .ls-character").dataset.state !== "idle"), "the character reacts to the result");
@@ -142,7 +148,7 @@ try {
     const level = shown.chip;
     if (/Medium/.test(level)) sawUp = true;
     await page.evaluate(() => document.querySelector(".ls-gap").focus());
-    const words = shown.tokens.map((token, at) => (token === "_" ? bare(item.text.split(/\s+/)[at]) : null)).filter(Boolean);
+    const words = shown.tokens.map((token, at) => (token.startsWith("_") ? bare(item.text.split(/\s+/)[at]) : null)).filter(Boolean);
     for (const [position, word] of words.entries()) {
       await page.keyboard.type(correct ? word : `${word.slice(0, -1)}q`);
       await sleep(40);

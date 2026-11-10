@@ -16,7 +16,11 @@ export function buildSet(name, spec, lesson) {
   const targets = (lesson.vocab || []).map(word => word.en.replace(/^to\s+/, ""));
   const items = draftItemsFromSentences(spec.items.map(([text]) => text), { prefix: `${name.replace(/_/g, "-")}-l`, targets, credits: "original sentence written for this lesson" });
   // Tags name the lesson's target words in the sentence (the grammar of the set is listed in `spec.grammar` for authors only).
-  items.forEach((item, index) => { item.translation = { ru: spec.items[index][1] }; });
+  items.forEach((item, index) => {
+    item.translation = { ru: spec.items[index][1] };
+    // Easy always practises at least two words: add the next Medium gap when the helper picked only one
+    if (item.gaps.easy.length < 2) { const extra = item.gaps.medium.find(position => !item.gaps.easy.includes(position)); if (extra !== undefined) item.gaps.easy = [...item.gaps.easy, extra].sort((a, b) => a - b); }
+  });
   return { schemaVersion: 1, id: spec.id, title: spec.title, level: spec.level, status: "approved", voice: { id: spec.character === "arthur" ? "en-GB-RyanNeural" : "en-GB-SoniaNeural", provider: "browser", character: spec.character }, items };
 }
 

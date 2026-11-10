@@ -18,7 +18,10 @@
       "database.rules.json",
       "lighthouserc.json",
       "README.md",
-      "TEACHER_SETUP.md"
+      "TEACHER_SETUP.md",
+      "legacy/**",
+      "js/pages/legacy-index.js",
+      "css/pages/legacy-index.css"
     ],
     "cleanUrls": false,
     "trailingSlash": false,

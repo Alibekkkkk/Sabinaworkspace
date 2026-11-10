@@ -140,7 +140,7 @@ body.portal-page.light {
 
 .student-summary-item b {
   display: block;
-  color: var(--accent);
+  color: var(--ds-color-primary);
   font: 700 1.5rem var(--ds-font-display);
 }
 
@@ -184,7 +184,7 @@ body.portal-page.light {
 
 .practice-link:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-color-primary);
 }
 
 .path-steps {
@@ -210,7 +210,7 @@ body.portal-page.light {
 }
 
 .path-steps a:hover {
-  color: var(--accent);
+  color: var(--ds-color-primary);
 }
 
 .app-bottom-nav {
@@ -281,7 +281,7 @@ body.portal-page.light {
   .app-bottom-nav a:hover,
   .app-bottom-nav button:hover {
     background: var(--panel-2);
-    color: var(--accent);
+    color: var(--ds-color-primary);
   }
 }
 

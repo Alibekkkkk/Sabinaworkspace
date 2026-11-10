@@ -65,6 +65,7 @@
       "text": "Robots will not replace human creativity.",
       "gaps": {
         "easy": [
+          0,
           3
         ],
         "medium": [
@@ -180,6 +181,7 @@
       "text": "Are you meeting the engineers tomorrow?",
       "gaps": {
         "easy": [
+          2,
           4
         ],
         "medium": [
@@ -200,7 +202,8 @@
       "text": "Ethical questions will become more important.",
       "gaps": {
         "easy": [
-          0
+          0,
+          1
         ],
         "medium": [
           0,
