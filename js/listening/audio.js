@@ -41,10 +41,11 @@ export function speechSupported() {
   return typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
 }
 
-// options: { item, character, baseUrl, whenAmplitude(0..1), whenWord(index), whenSource(kind, message), whenState("speaking"|"idle") }
+// options: { item, character, baseUrl, source, whenAmplitude(0..1), whenWord(index), whenSource(kind, message), whenState("speaking"|"idle") }
+// source: the set's recording ({ url }); an item with a clip then plays its own stretch of it.
 export function createPlayer(options) {
-  const { item, character = "nora", baseUrl = "", whenAmplitude = () => {}, whenWord = () => {}, whenSource = () => {}, whenState = () => {} } = options;
-  let audio = null; let context = null; let analyser = null; let frame = 0; let pulse = 0; let token = 0;
+  const { item, character = "nora", baseUrl = "", source = null, whenAmplitude = () => {}, whenWord = () => {}, whenSource = () => {}, whenState = () => {} } = options;
+  let audio = null; let context = null; let analyser = null; let frame = 0; let pulse = 0; let token = 0; let clipTimer = 0;
 
   function stopMeters() { cancelAnimationFrame(frame); clearInterval(pulse); whenAmplitude(0); }
   function meter() {
@@ -62,6 +63,7 @@ export function createPlayer(options) {
 
   function stop() {
     token += 1;
+    clearInterval(clipTimer);
     if (audio) { audio.pause(); audio.removeAttribute("src"); audio = null; }
     if (speechSupported()) window.speechSynthesis.cancel();
     stopMeters();
@@ -109,15 +111,53 @@ export function createPlayer(options) {
     const timings = Array.isArray(item.wordTimings) ? item.wordTimings : [];
     audio.addEventListener("timeupdate", () => { if (mine !== token) return; const now = audio.currentTime; const hit = timings.find(timing => now >= timing.start && now < timing.end); if (hit) whenWord(hit.i); });
     return new Promise(resolve => {
-      audio.addEventListener("ended", () => { if (mine === token) { stopMeters(); whenState("idle"); } resolve(true); }, { runOnce: true });
-      audio.addEventListener("error", () => resolve(false), { runOnce: true });
+      audio.addEventListener("ended", () => { if (mine === token) { stopMeters(); whenState("idle"); } resolve(true); }, { once: true });
+      audio.addEventListener("error", () => resolve(false), { once: true });
       audio.play().then(() => { if (mine !== token) return; whenSource("neural", "Neural British voice"); whenState("speaking"); meter(); }).catch(() => resolve(false));
+    });
+  }
+
+  // One sentence of a longer recording: seek to clip.start, stop at clip.end. The recording usually lives on another site, so
+  // it is never routed through Web Audio (that would silence it); the mouth moves with a simple pulse instead.
+  function playClip(slow, mine) {
+    const clip = item.clip;
+    audio = new Audio(); audio.preload = "auto"; audio.src = source.url;
+    analyser = null;
+    return new Promise(resolve => {
+      let finished = false;
+      const element = audio;
+      const finish = ok => {
+        if (finished) return; finished = true; clearInterval(clipTimer);
+        element.pause();
+        if (mine === token) { stopMeters(); whenState("idle"); }
+        resolve(ok);
+      };
+      element.addEventListener("ended", () => finish(true), { once: true });
+      element.addEventListener("error", () => finish(false), { once: true });
+      const begin = () => {
+        if (mine !== token) { finish(false); return; }
+        try { element.currentTime = clip.start; } catch { /* a server without seeking plays from the start */ }
+        element.playbackRate = slow ? 0.75 : 1;
+        element.play().then(() => {
+          if (mine !== token) { finish(false); return; }
+          whenSource("recording", "Recording");
+          whenState("speaking"); meter();
+          clipTimer = setInterval(() => { if (element.currentTime >= clip.end) finish(true); }, 40);
+        }).catch(() => finish(false));
+      };
+      if (element.readyState >= 1) begin(); else element.addEventListener("loadedmetadata", begin, { once: true });
     });
   }
 
   async function play({ slow = false } = {}) {
     stop();
     const mine = token;
+    if (item.clip && source && source.url) {
+      const ok = await playClip(slow, mine);
+      if (ok || mine !== token) return ok;
+      stopMeters();
+      return playDevice(slow, mine, "The recording could not be played, so the device voice reads the sentence instead.");
+    }
     if (item.audio && item.audio.normal) {
       const ok = await playFile(slow, mine);
       if (ok || mine !== token) return ok;

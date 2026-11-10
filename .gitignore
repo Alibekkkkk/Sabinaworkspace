@@ -5,3 +5,4 @@ node_modules/
 # local secrets (TTS keys etc.): never commit
 .env
 .env.*
+tests/fixtures/tones.wav

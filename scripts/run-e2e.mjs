@@ -20,6 +20,7 @@ export const SUITE = Object.freeze([
   ["reading questions", "scripts/reading-tasks-e2e.mjs"],
   ["listening trainer round", "scripts/listening-e2e.mjs"],
   ["dashboard listening card", "scripts/dashboard-listening-e2e.mjs"],
+  ["listening from a recording: link, transcript, sentences, save, student hears the recording", "scripts/listening-recording-e2e.mjs"],
   ["whiteboard draw, persist, modes", "scripts/whiteboard-e2e.mjs"],
   ["whiteboard on phones and tablets", "scripts/whiteboard-devices-e2e.mjs"],
   ["games and rewards", "scripts/games-e2e.mjs"],

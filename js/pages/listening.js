@@ -151,10 +151,10 @@ function showItem(position) {
   stage.append(feedbackHost, wordPanel, speakingPanel);
 
   const player = createPlayer({
-    item, character: prefs.character, baseUrl: new URL("../../content/", import.meta.url).href,
+    item, character: prefs.character, baseUrl: new URL("../../content/", import.meta.url).href, source: pack.source || null,
     whenAmplitude: level2 => character.setMouth(level2),
     whenState: state => { if (state === "speaking") character.setState("talking"); else if (character.state === "talking") character.setState(current && current.checked ? current.mood : "idle"); },
-    whenSource: (kind, message) => { source.textContent = kind === "neural" ? "🔊 Neural British voice" : kind === "device" ? `🔊 ${message}` : `⚠ ${message}`; source.dataset.kind = kind; }
+    whenSource: (kind, message) => { source.textContent = kind === "recording" ? "🔊 Recording" : kind === "neural" ? "🔊 Neural British voice" : kind === "device" ? `🔊 ${message}` : `⚠ ${message}`; source.dataset.kind = kind; }
   });
   current = { dictation, character, player, checked: false, mood: "idle", item };
 
@@ -409,15 +409,20 @@ async function boot() {
     database = firebase.database(); watchConnection(database);
     context = await resolvePageContext({ auth: firebase.auth(), db: database, lessonId: query.get("lesson") });
     if (!context.preview && !(await featureEnabled(database, context.code, "listeningTrainer"))) { showNotEnabled(status, "listeningTrainer"); return; }
-    const [manifest, record] = await Promise.all([
+    // A set the teacher made from a recording for this lesson comes first; otherwise the lesson's set from content/listening.
+    const [manifest, record, recordingSet] = await Promise.all([
       fetch(new URL("../../content/manifest.json", import.meta.url)).then(response => response.json()),
-      loadProtectedContent(database, context.lessonId, "classwork").catch(() => null)
+      loadProtectedContent(database, context.lessonId, "classwork").catch(() => null),
+      loadProtectedContent(database, context.lessonId, "listening").catch(() => null)
     ]);
-    const entry = listeningEntryFor(manifest, context.lessonId, record && record.sourceFile);
-    if (!entry || !entry.listeningFile) { status.textContent = "Your teacher has not added listening sentences to this lesson yet."; return; }
-    const response = await fetch(new URL(`../../content/${entry.listeningFile}`, import.meta.url));
-    if (!response.ok) throw new Error("The listening pack could not be loaded.");
-    pack = await response.json();
+    if (recordingSet) pack = recordingSet.content;
+    else {
+      const entry = listeningEntryFor(manifest, context.lessonId, record && record.sourceFile);
+      if (!entry || !entry.listeningFile) { status.textContent = "Your teacher has not added listening sentences to this lesson yet."; return; }
+      const response = await fetch(new URL(`../../content/${entry.listeningFile}`, import.meta.url));
+      if (!response.ok) throw new Error("The listening pack could not be loaded.");
+      pack = await response.json();
+    }
     const problems = validateListeningPack(pack);
     if (problems.length) throw new Error(`The listening pack has errors: ${problems[0]}`);
     if (pack.status === "draft" && !previewDraft && !context.preview) { status.textContent = "These sentences are waiting for your teacher's approval."; return; }

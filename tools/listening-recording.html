@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- This page alone loads the speech-recognition library (cdn.jsdelivr.net), downloads the model (Hugging Face) and
+       reads audio links from any https site, so its policy is wider than the rest of the site. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://cdn.jsdelivr.net 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: wss://*.firebaseio.com wss://*.firebasedatabase.app; media-src 'self' blob: https:; worker-src 'self' blob:; frame-src https://accounts.google.com https://*.firebaseapp.com; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Listening from a recording</title>
+  <link rel="stylesheet" href="../css/design-system.css">
+  <link rel="stylesheet" href="../css/components/controls.css">
+  <link rel="stylesheet" href="../css/components/surfaces.css">
+  <link rel="stylesheet" href="../css/components/feedback.css">
+  <link rel="stylesheet" href="../css/pages/listening-recording.css">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" defer></script>
+  <script type="module" src="../js/pages/tools-listening-recording.js"></script>
+</head>
+<body>
+  <main class="lr-shell">
+    <header class="lr-header">
+      <div>
+        <p class="ds-field__hint">Teacher tool · Listening Training</p>
+        <h1>Listening from a recording</h1>
+        <p class="lr-lead">Paste a link to an audio file. Your browser writes down what is said, splits it into sentences and turns them into a listening exercise for the lesson. Students hear the real recording, one sentence at a time.</p>
+      </div>
+      <div class="lr-account">
+        <span id="accountStatus" role="status">Checking sign-in…</span>
+        <button id="signInButton" class="ds-btn ds-btn--primary" type="button" hidden>Sign in as teacher</button>
+        <a class="ds-btn ds-btn--ghost" href="../dashboard.html">Dashboard</a>
+      </div>
+    </header>
+
+    <section class="ds-card lr-step" aria-labelledby="stepLesson">
+      <h2 id="stepLesson"><span class="lr-number">1</span> Lesson</h2>
+      <div class="lr-grid">
+        <label class="ds-field">Lesson<select id="lessonSelect" class="ds-input" disabled><option value="">Sign in to list your lessons</option></select></label>
+        <label class="ds-field">Title students see<input id="setTitle" class="ds-input" type="text" maxlength="80" placeholder="Natural disasters: a news report"></label>
+        <label class="ds-field">Level<select id="setLevel" class="ds-input"><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option><option>C1</option></select></label>
+        <label class="ds-field">Tutor character<select id="setCharacter" class="ds-input"><option value="nora">Nora</option><option value="arthur">Arthur</option></select></label>
+      </div>
+      <p id="existingNote" class="ds-field__hint" hidden></p>
+    </section>
+
+    <section class="ds-card lr-step" aria-labelledby="stepAudio">
+      <h2 id="stepAudio"><span class="lr-number">2</span> Recording</h2>
+      <label class="ds-field">Link to the audio file
+        <input id="audioLink" class="ds-input" type="url" inputmode="url" placeholder="https://example.com/news-report.mp3" autocomplete="off">
+        <span class="ds-field__hint">An mp3, m4a, wav or ogg file. Google Drive, Dropbox and OneDrive share links are turned into direct links. YouTube cannot be used.</span>
+      </label>
+      <p id="linkNote" class="ds-field__hint" role="status"></p>
+      <audio id="previewAudio" class="lr-audio" controls preload="metadata"></audio>
+      <label class="ds-field">If the website does not let the browser read the file: choose the same recording from your computer
+        <input id="audioFile" class="ds-input" type="file" accept="audio/*">
+        <span class="ds-field__hint">Only used to write the transcript. Students still play the recording from the link.</span>
+      </label>
+      <fieldset class="lr-rights">
+        <legend>Your right to use this recording</legend>
+        <label><input type="radio" name="rights" value="original" checked> I made it myself</label>
+        <label><input type="radio" name="rights" value="used with permission"> I have permission to use it</label>
+        <label><input type="radio" name="rights" value="CC BY"> It has a Creative Commons licence</label>
+        <label><input type="radio" name="rights" value="public domain"> It is in the public domain</label>
+        <label class="ds-field">Source and licence (shown with the exercise)<input id="rightsDetail" class="ds-input" type="text" maxlength="200" placeholder="e.g. BBC Learning English, used with permission (email of 3 May)"></label>
+      </fieldset>
+      <div class="lr-grid">
+        <label class="ds-field">How to write the transcript
+          <select id="mode" class="ds-input">
+            <option value="accurate">Speech recognition: more accurate (about 80 MB, once)</option>
+            <option value="fast">Speech recognition: fast (about 40 MB, once)</option>
+            <option value="transcript">I will paste the transcript myself</option>
+          </select>
+        </label>
+      </div>
+      <label id="transcriptField" class="ds-field" hidden>Transcript
+        <textarea id="transcript" class="ds-input" rows="6" placeholder="Paste the words of the recording. Times are spread over the recording; adjust them below."></textarea>
+      </label>
+      <div class="lr-actions">
+        <button id="makeButton" class="ds-btn ds-btn--primary" type="button" disabled>Make the sentences</button>
+        <div class="lr-progress" hidden id="progressWrap"><div class="ds-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progress"><span id="progressFill" class="ds-progress__fill"></span></div></div>
+      </div>
+      <p id="makeStatus" class="lr-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="ds-card lr-step" aria-labelledby="stepSentences">
+      <h2 id="stepSentences"><span class="lr-number">3</span> Check the sentences</h2>
+      <p class="ds-field__hint">Play each sentence, correct the words and the times, and remove what you do not need. Underlined words are hidden on Easy; the others on Medium and Hard.</p>
+      <ol id="sentenceList" class="lr-sentences"></ol>
+      <p id="emptyNote" class="ds-field__hint">No sentences yet.</p>
+    </section>
+
+    <section class="ds-card lr-step" aria-labelledby="stepSave">
+      <h2 id="stepSave"><span class="lr-number">4</span> Save</h2>
+      <div class="lr-actions">
+        <button id="saveButton" class="ds-btn ds-btn--primary" type="button" disabled>Save to the lesson</button>
+        <button id="downloadButton" class="ds-btn ds-btn--secondary" type="button" disabled>Download JSON</button>
+        <button id="removeButton" class="ds-btn ds-btn--ghost" type="button" hidden>Remove the recording set</button>
+      </div>
+      <p id="saveStatus" class="lr-status" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+</body>
+</html>

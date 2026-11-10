@@ -6,7 +6,9 @@
 //   items: [{ id, text, audio?: { normal, slow? }, wordTimings?: [{i,start,end}], timingsEstimated?: bool,
 //             gaps: { easy: [i...], medium: [i...], hard: "all"|[i...] },
 //             alternatives?: { "<wordIndex>": ["answer", ...] }, glosses?: { "<word>": "meaning" },
-//             translation?: { ru?, kk? }, lessonTags?: [string], credits }] }
+//             translation?: { ru?, kk? }, lessonTags?: [string], credits,
+//             clip?: { start, end } (seconds into source.url) }],
+//   source?: { url: "https://…", credits, duration? } }   (a set made from a real recording: js/listening/recording.js)
 // Word indices count the whitespace-separated words of `text`, starting at 0 (punctuation stays attached).
 export const SCHEMA_VERSION = 1;
 export const LEVELS_CEFR = Object.freeze(["A1", "A2", "B1", "B2", "C1"]);
@@ -15,7 +17,9 @@ export const CHARACTERS = Object.freeze(["nora", "arthur"]);
 export const MAX_WORDS = 25;
 const ID_PATTERN = /^[A-Za-z0-9_-]{3,64}$/;
 const AUDIO_PATH = /^audio\/[A-Za-z0-9_-]+(-slow)?\.mp3$/;
-const CREDITS_PATTERN = /^(original|CC0|CC BY|public domain)/i;
+// "used with permission" is for a recording the teacher may use but did not make (see pack.source).
+const CREDITS_PATTERN = /^(original|CC0|CC BY|public domain|used with permission)/i;
+const MAX_CLIP_SECONDS = 4 * 60 * 60;
 
 // Words that carry little stress and are hardest to hear in connected speech.
 export const FUNCTION_WORDS = Object.freeze(new Set([
@@ -97,6 +101,17 @@ export function validateListeningPack(pack, { fileExists = null } = {}) {
     if (!PROVIDERS.includes(voice.provider)) errors.push(`voice.provider must be one of ${PROVIDERS.join(", ")}.`);
     if (!CHARACTERS.includes(voice.character)) errors.push(`voice.character must be one of ${CHARACTERS.join(", ")}.`);
   }
+  if (pack.source !== undefined) {
+    const source = pack.source;
+    if (!source || typeof source !== "object") errors.push("source must be an object with url and credits.");
+    else {
+      let url = null; try { url = new URL(String(source.url)); } catch { url = null; }
+      const local = url && url.protocol === "http:" && /^(localhost|127\.0\.0\.1)$/.test(url.hostname); // the local test server only
+      if (!url || (url.protocol !== "https:" && !local)) errors.push("source.url must be an https:// link to the recording.");
+      if (!nonEmpty(source.credits) || !CREDITS_PATTERN.test(source.credits.trim())) errors.push('source.credits must start with "original", "used with permission", "CC0", "CC BY" or "public domain".');
+      if (source.duration !== undefined && !(Number.isFinite(source.duration) && source.duration > 0 && source.duration <= MAX_CLIP_SECONDS)) errors.push("source.duration must be a number of seconds.");
+    }
+  }
   if (!Array.isArray(pack.items) || !pack.items.length) { errors.push("items must be a list with at least one sentence."); return errors; }
   const seen = new Set();
   pack.items.forEach((item, position) => {
@@ -134,6 +149,12 @@ export function validateListeningPack(pack, { fileExists = null } = {}) {
           previous = timing.start;
         }
       }
+    }
+    if (item.clip !== undefined) {
+      const clip = item.clip;
+      if (!pack.source) errors.push(`${where}: clip needs a source recording in the set.`);
+      if (!clip || typeof clip !== "object" || !Number.isFinite(clip.start) || !Number.isFinite(clip.end) || clip.start < 0 || clip.end <= clip.start || clip.end > MAX_CLIP_SECONDS) errors.push(`${where}: clip must be { start, end } in seconds with end after start.`);
+      else if (pack.source && Number.isFinite(pack.source.duration) && clip.start >= pack.source.duration) errors.push(`${where}: clip starts after the end of the recording.`);
     }
     if (item.translation !== undefined) {
       const translation = item.translation;

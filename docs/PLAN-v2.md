@@ -42,6 +42,24 @@ After a deploy, an open site keeps the old version until the **"New version avai
 - **Phase 13:** the import tool cannot update an existing lesson copy; add an update button.
 - **Flaky, for Phase 13:** `listening-e2e` still sometimes misses the auto-advance to the next gap.
 
+## Phase 11: done (2026-11-10)
+- **Tool:** `tools/listening-recording.html`, linked from the dashboard as 🎧 Listening from audio.
+  - Paste an audio link (Drive, Dropbox and OneDrive share links are converted; YouTube is refused with a reason).
+  - Or choose the file, or paste a transcript.
+  - Whisper (Transformers.js 3.0.2, tiny.en or base.en) transcribes in the browser. The sentences come with start and end times, and you edit them, play each one, then save.
+- **Storage:** sets are saved to `protectedContent/<lesson>/listening`. Rules: teacher writes, that lesson's students read. Students get them at once, with no deploy.
+- **Student side:** the listening page prefers this set to the lesson's file set, and the portal link appears for it. Each sentence plays its own stretch of the real recording; Slow plays it at 75%.
+- **Checked:**
+  - in the browser with the public-domain JFK clip from OpenAI's Whisper repository: about 10 s to transcribe 11 s, then one sentence with its times;
+  - unit tests in `tests/listening-recording.test.mjs`;
+  - a rules test;
+  - the browser test `scripts/listening-recording-e2e.mjs`: link, transcript, edit, save, the student hears "Recording", remove.
+- **Limits:**
+  - The first use downloads the model (40 or 80 MB).
+  - A link must allow reading from other sites for transcription; otherwise the teacher chooses the file.
+  - Servers that cannot seek play from the start.
+  - Transcripts of unclear speech need correcting by hand.
+
 ## Phases
 **Phase 9: lesson structure (requests 3 and 6).**
 - Fixed section order in every classwork: Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N, Test Your Knowledge. Close Reading is removed.

@@ -1,0 +1,33 @@
+/* tools/listening-recording.html */
+/* Component classes set display, which would otherwise override the hidden attribute. */
+.lr-shell [hidden] { display: none !important; }
+body { margin: 0; background: var(--ds-color-background); color: var(--ds-color-text); font-family: var(--ds-font-body); }
+.lr-shell { max-width: 960px; margin: 0 auto; padding: var(--ds-space-6, 32px) var(--ds-space-4, 16px) var(--ds-space-8, 48px); display: grid; gap: var(--ds-space-5, 24px); }
+.lr-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--ds-space-4, 16px); align-items: flex-start; }
+.lr-header h1 { margin: 0 0 var(--ds-space-2, 8px); font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.lr-lead { max-width: 60ch; margin: 0; color: var(--ds-color-muted); }
+.lr-account { display: flex; flex-wrap: wrap; gap: var(--ds-space-2, 8px); align-items: center; }
+.lr-step h2 { display: flex; align-items: center; gap: var(--ds-space-3, 12px); margin: 0 0 var(--ds-space-4, 16px); font-size: 1.25rem; }
+.lr-number { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--ds-color-primary); color: var(--ds-color-on-primary); font-weight: 800; }
+.lr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--ds-space-3, 12px); }
+.lr-step .ds-field { display: grid; gap: 4px; margin-bottom: var(--ds-space-3, 12px); font-weight: 600; }
+.lr-step .ds-input { font: inherit; font-weight: 400; min-height: 44px; padding: 8px 10px; border: 1px solid var(--ds-color-border-strong); border-radius: var(--ds-radius-sm, 8px); background: var(--ds-color-surface); color: var(--ds-color-text); }
+.lr-step textarea.ds-input { min-height: 120px; }
+.lr-audio { width: 100%; margin: 0 0 var(--ds-space-3, 12px); }
+.lr-rights { border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm, 8px); padding: var(--ds-space-3, 12px); margin: 0 0 var(--ds-space-3, 12px); display: grid; gap: 6px; }
+.lr-rights legend { font-weight: 700; padding: 0 6px; }
+.lr-actions { display: flex; flex-wrap: wrap; gap: var(--ds-space-2, 8px); align-items: center; }
+.lr-progress { flex: 1 1 200px; }
+.lr-status { min-height: 1.5em; margin: var(--ds-space-2, 8px) 0 0; white-space: pre-wrap; }
+.lr-status[data-kind="error"] { color: var(--ds-color-danger); font-weight: 700; }
+.lr-sentences { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--ds-space-3, 12px); counter-reset: sentence; }
+.lr-sentence { border: 1px solid var(--ds-color-border); border-radius: var(--ds-radius-sm, 8px); padding: var(--ds-space-3, 12px); display: grid; gap: 8px; background: var(--ds-color-surface); }
+.lr-sentence__row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lr-sentence__row label { display: inline-flex; gap: 4px; align-items: center; font-size: 0.9rem; }
+.lr-sentence__row input[type="number"] { width: 6.5em; min-height: 40px; font: inherit; padding: 4px 6px; border: 1px solid var(--ds-color-border-strong); border-radius: 6px; background: var(--ds-color-surface); color: var(--ds-color-text); }
+.lr-sentence textarea { font: inherit; width: 100%; min-height: 3em; padding: 6px 8px; border: 1px solid var(--ds-color-border-strong); border-radius: 6px; background: var(--ds-color-surface); color: var(--ds-color-text); box-sizing: border-box; }
+.lr-gaps { font-size: 0.95rem; color: var(--ds-color-muted); }
+.lr-gaps .lr-gap-easy { color: var(--ds-color-text); font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; }
+.lr-gaps .lr-gap-medium { text-decoration: underline dotted; }
+.lr-sentence[data-warning] { border-color: var(--ds-color-warning); }
+.lr-warning { color: var(--ds-color-warning); font-size: 0.9rem; font-weight: 700; }

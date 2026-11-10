@@ -1,6 +1,6 @@
 # Lighthouse and axe baseline
 
-Commit: `690e89a` · Generated: 2026-11-10T15:03:20.237Z · Browser: `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe` · Served from a local static server (no CDN, no HTTP caching headers, no compression), so performance numbers are indicative, not production numbers.
+Commit: `b768fdb` · Generated: 2026-11-10T16:41:12.716Z · Browser: `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe` · Served from a local static server (no CDN, no HTTP caching headers, no compression), so performance numbers are indicative, not production numbers.
 
 Reproduce with `npm run audit:web` (optionally `-- portal.html placement.html`; a subset run replaces the report with only those pages).
 
@@ -8,15 +8,15 @@ Scores are Lighthouse 0-100. P = Performance, A = Accessibility, BP = Best Pract
 
 | Page | Mobile P | A | BP | SEO | Desktop P | A | BP | SEO | axe serious/critical |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Login / portal (`portal.html`) | 75 | 96 | 96 | 54 | 99 | 96 | 93 | 54 | 0 |
-| Placement (`placement.html`) | 98 | 100 | 93 | 54 | 100 | 100 | 96 | 54 | 0 |
-| Practice (`practice.html`) | 70 | 100 | 93 | 54 | 97 | 100 | 93 | 54 | 0 |
-| Clip Lab (`clip.html`) | 70 | 96 | 96 | 54 | 99 | 96 | 96 | 54 | 0 |
-| Manga reader (`manga.html`) | 77 | 100 | 93 | 54 | 93 | 100 | 93 | 54 | 0 |
-| Lesson (`lesson.html`) | 45 | 100 | 93 | 54 | 91 | 100 | 93 | 54 | 0 |
-| Homework (`homework.html`) | 77 | 100 | 93 | 54 | 98 | 100 | 93 | 54 | 0 |
-| Teacher dashboard (`dashboard.html`) | 66 | 100 | 96 | 54 | 98 | 100 | 96 | 54 | 0 |
-| Import tool (`tools/import-content.html`) | 77 | 96 | 96 | 54 | 100 | 96 | 96 | 54 | 1 |
+| Login / portal (`portal.html`) | 91 | 96 | 96 | 54 | 100 | 96 | 93 | 54 | 0 |
+| Placement (`placement.html`) | 100 | 100 | 93 | 54 | 100 | 100 | 96 | 54 | 0 |
+| Practice (`practice.html`) | 91 | 100 | 93 | 54 | 100 | 100 | 93 | 54 | 0 |
+| Clip Lab (`clip.html`) | 88 | 96 | 96 | 54 | 99 | 96 | 96 | 54 | 0 |
+| Manga reader (`manga.html`) | 80 | 100 | 93 | 54 | 99 | 100 | 93 | 54 | 0 |
+| Lesson (`lesson.html`) | 69 | 100 | 93 | 54 | 97 | 100 | 93 | 54 | 0 |
+| Homework (`homework.html`) | 93 | 100 | 93 | 54 | 100 | 100 | 93 | 54 | 0 |
+| Teacher dashboard (`dashboard.html`) | 78 | 100 | 96 | 54 | 99 | 100 | 96 | 54 | 0 |
+| Import tool (`tools/import-content.html`) | 100 | 96 | 96 | 54 | 100 | 96 | 96 | 54 | 1 |
 
 ## axe-core violations (390px wide, anonymous visitor)
 

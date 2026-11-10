@@ -137,3 +137,19 @@ Read `docs/SECURITY.md` (runbook, headers, offline and protected content) and `d
 Every classwork lesson shows Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I, II, III … and Test Your Knowledge. The grammar sections are the `grammar` list at the top of the lesson file in `content/`: each entry has an `id`, a `title` (the section is called "Grammar II: <title>"), a `rule` (`formula` plus a few `points`, where `<b>` is allowed), a one-line `lead`, and the `exercises` it uses (keys such as `g6` for complete-the-sentence or `sbPp` for sentence builder). Add, remove or reorder entries to change the grammar sections for that student, run `npm run lint:content`, then **Import content** so the student gets the new version.
 
 In the lesson, click a section card at the top (teacher preview) to time that section, and use the **Whiteboard** button to draw beside any section. Games and Listening Training open inside the lesson; in your preview they are read-only.
+
+## Listening Training from a recording
+
+Open **🎧 Listening from audio** on the dashboard (`tools/listening-recording.html`).
+1. Choose the lesson, a title, the level and the tutor character.
+2. Paste a link to the audio file: an mp3, m4a, wav or ogg. Google Drive, Dropbox and OneDrive share links are turned into direct links; a Drive file must be shared with "anyone with the link". YouTube and other video pages cannot be used, because a browser cannot read their sound.
+3. Say what gives you the right to use the recording: you made it, you have permission, a Creative Commons licence, or the public domain. Add the source; it is saved with the exercise.
+4. Choose **Speech recognition**:
+   - **More accurate** downloads about 80 MB once; **fast** about 40 MB.
+   - The recording is transcribed on your computer and nothing is uploaded. It takes roughly as long as the recording.
+   - If the website does not let the browser read the file, choose the same file from your computer. Students still play it from the link.
+   - If you already have the words, choose **I will paste the transcript myself**; the times are then estimates.
+5. Check each sentence: press **▶ Play**, correct the words, adjust **From** and **to** in seconds, or **Remove** it. Underlined words are hidden on Easy.
+6. **Save to the lesson**. Students get the set in Listening Training straight away, with no deploy. Each sentence plays from the real recording, at 75% speed on **Slow**. Open the lesson again in the tool to edit the set, or **Remove the recording set** to go back to the lesson's own sentences.
+
+The link must keep working: students play the audio from it. Some servers cannot jump to the middle of a file; the sentence then plays from the start of the recording, so prefer ordinary file hosting.

@@ -536,9 +536,12 @@ function renderLessons(){
       practiceLink.href=practiceUrl.href;
       practiceLink.textContent='🎮 Practice '+(lesson.title||'lesson');
       practiceLinks.append(practiceLink);
-      listeningManifest().then(function(manifest){
+      // A set from content/listening, or one the teacher made from a recording (protectedContent/<lesson>/listening).
+      const recordingSet=db.ref('protectedContent/'+lessonId+'/listening/content/id').once('value').then(function(snapshot){return snapshot.exists()}).catch(function(){return false});
+      Promise.all([listeningManifest(),recordingSet]).then(function(results){
+        const manifest=results[0];
         const entry=listeningEntryFor(manifest,lessonId,lesson.classworkContentUrl||lesson.contentUrl);
-        if(!entry||!entry.listeningFile||!hasFeature(state.features,'listeningTrainer'))return;
+        if((!results[1]&&(!entry||!entry.listeningFile))||!hasFeature(state.features,'listeningTrainer'))return;
         const listenUrl=new URL('listening.html',window.location.href);
         listenUrl.searchParams.set('code',state.currentCode);
         listenUrl.searchParams.set('lesson',lessonId);

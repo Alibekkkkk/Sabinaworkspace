@@ -52,6 +52,8 @@ before(async () => {
       sourceFile: "lesson-b.json",
       content: { title: "Lesson B" }
     });
+    await set(ref(db, "protectedContent/lesson-a/listening"), { sourceFile: "recording", content: { id: "lesson-a-recording" } });
+    await set(ref(db, "protectedContent/lesson-b/listening"), { sourceFile: "recording", content: { id: "lesson-b-recording" } });
   });
 });
 
@@ -125,6 +127,16 @@ test("students can only read protected content assigned to their student code", 
   await assertFails(get(ref(dbA, "protectedContent/lesson-b/classwork")));
   await assertFails(get(ref(dbA, "protectedContent/lesson-b/clip")));
   await assertFails(get(ref(dbA, "protectedContent/lesson-b/manga")));
+});
+
+test("a listening set made from a recording is read only by the lesson's students and written only by the teacher", async () => {
+  const dbA = testEnv.authenticatedContext("student-a").database();
+  await assertSucceeds(get(ref(dbA, "protectedContent/lesson-a/listening")));
+  await assertFails(get(ref(dbA, "protectedContent/lesson-b/listening")));
+  await assertFails(set(ref(dbA, "protectedContent/lesson-a/listening"), { sourceFile: "recording", content: { id: "fake" } }));
+  await assertFails(get(ref(testEnv.unauthenticatedContext().database(), "protectedContent/lesson-a/listening")));
+  await assertFails(get(ref(dbA, "protectedContent/lesson-a/unknown-kind")), "kinds the rules do not name stay closed");
+  await assertSucceeds(set(ref(testEnv.authenticatedContext("teacher").database(), "protectedContent/lesson-a/listening"), { sourceFile: "recording", content: { id: "lesson-a-recording" } }));
 });
 
 test("manga content requires its per-student feature flag", async () => {

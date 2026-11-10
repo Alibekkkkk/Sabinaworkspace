@@ -1,4 +1,5 @@
-const CONTENT_KINDS = new Set(["classwork", "homework", "clip", "manga"]);
+// "listening": a listening set the teacher made from a recording (tools/listening-recording.html).
+const CONTENT_KINDS = new Set(["classwork", "homework", "clip", "manga", "listening"]);
 
 export async function loadProtectedContent(db, lessonId, kind) {
   if (!db) throw new Error("Firebase Database is required.");

@@ -211,3 +211,16 @@ curl -s -o /dev/null -w "%{http_code}\n" https://<your-site>/tests/security-gate
 | Secrets in the current tree | none; the only key-like string is the public Firebase web API key in `js/config.js`, which is public by design |
 | Secrets in the full git history (274 commits, pattern scan for private keys, AWS, GitHub, OpenAI-style, Slack tokens, service-account JSON, `.env`, `.pem`) | none. The Firebase web API key appears (it is the same key in every commit, and public by design). No `gitleaks`/`trufflehog` was available, so this is a pattern scan, not a full entropy scan |
 | `npm audit` | 47 advisories (15 high, 32 moderate), **all in development tooling** (`firebase`, `firebase-tools`, `lighthouse`, `puppeteer-core`, `@firebase/rules-unit-testing` and their dependencies). The project has no runtime dependencies: students load only the files in this repository and the Firebase SDK from Google's CDN. Fixing needs major version bumps of the tooling; not done |
+
+## Exception: the listening-from-recording tool (Phase 11)
+
+`tools/listening-recording.html` is a teacher-only page with a wider policy, in both its own `<meta>` tag and a hosting header rule placed after the site-wide one:
+- It loads the speech-recognition library from `cdn.jsdelivr.net`, pinned to `@huggingface/transformers@3.0.2`.
+- It runs WebAssembly (`'wasm-unsafe-eval'`).
+- It may fetch from any `https:` host: the model files from Hugging Face, and the teacher's audio link.
+
+No other page loads code from a CDN, and the student pages keep the strict policy (`tests/listening-recording.test.mjs`).
+
+The recording link is stored in the lesson's protected listening set (`protectedContent/<lesson>/listening`). Only teachers write it; only that lesson's students read it.
+
+Students play the link with an ordinary `<audio>` element (`media-src https:` was already allowed). It is never routed through Web Audio, because a recording from another site would play silently that way.
