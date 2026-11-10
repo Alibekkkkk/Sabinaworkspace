@@ -8,7 +8,7 @@
 // so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
 // The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
 // BEGIN GENERATED (scripts/build-sw-manifest.mjs)
-const CACHE_VERSION = "56548765e9";
+const CACHE_VERSION = "f833ea6a00";
 const SHELL_URLS = [
   "clip.html",
   "clips.html",
@@ -91,6 +91,7 @@ const SHELL_URLS = [
   "js/clock-service.js",
   "js/clock-ui.js",
   "js/config.js",
+  "js/content-sync.js",
   "js/dashboard-clock.js",
   "js/dashboard-status.js",
   "js/delegated-actions.js",
@@ -273,18 +274,21 @@ async function networkFirst(request, cacheName) {
 }
 
 // Stale-while-revalidate: answer from the cache at once and refresh it in the background.
-async function staleWhileRevalidate(event, request, key, isDocument, scope) {
+// Pages and their scripts come from this version's own cache only, so a page never mixes a new document with an older
+// script (or the reverse). A new version arrives as a whole: the next worker precaches every file, waits, and takes over
+// when the person presses Reload on "New version available". Files this version did not precache come from the network.
+async function shellFirst(request, key, isDocument, scope) {
   const cache = await caches.open(SHELL_CACHE);
   const cached = await cache.match(key);
-  const refresh = fetch(request).then(async response => {
-    if (response.ok && response.type === "basic") await cache.put(key, response.clone());
-    return response;
-  }).catch(() => null);
-  if (cached) { event.waitUntil(refresh); return cached; }
-  const fresh = await refresh;
-  if (fresh) return fresh;
-  if (isDocument) { const offlinePage = await cache.match(new URL("offline.html", scope).href); if (offlinePage) return offlinePage; }
-  return Response.error();
+  if (cached) return cached;
+  try {
+    const fresh = await fetch(request);
+    if (fresh.ok && fresh.type === "basic") await cache.put(key, fresh.clone());
+    return fresh;
+  } catch (error) {
+    if (isDocument) { const offlinePage = await cache.match(new URL("offline.html", scope).href); if (offlinePage) return offlinePage; }
+    return Response.error();
+  }
 }
 
 self.addEventListener("fetch", event => {
@@ -304,7 +308,7 @@ self.addEventListener("fetch", event => {
   const isDocument = request.mode === "navigate" && (SHELL_DOCUMENTS.has(relativePath) || relativePath === "");
   if (isDocument || SHELL_ASSETS.has(relativePath)) {
     const key = new URL(isDocument && relativePath === "" ? "index.html" : relativePath, scope);
-    event.respondWith(staleWhileRevalidate(event, request, key.href, isDocument, scope));
+    event.respondWith(shellFirst(request, key.href, isDocument, scope));
     return;
   }
   if (IMAGE_PATTERN.test(relativePath) && (relativePath.startsWith("assets/") || relativePath.startsWith("content/"))) event.respondWith(cacheFirst(request, IMAGE_CACHE, MAX_IMAGES));

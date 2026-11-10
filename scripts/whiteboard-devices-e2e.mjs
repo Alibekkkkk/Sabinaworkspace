@@ -76,7 +76,8 @@ try {
     const fire = (type, x, y, init) => canvas.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, clientX: rect.left + x, clientY: rect.top + y, button: 0, buttons: type === "pointerup" ? 0 : 1, isPrimary: true, ...init }));
     board.setTool("pen"); const before = board.objects.size;
     fire("pointerdown", 100, 500, { pointerId: 7, pointerType: "pen", pressure: 0.1 });
-    for (let i = 1; i <= 12; i++) fire("pointermove", 100 + i * 20, 500 + (i % 3) * 3, { pointerId: 7, pointerType: "pen", pressure: 0.1 + i * 0.07 });
+    // a slow stroke (about 1.7 s, longer than the 1.5 s palm window) so the palm check must count from the pen's last contact
+    for (let i = 1; i <= 12; i++) { fire("pointermove", 100 + i * 20, 500 + (i % 3) * 3, { pointerId: 7, pointerType: "pen", pressure: 0.1 + i * 0.07 }); await new Promise(resolve => setTimeout(resolve, 140)); }
     fire("pointerup", 340, 500, { pointerId: 7, pointerType: "pen", pressure: 0 });
     fire("pointerdown", 100, 600, { pointerId: 9, pointerType: "touch", pressure: 0.5 }); // a palm right after the pen
     fire("pointermove", 200, 620, { pointerId: 9, pointerType: "touch", pressure: 0.5 });

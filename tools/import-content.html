@@ -21,6 +21,13 @@
   <button id="importButton" type="button" disabled>Import content</button>
   <button id="updateClipsButton" type="button" disabled>Save Clip Lab changes</button>
   <button id="updateMangaButton" type="button" disabled>Save Manga Reader changes</button>
+  <section aria-labelledby="lessonUpdateTitle">
+    <h2 id="lessonUpdateTitle">Update existing lessons</h2>
+    <p><strong>Import content</strong> only adds lessons that have no protected copy yet. When you change a lesson or homework file in <code>content/</code>, check which copies differ, then update them. A backup of the current copies is downloaded first. Changes made with <strong>Edit question</strong> in a lesson are part of the copy and are replaced, so keep the backup.</p>
+    <button id="checkLessonsButton" type="button" disabled>Check for lesson updates</button>
+    <button id="updateLessonsButton" type="button" disabled>Update lessons</button>
+    <ul id="lessonUpdateList" aria-live="polite"></ul>
+  </section>
   <section aria-labelledby="clipAuthorTitle">
     <h2 id="clipAuthorTitle">Create or update a Clip Lab draft</h2>
     <p>Paste a clip JSON draft, validate it, and download it to <code>content/clips/</code>. Do not put correct answers in this public JSON file.</p>

@@ -75,7 +75,9 @@ try {
   check(await until(async () => (await count(page)) === 1), "a pen stroke is drawn and saved");
   const first = (await objectsOf(page))[0];
   check(first.t === "stroke" && first.w > 200, "it is a vector stroke with the right size");
-  const stored = await rest(`whiteboards/${anna.code}/${anna.lessonId}/boards/personal/pages`);
+  // the stroke shows at once; the database save can land a moment later, so wait for it
+  let stored = null;
+  for (let i = 0; i < 40 && !(stored && Object.values(stored)[0] && Object.values(stored)[0].objects); i++) { stored = await rest(`whiteboards/${anna.code}/${anna.lessonId}/boards/personal/pages`); if (!(stored && Object.values(stored)[0] && Object.values(stored)[0].objects)) await sleep(250); }
   const storedPage = Object.values(stored)[0];
   const storedObject = Object.values(storedPage.objects)[0];
   check(storedObject && typeof storedObject.p === "string" && storedObject.p.length < 400 && storedObject.t === "stroke", `the database holds a compact delta-encoded path (${storedObject && storedObject.p.length} characters)`);
@@ -172,7 +174,7 @@ try {
   const fileInput = await page.$(".wb-bottom input[type=file]");
   await fileInput.uploadFile(imagePath);
   check(await until(async () => (await objectsOf(page)).some(o => o.t === "image")), "a PNG picture can be added");
-  const stored2 = await rest(`whiteboards/${anna.code}/${anna.lessonId}/boards/personal/pages`);
+  const stored2 = await until(async () => { const value = await rest(`whiteboards/${anna.code}/${anna.lessonId}/boards/personal/pages`); const first = value && Object.values(value)[0]; return first && first.images ? value : false; }, 8000, 250) || {};
   const pageNode = Object.values(stored2)[0];
   check(pageNode.images && Object.values(pageNode.images).every(v => /^data:image\/(png|jpeg|webp);base64,/.test(v)), "it is stored as a small re-encoded data URL under the page");
   await page.waitForSelector("#wbAlt", { visible: true });
@@ -308,8 +310,8 @@ try {
   await student.keyboard.press("ArrowRight"); await sleep(400);
   check((await objectsOf(teacher)).find(o => o.id === teacherStroke.id).x === teacherStroke.x, "or move it");
   check(await until(() => student.evaluate(() => /belong to your teacher/.test(document.querySelector(".wb-sr").textContent))), "and is told it belongs to the teacher");
-  const dbCheck = await rest(`whiteboards/${anna.code}/${anna.lessonId}/boards/shared/pages`);
-  check(Object.values(Object.values(dbCheck)[0].objects).filter(o => !o.del).length === 2, "the database agrees: two live objects");
+  const liveInDatabase = async () => { const value = await rest(`whiteboards/${anna.code}/${anna.lessonId}/boards/shared/pages`); const first = value && Object.values(value)[0]; return first && first.objects ? Object.values(first.objects).filter(o => !o.del).length : -1; };
+  check(await until(async () => (await liveInDatabase()) === 2, 8000, 250), "the database agrees: two live objects");
 
   // presence and laser
   await student.mouse.move(sbox.x + 640, sbox.y + 300); await student.mouse.move(sbox.x + 660, sbox.y + 320);

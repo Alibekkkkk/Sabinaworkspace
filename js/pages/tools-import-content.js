@@ -3,6 +3,7 @@
     import { isTeacher } from "../auth.js";
     import { addProtectedClipAnswers, validateClip } from "../clips/schema.js";
     import { addProtectedMangaAnswers, validateManga } from "../manga/schema.js";
+    import { compareCopy, lessonFiles } from "../content-sync.js";
 
     const status = document.getElementById("status");
     const signInButton = document.getElementById("signInButton");
@@ -19,6 +20,10 @@
     const validateMangaButton = document.getElementById("validateMangaButton");
     const downloadMangaButton = document.getElementById("downloadMangaButton");
     const mangaAuthorStatus = document.getElementById("mangaAuthorStatus");
+    const checkLessonsButton = document.getElementById("checkLessonsButton");
+    const updateLessonsButton = document.getElementById("updateLessonsButton");
+    const lessonUpdateList = document.getElementById("lessonUpdateList");
+    let pendingLessonUpdates = [];
     let database;
     let auth;
     let teacherAllowed = false;
@@ -273,6 +278,77 @@
       importButton.disabled = false;
     }
 
+    // Lesson and homework copies that differ from their files in content/ (Import content never replaces an existing copy).
+    async function checkLessonUpdates() {
+      if (!await isTeacher(auth.currentUser, database)) throw new Error("An authorized teacher account is required.");
+      checkLessonsButton.disabled = true; updateLessonsButton.disabled = true; pendingLessonUpdates = [];
+      setStatus("Comparing each lesson's protected copy with its file…");
+      const [manifestResponse, curriculumSnapshot] = await Promise.all([
+        fetch("../content/manifest.json", { cache: "no-store" }),
+        database.ref("curriculum").once("value")
+      ]);
+      if (!manifestResponse.ok) throw new Error(`Could not load content manifest (${manifestResponse.status}).`);
+      const manifest = await manifestResponse.json();
+      const curriculum = curriculumSnapshot.val() || {};
+      // The rules allow reading one lesson's copy at a time, not the whole list.
+      const stored = {};
+      const readCopy = (lessonId, kind) => database.ref(`protectedContent/${lessonId}/${kind}`).once("value").then(snapshot => snapshot.val()).catch(() => null);
+      for (const lessonId of new Set([...Object.keys(manifest), ...Object.keys(curriculum)])) {
+        if (!/^[a-zA-Z0-9_-]+$/.test(lessonId)) continue;
+        const [classwork, homework] = await Promise.all([readCopy(lessonId, "classwork"), readCopy(lessonId, "homework")]);
+        stored[lessonId] = { classwork, homework };
+      }
+      const files = new Map();
+      const rows = [];
+      for (const lessonId of new Set([...Object.keys(manifest), ...Object.keys(curriculum)])) {
+        if (!/^[a-zA-Z0-9_-]+$/.test(lessonId)) continue;
+        const names = lessonFiles(manifest[lessonId] || {}, curriculum[lessonId] || {});
+        for (const kind of ["classwork", "homework"]) {
+          const name = names[kind];
+          const record = stored[lessonId] && stored[lessonId][kind];
+          if (!name || !record) continue; // lessons without a copy are added by Import content
+          if (!files.has(name)) files.set(name, await readContentFile(name).catch(() => null));
+          const file = files.get(name);
+          if (!file) continue;
+          const row = compareCopy(lessonId, kind, name, file.content, record);
+          rows.push({ ...row, title: (curriculum[lessonId] && curriculum[lessonId].title) || lessonId, current: record, next: file.content });
+        }
+      }
+      pendingLessonUpdates = rows.filter(row => row.status === "changed");
+      lessonUpdateList.replaceChildren(...rows.map(row => {
+        const item = document.createElement("li");
+        item.textContent = `${row.status === "changed" ? "Will update" : "Up to date"}: ${row.title} (${row.kind}, ${row.file})`;
+        return item;
+      }));
+      const count = pendingLessonUpdates.length;
+      updateLessonsButton.textContent = count ? `Update ${count} lesson cop${count === 1 ? "y" : "ies"}` : "Update lessons";
+      updateLessonsButton.disabled = !count;
+      checkLessonsButton.disabled = false;
+      setStatus(count ? `${count} protected cop${count === 1 ? "y differs" : "ies differ"} from the files. Nothing has been changed yet.` : "Every protected lesson copy matches its file.");
+    }
+
+    async function updateLessons() {
+      if (!await isTeacher(auth.currentUser, database)) throw new Error("An authorized teacher account is required.");
+      if (!pendingLessonUpdates.length) return;
+      updateLessonsButton.disabled = true;
+      const savedAt = new Date().toISOString();
+      const backup = { savedAt, note: "Protected lesson copies before Update lessons. Restore one with Realtime Database > Import JSON at protectedContent/<lesson>/<kind>.", records: {} };
+      for (const row of pendingLessonUpdates) (backup.records[row.lessonId] = backup.records[row.lessonId] || {})[row.kind] = row.current;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }));
+      link.download = `lesson-copies-backup-${savedAt.slice(0, 19).replace(/[:T]/g, "-")}.json`;
+      document.body.append(link); link.click(); link.remove();
+      let updated = 0;
+      for (const row of pendingLessonUpdates) {
+        await database.ref(`protectedContent/${row.lessonId}/${row.kind}`).set({ sourceFile: row.file, content: row.next, importedAt: row.current.importedAt || savedAt, updatedAt: savedAt });
+        updated += 1;
+      }
+      pendingLessonUpdates = [];
+      updateLessonsButton.textContent = "Update lessons";
+      lessonUpdateList.replaceChildren();
+      setStatus(`Updated ${updated} lesson cop${updated === 1 ? "y" : "ies"}. The backup was downloaded as a file. Students get the new version the next time they open the lesson.`);
+    }
+
     async function updateClips() {
       if (!await isTeacher(auth.currentUser, database)) throw new Error("An authorized teacher account is required.");
       updateClipsButton.disabled = true;
@@ -354,6 +430,7 @@
           importButton.disabled = !teacherAllowed;
           updateClipsButton.disabled = !teacherAllowed;
           updateMangaButton.disabled = !teacherAllowed;
+          checkLessonsButton.disabled = !teacherAllowed;
           signInButton.disabled = teacherAllowed;
           setStatus(teacherAllowed ? `Signed in as ${user.email}.` : "Sign in with an authorized teacher account.");
         } catch (error) {
@@ -361,6 +438,8 @@
           importButton.disabled = true;
           updateClipsButton.disabled = true;
           updateMangaButton.disabled = true;
+          checkLessonsButton.disabled = true;
+          updateLessonsButton.disabled = true;
           signInButton.disabled = false;
           setStatus(`Teacher authorization check failed: ${error.message}`);
         }
@@ -385,13 +464,21 @@
         updateClipsButton.disabled = !teacherAllowed;
         setStatus(`Clip update failed: ${error.message}`);
       });
-      updateMangaButton.addEventListener("click", () => {
-        if (!confirm("Replace the protected Manga Reader records listed in the manifest? This does not change classwork, homework, or assignments.")) return;
-        updateManga().catch(error => {
-          updateMangaButton.disabled = !teacherAllowed;
-          setStatus(`Manga update failed: ${error.message}`);
-        });
+    });
+    updateMangaButton.addEventListener("click", () => {
+      if (!confirm("Replace the protected Manga Reader records listed in the manifest? This does not change classwork, homework, or assignments.")) return;
+      updateManga().catch(error => {
+        updateMangaButton.disabled = !teacherAllowed;
+        setStatus(`Manga update failed: ${error.message}`);
       });
+    });
+    checkLessonsButton.addEventListener("click", () => {
+      checkLessonUpdates().catch(error => { checkLessonsButton.disabled = !teacherAllowed; setStatus(`Check failed: ${error.message}`); });
+    });
+    updateLessonsButton.addEventListener("click", () => {
+      const count = pendingLessonUpdates.length;
+      if (!confirm(`Replace ${count} protected lesson cop${count === 1 ? "y" : "ies"} with the files in content/? A backup of the current copies is downloaded first. Edits made with Edit question are replaced.`)) return;
+      updateLessons().catch(error => { updateLessonsButton.disabled = false; setStatus(`Update failed: ${error.message}`); });
     });
 
     validateClipButton.addEventListener("click", () => {

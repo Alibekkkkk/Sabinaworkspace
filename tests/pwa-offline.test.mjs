@@ -33,7 +33,7 @@ test("every file a page or script points at is either precached or deliberately 
 test("the service worker has versioned caches, the right strategy for each kind, and never touches sign-in or partial media", () => {
   for (const name of ["SHELL_CACHE", "CONTENT_CACHE", "AUDIO_CACHE", "IMAGE_CACHE"]) assert.match(worker, new RegExp(`const ${name} = `));
   assert.match(worker, /SHELL_CACHE = `\$\{CACHE_PREFIX\}shell-\$\{CACHE_VERSION\}`/, "the shell cache name carries the version");
-  assert.match(worker, /staleWhileRevalidate/); assert.match(worker, /networkFirst\(request, CONTENT_CACHE\)/); assert.match(worker, /cacheFirst\(request, AUDIO_CACHE, MAX_AUDIO\)/); assert.match(worker, /cacheFirst\(request, IMAGE_CACHE, MAX_IMAGES\)/);
+  assert.match(worker, /shellFirst\(request, key\.href, isDocument, scope\)/); assert.doesNotMatch(worker, /staleWhileRevalidate/, "pages and scripts never mix versions"); assert.match(worker, /networkFirst\(request, CONTENT_CACHE\)/); assert.match(worker, /cacheFirst\(request, AUDIO_CACHE, MAX_AUDIO\)/); assert.match(worker, /cacheFirst\(request, IMAGE_CACHE, MAX_IMAGES\)/);
   assert.match(worker, /const MAX_AUDIO = \d+/); assert.match(worker, /const MAX_IMAGES = \d+/); assert.match(worker, /async function trim/);
   assert.match(worker, /request\.method !== "GET"/); assert.match(worker, /url\.origin !== scope\.origin/);
   assert.match(worker, /relativePath\.startsWith\("__\/"\)/); assert.match(worker, /request\.headers\.has\("range"\)/);

@@ -215,6 +215,7 @@ export function createBoard({ root, canvas, role = "student", uid = "", scope = 
 
   function handlePointerMove(event) {
     if (destroyed) return;
+    if (event.pointerType === "pen") lastPenAt = Date.now(); // palm rejection counts from the pen's last contact, not its first
     const known = pointers.get(event.pointerId);
     if (known) { known.x = event.clientX; known.y = event.clientY; }
     const point = renderer.toBoard(event.clientX, event.clientY);
@@ -239,6 +240,7 @@ export function createBoard({ root, canvas, role = "student", uid = "", scope = 
 
   function handlePointerUp(event) {
     if (destroyed) return;
+    if (event.pointerType === "pen") lastPenAt = Date.now();
     pointers.delete(event.pointerId);
     try { canvas.releasePointerCapture(event.pointerId); } catch (error) { /* not captured */ }
     if (!gesture) return;
