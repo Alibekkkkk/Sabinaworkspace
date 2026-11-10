@@ -28,10 +28,12 @@ body.portal-page.light {
 
 .portal-page .wrap {
   max-width: 76rem;
+  margin-inline: auto; /* centred on wide screens */
 }
 
 .portal-page .header {
   max-width: 54rem;
+  margin-inline: auto;
   padding: clamp(2.5rem, 8vw, 5rem) 1rem 2rem;
 }
 

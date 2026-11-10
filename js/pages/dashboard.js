@@ -87,13 +87,15 @@ async function initFirebase() {
         console.error("Teacher authorization check failed:", error);
         document.getElementById('authError').textContent = 'Could not verify teacher access. Check your connection and try again.';
       }
+      const authStatus = document.getElementById('authStatus');
+      if (authStatus) authStatus.textContent = '';
       if (!allowed) {
         teacherUid = null;
         document.querySelector('.wrap').style.display = 'none';
         document.getElementById('teacherLogin').style.display = 'block';
         if (user) {
           document.getElementById('authError').textContent =
-            'Signed in as ' + user.email + ', which is not the teacher account. Signing you out…';
+            'Signed in as ' + (user.email || 'a student') + ', which is not a teacher account. Signing you out…';
           fbAuth.signOut();
         }
         return;

@@ -147,7 +147,8 @@ body{font-family:var(--ds-font-body);background:var(--bg);color:var(--ink);min-h
 .viewer-placeholder{flex:1;display:grid;place-items:center;color:var(--ink-soft);font-size:16px;text-align:center;padding:40px}
 .viewer-placeholder .icon{font-size:56px;opacity:.4;margin-bottom:14px}
 
-.phase0-inline-1{display:none;}
+.phase0-inline-1{display:block;} /* the teacher sign-in shows until the account is checked, so the page is never blank */
+.auth-status{color:var(--ds-color-muted);font-size:14px;margin-top:12px}
 .phase0-inline-2{display:none;}
 .phase0-inline-3{font-family:var(--ds-font-mono);}
 .phase0-inline-4{text-decoration:none;}

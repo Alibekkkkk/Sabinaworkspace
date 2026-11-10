@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="js/theme.js"></script>
+  <script src="js/boot-guard.js"></script>
   <script src="js/icons.js"></script>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0a0e1c">
@@ -53,7 +54,8 @@
 
 <div id="teacherLogin" class="phase0-inline-1">
   <h1>Teacher sign in</h1>
-  <p>Sign in with the teacher Google account to manage students and lessons.</p>
+  <p>This page is for teachers only. Sign in with your teacher Google account to manage students and lessons. Other accounts are turned away, and teacher accounts cannot be created here.</p>
+  <p id="authStatus" class="auth-status" role="status">Checking your sign-in…</p>
   <button class="btn primary" id="googleBtn" data-action="teacher-google-sign-in">
     <span class="g-google-icon">G</span>
     Continue with Google
