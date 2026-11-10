@@ -45,4 +45,4 @@ How to repeat it: `npm run dev`, then `npm run test:e2e` (every script below, on
 | Accessibility | axe checks inside `manga-e2e.mjs`, `clips-tab-e2e.mjs`, `games-e2e.mjs`; Lighthouse accessibility 95 to 100 in `docs/PERFORMANCE.md` |
 
 ## Result of the last run
-2026-11-11 (end of Phase 13): all 20 browser scripts passed in one full run (`npm run test:e2e`); 436 unit tests and 49 rules tests pass; the accessibility sweep (`npm run test:a11y`) finds no violations on ten pages in either theme.
+2026-11-11 (end of Phase 13): all 20 browser scripts passed in one full run (`npm run test:e2e`); 432 unit tests and 49 rules tests pass; the accessibility sweep (`npm run test:a11y`) finds no violations on ten pages in either theme.
