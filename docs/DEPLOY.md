@@ -19,6 +19,7 @@ Checked against production on 2026-11-10 (read-only queries with the Firebase CL
   - Every live copy was first checked: each matched an earlier version of its file exactly, so no teacher edits were overwritten.
   - Backup: `protectedContent-before-phase10.json`.
   - Note: **Import content** in the tool only writes a lesson that has no copy yet, so it cannot update an existing lesson. Phase 13 adds an update button.
+- 2026-11-10: Phase 11 deployed (rules backed up to `rules-before-phase11.json`): listening sets from a recording. Checked live: the tool page has its own policy and loads the speech library; student pages keep the strict policy.
 - **Still to do:** switch Manga reader on for Gaziz (step 5); smoke test on a phone (step 6). Re-importing content brings the v3 grammar topics into the protected copies. Until then, lessons borrow them from the published files. The old GitHub Pages site now also runs against the new rules.
 
 ## Order (each step depends on the previous one)
