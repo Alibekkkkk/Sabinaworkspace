@@ -4,28 +4,32 @@
     "homeworkFile": "homework_abay.json",
     "clipFile": "clips/abay-gerund-infinitive.json",
     "clipId": "abay-gerund-infinitive",
-    "assignedTo": []
+    "assignedTo": [],
+    "listeningFile": "listening/abay.json"
   },
   "araylim_1": {
     "classworkFile": "araylim_1.json",
     "homeworkFile": "homework_araylim_1.json",
     "clipFile": "clips/araylim-1-memory.json",
     "clipId": "araylim-1-memory",
-    "assignedTo": []
+    "assignedTo": [],
+    "listeningFile": "listening/araylim_1.json"
   },
   "araylim_2": {
     "classworkFile": "araylim_2.json",
     "homeworkFile": "homework_araylim_2.json",
     "clipFile": "clips/araylim-2-space-tourism.json",
     "clipId": "araylim-2-space-tourism",
-    "assignedTo": []
+    "assignedTo": [],
+    "listeningFile": "listening/araylim_2.json"
   },
   "araylim_3": {
     "classworkFile": "araylim_3.json",
     "homeworkFile": "homework_araylim_3.json",
     "clipFile": "clips/araylim-3-ai.json",
     "clipId": "araylim-3-ai",
-    "assignedTo": []
+    "assignedTo": [],
+    "listeningFile": "listening/araylim_3.json"
   },
   "gaziz": {
     "classworkFile": "gaziz.json",
@@ -38,14 +42,16 @@
     "features": {
       "mangaReader": true
     },
-    "assignedTo": []
+    "assignedTo": [],
+    "listeningFile": "listening/gaziz.json"
   },
   "george": {
     "classworkFile": "george.json",
     "homeworkFile": "homework_george.json",
     "clipFile": "clips/george-daily-routines.json",
     "clipId": "george-daily-routines",
-    "assignedTo": []
+    "assignedTo": [],
+    "listeningFile": "listening/george.json"
   },
   "sabina": {
     "classworkFile": "sabina.json",
@@ -65,7 +71,8 @@
     "features": {
       "mangaReader": true
     },
-    "assignedTo": []
+    "assignedTo": [],
+    "listeningFile": "listening/gaziz.json"
   },
   "lesson_1_sabina": {
     "classworkFile": "sabina.json",

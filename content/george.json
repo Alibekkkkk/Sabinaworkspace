@@ -13,7 +13,7 @@
     {
       "id": "reading",
       "title": "Reading Comprehension",
-      "estimatedMinutes": 20,
+      "estimatedMinutes": 25,
       "stages": [
         "reading"
       ]
@@ -335,7 +335,7 @@
       "meaning": "the remaining part"
     }
   ],
-  "readingHtml": "<h1>Alex's Busy Day</h1><div class=\"subtitle\">Present Simple vs. Present Continuous</div><p><span class=\"para-label\">A.</span>Alex is a 15-year-old student and a football player. He <b>usually</b> wakes up at 7 o'clock. He eats a <b>healthy</b> breakfast and goes to school. After school, he <b>trains</b> with his team. They <b>play</b> a <b>match</b> every Saturday.</p><p><span class=\"para-label\">B.</span>Today is different. Right now, Alex is at the <b>stadium</b>. It is the final of a big <b>tournament</b>. Look! The <b>coach</b> is talking to the players. Alex is running with the ball. He is going to <b>score</b> a goal!</p><p><span class=\"para-label\">C.</span>After the match, Alex will <b>rest</b>. He needs to sleep because he is very tired. Tomorrow, he will put his <b>equipment</b> in the bag and go back to school.</p>",
+  "readingHtml": "<h1>Alex's Busy Day</h1><div class=\"subtitle\">Present Simple vs. Present Continuous</div><p><span class=\"para-label\">A.</span>Alex is a 15-year-old student and a football player. He <b>usually</b> wakes up at 7 o'clock. He eats a <b>healthy</b> breakfast and goes to school. After school, he <b>trains</b> with his team. They <b>play</b> a <b>match</b> every Saturday.</p><p><span class=\"para-label\">B.</span>Today is different. Right now, Alex is at the <b>stadium</b>. It is the final of a big <b>tournament</b>. Look! The <b>coach</b> is talking to the players. Alex is running with the ball. He is going to <b>score</b> a goal!</p><p><span class=\"para-label\">C.</span>After the match, Alex will <b>rest</b>. He needs to sleep because he is very tired. Tomorrow, he will put his <b>equipment</b> in the bag and go back to school.</p><p><span class=\"para-label\">D.</span>Alex started playing football when he was six. Last season was difficult for him. He hurt his ankle in October and missed five matches. He did not give up. He went to the gym, did his exercises every day and listened to his doctor. In March, he played again and scored three goals in one game. Now his coach says he is the best young <b>athlete</b> in the club. Next season, Alex is going to play for the school team too.</p>",
   "readingQ": [
     {
       "id": "george.readingQ.001",
@@ -452,6 +452,25 @@
         "ball"
       ],
       "exp": "Alex is running with the ball."
+    },
+    {
+      "id": "george.readingQ.011",
+      "type": "short",
+      "prompt": "When did Alex hurt his ankle?",
+      "ru": "Когда Алекс повредил лодыжку?",
+      "answers": [
+        "october",
+        "in october"
+      ],
+      "exp": "Paragraph D: He hurt his ankle in October."
+    },
+    {
+      "id": "george.readingQ.012",
+      "type": "tfng",
+      "prompt": "Alex stopped playing football after his injury.",
+      "ru": "Алекс бросил футбол после травмы.",
+      "answer": "False",
+      "exp": "Paragraph D: He did not give up, and in March he played again."
     }
   ],
   "contextQ": [
@@ -1153,14 +1172,14 @@
       },
       {
         "id": "george.sbPp.shuffled.007",
-        "prompt": "Build: The Earth goes around the Sun.",
+        "prompt": "Build: My brother plays tennis on Fridays.",
         "correct": [
-          "The",
-          "Earth",
-          "goes",
-          "around",
-          "the",
-          "Sun."
+          "My",
+          "brother",
+          "plays",
+          "tennis",
+          "on",
+          "Fridays."
         ]
       },
       {
@@ -1238,15 +1257,13 @@
       },
       {
         "id": "george.sbPp.shuffled.014",
-        "prompt": "Build: Why are you wearing a heavy coat?",
+        "prompt": "Build: Why is the coach shouting?",
         "correct": [
           "Why",
-          "are",
-          "you",
-          "wearing",
-          "a",
-          "heavy",
-          "coat?"
+          "is",
+          "the",
+          "coach",
+          "shouting?"
         ]
       },
       {
@@ -1880,8 +1897,8 @@
       },
       {
         "id": "george.g10.shuffled.007",
-        "p": "I ___ (travel) to London next summer.",
-        "a": "am going to travel"
+        "p": "My sister ___ (start) a new job next month.",
+        "a": "is going to start"
       },
       {
         "id": "george.g10.shuffled.008",
@@ -1915,8 +1932,8 @@
       },
       {
         "id": "george.g10.shuffled.014",
-        "p": "I ___ (not / have) breakfast this morning.",
-        "a": "am not going to have"
+        "p": "We ___ (not / play) football tomorrow because of the rain.",
+        "a": "are not going to play"
       },
       {
         "id": "george.g10.shuffled.015",

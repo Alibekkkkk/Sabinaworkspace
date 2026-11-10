@@ -3,7 +3,7 @@
   "id": "sabina-natural-disasters",
   "title": "Natural disasters: listen and type",
   "level": "B1",
-  "status": "draft",
+  "status": "approved",
   "voice": {
     "id": "en-GB-SoniaNeural",
     "provider": "browser",

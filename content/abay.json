@@ -411,7 +411,7 @@
       "meaning": "a good or helpful result"
     }
   ],
-  "readingHtml": "<h1>The Science of Gaming & Esports</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div style=\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;margin:16px 0 20px;box-shadow:0 8px 24px rgba(0,0,0,.14)\"><iframe src=\"https://www.youtube-nocookie.com/embed/FktsFcooIG8\" title=\"How gaming affects your brain\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen style=\"position:absolute;top:0;left:0;width:100%;height:100%\"></iframe></div><div style=\"margin-top:8px;padding:14px 18px;background:var(--bg);border-radius:12px;border-left:4px solid var(--accent);font-size:14px;color:var(--ink-soft);line-height:1.55\"><b style=\"color:var(--accent)\">Tip:</b> Watch the video to see how games affect the brain. Then read the notes below to help you answer the questions.</div><p><span class=\"para-label\">1.</span> Many adults think video games are just a <b>distraction</b>. However, as the video explains, recent scientific studies show that playing certain games can actually <b>stimulate</b> the brain in positive ways. They can improve our <b>cognitive</b> abilities, like memory and problem-solving.</p><p><span class=\"para-label\">2.</span> Modern video games require a good <b>strategy</b>. They ask players to <b>simulate</b> real-world problems. The <b>immersive</b> worlds of these games keep players highly engaged, forcing them to think quickly and adapt to new situations.</p><p><span class=\"para-label\">3.</span> In multiplayer games and <b>esports</b>, players must <b>collaborate</b> with their teammates. They need to <b>focus</b> intensely on the screen and <b>optimize</b> their <b>reaction</b> times. This teaches valuable skills like <b>teamwork</b> and quick decision-making under pressure.</p><p><span class=\"para-label\">4.</span> While <b>virtual</b> environments offer many <b>benefits</b>, scientists warn that games can be highly <b>addictive</b>. Too much screen time can reduce our ability to focus on real-life tasks. Therefore, it is important to find a healthy <b>balance</b> between gaming and studying.</p>",
+  "readingHtml": "<h1>The Science of Gaming & Esports</h1><div class=\"subtitle\">Watch the video, then read the notes</div><div class=\"reading-video\"><iframe src=\"https://www.youtube-nocookie.com/embed/FktsFcooIG8\" title=\"How gaming affects your brain\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe></div><div class=\"reading-tip\"><b>Tip:</b> Watch the video to see how games affect the brain. Then read the notes below to help you answer the questions.</div><p><span class=\"para-label\">1.</span> Many adults think video games are just a <b>distraction</b>. However, as the video explains, recent scientific studies show that playing certain games can actually <b>stimulate</b> the brain in positive ways. They can improve our <b>cognitive</b> abilities, like memory and problem-solving.</p><p><span class=\"para-label\">2.</span> Modern video games require a good <b>strategy</b>. They ask players to <b>simulate</b> real-world problems. The <b>immersive</b> worlds of these games keep players highly engaged, forcing them to think quickly and adapt to new situations.</p><p><span class=\"para-label\">3.</span> In multiplayer games and <b>esports</b>, players must <b>collaborate</b> with their teammates. They need to <b>focus</b> intensely on the screen and <b>optimize</b> their <b>reaction</b> times. This teaches valuable skills like <b>teamwork</b> and quick decision-making under pressure.</p><p><span class=\"para-label\">4.</span> While <b>virtual</b> environments offer many <b>benefits</b>, scientists warn that games can be highly <b>addictive</b>. Too much screen time can reduce our ability to focus on real-life tasks. Therefore, it is important to find a healthy <b>balance</b> between gaming and studying.</p><p><span class=\"para-label\">5.</span> Many students <b>enjoy playing</b> strategy games after school, and some even <b>hope to become</b> professional esports players. Coaches <b>recommend taking</b> a short break every hour and <b>suggest playing</b> for no more than two hours a day. If you <b>decide to play</b> in the evening, try to <b>avoid gaming</b> late at night: your brain needs sleep to store what you learned during the day.</p>",
   "readingQ": [
     {
       "id": "abay.readingQ.001",
@@ -1097,7 +1097,7 @@
     "pos": [
       {
         "id": "abay.sbPp.pos.001",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'enjoy'.<br>Build: enjoying academic reading.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'enjoy'.<br>Build: enjoying academic reading.",
         "correct": [
           "I",
           "enjoy",
@@ -1108,7 +1108,7 @@
       },
       {
         "id": "abay.sbPp.pos.002",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'decide'.<br>Build: deciding to apply.",
+        "prompt": "<b>Infinitive (to + V1):</b> after 'decide'.<br>Build: deciding to apply.",
         "correct": [
           "She",
           "decided",
@@ -1121,7 +1121,7 @@
       },
       {
         "id": "abay.sbPp.pos.003",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'avoid'.<br>Build: avoiding a mistake.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'avoid'.<br>Build: avoiding a mistake.",
         "correct": [
           "They",
           "avoided",
@@ -1133,7 +1133,7 @@
       },
       {
         "id": "abay.sbPp.pos.004",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'hope'.<br>Build: hoping to finish.",
+        "prompt": "<b>Infinitive (to + V1):</b> after 'hope'.<br>Build: hoping to finish.",
         "correct": [
           "We",
           "hope",
@@ -1147,7 +1147,7 @@
       },
       {
         "id": "abay.sbPp.pos.005",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'suggest'.<br>Build: suggesting a plan.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'suggest'.<br>Build: suggesting a plan.",
         "correct": [
           "He",
           "suggested",
@@ -1162,7 +1162,7 @@
     "neg": [
       {
         "id": "abay.sbPp.neg.001",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'mind'.<br>Build: minding a wait.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'mind'.<br>Build: minding a wait.",
         "correct": [
           "I",
           "do",
@@ -1176,7 +1176,7 @@
       },
       {
         "id": "abay.sbPp.neg.002",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'refuse'.<br>Build: refusing to answer.",
+        "prompt": "<b>Infinitive (to + V1):</b> after 'refuse'.<br>Build: refusing to answer.",
         "correct": [
           "She",
           "refused",
@@ -1188,7 +1188,7 @@
       },
       {
         "id": "abay.sbPp.neg.003",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'want' (negative).<br>Build: wanting to leave.",
+        "prompt": "<b>Infinitive (to + V1):</b> after 'want' (negative).<br>Build: wanting to leave.",
         "correct": [
           "He",
           "does",
@@ -1201,7 +1201,7 @@
       },
       {
         "id": "abay.sbPp.neg.004",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'avoid' (negative).<br>Build: avoiding questions.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'avoid' (negative).<br>Build: avoiding questions.",
         "correct": [
           "We",
           "cannot",
@@ -1213,7 +1213,7 @@
       },
       {
         "id": "abay.sbPp.neg.005",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'enjoy' (negative).<br>Build: not enjoying studying.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'enjoy' (negative).<br>Build: not enjoying studying.",
         "correct": [
           "They",
           "do",
@@ -1228,7 +1228,7 @@
     "q": [
       {
         "id": "abay.sbPp.q.001",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'want'.<br>Build a question: joining us.",
+        "prompt": "<b>Infinitive (to + V1):</b> after 'want'.<br>Build a question: joining us.",
         "correct": [
           "Do",
           "you",
@@ -1240,7 +1240,7 @@
       },
       {
         "id": "abay.sbPp.q.002",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'mind'.<br>Build a question: sitting at the front.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'mind'.<br>Build a question: sitting at the front.",
         "correct": [
           "Does",
           "she",
@@ -1253,7 +1253,7 @@
       },
       {
         "id": "abay.sbPp.q.003",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund (V-ing):</span> after 'finish'.<br>Build a question: finishing the article.",
+        "prompt": "<b>Gerund (V-ing):</b> after 'finish'.<br>Build a question: finishing the article.",
         "correct": [
           "Have",
           "you",
@@ -1265,7 +1265,7 @@
       },
       {
         "id": "abay.sbPp.q.004",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'would like'.<br>Build a question: trying again.",
+        "prompt": "<b>Infinitive (to + V1):</b> after 'would like'.<br>Build a question: trying again.",
         "correct": [
           "Would",
           "you",
@@ -1277,7 +1277,7 @@
       },
       {
         "id": "abay.sbPp.q.005",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive (to + V1):</span> after 'manage'.<br>Build a question: managing to solve.",
+        "prompt": "<b>Infinitive (to + V1):</b> after 'manage'.<br>Build a question: managing to solve.",
         "correct": [
           "Did",
           "you",
@@ -1292,7 +1292,7 @@
     "shuffled": [
       {
         "id": "abay.sbPp.shuffled.001",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'keep'.",
+        "prompt": "<b>Gerund:</b> after 'keep'.",
         "correct": [
           "He",
           "kept",
@@ -1303,7 +1303,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.002",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'plan'.",
+        "prompt": "<b>Infinitive:</b> after 'plan'.",
         "correct": [
           "We",
           "plan",
@@ -1316,7 +1316,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.003",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after preposition 'good at'.",
+        "prompt": "<b>Gerund:</b> after preposition 'good at'.",
         "correct": [
           "She",
           "is",
@@ -1329,7 +1329,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.004",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> negative after 'decide'.",
+        "prompt": "<b>Infinitive:</b> negative after 'decide'.",
         "correct": [
           "They",
           "decided",
@@ -1343,7 +1343,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.005",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after preposition 'looking forward to'.",
+        "prompt": "<b>Gerund:</b> after preposition 'looking forward to'.",
         "correct": [
           "I",
           "am",
@@ -1357,7 +1357,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.006",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'important' (adjective).",
+        "prompt": "<b>Infinitive:</b> after 'important' (adjective).",
         "correct": [
           "It",
           "is",
@@ -1370,7 +1370,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.007",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'used to' (accustomed to).",
+        "prompt": "<b>Gerund:</b> after 'used to' (accustomed to).",
         "correct": [
           "The",
           "students",
@@ -1383,7 +1383,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.008",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'agree'.",
+        "prompt": "<b>Infinitive:</b> after 'agree'.",
         "correct": [
           "We",
           "agreed",
@@ -1395,7 +1395,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.009",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'mind'.",
+        "prompt": "<b>Gerund:</b> after 'mind'.",
         "correct": [
           "Do",
           "you",
@@ -1407,7 +1407,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.010",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Bare Infinitive:</span> after 'would rather'.",
+        "prompt": "<b>Bare Infinitive:</b> after 'would rather'.",
         "correct": [
           "I",
           "would",
@@ -1419,7 +1419,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.011",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'mind'.",
+        "prompt": "<b>Gerund:</b> after 'mind'.",
         "correct": [
           "Would",
           "you",
@@ -1432,7 +1432,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.012",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'agree'.",
+        "prompt": "<b>Infinitive:</b> after 'agree'.",
         "correct": [
           "They",
           "agreed",
@@ -1444,7 +1444,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.013",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'cannot help'.",
+        "prompt": "<b>Gerund:</b> after 'cannot help'.",
         "correct": [
           "She",
           "cannot",
@@ -1457,7 +1457,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.014",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Infinitive:</span> after 'hope'.",
+        "prompt": "<b>Infinitive:</b> after 'hope'.",
         "correct": [
           "The",
           "team",
@@ -1470,7 +1470,7 @@
       },
       {
         "id": "abay.sbPp.shuffled.015",
-        "prompt": "<span style='color:#e74c3c; font-weight:bold;'>Gerund:</span> after 'suggest'.",
+        "prompt": "<b>Gerund:</b> after 'suggest'.",
         "correct": [
           "I",
           "suggest",
@@ -1489,7 +1489,7 @@
     "pos": [
       {
         "id": "abay.sbPs.pos.001",
-        "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong deduction (Sure):</span> 'must be' for present state.<br>Build a modal sentence: being exhausted.",
+        "prompt": "<b>Strong deduction (Sure):</b> 'must be' for present state.<br>Build a modal sentence: being exhausted.",
         "correct": [
           "She",
           "must",
@@ -1501,7 +1501,7 @@
       },
       {
         "id": "abay.sbPs.pos.002",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility (Maybe):</span> 'could have' for past state.<br>Build a modal sentence: data having an error.",
+        "prompt": "<b>Possibility (Maybe):</b> 'could have' for past state.<br>Build a modal sentence: data having an error.",
         "correct": [
           "The",
           "data",
@@ -1513,7 +1513,7 @@
       },
       {
         "id": "abay.sbPs.pos.003",
-        "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong deduction (Sure):</span> 'must be' for present state.<br>Build a modal sentence: a wrong assumption.",
+        "prompt": "<b>Strong deduction (Sure):</b> 'must be' for present state.<br>Build a modal sentence: a wrong assumption.",
         "correct": [
           "That",
           "assumption",
@@ -1524,7 +1524,7 @@
       },
       {
         "id": "abay.sbPs.pos.004",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility (Maybe):</span> 'might be' for present state.<br>Build a modal sentence: being busy.",
+        "prompt": "<b>Possibility (Maybe):</b> 'might be' for present state.<br>Build a modal sentence: being busy.",
         "correct": [
           "He",
           "might",
@@ -1535,7 +1535,7 @@
       },
       {
         "id": "abay.sbPs.pos.005",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility (Maybe):</span> 'may have' for past action.<br>Build a modal sentence: having made a mistake.",
+        "prompt": "<b>Possibility (Maybe):</b> 'may have' for past action.<br>Build a modal sentence: having made a mistake.",
         "correct": [
           "They",
           "may",
@@ -1549,7 +1549,7 @@
     "neg": [
       {
         "id": "abay.sbPs.neg.001",
-        "prompt": "<span style='color:#c0392b; font-weight:bold;'>Negative Advice:</span> 'should not assume'.<br>Build a sentence advising against assuming.",
+        "prompt": "<b>Negative Advice:</b> 'should not assume'.<br>Build a sentence advising against assuming.",
         "correct": [
           "You",
           "should",
@@ -1561,7 +1561,7 @@
       },
       {
         "id": "abay.sbPs.neg.002",
-        "prompt": "<span style='color:#c0392b; font-weight:bold;'>Impossibility (No way):</span> 'cannot be'.<br>Build a sentence: something cannot be true.",
+        "prompt": "<b>Impossibility (No way):</b> 'cannot be'.<br>Build a sentence: something cannot be true.",
         "correct": [
           "That",
           "cannot",
@@ -1573,7 +1573,7 @@
       },
       {
         "id": "abay.sbPs.neg.003",
-        "prompt": "<span style='color:#c0392b; font-weight:bold;'>Prohibition:</span> 'must not'.<br>Build a sentence: not jumping to conclusions.",
+        "prompt": "<b>Prohibition:</b> 'must not'.<br>Build a sentence: not jumping to conclusions.",
         "correct": [
           "We",
           "must",
@@ -1585,7 +1585,7 @@
       },
       {
         "id": "abay.sbPs.neg.004",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Weak possibility (negative):</span> 'might not'.<br>Build a sentence: he might not understand.",
+        "prompt": "<b>Weak possibility (negative):</b> 'might not'.<br>Build a sentence: he might not understand.",
         "correct": [
           "He",
           "might",
@@ -1597,7 +1597,7 @@
       },
       {
         "id": "abay.sbPs.neg.005",
-        "prompt": "<span style='color:#c0392b; font-weight:bold;'>Past criticism:</span> 'should not have + V3'.<br>Build a sentence criticising ignoring data.",
+        "prompt": "<b>Past criticism:</b> 'should not have + V3'.<br>Build a sentence criticising ignoring data.",
         "correct": [
           "The",
           "scientist",
@@ -1613,7 +1613,7 @@
     "q": [
       {
         "id": "abay.sbPs.q.001",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility Question:</span> 'Could she be'.<br>Build a question: being right about the theory.",
+        "prompt": "<b>Possibility Question:</b> 'Could she be'.<br>Build a question: being right about the theory.",
         "correct": [
           "Could",
           "she",
@@ -1626,7 +1626,7 @@
       },
       {
         "id": "abay.sbPs.q.002",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past Possibility Question:</span> 'Could have been'.<br>Build a question: results being different.",
+        "prompt": "<b>Past Possibility Question:</b> 'Could have been'.<br>Build a question: results being different.",
         "correct": [
           "Could",
           "the",
@@ -1638,7 +1638,7 @@
       },
       {
         "id": "abay.sbPs.q.003",
-        "prompt": "<span style='color:#27ae60; font-weight:bold;'>Advice Question:</span> 'Should we assume'.<br>Build a question: assuming the claim.",
+        "prompt": "<b>Advice Question:</b> 'Should we assume'.<br>Build a question: assuming the claim.",
         "correct": [
           "Should",
           "we",
@@ -1651,7 +1651,7 @@
       },
       {
         "id": "abay.sbPs.q.004",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past Possibility Question:</span> 'Might he have forgotten'.<br>Build a question: forgetting the evidence.",
+        "prompt": "<b>Past Possibility Question:</b> 'Might he have forgotten'.<br>Build a question: forgetting the evidence.",
         "correct": [
           "Might",
           "he",
@@ -1663,7 +1663,7 @@
       },
       {
         "id": "abay.sbPs.q.005",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past Possibility Question:</span> 'Could they have misread'.<br>Build a question: misreading the data.",
+        "prompt": "<b>Past Possibility Question:</b> 'Could they have misread'.<br>Build a question: misreading the data.",
         "correct": [
           "Could",
           "they",
@@ -1677,7 +1677,7 @@
     "shuffled": [
       {
         "id": "abay.sbPs.shuffled.001",
-        "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong deduction:</span> 'must suggest'.",
+        "prompt": "<b>Strong deduction:</b> 'must suggest'.",
         "correct": [
           "The",
           "evidence",
@@ -1691,7 +1691,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.002",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past possibility:</span> 'could have'.",
+        "prompt": "<b>Past possibility:</b> 'could have'.",
         "correct": [
           "She",
           "could",
@@ -1703,7 +1703,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.003",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Advice:</span> 'should check'.",
+        "prompt": "<b>Advice:</b> 'should check'.",
         "correct": [
           "We",
           "should",
@@ -1716,7 +1716,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.004",
-        "prompt": "<span style='color:#c0392b; font-weight:bold;'>Impossibility:</span> 'cannot be'.",
+        "prompt": "<b>Impossibility:</b> 'cannot be'.",
         "correct": [
           "The",
           "claim",
@@ -1732,7 +1732,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.005",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past possibility:</span> 'might have'.",
+        "prompt": "<b>Past possibility:</b> 'might have'.",
         "correct": [
           "He",
           "might",
@@ -1744,7 +1744,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.006",
-        "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong past deduction:</span> 'must have'.",
+        "prompt": "<b>Strong past deduction:</b> 'must have'.",
         "correct": [
           "The",
           "researchers",
@@ -1757,7 +1757,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.007",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Obligation:</span> 'ought to'.",
+        "prompt": "<b>Obligation:</b> 'ought to'.",
         "correct": [
           "You",
           "ought",
@@ -1772,7 +1772,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.008",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility:</span> 'may need'.",
+        "prompt": "<b>Possibility:</b> 'may need'.",
         "correct": [
           "The",
           "results",
@@ -1784,7 +1784,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.009",
-        "prompt": "<span style='color:#c0392b; font-weight:bold;'>Negative advice:</span> 'should not ignore'.",
+        "prompt": "<b>Negative advice:</b> 'should not ignore'.",
         "correct": [
           "She",
           "should",
@@ -1796,7 +1796,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.010",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility:</span> 'could be'.",
+        "prompt": "<b>Possibility:</b> 'could be'.",
         "correct": [
           "The",
           "data",
@@ -1807,7 +1807,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.011",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Possibility:</span> 'might be'.",
+        "prompt": "<b>Possibility:</b> 'might be'.",
         "correct": [
           "The",
           "evidence",
@@ -1818,7 +1818,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.012",
-        "prompt": "<span style='color:#2980b9; font-weight:bold;'>Advice:</span> 'should support'.",
+        "prompt": "<b>Advice:</b> 'should support'.",
         "correct": [
           "You",
           "should",
@@ -1831,7 +1831,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.013",
-        "prompt": "<span style='color:#f39c12; font-weight:bold;'>Past possibility:</span> 'may have'.",
+        "prompt": "<b>Past possibility:</b> 'may have'.",
         "correct": [
           "The",
           "results",
@@ -1843,7 +1843,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.014",
-        "prompt": "<span style='color:#27ae60; font-weight:bold;'>Strong past deduction:</span> 'must have'.",
+        "prompt": "<b>Strong past deduction:</b> 'must have'.",
         "correct": [
           "She",
           "must",
@@ -1857,7 +1857,7 @@
       },
       {
         "id": "abay.sbPs.shuffled.015",
-        "prompt": "<span style='color:#c0392b; font-weight:bold;'>Impossibility (past):</span> 'cannot have'.",
+        "prompt": "<b>Impossibility (past):</b> 'cannot have'.",
         "correct": [
           "The",
           "conclusion",
@@ -2141,11 +2141,11 @@
     },
     {
       "id": "abay.testShort.003",
-      "q": "The evidence ___ (must / suggest) that he is right.",
+      "q": "Complete: He ___ (must / be) right; the evidence is very clear.",
       "answers": [
-        "must suggest"
+        "must be"
       ],
-      "exp": "strong deduction"
+      "exp": "Strong deduction about the present: must be."
     },
     {
       "id": "abay.testShort.004",

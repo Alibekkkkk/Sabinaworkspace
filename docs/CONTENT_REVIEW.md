@@ -1,5 +1,34 @@
-# Content review: proposals for your approval
+# Content review
 
+## Phase 10 (2026-11-10): applied
+
+Every lesson now passes `npm run lint:content` and the new item checker `npm run review:content`, with no errors or warnings (checked in `tests/content-review.test.mjs`).
+
+**The checker** (`scripts/review-content.mjs`) reads every exercise item. It reports:
+- present perfect answers next to a finished time or a habit word;
+- a negative hint with a positive answer, or an answer that does not use the verb in brackets;
+- sentence builders whose words do not make the quoted sentence;
+- correct answers missing from the options, repeated items, and repeated Word Match words;
+- vocabulary examples that do not use the word;
+- lessons that are too short.
+
+**Listening sets.** Every student now has an approved set of 10 original sentences with Russian translations: `content/listening/<student>.json`, built by `npm run make:listening` from `scripts/data/listening-sentences.json`. Sabina's set was reviewed and approved. The listening page, the portal link and the lesson find a set by the lesson's content file, so lessons with generated ids (`lesson_1792…`) get theirs too.
+
+| Student | What was wrong | What changed |
+| --- | --- | --- |
+| Sabina | Her test asked about a heat wave above 42 °C, 200 mm of rain, 400 hectares of burned forest, 11 days of firefighting and 38 °C cooling centres, but the 152-word passage covered only the flood. Its 18 other disaster words and the present perfect never appeared in it. Two duplicated sentence builders. | The passage became a 430-word article: the flood, then the heat wave, then the wildfire within six weeks, and what the town has learned. All 20 target words and the present perfect and past passive appear in it. Every sentence the reading questions rely on is unchanged and stays in the same paragraph. Two new reading questions; two new sentence builders. |
+| Gaziz | Two answer keys clashed with habit words ("volunteers ___ (clean) the riverbank **every spring**" expected "have cleaned"). 13 of his 20 target words never appeared in the reading. | The two prompts now fit the present perfect ("twice this year", "since it launched"). A closing paragraph, "What can other cities learn?", uses all 13 words. |
+| Abay | 30 sentence-builder prompts and the reading's video box used inline colours and sizes, which the site's security policy ignores in production. The passage used gerunds and infinitives only once. One unnatural test item ("The evidence must suggest…"). | Inline styles replaced by stylesheet classes (`reading-video`, `reading-tip`) and bold labels. A fifth paragraph uses enjoy playing, hope to become, recommend taking, suggest playing, decide to play and avoid gaming. Test item rewritten ("He must be right"). |
+| Araylim 1 | Five mixed-practice items repeated earlier ones. A 180-word passage. | Five new items. Paragraph D, a revision study, uses all five of her tenses. |
+| Araylim 2 | Half the size of the other lessons: 8 words, 7 reading questions, 8 test items and 4 sentences per builder. Two sentences in the passage did not make sense, and two test items were copies of reading questions. Homework: 9 questions, one bare "(might)" gap, and one answer key that was too strict. | Six new words (astronaut, gravity, debris, passenger, journey, commercial), paragraph D on the first tourist flight, four reading questions and two in-context questions. The test now has 8 / 6 / 5 / 10 items and each builder 13 sentences. The confusing sentences were rewritten. Homework: paragraph D on daily life on Mars, seven new questions, and both answer keys fixed. |
+| Araylim 3 | The reading's video and tip box used inline styles. | Replaced by the same stylesheet classes as Abay's. |
+| George | The passage (120 words) had no past simple, his Grammar II, and never used "athlete". Two repeated items, and "not going to have breakfast **this morning**". | Paragraph D, about his injury and comeback, is in the past simple and uses "athlete". Four items replaced. |
+
+All seven reading passages are now 200 words or more. The test's text questions are answered by the lesson's own reading, and the homework answers by the homework text (both checked in tests).
+
+**Your step:** run **Import content** in `tools/import-content.html`, so each student's protected copy gets the new text and questions. Until then, students keep the old copy; only the grammar section names and the listening sets are live.
+
+## Earlier proposals (Phase 2, not applied)
 Nothing in this file has been applied. `npm run lint:content` reads the migrated lesson files and reports the items below; it never edits lesson text. The only change made to `content/*.json` in Phase 2 is the added `schemaVersion: 2` and `sections` block (a snapshot of every original file is in `content/_snapshots/*.pre-sections.json`).
 
 ## 1. Estimated times to confirm

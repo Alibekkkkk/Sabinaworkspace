@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "id": "george-sports-daily-routines",
+  "title": "Sports and daily routines: listen and type",
+  "level": "A2",
+  "status": "approved",
+  "voice": {
+    "id": "en-GB-SoniaNeural",
+    "provider": "browser",
+    "character": "nora"
+  },
+  "items": [
+    {
+      "id": "george-l-001",
+      "text": "Alex trains with his team after school.",
+      "gaps": {
+        "easy": [
+          1,
+          6
+        ],
+        "medium": [
+          0,
+          1,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:train"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Алекс тренируется с командой после школы."
+      }
+    },
+    {
+      "id": "george-l-002",
+      "text": "Look! The coach is talking to the players.",
+      "gaps": {
+        "easy": [
+          2,
+          4
+        ],
+        "medium": [
+          0,
+          2,
+          4,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:coach"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Смотри! Тренер разговаривает с игроками."
+      }
+    },
+    {
+      "id": "george-l-003",
+      "text": "He scored three goals in one game.",
+      "gaps": {
+        "easy": [
+          1,
+          2
+        ],
+        "medium": [
+          1,
+          2,
+          3,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:score"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Он забил три гола за одну игру."
+      }
+    },
+    {
+      "id": "george-l-004",
+      "text": "They play a match every Saturday.",
+      "gaps": {
+        "easy": [
+          3
+        ],
+        "medium": [
+          3,
+          4,
+          5
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:match"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Они играют матч каждую субботу."
+      }
+    },
+    {
+      "id": "george-l-005",
+      "text": "I am going to buy new football equipment.",
+      "gaps": {
+        "easy": [
+          6,
+          7
+        ],
+        "medium": [
+          2,
+          4,
+          6,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:equipment"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Я собираюсь купить новую футбольную экипировку."
+      }
+    },
+    {
+      "id": "george-l-006",
+      "text": "Did you watch the tournament last night?",
+      "gaps": {
+        "easy": [
+          2,
+          4
+        ],
+        "medium": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:tournament"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Ты смотрел турнир вчера вечером?"
+      }
+    },
+    {
+      "id": "george-l-007",
+      "text": "The stadium is full of fans today.",
+      "gaps": {
+        "easy": [
+          1,
+          6
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:stadium"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Сегодня стадион полон болельщиков."
+      }
+    },
+    {
+      "id": "george-l-008",
+      "text": "He hurt his ankle in October.",
+      "gaps": {
+        "easy": [
+          5
+        ],
+        "medium": [
+          1,
+          3,
+          5
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Он повредил лодыжку в октябре."
+      }
+    },
+    {
+      "id": "george-l-009",
+      "text": "A healthy breakfast gives athletes energy.",
+      "gaps": {
+        "easy": [
+          4
+        ],
+        "medium": [
+          1,
+          2,
+          4
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:athlete",
+        "vocabulary:healthy"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Здоровый завтрак даёт спортсменам энергию."
+      }
+    },
+    {
+      "id": "george-l-010",
+      "text": "We are not going to play tomorrow because of the rain.",
+      "gaps": {
+        "easy": [
+          6,
+          7
+        ],
+        "medium": [
+          0,
+          3,
+          5,
+          6,
+          7,
+          10
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Мы не будем играть завтра из-за дождя."
+      }
+    }
+  ]
+}

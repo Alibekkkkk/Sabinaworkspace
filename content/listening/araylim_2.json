@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "id": "araylim-2-space-tourism",
+  "title": "Space tourism: listen and type",
+  "level": "B1",
+  "status": "approved",
+  "voice": {
+    "id": "en-GB-SoniaNeural",
+    "provider": "browser",
+    "character": "nora"
+  },
+  "items": [
+    {
+      "id": "araylim-2-l-001",
+      "text": "The first tourist flight is going to leave next March.",
+      "gaps": {
+        "easy": [
+          2,
+          3
+        ],
+        "medium": [
+          1,
+          2,
+          3,
+          5,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Первый туристический рейс отправится в марте следующего года."
+      }
+    },
+    {
+      "id": "araylim-2-l-002",
+      "text": "Passengers have to pass a health check before the flight.",
+      "gaps": {
+        "easy": [
+          0,
+          5
+        ],
+        "medium": [
+          0,
+          5,
+          6,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:passenger"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Пассажиры должны пройти медицинский осмотр перед полётом."
+      }
+    },
+    {
+      "id": "araylim-2-l-003",
+      "text": "You must not touch the controls during the launch.",
+      "gaps": {
+        "easy": [
+          5,
+          8
+        ],
+        "medium": [
+          0,
+          3,
+          5,
+          6,
+          8
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:launch"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Нельзя трогать панель управления во время запуска."
+      }
+    },
+    {
+      "id": "araylim-2-l-004",
+      "text": "I think tickets will get cheaper by 2035.",
+      "gaps": {
+        "easy": [
+          2,
+          5
+        ],
+        "medium": [
+          1,
+          2,
+          5,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Думаю, к 2035 году билеты подешевеют."
+      }
+    },
+    {
+      "id": "araylim-2-l-005",
+      "text": "Children are not allowed to fly alone.",
+      "gaps": {
+        "easy": [
+          0,
+          3
+        ],
+        "medium": [
+          0,
+          3,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Детям не разрешается лететь одним."
+      }
+    },
+    {
+      "id": "araylim-2-l-006",
+      "text": "The journey will last three days.",
+      "gaps": {
+        "easy": [
+          1
+        ],
+        "medium": [
+          1,
+          3,
+          4
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:journey"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Путешествие продлится три дня."
+      }
+    },
+    {
+      "id": "araylim-2-l-007",
+      "text": "Should we train for a few days before the launch?",
+      "gaps": {
+        "easy": [
+          7,
+          9
+        ],
+        "medium": [
+          2,
+          5,
+          6,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:launch"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Стоит ли нам тренироваться несколько дней перед запуском?"
+      }
+    },
+    {
+      "id": "araylim-2-l-008",
+      "text": "Space debris is one of the biggest hazards in orbit.",
+      "gaps": {
+        "easy": [
+          1,
+          7
+        ],
+        "medium": [
+          0,
+          1,
+          6,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:orbit",
+        "vocabulary:hazard",
+        "vocabulary:debris"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Космический мусор — одна из главных опасностей на орбите."
+      }
+    },
+    {
+      "id": "araylim-2-l-009",
+      "text": "An astronaut will travel with every group.",
+      "gaps": {
+        "easy": [
+          1,
+          3
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:astronaut"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "С каждой группой полетит астронавт."
+      }
+    },
+    {
+      "id": "araylim-2-l-010",
+      "text": "Humans are not adapted to zero gravity.",
+      "gaps": {
+        "easy": [
+          3,
+          6
+        ],
+        "medium": [
+          0,
+          3,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:adapt",
+        "vocabulary:gravity"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Люди не приспособлены к невесомости."
+      }
+    }
+  ]
+}

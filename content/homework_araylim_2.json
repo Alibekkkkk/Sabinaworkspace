@@ -9,47 +9,310 @@
     "title": "Living on Mars",
     "subtitle": "Will humans become a multi-planet species?",
     "paragraphs": [
-      { "label": "A.", "text": "In the next few decades, humans are going to travel to Mars. NASA and private companies like SpaceX are planning to establish a permanent colony on the Red Planet. By 2050, astronauts will have built the first Martian base. But living on Mars will be incredibly difficult." },
-      { "label": "B.", "text": "First, the journey itself is a hazard. It takes about seven months to get there. Astronauts will have to survive in a tiny spaceship for a long time. They might feel isolated and lonely. When they arrive, they must adapt to a planet with almost no oxygen and freezing temperatures. They will have to wear special suits whenever they go outside." },
-      { "label": "C.", "text": "To survive, humans will need to grow their own food. Scientists have already discovered that some plants can grow in Martian soil. Colonists should also build underground homes to hide from dangerous radiation. It will be a very hard life, but it is an exciting challenge for the future of humanity." }
+      {
+        "label": "A.",
+        "text": "In the next few decades, humans are going to travel to Mars. NASA and private companies like SpaceX are planning to establish a permanent colony on the Red Planet. By 2050, astronauts will have built the first Martian base. But living on Mars will be incredibly difficult."
+      },
+      {
+        "label": "B.",
+        "text": "First, the journey itself is a hazard. It takes about seven months to get there. Astronauts will have to survive in a tiny spaceship for a long time. They might feel isolated and lonely. When they arrive, they must adapt to a planet with almost no oxygen and freezing temperatures. They will have to wear special suits whenever they go outside."
+      },
+      {
+        "label": "C.",
+        "text": "To survive, humans will need to grow their own food. Scientists have already discovered that some plants can grow in Martian soil. Colonists should also build underground homes to hide from dangerous radiation. It will be a very hard life, but it is an exciting challenge for the future of humanity."
+      },
+      {
+        "label": "D.",
+        "text": "Everyday life on Mars will also be very different. A day on Mars is 37 minutes longer than a day on Earth, and a year lasts 687 Earth days. Messages from Earth will take up to 20 minutes to arrive, so colonists will not be able to call their families in real time. They are going to need strong teamwork and a lot of patience. Many experts think the first colonists will stay for at least three years."
+      }
     ]
   },
   "vocab": [
-    { "en": "colony", "emoji": "🏙️", "meanings": [
-      { "context": "a group of people living in a new place", "pos": "noun", "displayEn": "colony", "ru": "колония", "ex": "They want to build a <b>colony</b> on Mars." },
-      { "context": "to live in a new place", "pos": "verb", "displayEn": "to colonize", "ru": "колонизировать", "ex": "Humans will try to <b>colonize</b> the planet." }
-    ]},
-    { "en": "permanent", "emoji": "🏗️", "meanings": [
-      { "context": "lasting for a long time", "pos": "adjective", "displayEn": "permanent", "ru": "постоянный", "ex": "They want a <b>permanent</b> base." }
-    ]},
-    { "en": "journey", "emoji": "🛣️", "meanings": [
-      { "context": "traveling from one place to another", "pos": "noun", "displayEn": "journey", "ru": "путешествие", "ex": "The <b>journey</b> takes seven months." }
-    ]},
-    { "en": "oxygen", "emoji": "🫁", "meanings": [
-      { "context": "the gas we need to breathe", "pos": "noun", "displayEn": "oxygen", "ru": "кислород", "ex": "Mars has almost no <b>oxygen</b>." }
-    ]},
-    { "en": "radiation", "emoji": "☢️", "meanings": [
-      { "context": "dangerous energy from space", "pos": "noun", "displayEn": "radiation", "ru": "радиация", "ex": "They must hide from <b>radiation</b>." },
-      { "context": "to send out energy", "pos": "verb", "displayEn": "to radiate", "ru": "излучать", "ex": "The sun <b>radiates</b> heat." }
-    ]},
-    { "en": "to build", "emoji": "🔨", "meanings": [
-      { "context": "to make something by putting parts together", "pos": "verb", "displayEn": "to build", "ru": "строить", "ex": "They will <b>build</b> underground homes." },
-      { "context": "a structure", "pos": "noun", "displayEn": "building", "ru": "здание", "ex": "The <b>building</b> is very tall." }
-    ]},
-    { "en": "dangerous", "emoji": "⚠️", "meanings": [
-      { "context": "likely to cause harm", "pos": "adjective", "displayEn": "dangerous", "ru": "опасный", "ex": "Space is a <b>dangerous</b> place." },
-      { "context": "a risk", "pos": "noun", "displayEn": "danger", "ru": "опасность", "ex": "There is great <b>danger</b> in space." }
-    ]}
+    {
+      "en": "colony",
+      "emoji": "🏙️",
+      "meanings": [
+        {
+          "context": "a group of people living in a new place",
+          "pos": "noun",
+          "displayEn": "colony",
+          "ru": "колония",
+          "ex": "They want to build a <b>colony</b> on Mars."
+        },
+        {
+          "context": "to live in a new place",
+          "pos": "verb",
+          "displayEn": "to colonize",
+          "ru": "колонизировать",
+          "ex": "Humans will try to <b>colonize</b> the planet."
+        }
+      ]
+    },
+    {
+      "en": "permanent",
+      "emoji": "🏗️",
+      "meanings": [
+        {
+          "context": "lasting for a long time",
+          "pos": "adjective",
+          "displayEn": "permanent",
+          "ru": "постоянный",
+          "ex": "They want a <b>permanent</b> base."
+        }
+      ]
+    },
+    {
+      "en": "journey",
+      "emoji": "🛣️",
+      "meanings": [
+        {
+          "context": "traveling from one place to another",
+          "pos": "noun",
+          "displayEn": "journey",
+          "ru": "путешествие",
+          "ex": "The <b>journey</b> takes seven months."
+        }
+      ]
+    },
+    {
+      "en": "oxygen",
+      "emoji": "🫁",
+      "meanings": [
+        {
+          "context": "the gas we need to breathe",
+          "pos": "noun",
+          "displayEn": "oxygen",
+          "ru": "кислород",
+          "ex": "Mars has almost no <b>oxygen</b>."
+        }
+      ]
+    },
+    {
+      "en": "radiation",
+      "emoji": "☢️",
+      "meanings": [
+        {
+          "context": "dangerous energy from space",
+          "pos": "noun",
+          "displayEn": "radiation",
+          "ru": "радиация",
+          "ex": "They must hide from <b>radiation</b>."
+        },
+        {
+          "context": "to send out energy",
+          "pos": "verb",
+          "displayEn": "to radiate",
+          "ru": "излучать",
+          "ex": "The sun <b>radiates</b> heat."
+        }
+      ]
+    },
+    {
+      "en": "to build",
+      "emoji": "🔨",
+      "meanings": [
+        {
+          "context": "to make something by putting parts together",
+          "pos": "verb",
+          "displayEn": "to build",
+          "ru": "строить",
+          "ex": "They will <b>build</b> underground homes."
+        },
+        {
+          "context": "a structure",
+          "pos": "noun",
+          "displayEn": "building",
+          "ru": "здание",
+          "ex": "The <b>building</b> is very tall."
+        }
+      ]
+    },
+    {
+      "en": "dangerous",
+      "emoji": "⚠️",
+      "meanings": [
+        {
+          "context": "likely to cause harm",
+          "pos": "adjective",
+          "displayEn": "dangerous",
+          "ru": "опасный",
+          "ex": "Space is a <b>dangerous</b> place."
+        },
+        {
+          "context": "a risk",
+          "pos": "noun",
+          "displayEn": "danger",
+          "ru": "опасность",
+          "ex": "There is great <b>danger</b> in space."
+        }
+      ]
+    }
   ],
   "questions": [
-    { "id": "homework_araylim_2.questions.001", "type": "short", "prompt": "Which planet do humans want to travel to?", "answers": ["mars", "the red planet"], "exp": "Humans want to travel to Mars." },
-    { "id": "homework_araylim_2.questions.002", "type": "tfng", "prompt": "The journey to Mars takes about seven months.", "answer": "True", "exp": "It takes about seven months." },
-    { "id": "homework_araylim_2.questions.003", "type": "mcq", "prompt": "Why must astronauts wear special suits outside?", "options": ["Because it is raining", "Because there is no oxygen and it is freezing", "Because of the aliens"], "correct": "Because there is no oxygen and it is freezing", "exp": "They must adapt to a planet with almost no oxygen and freezing temperatures." },
-    { "id": "homework_araylim_2.questions.004", "type": "tfng", "prompt": "Scientists think plants can never grow on Mars.", "answer": "False", "exp": "Scientists have discovered some plants can grow in Martian soil." },
-    { "id": "homework_araylim_2.questions.005", "type": "short", "prompt": "Where should colonists build their homes to hide from radiation?", "answers": ["underground", "underground homes"], "exp": "They should build underground homes." },
-    { "id": "homework_araylim_2.questions.006", "type": "complete", "prompt": "By 2050, astronauts ___ (build) the first Martian base.", "answers": ["will have built"] },
-    { "id": "homework_araylim_2.questions.007", "type": "complete", "prompt": "They ___ (might) feel isolated and lonely.", "answers": ["might"] },
-    { "id": "homework_araylim_2.questions.008", "type": "complete", "prompt": "They ___ (have to) wear special suits.", "answers": ["will have to"] },
-    { "id": "homework_araylim_2.questions.009", "type": "long", "prompt": "What are two challenges of living on Mars mentioned in the text?", "keywordGroups": [["radiation","space","journey"],["oxygen","freezing","temperature"],["isolated","lonely"],["food","plants"]], "minWords": 10, "minGroups": 2, "sample": "Two challenges are the long journey where astronauts might feel isolated, and the environment on Mars, which has no oxygen, freezing temperatures, and dangerous radiation.", "exp": "Key ideas: isolation, lack of oxygen, freezing temps, radiation." }
+    {
+      "id": "homework_araylim_2.questions.001",
+      "type": "short",
+      "prompt": "Which planet do humans want to travel to?",
+      "answers": [
+        "mars",
+        "the red planet"
+      ],
+      "exp": "Humans want to travel to Mars."
+    },
+    {
+      "id": "homework_araylim_2.questions.002",
+      "type": "tfng",
+      "prompt": "The journey to Mars takes about seven months.",
+      "answer": "True",
+      "exp": "It takes about seven months."
+    },
+    {
+      "id": "homework_araylim_2.questions.003",
+      "type": "mcq",
+      "prompt": "Why must astronauts wear special suits outside?",
+      "options": [
+        "Because it is raining",
+        "Because there is no oxygen and it is freezing",
+        "Because of the aliens"
+      ],
+      "correct": "Because there is no oxygen and it is freezing",
+      "exp": "They must adapt to a planet with almost no oxygen and freezing temperatures."
+    },
+    {
+      "id": "homework_araylim_2.questions.004",
+      "type": "tfng",
+      "prompt": "Scientists think plants can never grow on Mars.",
+      "answer": "False",
+      "exp": "Scientists have discovered some plants can grow in Martian soil."
+    },
+    {
+      "id": "homework_araylim_2.questions.005",
+      "type": "short",
+      "prompt": "Where should colonists build their homes to hide from radiation?",
+      "answers": [
+        "underground",
+        "underground homes"
+      ],
+      "exp": "They should build underground homes."
+    },
+    {
+      "id": "homework_araylim_2.questions.006",
+      "type": "complete",
+      "prompt": "By 2050, astronauts ___ (build) the first Martian base.",
+      "answers": [
+        "will have built"
+      ]
+    },
+    {
+      "id": "homework_araylim_2.questions.007",
+      "type": "complete",
+      "prompt": "They ___ (might / feel) isolated and lonely.",
+      "answers": [
+        "might feel"
+      ]
+    },
+    {
+      "id": "homework_araylim_2.questions.008",
+      "type": "complete",
+      "prompt": "They ___ (have to) wear special suits.",
+      "answers": [
+        "will have to",
+        "have to"
+      ]
+    },
+    {
+      "id": "homework_araylim_2.questions.010",
+      "type": "short",
+      "prompt": "How much longer is a day on Mars than a day on Earth?",
+      "answers": [
+        "37 minutes",
+        "37",
+        "37 minutes longer"
+      ],
+      "exp": "Paragraph D: 37 minutes longer."
+    },
+    {
+      "id": "homework_araylim_2.questions.011",
+      "type": "short",
+      "prompt": "How many Earth days does a year on Mars last?",
+      "answers": [
+        "687",
+        "687 earth days",
+        "687 days"
+      ],
+      "exp": "Paragraph D: 687 Earth days."
+    },
+    {
+      "id": "homework_araylim_2.questions.012",
+      "type": "tfng",
+      "prompt": "Colonists will be able to call their families in real time.",
+      "answer": "False",
+      "exp": "Paragraph D: messages take up to 20 minutes, so they will not be able to."
+    },
+    {
+      "id": "homework_araylim_2.questions.013",
+      "type": "tfng",
+      "prompt": "The first colonists will receive a very high salary.",
+      "answer": "Not Given",
+      "exp": "The text does not mention pay."
+    },
+    {
+      "id": "homework_araylim_2.questions.014",
+      "type": "mcq",
+      "prompt": "Why will colonists need a lot of patience?",
+      "options": [
+        "Messages from Earth take up to 20 minutes to arrive",
+        "The food on Mars is delicious",
+        "There is too much oxygen"
+      ],
+      "correct": "Messages from Earth take up to 20 minutes to arrive",
+      "exp": "Paragraph D: messages take up to 20 minutes."
+    },
+    {
+      "id": "homework_araylim_2.questions.015",
+      "type": "complete",
+      "prompt": "Many experts think the first colonists ___ (stay) for at least three years.",
+      "answers": [
+        "will stay"
+      ]
+    },
+    {
+      "id": "homework_araylim_2.questions.016",
+      "type": "complete",
+      "prompt": "Colonists ___ (not / be able to) call home in real time.",
+      "answers": [
+        "will not be able to",
+        "won't be able to"
+      ]
+    },
+    {
+      "id": "homework_araylim_2.questions.009",
+      "type": "long",
+      "prompt": "What are two challenges of living on Mars mentioned in the text?",
+      "keywordGroups": [
+        [
+          "radiation",
+          "space",
+          "journey"
+        ],
+        [
+          "oxygen",
+          "freezing",
+          "temperature"
+        ],
+        [
+          "isolated",
+          "lonely"
+        ],
+        [
+          "food",
+          "plants"
+        ]
+      ],
+      "minWords": 10,
+      "minGroups": 2,
+      "sample": "Two challenges are the long journey where astronauts might feel isolated, and the environment on Mars, which has no oxygen, freezing temperatures, and dangerous radiation.",
+      "exp": "Key ideas: isolation, lack of oxygen, freezing temps, radiation."
+    }
   ]
 }

@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "id": "abay-gaming-esports",
+  "title": "Gaming and the brain: listen and type",
+  "level": "B2",
+  "status": "approved",
+  "voice": {
+    "id": "en-GB-RyanNeural",
+    "provider": "browser",
+    "character": "arthur"
+  },
+  "items": [
+    {
+      "id": "abay-l-001",
+      "text": "Many students enjoy playing strategy games after school.",
+      "gaps": {
+        "easy": [
+          1,
+          4
+        ],
+        "medium": [
+          1,
+          3,
+          4,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:strategy"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Многим студентам нравится играть в стратегии после школы."
+      }
+    },
+    {
+      "id": "abay-l-002",
+      "text": "She decided to take a short break every hour.",
+      "gaps": {
+        "easy": [
+          1,
+          5
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          6,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Она решила делать короткий перерыв каждый час."
+      }
+    },
+    {
+      "id": "abay-l-003",
+      "text": "Too much screen time can be a distraction from studying.",
+      "gaps": {
+        "easy": [
+          7,
+          9
+        ],
+        "medium": [
+          1,
+          2,
+          3,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:distraction"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Слишком много времени у экрана может отвлекать от учёбы."
+      }
+    },
+    {
+      "id": "abay-l-004",
+      "text": "Esports players must collaborate with their teammates.",
+      "gaps": {
+        "easy": [
+          0,
+          3
+        ],
+        "medium": [
+          0,
+          1,
+          3,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:collaborate",
+        "vocabulary:esports"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Киберспортсмены должны сотрудничать с товарищами по команде."
+      }
+    },
+    {
+      "id": "abay-l-005",
+      "text": "He must have practised for months to react so quickly.",
+      "gaps": {
+        "easy": [
+          3,
+          9
+        ],
+        "medium": [
+          0,
+          3,
+          5,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Должно быть, он тренировался месяцами, чтобы так быстро реагировать."
+      }
+    },
+    {
+      "id": "abay-l-006",
+      "text": "We should find a healthy balance between gaming and sleep.",
+      "gaps": {
+        "easy": [
+          4,
+          5
+        ],
+        "medium": [
+          4,
+          5,
+          6,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:balance"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Нам следует найти здоровый баланс между играми и сном."
+      }
+    },
+    {
+      "id": "abay-l-007",
+      "text": "Do you mind turning the volume down?",
+      "gaps": {
+        "easy": [
+          3,
+          5
+        ],
+        "medium": [
+          2,
+          3,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Вы не против сделать звук тише?"
+      }
+    },
+    {
+      "id": "abay-l-008",
+      "text": "Some games simulate real problems and stimulate the brain.",
+      "gaps": {
+        "easy": [
+          2,
+          6
+        ],
+        "medium": [
+          1,
+          2,
+          4,
+          6,
+          8
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:simulate",
+        "vocabulary:stimulate"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Некоторые игры моделируют реальные задачи и стимулируют мозг."
+      }
+    },
+    {
+      "id": "abay-l-009",
+      "text": "They might have played too long last night.",
+      "gaps": {
+        "easy": [
+          3,
+          7
+        ],
+        "medium": [
+          3,
+          5,
+          6,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Возможно, они играли слишком долго вчера вечером."
+      }
+    },
+    {
+      "id": "abay-l-010",
+      "text": "I hope to improve my reaction time before the tournament.",
+      "gaps": {
+        "easy": [
+          5,
+          9
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:reaction"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Я надеюсь улучшить время реакции до турнира."
+      }
+    }
+  ]
+}

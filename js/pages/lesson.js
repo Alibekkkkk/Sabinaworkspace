@@ -1,3 +1,4 @@
+import { listeningEntryFor } from "../listening/entry.js";
 import { safeLocal, safeSession } from "../safe-storage.js";
 import { startTabGuard } from "../tab-guard.js";
 // Teacher previews do not save student work, so several open tabs are normal there and get no warning.
@@ -90,7 +91,7 @@ let readingTasks = null;
 let listeningAvailable = false;
 // Show "Listen & type" only when the lesson has a listening pack (content/manifest.json lists the file names).
 let listeningChecked='';
-function detectListening(lessonId){ if(listeningChecked===lessonId)return; listeningChecked=lessonId; fetch('content/manifest.json').then(function(r){return r.ok?r.json():{}}).then(function(m){ const next=Boolean(m[lessonId]&&m[lessonId].listeningFile); if(next!==listeningAvailable){listeningAvailable=next; if(state.currentStage===1&&document.getElementById('flashGrid'))renderStage1();} }).catch(function(){}); }
+function detectListening(lessonId){ if(listeningChecked===lessonId)return; listeningChecked=lessonId; fetch('content/manifest.json').then(function(r){return r.ok?r.json():{}}).then(function(m){ const next=Boolean(listeningEntryFor(m,lessonId,activeContentName?activeContentName+'.json':'')); if(next!==listeningAvailable){listeningAvailable=next; if(state.currentStage===1&&document.getElementById('flashGrid'))renderStage1();} }).catch(function(){}); }
 function appendReadingTasks(){
   if(!readingTasks)return;
   const column=document.querySelector('#main .reading-questions'); if(!column)return;

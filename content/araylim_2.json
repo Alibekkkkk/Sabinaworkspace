@@ -4,7 +4,7 @@
     {
       "id": "vocabulary",
       "title": "Vocabulary",
-      "estimatedMinutes": 15,
+      "estimatedMinutes": 20,
       "stages": [
         "vocab",
         "match"
@@ -13,7 +13,7 @@
     {
       "id": "reading",
       "title": "Reading Comprehension",
-      "estimatedMinutes": 15,
+      "estimatedMinutes": 25,
       "stages": [
         "reading"
       ]
@@ -262,6 +262,84 @@
           "ex": "They must cope with <b>isolation</b>."
         }
       ]
+    },
+    {
+      "en": "astronaut",
+      "emoji": "👩‍🚀",
+      "meanings": [
+        {
+          "context": "a person trained to travel in space",
+          "pos": "noun",
+          "ru": "космонавт, астронавт",
+          "ex": "An <b>astronaut</b> will travel with every group."
+        }
+      ]
+    },
+    {
+      "en": "gravity",
+      "emoji": "🍎",
+      "meanings": [
+        {
+          "context": "the force that pulls things towards the Earth",
+          "pos": "noun",
+          "ru": "гравитация, сила тяжести",
+          "ex": "In space, there is almost zero <b>gravity</b>."
+        }
+      ]
+    },
+    {
+      "en": "debris",
+      "emoji": "🛰️",
+      "meanings": [
+        {
+          "context": "pieces of broken objects",
+          "pos": "noun",
+          "ru": "обломки, мусор",
+          "ex": "Space <b>debris</b> can damage a spaceship."
+        }
+      ]
+    },
+    {
+      "en": "passenger",
+      "emoji": "🧳",
+      "meanings": [
+        {
+          "context": "a person who travels in a vehicle but does not drive it",
+          "pos": "noun",
+          "ru": "пассажир",
+          "ex": "Every <b>passenger</b> has to train for three days."
+        }
+      ]
+    },
+    {
+      "en": "journey",
+      "emoji": "🗺️",
+      "meanings": [
+        {
+          "context": "a trip from one place to another",
+          "pos": "noun",
+          "ru": "путешествие, поездка",
+          "ex": "The <b>journey</b> will last three days."
+        }
+      ]
+    },
+    {
+      "en": "commercial",
+      "emoji": "💼",
+      "meanings": [
+        {
+          "context": "made to earn money; for paying customers",
+          "pos": "adjective",
+          "ru": "коммерческий",
+          "ex": "The first <b>commercial</b> flights start next year."
+        },
+        {
+          "context": "an advertisement on TV or radio",
+          "pos": "noun",
+          "ru": "реклама",
+          "ex": "I saw a <b>commercial</b> for space travel."
+        }
+      ]
     }
   ],
   "matchData": [
@@ -296,9 +374,33 @@
     {
       "word": "to isolate",
       "meaning": "to separate someone from others"
+    },
+    {
+      "word": "astronaut",
+      "meaning": "a person trained to travel in space"
+    },
+    {
+      "word": "gravity",
+      "meaning": "the force that pulls things towards the Earth"
+    },
+    {
+      "word": "debris",
+      "meaning": "pieces of broken objects"
+    },
+    {
+      "word": "passenger",
+      "meaning": "a person who travels but does not drive"
+    },
+    {
+      "word": "journey",
+      "meaning": "a trip from one place to another"
+    },
+    {
+      "word": "commercial",
+      "meaning": "made for paying customers"
     }
   ],
-  "readingHtml": "<h1>The Future of Space Tourism</h1><div class=\"subtitle\">Will you travel to space?</div><p><span class=\"para-label\">A.</span>In the future, traveling to space will not just be for astronauts. Companies are working hard to <b>establish</b> a new industry: space tourism. Next year, they <b>are going to launch</b> the first commercial flights. By 2030, ordinary people <b>will be orbiting</b> the Earth in luxury space hotels.</p><p><span class=\"para-label\">B.</span>However, this type of travel <b>requires</b> strict rules. You <b>have to</b> be in good health. You <b>must not</b> have heart problems. Space is full of <b>hazards</b>, such as space debris. While you <b>are flying</b>, you <b>must</b> wear a special suit. Passengers <b>should</b> also train for a few days before the flight.</p><p><span class=\"para-label\">C.</span>Humans <b>are not adapted</b> to zero gravity. In space, your body <b>will undergo</b> many changes. You might feel <b>isolated</b> or homesick. But most people say they <b>will manage</b> to <b>survive</b> the journey because the view of Earth is unforgettable. Would you <b>be allowed to</b> pay millions of dollars for a ticket? Only time will tell.</p>",
+  "readingHtml": "<h1>The Future of Space Tourism</h1><div class=\"subtitle\">Will you travel to space?</div><p><span class=\"para-label\">A.</span>In the future, traveling to space will not just be for astronauts. Companies are working hard to <b>establish</b> a new industry: space tourism. Next year, they <b>are going to launch</b> the first commercial flights. By 2030, ordinary people <b>will be orbiting</b> the Earth in luxury space hotels.</p><p><span class=\"para-label\">B.</span>However, this type of travel <b>requires</b> strict rules. You <b>have to</b> be in good health. You <b>must not</b> have heart problems. Children under 18 <b>are not allowed to</b> fly alone. Space is full of <b>hazards</b>, such as space debris. While you <b>are flying</b>, you <b>must</b> wear a special suit. Passengers <b>should</b> also train for a few days before the flight.</p><p><span class=\"para-label\">C.</span>Humans <b>are not adapted</b> to zero gravity. In space, your body <b>will undergo</b> many changes: your muscles get weaker, and many people feel sick on the first day. You might also feel <b>isolated</b> or homesick. Doctors say that most healthy passengers <b>will manage</b> to <b>survive</b> the journey without serious problems. And most travellers say the journey is worth it, because the view of Earth is unforgettable. Would you <b>be willing to</b> pay millions of dollars for a ticket? Only time will tell.</p><p><span class=\"para-label\">D.</span>The first tourist flight <b>is going to leave</b> from a spaceport in the desert next March. The journey <b>will last</b> three days, and an astronaut <b>will travel</b> with every group. Before the launch, every passenger <b>has to</b> train for three days at the spaceport. A ticket costs about 450,000 dollars, so at first only a few people <b>can</b> afford one. Engineers believe that prices <b>will fall</b> by 2035, and that one day a trip to space <b>will feel</b> as normal as a long flight.</p>",
   "readingQ": [
     {
       "id": "araylim_2.readingQ.001",
@@ -349,14 +451,14 @@
     {
       "id": "araylim_2.readingQ.006",
       "type": "mcq",
-      "prompt": "Why will people manage to survive the journey?",
+      "prompt": "Why do most travellers say the journey is worth it?",
       "options": [
         "Because the food is good",
         "Because the view of Earth is unforgettable",
-        "Because they sleep all the time"
+        "Because the tickets are cheap"
       ],
       "correct": "Because the view of Earth is unforgettable",
-      "exp": "The view is unforgettable."
+      "exp": "Paragraph C: the view of Earth is unforgettable."
     },
     {
       "id": "araylim_2.readingQ.007",
@@ -385,6 +487,54 @@
       "minGroups": 2,
       "sample": "Passengers must be in good health and must not have heart problems. They also have to wear a special suit and should train for a few days.",
       "exp": "Key ideas: health requirements, wearing a suit, training."
+    },
+    {
+      "id": "araylim_2.readingQ.008",
+      "type": "short",
+      "prompt": "Where is the first tourist flight going to leave from?",
+      "ru": "Откуда вылетит первый туристический рейс?",
+      "answers": [
+        "a spaceport in the desert",
+        "a spaceport",
+        "spaceport",
+        "the desert",
+        "a spaceport in the desert next march"
+      ],
+      "exp": "Paragraph D: from a spaceport in the desert."
+    },
+    {
+      "id": "araylim_2.readingQ.009",
+      "type": "short",
+      "prompt": "How long will the journey last?",
+      "ru": "Сколько продлится путешествие?",
+      "answers": [
+        "three days",
+        "3 days",
+        "3",
+        "three"
+      ],
+      "exp": "Paragraph D: the journey will last three days."
+    },
+    {
+      "id": "araylim_2.readingQ.010",
+      "type": "tfng",
+      "prompt": "Tickets will be cheap from the first flight.",
+      "ru": "Билеты будут дешёвыми с первого рейса.",
+      "answer": "False",
+      "exp": "Paragraph D: a ticket costs about 450,000 dollars; prices will fall only by 2035."
+    },
+    {
+      "id": "araylim_2.readingQ.011",
+      "type": "mcq",
+      "prompt": "Who will travel with every group?",
+      "ru": "Кто будет лететь с каждой группой?",
+      "options": [
+        "an astronaut",
+        "a doctor",
+        "a teacher"
+      ],
+      "correct": "an astronaut",
+      "exp": "Paragraph D: an astronaut will travel with every group."
     }
   ],
   "contextQ": [
@@ -409,6 +559,28 @@
       ],
       "correct": "separated from other people",
       "exp": "Isolated means alone or separated."
+    },
+    {
+      "id": "araylim_2.contextQ.003",
+      "prompt": "In paragraph C, \"undergo\" means...",
+      "options": [
+        "experience",
+        "avoid",
+        "build"
+      ],
+      "correct": "experience",
+      "exp": "Your body will experience many changes."
+    },
+    {
+      "id": "araylim_2.contextQ.004",
+      "prompt": "In paragraph D, \"afford\" means...",
+      "options": [
+        "have enough money for",
+        "refuse to buy",
+        "sell"
+      ],
+      "correct": "have enough money for",
+      "exp": "Only a few people have enough money for a ticket."
     }
   ],
   "g6": {
@@ -597,6 +769,45 @@
           "to",
           "space."
         ]
+      },
+      {
+        "id": "araylim_2.sbPp.pos.002",
+        "prompt": "Build: The company is going to build a space hotel.",
+        "correct": [
+          "The",
+          "company",
+          "is",
+          "going",
+          "to",
+          "build",
+          "a",
+          "space",
+          "hotel."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPp.pos.003",
+        "prompt": "Build: I think tickets will get cheaper.",
+        "correct": [
+          "I",
+          "think",
+          "tickets",
+          "will",
+          "get",
+          "cheaper."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPp.pos.004",
+        "prompt": "Build: The rocket leaves at nine tomorrow.",
+        "correct": [
+          "The",
+          "rocket",
+          "leaves",
+          "at",
+          "nine",
+          "tomorrow."
+        ]
       }
     ],
     "neg": [
@@ -613,6 +824,32 @@
           "the",
           "train."
         ]
+      },
+      {
+        "id": "araylim_2.sbPp.neg.002",
+        "prompt": "Build: We are not going to fly this year.",
+        "correct": [
+          "We",
+          "are",
+          "not",
+          "going",
+          "to",
+          "fly",
+          "this",
+          "year."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPp.neg.003",
+        "prompt": "Build: The journey will not be easy.",
+        "correct": [
+          "The",
+          "journey",
+          "will",
+          "not",
+          "be",
+          "easy."
+        ]
       }
     ],
     "q": [
@@ -625,6 +862,31 @@
           "come",
           "with",
           "me?"
+        ]
+      },
+      {
+        "id": "araylim_2.sbPp.q.002",
+        "prompt": "Build: Are you going to buy a ticket?",
+        "correct": [
+          "Are",
+          "you",
+          "going",
+          "to",
+          "buy",
+          "a",
+          "ticket?"
+        ]
+      },
+      {
+        "id": "araylim_2.sbPp.q.003",
+        "prompt": "Build: When will the first tourists fly?",
+        "correct": [
+          "When",
+          "will",
+          "the",
+          "first",
+          "tourists",
+          "fly?"
         ]
       }
     ],
@@ -641,6 +903,31 @@
           "a",
           "rocket."
         ]
+      },
+      {
+        "id": "araylim_2.sbPp.shuffled.002",
+        "prompt": "Build: She is going to train for three days.",
+        "correct": [
+          "She",
+          "is",
+          "going",
+          "to",
+          "train",
+          "for",
+          "three",
+          "days."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPp.shuffled.003",
+        "prompt": "Build: Prices will fall by 2035.",
+        "correct": [
+          "Prices",
+          "will",
+          "fall",
+          "by",
+          "2035."
+        ]
       }
     ]
   },
@@ -656,6 +943,44 @@
           "a",
           "seatbelt."
         ]
+      },
+      {
+        "id": "araylim_2.sbPs.pos.002",
+        "prompt": "Build: Passengers have to pass a health check.",
+        "correct": [
+          "Passengers",
+          "have",
+          "to",
+          "pass",
+          "a",
+          "health",
+          "check."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPs.pos.003",
+        "prompt": "Build: You should drink a lot of water.",
+        "correct": [
+          "You",
+          "should",
+          "drink",
+          "a",
+          "lot",
+          "of",
+          "water."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPs.pos.004",
+        "prompt": "Build: Astronauts can sleep in zero gravity.",
+        "correct": [
+          "Astronauts",
+          "can",
+          "sleep",
+          "in",
+          "zero",
+          "gravity."
+        ]
       }
     ],
     "neg": [
@@ -670,6 +995,32 @@
           "that",
           "button."
         ]
+      },
+      {
+        "id": "araylim_2.sbPs.neg.002",
+        "prompt": "Build: Children are not allowed to fly alone.",
+        "correct": [
+          "Children",
+          "are",
+          "not",
+          "allowed",
+          "to",
+          "fly",
+          "alone."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPs.neg.003",
+        "prompt": "Build: You do not have to bring food.",
+        "correct": [
+          "You",
+          "do",
+          "not",
+          "have",
+          "to",
+          "bring",
+          "food."
+        ]
       }
     ],
     "q": [
@@ -681,6 +1032,30 @@
           "we",
           "leave",
           "now?"
+        ]
+      },
+      {
+        "id": "araylim_2.sbPs.q.002",
+        "prompt": "Build: Do we have to wear a suit?",
+        "correct": [
+          "Do",
+          "we",
+          "have",
+          "to",
+          "wear",
+          "a",
+          "suit?"
+        ]
+      },
+      {
+        "id": "araylim_2.sbPs.q.003",
+        "prompt": "Build: Can I take my phone?",
+        "correct": [
+          "Can",
+          "I",
+          "take",
+          "my",
+          "phone?"
         ]
       }
     ],
@@ -694,6 +1069,31 @@
           "play",
           "the",
           "guitar."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPs.shuffled.002",
+        "prompt": "Build: You must follow the safety rules.",
+        "correct": [
+          "You",
+          "must",
+          "follow",
+          "the",
+          "safety",
+          "rules."
+        ]
+      },
+      {
+        "id": "araylim_2.sbPs.shuffled.003",
+        "prompt": "Build: She should not eat before the launch.",
+        "correct": [
+          "She",
+          "should",
+          "not",
+          "eat",
+          "before",
+          "the",
+          "launch."
         ]
       }
     ]
@@ -815,30 +1215,149 @@
       ],
       "correct": "to isolate",
       "exp": "Isolate means to separate."
+    },
+    {
+      "id": "araylim_2.testMcq.004",
+      "q": "Which word means 'a person trained to travel in space'?",
+      "options": [
+        "astronaut",
+        "passenger",
+        "engineer"
+      ],
+      "correct": "astronaut",
+      "exp": "An astronaut is trained to travel in space."
+    },
+    {
+      "id": "araylim_2.testMcq.005",
+      "q": "Which word means 'the force that pulls things towards the Earth'?",
+      "options": [
+        "gravity",
+        "orbit",
+        "debris"
+      ],
+      "correct": "gravity",
+      "exp": "Gravity pulls things down."
+    },
+    {
+      "id": "araylim_2.testMcq.006",
+      "q": "Which word means 'pieces of broken objects'?",
+      "options": [
+        "debris",
+        "hazard",
+        "launch"
+      ],
+      "correct": "debris",
+      "exp": "Debris is broken pieces."
+    },
+    {
+      "id": "araylim_2.testMcq.007",
+      "q": "Which word means 'to stay alive through something dangerous'?",
+      "options": [
+        "to survive",
+        "to require",
+        "to establish"
+      ],
+      "correct": "to survive",
+      "exp": "To survive is to stay alive."
+    },
+    {
+      "id": "araylim_2.testMcq.008",
+      "q": "Which word means 'to need something'?",
+      "options": [
+        "to require",
+        "to isolate",
+        "to adapt"
+      ],
+      "correct": "to require",
+      "exp": "To require is to need."
     }
   ],
   "testShort": [
     {
       "id": "araylim_2.testShort.001",
-      "q": "What industry are companies trying to establish?",
+      "q": "By what year do engineers think prices will fall?",
       "answers": [
-        "space tourism"
+        "2035",
+        "by 2035"
       ],
-      "exp": "Space tourism."
+      "exp": "Paragraph D: by 2035."
+    },
+    {
+      "id": "araylim_2.testShort.002",
+      "q": "About how much does a ticket cost?",
+      "answers": [
+        "450,000 dollars",
+        "450000",
+        "450,000",
+        "about 450,000 dollars",
+        "$450,000"
+      ],
+      "exp": "About 450,000 dollars."
+    },
+    {
+      "id": "araylim_2.testShort.003",
+      "q": "Complete with 'going to': We ______ (visit) the spaceport next week.",
+      "answers": [
+        "are going to visit"
+      ],
+      "exp": "Plan: are going to + V1."
+    },
+    {
+      "id": "araylim_2.testShort.004",
+      "q": "Complete with 'must not': You ______ (touch) the controls.",
+      "answers": [
+        "must not touch",
+        "mustn't touch"
+      ],
+      "exp": "Prohibition: must not + V1."
+    },
+    {
+      "id": "araylim_2.testShort.005",
+      "q": "Complete with 'will': I think prices ______ (fall).",
+      "answers": [
+        "will fall"
+      ],
+      "exp": "Prediction: will + V1."
+    },
+    {
+      "id": "araylim_2.testShort.006",
+      "q": "Complete with 'should': You ______ (sleep) well before the flight.",
+      "answers": [
+        "should sleep"
+      ],
+      "exp": "Advice: should + V1."
     }
   ],
   "testTfng": [
     {
       "id": "araylim_2.testTfng.001",
-      "q": "You don't need to be in good health to travel to space.",
+      "q": "Children under 18 can fly alone.",
       "answer": "False",
-      "exp": "You have to be in good health."
+      "exp": "Paragraph B: they are not allowed to fly alone."
     },
     {
       "id": "araylim_2.testTfng.002",
       "q": "Space debris is a hazard.",
       "answer": "True",
       "exp": "It is mentioned as a hazard."
+    },
+    {
+      "id": "araylim_2.testTfng.003",
+      "q": "The journey will last one week.",
+      "answer": "False",
+      "exp": "Paragraph D: three days."
+    },
+    {
+      "id": "araylim_2.testTfng.004",
+      "q": "The spaceport has a hotel for passengers.",
+      "answer": "Not Given",
+      "exp": "The text does not say."
+    },
+    {
+      "id": "araylim_2.testTfng.005",
+      "q": "Your muscles can get weaker in space.",
+      "answer": "True",
+      "exp": "Paragraph C: your muscles get weaker."
     }
   ],
   "testComplete": [
@@ -851,6 +1370,46 @@
       "id": "araylim_2.testComplete.002",
       "p": "You ___ (must) wear a helmet.",
       "a": "must"
+    },
+    {
+      "id": "araylim_2.testComplete.003",
+      "p": "The shuttle ___ (leave) at 9 AM tomorrow, according to the timetable.",
+      "a": "leaves"
+    },
+    {
+      "id": "araylim_2.testComplete.004",
+      "p": "Look at those dark clouds! The launch ___ (be) late.",
+      "a": "is going to be"
+    },
+    {
+      "id": "araylim_2.testComplete.005",
+      "p": "I promise I ___ (send) you a photo from space.",
+      "a": "will send"
+    },
+    {
+      "id": "araylim_2.testComplete.006",
+      "p": "You ___ (not / have to) bring food; it is included.",
+      "a": "do not have to bring"
+    },
+    {
+      "id": "araylim_2.testComplete.007",
+      "p": "Passengers ___ (must / not) leave their seats during the launch.",
+      "a": "must not leave"
+    },
+    {
+      "id": "araylim_2.testComplete.008",
+      "p": "___ we ___ (have to) train before the flight?",
+      "a": "Do we have to train"
+    },
+    {
+      "id": "araylim_2.testComplete.009",
+      "p": "You ___ (should) drink a lot of water before the flight.",
+      "a": "should drink"
+    },
+    {
+      "id": "araylim_2.testComplete.010",
+      "p": "She ___ (can / not) fly because of her heart problem.",
+      "a": "cannot fly"
     }
   ]
 }

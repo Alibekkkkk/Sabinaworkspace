@@ -29,6 +29,18 @@ After a deploy, an open site keeps the old version until the **"New version avai
   - Gaziz's "Local volunteers ___ (clean) the riverbank every spring" expects "have cleaned".
 - Still flaky, as before, for Phase 13: `whiteboard-devices-e2e` (stylus/palm, pressure).
 
+## Phase 10: done (2026-11-10)
+- **All seven lessons reviewed and fixed:** see [CONTENT_REVIEW.md](CONTENT_REVIEW.md), "Phase 10".
+- **Biggest fixes:**
+  - Sabina's test asked about events her reading never mentioned.
+  - Araylim 2's lesson was half-size.
+  - Two of Gaziz's answer keys were wrong.
+  - Inline styles that production ignores have been removed.
+- **Listening:** every student has an approved listening set.
+- **New checker:** `npm run review:content`, enforced by `tests/content-review.test.mjs`.
+- **Still to do:** import the new content into the live lessons, so students get the new texts and questions.
+- **Flaky, for Phase 13:** `listening-e2e` still sometimes misses the auto-advance to the next gap.
+
 ## Phases
 **Phase 9: lesson structure (requests 3 and 6).**
 - Fixed section order in every classwork: Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N, Test Your Knowledge. Close Reading is removed.

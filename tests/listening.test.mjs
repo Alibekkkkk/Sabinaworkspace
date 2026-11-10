@@ -13,9 +13,16 @@ const clone = () => structuredClone(pack);
 
 // ---- schema -----------------------------------------------------------------------------------------
 
-test("the shipped pack is valid, original and a draft", () => {
+test("every student has a valid, original, approved listening set that the manifest names", () => {
+  const manifest = JSON.parse(readFileSync(root + "manifest.json", "utf8"));
+  for (const name of ["sabina", "gaziz", "abay", "araylim_1", "araylim_2", "araylim_3", "george"]) {
+    const set = JSON.parse(readFileSync(root + `listening/${name}.json`, "utf8"));
+    assert.deepEqual(validateListeningPack(set, { fileExists: path => existsSync(root + path) }), [], name);
+    assert.equal(set.status, "approved", name);
+    assert.ok(set.items.length >= 10 && set.items.every(entry => /^original/.test(entry.credits) && entry.translation && entry.translation.ru), name);
+    assert.equal(manifest[name].listeningFile, `listening/${name}.json`, name);
+  }
   assert.deepEqual(validateListeningPack(pack, { fileExists: path => existsSync(root + path) }), []);
-  assert.equal(pack.status, "draft");
   assert.equal(pack.items.length, 10);
   assert.ok(pack.items.every(entry => /^original/.test(entry.credits)));
 });

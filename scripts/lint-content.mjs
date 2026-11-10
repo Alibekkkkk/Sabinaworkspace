@@ -20,10 +20,15 @@ export const GRAMMAR_PATTERNS = Object.freeze({
   "present perfect": /\b(has|have|had)\s+(not\s+|never\s+|already\s+|just\s+|also\s+)?[a-z]+(ed|en|wn|ne|t)\b/gi,
   "past simple": /\b[a-z]+ed\b/gi,
   "gerund and infinitive": /\b(enjoy|avoid|suggest|finish|mind|keep|decide|want|hope|plan|agree|refuse)\s+(to\s+)?[a-z]+(ing)?\b/gi,
-  "passive voice": /\b(is|are|was|were|been|be)\s+[a-z]+(ed|en)\b/gi
+  "passive voice": /\b(is|are|was|were|been|be)\s+[a-z]+(ed|en)\b/gi,
+  "future forms": /\b(will|won't|going to)\s+(not\s+)?[a-z]+\b/gi,
+  "modal verbs": /\b(must|mustn't|should|shouldn't|can|cannot|can't|could|might|may|ought to|have to|has to)\s+(not\s+)?[a-z]+\b/gi
 });
-// Topic wording that names a pattern above.
-const PATTERN_ALIASES = Object.freeze({ "past passive": "passive voice", "gerunds and infinitives": "gerund and infinitive" });
+// Topic wording (title or id) that names a pattern above.
+const PATTERN_ALIASES = Object.freeze({
+  "past passive": "passive voice", "gerunds and infinitives": "gerund and infinitive",
+  "future plans": "future forms", "modal verbs: deduction and obligation": "modal verbs"
+});
 export function patternForTopic(topic) {
   for (const text of [topic && topic.title, topic && topic.id]) {
     const name = String(text || "").toLowerCase().replace(/-/g, " ").trim();

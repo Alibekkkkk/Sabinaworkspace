@@ -13,7 +13,7 @@
     {
       "id": "reading",
       "title": "Reading Comprehension",
-      "estimatedMinutes": 20,
+      "estimatedMinutes": 30,
       "stages": [
         "reading"
       ]
@@ -917,7 +917,7 @@
       "meaning": "a mountain that can erupt"
     }
   ],
-  "readingHtml": "<h1>The Great Flood of Marlowe</h1><div class=\"subtitle\">A story about a natural disaster</div><p><span class=\"para-label\">A.</span>In the spring of 2023, heavy rain fell on the town of Marlowe for three days. The river in the town centre was usually calm, but the rain was too much. The water level rose quickly. On the third day, the river overflowed. Water covered the streets and entered the ground floors of many houses.</p><p><span class=\"para-label\">B.</span>When the flood started, the local council told everyone to evacuate. Rescue teams used small boats to travel through the streets. They helped elderly people and children who were trapped in their homes. The water stayed in the town for a whole week.</p><p><span class=\"para-label\">C.</span>After the water went down, the people of Marlowe began to clean up. The council provided free food and water. Now, the town is making a plan. They want to build new defences to protect the town from future floods.</p>",
+  "readingHtml": "<h1>The Great Flood of Marlowe</h1><div class=\"subtitle\">Six weeks, three disasters: how one town has learned to live with extreme weather</div><p><span class=\"para-label\">A.</span>In the spring of 2023, heavy rain fell on the town of Marlowe for three days. More than 200 millimetres of rain fell in the first two days alone. The river in the town centre was usually calm, but the rain was too much. The water level rose quickly. On the third day, the river overflowed. Water covered the streets and entered the ground floors of many houses. Marlowe was the town worst affected by the flood.</p><p><span class=\"para-label\">B.</span>When the flood started, the local council told everyone to evacuate. The evacuation was organised by the fire service. Rescue teams used small boats to travel through the streets. They helped elderly people and children who were trapped in their homes. The water stayed in the town for a whole week.</p><p><span class=\"para-label\">C.</span>After the water went down, the people of Marlowe began to clean up. The council provided free food and water. Now, the town is making a plan. They want to build new defences to protect the town from future floods.</p><p><span class=\"para-label\">D.</span>Two weeks after the flood, a heat wave arrived. For ten consecutive days, temperatures rose above 42°C. The air was hot and humid, and nobody could sleep well. There was almost no rain, and the region was soon in a drought.</p><p><span class=\"para-label\">E.</span>At the end of the heat wave, a wildfire started in the dry forest north of the town. More than 400 hectares of forest were destroyed. Firefighters worked for eleven days before the fire was put out. Several farms were damaged, but no lives were lost. Years of deforestation had already made the hills weak, and after the fire a small landslide blocked one road.</p><p><span class=\"para-label\">F.</span>Marlowe has experienced three disasters in just six weeks. Since then, the council has created a new warning system, and from next summer cooling centres will open automatically when the temperature reaches 38°C. Scientists have warned that a warmer atmosphere makes heat waves and floods more likely. In one way, though, the town is lucky. It lies on a stable part of the Earth's crust, so even a small tremor is rare, and no earthquake with a magnitude above 3 has ever been recorded there. It is far from any volcano, so an eruption is impossible, and it is too far from the sea for a tsunami. Hurricanes and tornadoes have never reached the region, and with no mountains nearby, people in Marlowe have only seen blizzards and avalanches on the news.</p>",
   "readingQ": [
     {
       "id": "sabina.readingQ.001",
@@ -1060,6 +1060,27 @@
         "food"
       ],
       "exp": "The council provided free food."
+    },
+    {
+      "id": "sabina.readingQ.011",
+      "type": "tfng",
+      "prompt": "Marlowe has had several strong earthquakes.",
+      "ru": "В Марлоу было несколько сильных землетрясений.",
+      "answer": "False",
+      "exp": "Paragraph F: no earthquake with a magnitude above 3 has ever been recorded there."
+    },
+    {
+      "id": "sabina.readingQ.012",
+      "type": "mcq",
+      "prompt": "Why can a tsunami not reach Marlowe?",
+      "ru": "Почему цунами не может дойти до Марлоу?",
+      "options": [
+        "It is too far from the sea",
+        "It has new flood defences",
+        "It lies near a volcano"
+      ],
+      "correct": "It is too far from the sea",
+      "exp": "Paragraph F: it is too far from the sea for a tsunami."
     }
   ],
   "readingTasks": {
@@ -1929,15 +1950,14 @@
       },
       {
         "id": "sabina.sbPp.shuffled.003",
-        "prompt": "Build: The council has opened new cooling centres.",
+        "prompt": "Build: Firefighters have put out the wildfire.",
         "correct": [
-          "The",
-          "council",
-          "has",
-          "opened",
-          "new",
-          "cooling",
-          "centres."
+          "Firefighters",
+          "have",
+          "put",
+          "out",
+          "the",
+          "wildfire."
         ]
       },
       {
@@ -2094,13 +2114,15 @@
       },
       {
         "id": "sabina.sbPp.shuffled.017",
-        "prompt": "Build: The region has changed dramatically.",
+        "prompt": "Build: The town has never had a tsunami.",
         "correct": [
           "The",
-          "region",
+          "town",
           "has",
-          "changed",
-          "dramatically."
+          "never",
+          "had",
+          "a",
+          "tsunami."
         ]
       },
       {

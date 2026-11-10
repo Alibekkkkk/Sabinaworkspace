@@ -1,0 +1,74 @@
+{
+  "gaziz": { "id": "gaziz-sustainable-cities", "title": "Sustainable cities: listen and type", "level": "B2", "character": "arthur", "grammar": ["present perfect", "past passive"], "items": [
+    ["The city has removed hundreds of parking spaces from the centre.", "Город убрал сотни парковочных мест из центра."],
+    ["Air pollution has dropped by more than forty per cent.", "Загрязнение воздуха снизилось более чем на сорок процентов."],
+    ["The harbour was cleaned and reopened as a public space.", "Гавань очистили и снова открыли как общественное место."],
+    ["Many old warehouses were converted into apartments.", "Многие старые склады переделали в квартиры."],
+    ["Cycling is one solution to the traffic issue.", "Велосипед — одно из решений проблемы пробок."],
+    ["Has your city improved its public transport?", "Улучшил ли ваш город общественный транспорт?"],
+    ["The new cycle lanes were built to connect the suburbs.", "Новые велодорожки построили, чтобы соединить пригороды."],
+    ["Local businesses have not always supported the changes.", "Местные предприятия не всегда поддерживали изменения."],
+    ["A clean environment benefits the whole community.", "Чистая окружающая среда приносит пользу всему сообществу."],
+    ["The council has invested in renewable energy such as wind power.", "Городской совет вложил средства в возобновляемую энергию, например в энергию ветра."]
+  ]},
+  "abay": { "id": "abay-gaming-esports", "title": "Gaming and the brain: listen and type", "level": "B2", "character": "arthur", "grammar": ["gerunds and infinitives", "modal verbs"], "items": [
+    ["Many students enjoy playing strategy games after school.", "Многим студентам нравится играть в стратегии после школы."],
+    ["She decided to take a short break every hour.", "Она решила делать короткий перерыв каждый час."],
+    ["Too much screen time can be a distraction from studying.", "Слишком много времени у экрана может отвлекать от учёбы."],
+    ["Esports players must collaborate with their teammates.", "Киберспортсмены должны сотрудничать с товарищами по команде."],
+    ["He must have practised for months to react so quickly.", "Должно быть, он тренировался месяцами, чтобы так быстро реагировать."],
+    ["We should find a healthy balance between gaming and sleep.", "Нам следует найти здоровый баланс между играми и сном."],
+    ["Do you mind turning the volume down?", "Вы не против сделать звук тише?"],
+    ["Some games simulate real problems and stimulate the brain.", "Некоторые игры моделируют реальные задачи и стимулируют мозг."],
+    ["They might have played too long last night.", "Возможно, они играли слишком долго вчера вечером."],
+    ["I hope to improve my reaction time before the tournament.", "Я надеюсь улучшить время реакции до турнира."]
+  ]},
+  "araylim_1": { "id": "araylim-1-memory", "title": "How memory works: listen and type", "level": "B1", "character": "nora", "grammar": ["present simple", "present continuous", "past simple", "past continuous", "present perfect"], "items": [
+    ["The brain stores new words while we sleep.", "Мозг сохраняет новые слова, пока мы спим."],
+    ["Right now, she is memorizing a list of irregular verbs.", "Прямо сейчас она запоминает список неправильных глаголов."],
+    ["I forgot my password yesterday.", "Вчера я забыл свой пароль."],
+    ["We were revising when the lights went out.", "Мы повторяли материал, когда погас свет."],
+    ["Scientists have discovered how the brain forms memories.", "Учёные выяснили, как мозг формирует воспоминания."],
+    ["Do you usually recall names easily?", "Ты обычно легко вспоминаешь имена?"],
+    ["A familiar smell can trigger an old memory.", "Знакомый запах может вызвать старое воспоминание."],
+    ["He has never forgotten his first English teacher.", "Он никогда не забывал свою первую учительницу английского."],
+    ["Neurons connect with each other to form a huge network.", "Нейроны соединяются друг с другом и образуют огромную сеть."],
+    ["Was he listening when the teacher explained the rule?", "Он слушал, когда учитель объяснял правило?"]
+  ]},
+  "araylim_2": { "id": "araylim-2-space-tourism", "title": "Space tourism: listen and type", "level": "B1", "character": "nora", "grammar": ["future forms", "modal verbs"], "items": [
+    ["The first tourist flight is going to leave next March.", "Первый туристический рейс отправится в марте следующего года."],
+    ["Passengers have to pass a health check before the flight.", "Пассажиры должны пройти медицинский осмотр перед полётом."],
+    ["You must not touch the controls during the launch.", "Нельзя трогать панель управления во время запуска."],
+    ["I think tickets will get cheaper by 2035.", "Думаю, к 2035 году билеты подешевеют."],
+    ["Children are not allowed to fly alone.", "Детям не разрешается лететь одним."],
+    ["The journey will last three days.", "Путешествие продлится три дня."],
+    ["Should we train for a few days before the launch?", "Стоит ли нам тренироваться несколько дней перед запуском?"],
+    ["Space debris is one of the biggest hazards in orbit.", "Космический мусор — одна из главных опасностей на орбите."],
+    ["An astronaut will travel with every group.", "С каждой группой полетит астронавт."],
+    ["Humans are not adapted to zero gravity.", "Люди не приспособлены к невесомости."]
+  ]},
+  "araylim_3": { "id": "araylim-3-artificial-intelligence", "title": "Artificial intelligence: listen and type", "level": "B1", "character": "arthur", "grammar": ["future forms", "future continuous", "future perfect"], "items": [
+    ["Tech companies are going to launch smarter algorithms next year.", "Технологические компании выпустят более умные алгоритмы в следующем году."],
+    ["Many people worry that automation will take their jobs.", "Многие боятся, что автоматизация отнимет у них работу."],
+    ["Robots will not replace human creativity.", "Роботы не заменят человеческое творчество."],
+    ["By 2050, the workplace will have changed completely.", "К 2050 году рабочее место полностью изменится."],
+    ["This time next year, I will be studying computer science.", "В это время в следующем году я буду изучать информатику."],
+    ["Experts predict a major breakthrough in medicine.", "Эксперты предсказывают крупный прорыв в медицине."],
+    ["When the new system arrives, we will test it together.", "Когда придёт новая система, мы протестируем её вместе."],
+    ["Are you meeting the engineers tomorrow?", "Ты встречаешься с инженерами завтра?"],
+    ["Ethical questions will become more important.", "Этические вопросы станут важнее."],
+    ["The workforce will have to adapt to new technology.", "Работникам придётся приспосабливаться к новым технологиям."]
+  ]},
+  "george": { "id": "george-sports-daily-routines", "title": "Sports and daily routines: listen and type", "level": "A2", "character": "nora", "grammar": ["present simple", "present continuous", "past simple", "going to"], "items": [
+    ["Alex trains with his team after school.", "Алекс тренируется с командой после школы."],
+    ["Look! The coach is talking to the players.", "Смотри! Тренер разговаривает с игроками."],
+    ["He scored three goals in one game.", "Он забил три гола за одну игру."],
+    ["They play a match every Saturday.", "Они играют матч каждую субботу."],
+    ["I am going to buy new football equipment.", "Я собираюсь купить новую футбольную экипировку."],
+    ["Did you watch the tournament last night?", "Ты смотрел турнир вчера вечером?"],
+    ["The stadium is full of fans today.", "Сегодня стадион полон болельщиков."],
+    ["He hurt his ankle in October.", "Он повредил лодыжку в октябре."],
+    ["A healthy breakfast gives athletes energy.", "Здоровый завтрак даёт спортсменам энергию."],
+    ["We are not going to play tomorrow because of the rain.", "Мы не будем играть завтра из-за дождя."]
+  ]}
+}

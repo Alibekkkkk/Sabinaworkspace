@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "id": "gaziz-sustainable-cities",
+  "title": "Sustainable cities: listen and type",
+  "level": "B2",
+  "status": "approved",
+  "voice": {
+    "id": "en-GB-RyanNeural",
+    "provider": "browser",
+    "character": "arthur"
+  },
+  "items": [
+    {
+      "id": "gaziz-l-001",
+      "text": "The city has removed hundreds of parking spaces from the centre.",
+      "gaps": {
+        "easy": [
+          3,
+          4
+        ],
+        "medium": [
+          1,
+          3,
+          4,
+          6,
+          7,
+          10
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Город убрал сотни парковочных мест из центра."
+      }
+    },
+    {
+      "id": "gaziz-l-002",
+      "text": "Air pollution has dropped by more than forty per cent.",
+      "gaps": {
+        "easy": [
+          1,
+          3
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:pollution"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Загрязнение воздуха снизилось более чем на сорок процентов."
+      }
+    },
+    {
+      "id": "gaziz-l-003",
+      "text": "The harbour was cleaned and reopened as a public space.",
+      "gaps": {
+        "easy": [
+          5,
+          8
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          8,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:public"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Гавань очистили и снова открыли как общественное место."
+      }
+    },
+    {
+      "id": "gaziz-l-004",
+      "text": "Many old warehouses were converted into apartments.",
+      "gaps": {
+        "easy": [
+          2,
+          6
+        ],
+        "medium": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Многие старые склады переделали в квартиры."
+      }
+    },
+    {
+      "id": "gaziz-l-005",
+      "text": "Cycling is one solution to the traffic issue.",
+      "gaps": {
+        "easy": [
+          3,
+          7
+        ],
+        "medium": [
+          0,
+          3,
+          6,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:issue",
+        "vocabulary:solution"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Велосипед — одно из решений проблемы пробок."
+      }
+    },
+    {
+      "id": "gaziz-l-006",
+      "text": "Has your city improved its public transport?",
+      "gaps": {
+        "easy": [
+          3,
+          6
+        ],
+        "medium": [
+          2,
+          3,
+          5,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:transport",
+        "vocabulary:improve",
+        "vocabulary:public"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Улучшил ли ваш город общественный транспорт?"
+      }
+    },
+    {
+      "id": "gaziz-l-007",
+      "text": "The new cycle lanes were built to connect the suburbs.",
+      "gaps": {
+        "easy": [
+          7,
+          9
+        ],
+        "medium": [
+          2,
+          3,
+          5,
+          7,
+          9
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Новые велодорожки построили, чтобы соединить пригороды."
+      }
+    },
+    {
+      "id": "gaziz-l-008",
+      "text": "Local businesses have not always supported the changes.",
+      "gaps": {
+        "easy": [
+          0,
+          5
+        ],
+        "medium": [
+          0,
+          1,
+          5,
+          7
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:local",
+        "vocabulary:support"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Местные предприятия не всегда поддерживали изменения."
+      }
+    },
+    {
+      "id": "gaziz-l-009",
+      "text": "A clean environment benefits the whole community.",
+      "gaps": {
+        "easy": [
+          2,
+          6
+        ],
+        "medium": [
+          1,
+          2,
+          3,
+          6
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:environment",
+        "vocabulary:community",
+        "vocabulary:benefit"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Чистая окружающая среда приносит пользу всему сообществу."
+      }
+    },
+    {
+      "id": "gaziz-l-010",
+      "text": "The council has invested in renewable energy such as wind power.",
+      "gaps": {
+        "easy": [
+          5,
+          6
+        ],
+        "medium": [
+          1,
+          3,
+          5,
+          6,
+          7,
+          10
+        ],
+        "hard": "all"
+      },
+      "lessonTags": [
+        "vocabulary:energy"
+      ],
+      "credits": "original sentence written for this lesson",
+      "translation": {
+        "ru": "Городской совет вложил средства в возобновляемую энергию, например в энергию ветра."
+      }
+    }
+  ]
+}

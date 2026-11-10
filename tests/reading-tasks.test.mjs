@@ -24,10 +24,10 @@ test("the shipped reading tasks are valid, cover all four types and stay drafts"
 
 test("passage is split into labelled sentences; headings are skipped", () => {
   const sentences = passageSentences(passage);
-  assert.equal(sentences.length, 13);
-  assert.deepEqual([...new Set(sentences.map(sentence => sentence.para))], ["A", "B", "C"]);
+  assert.equal(sentences.length, 32);
+  assert.deepEqual([...new Set(sentences.map(sentence => sentence.para))], ["A", "B", "C", "D", "E", "F"]);
   assert.ok(!sentences.some(sentence => /Great Flood|natural disaster/i.test(sentence.text)));
-  assert.equal(findSentenceIndex(sentences, "on the THIRD day,  the river overflowed."), 3, "case and spacing do not matter");
+  assert.equal(findSentenceIndex(sentences, "on the THIRD day,  the river overflowed."), 4, "case and spacing do not matter");
   assert.equal(findSentenceIndex(sentences, "The river overflowed."), -1);
   assert.deepEqual(passageSentences("<p>One. Two!</p><p>Three</p>").map(sentence => sentence.text), ["One.", "Two!", "Three"]);
   assert.deepEqual(passageSentences(""), []);

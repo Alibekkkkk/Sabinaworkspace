@@ -1,3 +1,4 @@
+import { listeningEntryFor } from "../listening/entry.js";
 import { safeLocal, safeSession } from "../safe-storage.js";
 
 import { installDelegatedActions, readActionEnum } from "../delegated-actions.js";
@@ -536,7 +537,7 @@ function renderLessons(){
       practiceLink.textContent='🎮 Practice '+(lesson.title||'lesson');
       practiceLinks.append(practiceLink);
       listeningManifest().then(function(manifest){
-        const entry=manifest[lessonId];
+        const entry=listeningEntryFor(manifest,lessonId,lesson.classworkContentUrl||lesson.contentUrl);
         if(!entry||!entry.listeningFile||!hasFeature(state.features,'listeningTrainer'))return;
         const listenUrl=new URL('listening.html',window.location.href);
         listenUrl.searchParams.set('code',state.currentCode);

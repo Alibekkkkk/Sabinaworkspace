@@ -68,15 +68,26 @@ try {
   await sleep(1500);
   check(await page.evaluate(() => [...document.querySelectorAll("#practiceLinks a")].some(link => /Listening/.test(link.textContent) && /listening\.html/.test(link.href))), "the portal lists a Listening link for a lesson that has a pack");
 
-  // ---- draft gate
+  // ---- draft gate: the shipped set is approved, so serve it as a draft for these steps (past the service worker)
+  let asDraft = true;
+  await page.setBypassServiceWorker(true);
+  await page.setRequestInterception(true);
+  page.on("request", request => {
+    if (asDraft && request.url().includes("content/listening/sabina.json")) request.respond({ status: 200, contentType: "application/json", body: JSON.stringify({ ...pack, status: "draft" }) });
+    else request.continue();
+  });
   await page.goto(url(), { waitUntil: "networkidle2" });
   await page.waitForFunction(() => /waiting for your teacher/i.test(document.getElementById("status").textContent), { timeout: 20000 });
   check(await page.evaluate(() => document.getElementById("lsSetup").hidden), "a draft pack is not offered without the preview link");
-
-  // ---- setup
   await page.goto(url("&preview=1"), { waitUntil: "networkidle2" });
   await page.waitForSelector("#lsSetup:not([hidden]) button", { timeout: 20000 });
   check(await page.evaluate(() => /Draft pack/.test(document.getElementById("lsSetup").textContent)), "the preview shows a draft banner");
+
+  // ---- setup (the real, approved set)
+  asDraft = false;
+  await page.goto(url(), { waitUntil: "networkidle2" });
+  await page.waitForSelector("#lsSetup:not([hidden]) button", { timeout: 20000 });
+  check(await page.evaluate(() => !/Draft pack/.test(document.getElementById("lsSetup").textContent)), "an approved set opens without the preview link and without a draft banner");
   check(await page.evaluate(() => document.querySelectorAll('input[name="character"]').length === 2 && document.querySelectorAll('input[name="level"]').length === 5), "two tutors and five level choices (Auto + four) are offered");
   check(await page.evaluate(() => /device's British voice|cannot speak/.test(document.querySelector(".ls-voice-note").textContent)), "the voice note says the device voice is the fallback (no neural audio was generated)");
   await page.evaluate(() => { document.querySelector('input[name="character"][value="arthur"]').click(); document.querySelector('input[name="level"][value="auto"]').click(); });

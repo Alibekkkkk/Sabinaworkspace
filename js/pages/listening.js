@@ -1,5 +1,6 @@
 // Listening dictation trainer: a British-voice character says a sentence, some words are hidden, the student types
 // them in place, gets per-word feedback, taps words to save them, and finishes a round with a summary.
+import { listeningEntryFor } from "../listening/entry.js";
 import { firebaseConfig } from "../config.js";
 import { EMBEDDED, notifyLesson, resolvePageContext } from "../embed.js";
 import { featureEnabled, showNotEnabled } from "../feature-gate.js";
@@ -408,8 +409,11 @@ async function boot() {
     database = firebase.database(); watchConnection(database);
     context = await resolvePageContext({ auth: firebase.auth(), db: database, lessonId: query.get("lesson") });
     if (!context.preview && !(await featureEnabled(database, context.code, "listeningTrainer"))) { showNotEnabled(status, "listeningTrainer"); return; }
-    const manifest = await (await fetch(new URL("../../content/manifest.json", import.meta.url))).json();
-    const entry = manifest[context.lessonId];
+    const [manifest, record] = await Promise.all([
+      fetch(new URL("../../content/manifest.json", import.meta.url)).then(response => response.json()),
+      loadProtectedContent(database, context.lessonId, "classwork").catch(() => null)
+    ]);
+    const entry = listeningEntryFor(manifest, context.lessonId, record && record.sourceFile);
     if (!entry || !entry.listeningFile) { status.textContent = "Your teacher has not added listening sentences to this lesson yet."; return; }
     const response = await fetch(new URL(`../../content/${entry.listeningFile}`, import.meta.url));
     if (!response.ok) throw new Error("The listening pack could not be loaded.");
@@ -417,10 +421,7 @@ async function boot() {
     const problems = validateListeningPack(pack);
     if (problems.length) throw new Error(`The listening pack has errors: ${problems[0]}`);
     if (pack.status === "draft" && !previewDraft && !context.preview) { status.textContent = "These sentences are waiting for your teacher's approval."; return; }
-    const [progressSnapshot, record] = await Promise.all([
-      database.ref(progressPath(context.code)).once("value").catch(error => { if (context.preview) return { val: () => null }; throw error; }),
-      loadProtectedContent(database, context.lessonId, "classwork").catch(() => null)
-    ]);
+    const progressSnapshot = await database.ref(progressPath(context.code)).once("value").catch(error => { if (context.preview) return { val: () => null }; throw error; });
     progressBefore = progressSnapshot.val() || {};
     showRewards(progressBefore);
     for (const word of (record && record.content && record.content.vocab) || []) {
