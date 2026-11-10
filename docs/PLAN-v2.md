@@ -38,7 +38,8 @@ After a deploy, an open site keeps the old version until the **"New version avai
   - Inline styles that production ignores have been removed.
 - **Listening:** every student has an approved listening set.
 - **New checker:** `npm run review:content`, enforced by `tests/content-review.test.mjs`.
-- **Still to do:** import the new content into the live lessons, so students get the new texts and questions.
+- **Deployed and imported** into the six live lessons (2026-11-10).
+- **Phase 13:** the import tool cannot update an existing lesson copy; add an update button.
 - **Flaky, for Phase 13:** `listening-e2e` still sometimes misses the auto-advance to the next gap.
 
 ## Phases

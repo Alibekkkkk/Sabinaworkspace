@@ -26,7 +26,7 @@ Every lesson now passes `npm run lint:content` and the new item checker `npm run
 
 All seven reading passages are now 200 words or more. The test's text questions are answered by the lesson's own reading, and the homework answers by the homework text (both checked in tests).
 
-**Your step:** run **Import content** in `tools/import-content.html`, so each student's protected copy gets the new text and questions. Until then, students keep the old copy; only the grammar section names and the listening sets are live.
+**Live since 2026-11-10:** the new content was written into the six live lessons; Araylim 2 has no live lesson yet.
 
 ## Earlier proposals (Phase 2, not applied)
 Nothing in this file has been applied. `npm run lint:content` reads the migrated lesson files and reports the items below; it never edits lesson text. The only change made to `content/*.json` in Phase 2 is the added `schemaVersion: 2` and `sections` block (a snapshot of every original file is in `content/_snapshots/*.pre-sections.json`).

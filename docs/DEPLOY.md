@@ -15,7 +15,11 @@ Checked against production on 2026-11-10 (read-only queries with the Firebase CL
 - 2026-11-10: the teacher signed in on the live dashboard and it loads (step 3 checked).
 - 2026-11-10: the screenshot fixes deployed: the dashboard preview frame, clickable section cards, no extra-tab warning for teachers, and a preview timeout.
 - 2026-11-10: Phase 9 deployed (rules backed up first to `rules-before-phase9.json`): lesson sections v3, rules allowing sections up to 40. Content snapshots now return 404.
-- **Still to do:** steps 5 and 6. Re-importing content brings the v3 grammar topics into the protected copies. Until then, lessons borrow them from the published files. The old GitHub Pages site now also runs against the new rules.
+- 2026-11-10: Phase 10 deployed, and the new classwork written into the six live lessons from the command line: `lesson_1` (Gaziz), `lesson_1_sabina`, `lesson_1792346167287` (George), `lesson_1792367783670` (Araylim 1), `lesson_1792450067420` (Abay) and `lesson_1792583845397` (Araylim 3).
+  - Every live copy was first checked: each matched an earlier version of its file exactly, so no teacher edits were overwritten.
+  - Backup: `protectedContent-before-phase10.json`.
+  - Note: **Import content** in the tool only writes a lesson that has no copy yet, so it cannot update an existing lesson. Phase 13 adds an update button.
+- **Still to do:** switch Manga reader on for Gaziz (step 5); smoke test on a phone (step 6). Re-importing content brings the v3 grammar topics into the protected copies. Until then, lessons borrow them from the published files. The old GitHub Pages site now also runs against the new rules.
 
 ## Order (each step depends on the previous one)
 1. **Teacher accounts in `admins`.** For each teacher account: Firebase console > Authentication > Users > copy the UID; Realtime Database > Data > add `admins/<UID>` = `true`. (Clients cannot write this node.)
