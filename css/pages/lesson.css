@@ -315,6 +315,9 @@ html[data-reading-spacing="wide"] .passage, html[data-reading-font="dyslexia"] .
 .ds-lesson-bar:empty { display: none; }
 .section-bar { display: flex; flex-wrap: wrap; gap: var(--ds-space-2); align-items: stretch; padding: var(--ds-space-2) var(--ds-space-4); background: var(--ds-color-surface-raised); border-bottom: 1px solid var(--ds-color-border); }
 .section-segment { flex: 1 1 11rem; display: grid; gap: 0.15rem; padding: var(--ds-space-2) var(--ds-space-3); border: 2px solid var(--ds-color-border); border-radius: var(--ds-radius-sm); background: var(--ds-color-surface); font-size: var(--ds-text-sm); min-width: 0; }
+button.section-segment { font: inherit; color: inherit; text-align: left; cursor: pointer; }
+button.section-segment:hover { border-color: var(--ds-color-primary); }
+button.section-segment:focus-visible { outline: 3px solid var(--ds-color-focus, var(--ds-color-primary)); outline-offset: 2px; }
 .section-segment[data-current] { border-color: var(--ds-color-primary); background: var(--ds-color-primary-soft); }
 .section-segment__title { font-weight: 700; }
 .section-segment__times { font: 700 var(--ds-text-sm) var(--ds-font-mono); font-variant-numeric: tabular-nums; }

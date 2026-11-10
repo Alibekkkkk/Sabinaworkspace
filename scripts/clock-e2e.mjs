@@ -70,6 +70,19 @@ try {
   check(Math.abs(seconds(t.value) - seconds(s.value)) <= 1, `teacher ${t.value} and student ${s.value} agree (student device clock is +10 min)`);
   check(seconds(s.value) >= 3 && seconds(s.value) <= 6, `the clock is about 3.5 s after start (student shows ${s.value})`);
 
+  // the teacher picks the section to time by clicking its card; the student's cards follow but cannot be clicked
+  const cardIds = await teacher.$$eval("button.section-segment", cards => cards.map(card => card.dataset.section));
+  check(cardIds.length >= 2, `the teacher's section cards are buttons (${cardIds.length})`);
+  check((await student.$$("button.section-segment")).length === 0, "the student's section cards are not buttons");
+  if (cardIds.length >= 2) {
+    await teacher.click(`button.section-segment[data-section="${cardIds[1]}"]`);
+    await student.waitForFunction(id => document.querySelector(`.section-segment[data-section="${id}"]`)?.hasAttribute("data-current"), { timeout: 8000 }, cardIds[1]).catch(() => {});
+    const current = await student.$eval(".section-segment[data-current]", card => card.dataset.section).catch(() => "");
+    check(current === cardIds[1], `clicking the "${cardIds[1]}" card switches the student's current section (now "${current}")`);
+    await teacher.click(`button.section-segment[data-section="${cardIds[0]}"]`);
+    await sleep(800);
+  }
+
   // tighter check: sample both pages at the same instant, many times, in milliseconds
   const sampleGap = async () => {
     const [a, b] = await Promise.all([teacher.evaluate(() => document.getElementById("clockValue").textContent), student.evaluate(() => document.getElementById("clockValue").textContent)]);
@@ -112,7 +125,7 @@ try {
   check((await read(student)).value === stopped.value, "a stopped clock never changes again");
 
   const log = Object.values((await rest(`lessonClockLog/${anna.code}/${anna.lessonId}`)) || {}).sort((a, b) => a.at - b.at).map(event => event.type);
-  check(JSON.stringify(log) === JSON.stringify(["start", "pause", "resume", "stop"]), `the append-only log recorded ${JSON.stringify(log)}`);
+  check(JSON.stringify(log) === JSON.stringify(["start", "section", "section", "pause", "resume", "stop"]), `the append-only log recorded ${JSON.stringify(log)}`);
   check(Math.abs(stored.stoppedAt - Date.now()) < 120000, "stoppedAt is a real server timestamp (not the skewed device time)");
 } finally {
   await browser.close();

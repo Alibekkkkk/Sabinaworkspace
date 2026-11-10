@@ -1,6 +1,6 @@
 import { safeLocal, safeSession } from "../safe-storage.js";
 import { startTabGuard } from "../tab-guard.js";
-startTabGuard("homework:" + location.search);
+if (new URLSearchParams(location.search).get("teacher") !== "1") startTabGuard("homework:" + location.search);
 (() => {
 
   try{const t=safeLocal.getItem('nd_homework_theme_v2');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}

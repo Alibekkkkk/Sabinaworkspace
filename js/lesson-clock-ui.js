@@ -61,8 +61,13 @@ export function initLessonClock(options) {
     if (signature === sectionsShown) return;
     sectionsShown = signature;
     segments = list.map(section => {
-      const root = el("div", "section-segment");
+      // The teacher picks which section's timer runs by clicking its card; students only see the cards.
+      const root = el(isTeacher ? "button" : "div", "section-segment");
       root.dataset.section = section.id;
+      if (isTeacher) {
+        root.type = "button";
+        root.addEventListener("click", () => { if (snapshot.clock.currentSection !== section.id) perform("section", { section: section.id }); });
+      }
       const title = el("span", "section-segment__title", section.title);
       const times = el("span", "section-segment__times");
       const remaining = el("span", "section-segment__remaining");
@@ -73,7 +78,7 @@ export function initLessonClock(options) {
       track.setAttribute("aria-valuemax", "100");
       const fill = el("span", "ds-progress__fill");
       track.append(fill);
-      root.title = `${section.title}: about ${section.estimatedMinutes} minutes planned`;
+      root.title = isTeacher ? `${section.title}: about ${section.estimatedMinutes} minutes planned. Click to time this section.` : `${section.title}: about ${section.estimatedMinutes} minutes planned`;
       root.append(title, times, remaining, track);
       return { section, root, times, remaining, track, fill };
     });

@@ -1,6 +1,7 @@
 import { safeLocal, safeSession } from "../safe-storage.js";
 import { startTabGuard } from "../tab-guard.js";
-startTabGuard("lesson:" + location.search);
+// Teacher previews do not save student work, so several open tabs are normal there and get no warning.
+if (new URLSearchParams(location.search).get("teacher") !== "1") startTabGuard("lesson:" + location.search);
 (() => {
 
   try{const t=safeLocal.getItem('nd_lesson_theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}
@@ -436,8 +437,20 @@ function initFirebase(){
     
     if(teacherPreviewRequested){
       document.querySelector('.session-input').style.display='none';
+      // Each step of the preview load is named and time-limited, so a stall shows which step and offers a retry
+      // instead of leaving the loading placeholders up.
+      let previewStep='checking sign-in',previewDone=false;
+      const previewWatchdog=setTimeout(function(){
+        if(previewDone)return;
+        updateSyncUI('error');
+        showErrorPage(document.getElementById('main'),new Error('Teacher preview timed out while '+previewStep+'.'),{title:'The lesson is taking too long to load'});
+      },20000);
+      let previewStarted=false;
       firebase.auth().onAuthStateChanged(async function(user){
+        if(previewStarted&&user)return; // a token refresh, not a new sign-in
+        previewStarted=!!user;
         try {
+          previewStep='checking teacher access';
           teacherCanEdit=await isTeacher(user,fbDb);
         } catch(error) {
           teacherCanEdit=false;
@@ -448,6 +461,7 @@ function initFirebase(){
           try{
             const {loadProtectedContent}=await import('../protected-content.js');
             try{
+              previewStep='loading the lesson content';
               const record=await loadProtectedContent(fbDb,state.currentLessonId,'classwork');
               activeContentName=String(record.sourceFile||'').replace(/\.json$/i,'')||activeContentName;
               await applyLessonContent(record.content,'Firebase protected content/'+state.currentLessonId+'/classwork');
@@ -456,9 +470,11 @@ function initFirebase(){
               await loadContent();
             }
           }catch(error){
-            document.getElementById('main').textContent='Teacher preview content failed to load: '+error.message;
+            previewDone=true;clearTimeout(previewWatchdog);
+            showErrorPage(document.getElementById('main'),error,{title:'Teacher preview content failed to load'});
             return;
           }
+          previewDone=true;clearTimeout(previewWatchdog);
           const lessonId=state.currentLessonId;
           fbDb.ref('curriculum/'+lessonId+'/flashcardImages').on('value',function(s){customImages=s.val()||{};renderFlashcards();if(document.getElementById('fcModal').classList.contains('open'))renderQuizModal()});
           fbDb.ref('curriculum').on('value',function(s){updateCurriculumView(s,getSessionCode(),true)});
@@ -478,7 +494,7 @@ function initFirebase(){
           startLessonClock(true,getSessionCode); { const identityBanner=document.getElementById('studentIdentityBanner'); if(identityBanner)identityBanner.style.display='none'; } document.getElementById('scorePill').style.display='none'; document.getElementById('streakPill').style.display='none';
           renderStage();
         }
-        else{teacherMode=true;updateSyncUI('error');setHtml(document.getElementById('main'), '<div class="card"><h2>Teacher sign-in required</h2></div>')}
+        else{previewDone=true;clearTimeout(previewWatchdog);teacherMode=true;updateSyncUI('error');setHtml(document.getElementById('main'), '<div class="card"><h2>Teacher sign-in required</h2></div>')}
       });
       return;
     }

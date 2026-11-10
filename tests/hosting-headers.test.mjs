@@ -15,10 +15,10 @@ const UNUSED_FONT_HOSTS = new Set(["https://fonts.googleapis.com", "https://font
 test("every response carries the security headers", () => {
   assert.ok(hosting && global, "firebase.json has a hosting block with a rule for every path");
   const csp = parse(header(global, "Content-Security-Policy"));
-  assert.deepEqual(csp["frame-ancestors"], ["'none'"]);
+  assert.deepEqual(csp["frame-ancestors"], ["'self'"], "the dashboard previews lessons in a same-site iframe");
   assert.deepEqual(csp["object-src"], ["'none'"]); assert.deepEqual(csp["base-uri"], ["'self'"]); assert.deepEqual(csp["default-src"], ["'self'"]);
   assert.doesNotMatch(header(global, "Content-Security-Policy"), /unsafe-inline|unsafe-eval/);
-  assert.equal(header(global, "X-Content-Type-Options"), "nosniff"); assert.equal(header(global, "X-Frame-Options"), "DENY");
+  assert.equal(header(global, "X-Content-Type-Options"), "nosniff"); assert.equal(header(global, "X-Frame-Options"), "SAMEORIGIN");
   assert.equal(header(global, "Referrer-Policy"), "strict-origin-when-cross-origin");
   assert.equal(header(global, "Cross-Origin-Opener-Policy"), "same-origin-allow-popups", "same-origin would break the Google sign-in popup");
   assert.match(header(global, "Strict-Transport-Security"), /max-age=(\d{8,})/); assert.ok(Number(header(global, "Strict-Transport-Security").match(/max-age=(\d+)/)[1]) >= 31536000);
