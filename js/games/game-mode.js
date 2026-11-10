@@ -28,9 +28,12 @@ const MISSIONS = Object.freeze({
   6: "Mission: build correct sentences from the word tiles.",
   7: "Mission: build the next set of sentences.",
   8: "Mission: choose the right tense each time.",
-  9: "Boss: the unit test. One attempt, so take your time."
+  9: "Boss: the unit test. One attempt, so take your time.",
+  10: "Mission: finish a game to complete this section.",
+  11: "Mission: finish a listening round. Catch every missing word."
 });
-export const missionFor = stageId => MISSIONS[stageId] || "Mission: finish this stage.";
+// Grammar sections are 21 to 29 (js/lesson-plan.js).
+export const missionFor = stageId => MISSIONS[stageId] || (stageId >= 21 && stageId <= 29 ? "Mission: learn the rule, then get every sentence right." : "Mission: finish this stage.");
 
 // XP framing for a finished stage: a stage worth `points` pays like a game of points/5 answers, perfect. Daily cap applies.
 export function stageResult(points) {

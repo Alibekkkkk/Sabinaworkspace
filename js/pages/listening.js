@@ -1,10 +1,10 @@
 // Listening dictation trainer: a British-voice character says a sentence, some words are hidden, the student types
 // them in place, gets per-word feedback, taps words to save them, and finishes a round with a summary.
 import { firebaseConfig } from "../config.js";
-import { resolveStudentContext } from "../student-context.js";
+import { EMBEDDED, notifyLesson, resolvePageContext } from "../embed.js";
 import { featureEnabled, showNotEnabled } from "../feature-gate.js";
 import { mountOfflineBanner, watchConnection } from "../shell.js";
-mountOfflineBanner();
+mountOfflineBanner({ languageSwitch: !EMBEDDED });
 import { loadProtectedContent } from "../protected-content.js";
 import { progressPath, saveGameProgress, saveVocabularyWord } from "../games/progress.js";
 import { createPlayer, speechSupported } from "../listening/audio.js";
@@ -359,6 +359,8 @@ async function finishRound() {
   actions.lastChild.href = "portal.html";
   box.append(actions);
   announce(`Round complete. ${summary.stars} of 3 stars. ${Math.round(summary.accuracy * 100)} percent.`);
+  if (context.preview) { xp.textContent = "Teacher preview: nothing is saved."; return; }
+  notifyLesson("section-complete", { section: "listening", score: summary.gapsCorrect, total: summary.gapsTotal });
   try {
     const before = progressBefore.xp || 0;
     const saved = await saveRound(results, summary, seconds);
@@ -404,8 +406,8 @@ async function boot() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     database = firebase.database(); watchConnection(database);
-    context = await resolveStudentContext({ auth: firebase.auth(), db: database, lessonId: query.get("lesson") });
-    if (!(await featureEnabled(database, context.code, "listeningTrainer"))) { showNotEnabled(status, "listeningTrainer"); return; }
+    context = await resolvePageContext({ auth: firebase.auth(), db: database, lessonId: query.get("lesson") });
+    if (!context.preview && !(await featureEnabled(database, context.code, "listeningTrainer"))) { showNotEnabled(status, "listeningTrainer"); return; }
     const manifest = await (await fetch(new URL("../../content/manifest.json", import.meta.url))).json();
     const entry = manifest[context.lessonId];
     if (!entry || !entry.listeningFile) { status.textContent = "Your teacher has not added listening sentences to this lesson yet."; return; }
@@ -414,9 +416,9 @@ async function boot() {
     pack = await response.json();
     const problems = validateListeningPack(pack);
     if (problems.length) throw new Error(`The listening pack has errors: ${problems[0]}`);
-    if (pack.status === "draft" && !previewDraft) { status.textContent = "These sentences are waiting for your teacher's approval."; return; }
+    if (pack.status === "draft" && !previewDraft && !context.preview) { status.textContent = "These sentences are waiting for your teacher's approval."; return; }
     const [progressSnapshot, record] = await Promise.all([
-      database.ref(progressPath(context.code)).once("value"),
+      database.ref(progressPath(context.code)).once("value").catch(error => { if (context.preview) return { val: () => null }; throw error; }),
       loadProtectedContent(database, context.lessonId, "classwork").catch(() => null)
     ]);
     progressBefore = progressSnapshot.val() || {};

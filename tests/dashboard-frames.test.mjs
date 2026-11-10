@@ -25,3 +25,8 @@ test("the hosting header allows same-site framing and nothing else", () => {
   assert.match(csp, /frame-ancestors 'self'(;|$)/);
   assert.equal(global.find(header => header.key === "X-Frame-Options").value, "SAMEORIGIN");
 });
+
+test("old content snapshots are never published (they hold earlier answer keys)", () => {
+  const config = JSON.parse(readFileSync(new URL("../firebase.json", import.meta.url), "utf8"));
+  assert.ok(config.hosting.ignore.includes("content/_snapshots/**"));
+});

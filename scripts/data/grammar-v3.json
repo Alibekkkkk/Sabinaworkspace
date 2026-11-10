@@ -1,0 +1,85 @@
+{
+  "sabina.json": [
+    { "id": "present-perfect", "title": "Present Perfect", "exercises": ["g6", "sbPp"],
+      "rule": { "formula": "Subject + have/has + past participle (V3)", "points": ["Use <b>have</b> with I, you, we, they; <b>has</b> with he, she, it.", "Use it for experiences and for past actions whose result matters now.", "Signal words: <b>ever, never, already, yet, just, since, for, recently</b>.", "Example: The region <b>has experienced</b> three disasters in six weeks."] },
+      "lead": "Complete the sentences, then build your own with the present perfect." },
+    { "id": "past-passive", "title": "Past Passive", "exercises": ["g7", "sbPs"],
+      "rule": { "formula": "Subject + was/were + past participle (V3) (+ by …)", "points": ["Use the passive when the action matters more than who did it.", "<b>was</b> with a singular subject, <b>were</b> with a plural subject.", "Add <b>by + agent</b> only when it is useful: The town was destroyed <b>by the flood</b>.", "Questions: <b>Were</b> the warning systems <b>tested</b>?"] },
+      "lead": "Complete the sentences with the past passive, then build them word by word." },
+    { "id": "perfect-or-past", "title": "Present Perfect or Past Simple?", "exercises": ["g10"],
+      "rule": { "formula": "Finished time → Past Simple (V2) · Up to now → Present Perfect (have/has + V3)", "points": ["Past simple with a finished time: <b>last August, in 2023, when she was young</b>.", "Present perfect with time up to now: <b>since, for, so far, recently, yet</b>.", "Passive forms follow the same rule: was destroyed / has been destroyed."] },
+      "lead": "Look for the time words, then choose the tense." }
+  ],
+  "gaziz.json": [
+    { "id": "present-perfect", "title": "Present Perfect", "exercises": ["g6", "sbPp"],
+      "rule": { "formula": "Subject + have/has + past participle (V3)", "points": ["Use <b>have</b> with I, you, we, they; <b>has</b> with he, she, it.", "Use it for changes and results that matter now: The city <b>has installed</b> solar panels.", "Signal words: <b>ever, never, already, yet, since, for, recently, this term</b>."] },
+      "lead": "Complete the sentences, then build your own with the present perfect." },
+    { "id": "past-passive", "title": "Past Passive", "exercises": ["g7", "sbPs"],
+      "rule": { "formula": "Subject + was/were + past participle (V3) (+ by …)", "points": ["Use the passive when the action matters more than who did it.", "<b>was</b> with a singular subject, <b>were</b> with a plural subject.", "Example: The new cycle lane <b>was opened</b> by the mayor in 2023."] },
+      "lead": "Complete the sentences with the past passive, then build them word by word." },
+    { "id": "perfect-or-past", "title": "Present Perfect or Past Simple?", "exercises": ["g10"],
+      "rule": { "formula": "Finished time → Past Simple (V2) · Up to now → Present Perfect (have/has + V3)", "points": ["Past simple with a finished time: <b>in 2022, last year, when she was young</b>.", "Present perfect with time up to now: <b>since, for, so far, recently</b>."] },
+      "lead": "Look for the time words, then choose the tense." }
+  ],
+  "abay.json": [
+    { "id": "gerunds-infinitives", "title": "Gerunds and Infinitives", "exercises": ["g6", "sbPp"],
+      "rule": { "formula": "Verb + V-ing  or  Verb + to + V1", "points": ["<b>Gerund (V-ing)</b> after enjoy, avoid, suggest, mind, finish, keep, practise, recommend, and after prepositions: good at, interested in, looking forward to, be used to. Example: I enjoy <b>reading</b> books.", "<b>Infinitive (to + V1)</b> after decide, hope, want, refuse, plan, manage, agree, promise, and after adjectives: important, happy, difficult, easy. Example: She decided <b>to apply</b> for the job.", "Look at the word <b>before</b> the gap to choose."] },
+      "lead": "Look at the verb before the gap: a gerund verb takes V-ing, an infinitive verb takes to + V1." },
+    { "id": "modal-verbs", "title": "Modal Verbs: Deduction and Obligation", "exercises": ["g7", "sbPs"],
+      "rule": { "formula": "Subject + modal + V1  ·  Subject + modal + have + V3 (past)", "points": ["<b>Sure:</b> must be / must have + V3. She <b>must be</b> asleep. He <b>must have</b> missed the train.", "<b>Maybe:</b> might, may, could (have + V3). They <b>may have</b> made a mistake.", "<b>Impossible:</b> cannot be / cannot have + V3. He <b>cannot have</b> done it.", "<b>Obligation and advice:</b> must, must not, should, ought to. You <b>ought to</b> read the article."] },
+      "lead": "How certain is the speaker, or what is the obligation? Choose the modal, and use have + V3 for the past." },
+    { "id": "mixed-review", "title": "Mixed Review", "exercises": ["g10"],
+      "rule": { "formula": "Gerund or infinitive · Modal verb · Past simple", "points": ["Each sentence is labelled with what it practises.", "Check the verb before the gap and the time words before you type."] },
+      "lead": "Mixed practice of this lesson's grammar." }
+  ],
+  "araylim_1.json": [
+    { "id": "present-simple", "title": "Present Simple", "exercises": ["g6"],
+      "rule": { "formula": "Subject + V1 (he/she/it + V-s/-es) · do/does not + V1 · Do/Does … + V1?", "points": ["Use it for facts, habits and routines.", "Add <b>-s</b> or <b>-es</b> for he, she, it: The brain <b>processes</b> information.", "Negatives and questions use <b>do/does</b> and the base verb."] },
+      "lead": "Complete each sentence with the present simple." },
+    { "id": "present-continuous", "title": "Present Continuous", "exercises": ["g7"],
+      "rule": { "formula": "Subject + am/is/are + V-ing", "points": ["Use it for actions happening now and temporary situations.", "Signal words: <b>now, right now, at the moment, look!, listen!</b>"] },
+      "lead": "Complete each sentence with the present continuous." },
+    { "id": "past-simple", "title": "Past Simple", "exercises": ["sbPp"],
+      "rule": { "formula": "Subject + V2 · did not + V1 · Did … + V1?", "points": ["Use it for finished actions in the past: last night, yesterday, in 2020.", "Learn the irregular verbs: go → went, see → saw."] },
+      "lead": "Build each sentence with the past simple." },
+    { "id": "past-continuous", "title": "Past Continuous", "exercises": ["sbPs"],
+      "rule": { "formula": "Subject + was/were + V-ing", "points": ["Use it for an action in progress at a past moment.", "Often with <b>when</b> or <b>while</b>: I <b>was sleeping</b> when the phone rang."] },
+      "lead": "Build each sentence with the past continuous." },
+    { "id": "present-perfect", "title": "Present Perfect", "exercises": ["g10"],
+      "rule": { "formula": "Subject + have/has + past participle (V3)", "points": ["Use it for experiences (ever, never) and results that matter now.", "Signal words: <b>since, for, yet, already, just</b>."] },
+      "lead": "Complete each sentence with the present perfect." }
+  ],
+  "araylim_2.json": [
+    { "id": "future-forms", "title": "Future Forms", "exercises": ["g6", "sbPp"],
+      "rule": { "formula": "will + V1 · am/is/are going to + V1 · Present Simple for timetables", "points": ["<b>will</b>: decisions made now, promises and predictions.", "<b>going to</b>: plans and intentions: I <b>am going to buy</b> a telescope.", "<b>Present simple</b> for timetables: The shuttle <b>leaves</b> at 9 AM."] },
+      "lead": "Choose the future form that fits the meaning." },
+    { "id": "modal-verbs", "title": "Modal Verbs", "exercises": ["g7", "sbPs"],
+      "rule": { "formula": "Subject + modal + V1", "points": ["<b>must</b>: strong obligation. <b>must not</b>: it is not allowed.", "<b>have to / do not have to</b>: necessary / not necessary.", "<b>can</b>: ability or permission. <b>should</b>: advice."] },
+      "lead": "Choose the modal verb that fits the meaning." },
+    { "id": "mixed-tenses", "title": "Mixed Tenses Review", "exercises": ["g10"],
+      "rule": { "formula": "Present Continuous for arrangements · Present Perfect with since/for", "points": ["Arrangements: I <b>am seeing</b> the doctor tomorrow.", "Up to now: I <b>have lived</b> here since 2015."] },
+      "lead": "Look at the time words, then choose the tense." }
+  ],
+  "araylim_3.json": [
+    { "id": "future-plans", "title": "Future Plans: Will, Going to, Present Continuous", "exercises": ["g6", "sbPp"],
+      "rule": { "formula": "Present Continuous · going to · will", "points": ["<b>Present continuous</b>: fixed arrangements. I <b>am meeting</b> the investors tomorrow.", "<b>Going to</b>: plans, and predictions from evidence. Look at those clouds! It <b>is going to rain</b>.", "<b>Will</b>: decisions made now, promises, predictions without evidence."] },
+      "lead": "Choose the future form from the context." },
+    { "id": "future-continuous-perfect", "title": "Future Continuous and Future Perfect", "exercises": ["g7", "sbPs"],
+      "rule": { "formula": "will be + V-ing · will have + V3 · When/If + present simple", "points": ["<b>Future continuous</b>: in the middle of an action at a future time. This time tomorrow, I <b>will be presenting</b>.", "<b>Future perfect</b>: finished before a future time, often with <b>by</b>. By 2030, AI <b>will have taken</b> over many tasks.", "After <b>when</b> and <b>if</b>, use the present simple: If it <b>rains</b>, we will not go."] },
+      "lead": "Watch for by …, this time tomorrow, and when/if clauses." },
+    { "id": "mixed-future", "title": "Mixed Future Forms", "exercises": ["g10"],
+      "rule": { "formula": "Arrangement · Plan · Timetable · Prediction", "points": ["Choose the form from the meaning, not from one signal word.", "Timetables use the present simple: When <b>does</b> the movie <b>start</b>?"] },
+      "lead": "Complete the sentences with the correct future form." }
+  ],
+  "george.json": [
+    { "id": "present-simple-continuous", "title": "Present Simple and Present Continuous", "exercises": ["g6", "sbPp"],
+      "rule": { "formula": "Present Simple (V1 / V-s) · Present Continuous (am/is/are + V-ing)", "points": ["<b>Present simple</b>: routines and facts. He <b>trains</b> every day.", "<b>Present continuous</b>: happening now. Listen! Someone <b>is knocking</b>.", "Signal words: every day, usually · now, look!, listen!"] },
+      "lead": "Routine or right now? Choose the present tense." },
+    { "id": "past-simple", "title": "Past Simple", "exercises": ["g7", "sbPs"],
+      "rule": { "formula": "Subject + V2 · did not + V1 · Did … + V1?", "points": ["Use it for finished actions: yesterday, last year, at 7 PM.", "Irregular verbs: break → broke, sleep → slept."] },
+      "lead": "Complete and build sentences in the past simple." },
+    { "id": "mixed-tenses", "title": "Mixed Tenses Review", "exercises": ["g10"],
+      "rule": { "formula": "Present Continuous · going to · Present Simple", "points": ["Plans: I <b>am going to travel</b> to London next summer.", "Right now: They <b>are playing</b> football."] },
+      "lead": "Look at the time words, then choose the tense." }
+  ]
+}

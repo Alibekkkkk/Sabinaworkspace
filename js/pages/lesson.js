@@ -11,6 +11,7 @@ if (new URLSearchParams(location.search).get("teacher") !== "1") startTabGuard("
 import { isTeacher } from "../auth.js";
 import { isLessonVisibleTo } from "../audience.js";
 import { DEFAULT_STAGES, resolveMaxScore } from "../lesson-meta.js";
+import { buildLessonPlan, scoreUnits, planMaxScore, sectionDone, neighbours, resolveSectionId } from "../lesson-plan.js";
 import { showToast } from "../ui.js";
 import { initReadingPrefs } from "../reading-prefs.js";
 import { confetti } from "../celebrate.js";
@@ -70,7 +71,19 @@ function getCurrentLesson(){
   if(!m)return null;
   return m.lessons.find(function(l){return l.id===state.currentLessonId})||null
 }
-function stagesOf(lesson){ return lesson && Array.isArray(lesson.stages) && lesson.stages.length ? lesson.stages : DEFAULT_STAGES; }
+// The lesson's sections (js/lesson-plan.js), built from the content; scoring and the sidebar follow it.
+let PLAN=[],LESSON_CONTENT={};
+function currentSection(){ return PLAN.find(function(section){return section.id===state.currentStage})||null; }
+function stagesOf(lesson){ if(PLAN.length)return scoreUnits(PLAN); return lesson && Array.isArray(lesson.stages) && lesson.stages.length ? lesson.stages : DEFAULT_STAGES; }
+function grammarSections(){ return PLAN.filter(function(section){return section.kind==='grammar'}); }
+function sectionScore(section,lessonId){ const ids=section.kind==='grammar'?section.exercises.map(function(e){return e.scoreId}):[section.id]; return ids.reduce(function(sum,id){return sum+(state.scores[lessonId+'_'+id]||0)},0); }
+// Clears the score, done flag and saved answers of one section (every exercise of a grammar section).
+function clearSectionProgress(sectionId){
+  const section=PLAN.find(function(item){return item.id===sectionId});
+  const ids=section&&section.kind==='grammar'?section.exercises.map(function(e){return e.scoreId}):[sectionId];
+  ids.forEach(function(id){ const key=state.currentLessonId+'_'+id; state.scores[key]=0; state.done[key]=false; Object.keys(draftAnswers).forEach(function(k){ if(k.startsWith('g'+id+'_')||k.startsWith('sb'+id+'_')||k==='stage_'+id)delete draftAnswers[k]; }); });
+  debouncedSaveDraft();
+}
 // ---- lesson clock (teacher-controlled, shared by teacher and student) ----
 // ---- grammar ladder (rule card on the first grammar stage, six production steps after the last) ----
 let readingTasks = null;
@@ -96,18 +109,19 @@ function ladderShown(){ return Boolean(grammarLadder) && (grammarLadder.status==
 function decorateGrammarStage(stageId){
   if(!ladderShown())return;
   const view=document.querySelector('#main .stage-view'); if(!view)return;
-  if(stageId===4){
+  const grammarList=grammarSections(); const firstGrammar=grammarList.length?grammarList[0].id:-1, lastGrammar=grammarList.length?grammarList[grammarList.length-1].id:-1;
+  if(stageId===firstGrammar){
     const card=renderRuleCard(grammarLadder);
     const firstBox=view.querySelector('.g-box');
     if(firstBox)view.insertBefore(card,firstBox); else view.insertBefore(card,view.firstChild);
-  } else if(stageId===8){
+  } else if(stageId===lastGrammar){
     const ladderStore={
       get:function(key){return draftAnswers[key]},
       set:function(key,value){ if(teacherMode)return; draftAnswers[key]=value; debouncedSaveDraft(); }
     };
     view.append(renderGrammarLadder({
-      ladder:grammarLadder, store:ladderStore, isTeacher:teacherMode, stageId:8,
-      flag:function(id,prompt,answer,auto,extra){ flagForReview(id,prompt,answer,auto,8,extra); }
+      ladder:grammarLadder, store:ladderStore, isTeacher:teacherMode, stageId:lastGrammar,
+      flag:function(id,prompt,answer,auto,extra){ flagForReview(id,prompt,answer,auto,lastGrammar,extra); }
     }));
   }
 }
@@ -136,7 +150,7 @@ function startLessonClock(isTeacherView, getCode){
 function totalScore(){
   const l=getCurrentLesson();
   if(!l)return 0;
-  return l.stages.reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)
+  return stagesOf(l).reduce(function(s,st){return s+(state.scores[l.id+"_"+st.id]||0)},0)
 }
 
 let activeContentName = '';
@@ -581,7 +595,7 @@ async function startStudentSession(code){
           if (changed) {
               isRemoteUpdate = true;
               draftAnswers = remote;
-              if (state.currentStage !== 1 && state.currentStage !== 9) {
+              if ([1,9,10,11].indexOf(state.currentStage) === -1) {
                   renderStage();
               }
               setTimeout(() => { isRemoteUpdate = false; }, 100);
@@ -611,11 +625,9 @@ function listenForTeacherCommands(){
 }
 function applyTeacherCommand(cmd){
   const stage=Number(cmd.payload&&cmd.payload.stage);
-  if(cmd.type==='goto'&&Number.isInteger(stage)){goToStage(stage);return}
+  if(cmd.type==='goto'&&Number.isInteger(stage)){goToStage(PLAN.length?resolveSectionId(PLAN,stage):stage);return}
   if(cmd.type==='resetStage'&&Number.isInteger(stage)){
-    const key=state.currentLessonId+'_'+stage;
-    state.scores[key]=0;
-    state.done[key]=false;
+    clearSectionProgress(stage);
     delete draftAnswers['stage_'+stage];
     if(sessionRef)sessionRef.child('draft/'+state.currentLessonId).remove().catch(function(error){console.error('Unable to clear stage draft',error)});
     saveState();renderSidebar();renderStage();updateHUD();
@@ -670,12 +682,14 @@ function writeSessionSummary(payload){
   const done=payload.done||{};
   const summary={
     score:Number(payload.score)||0,
-    stage:Math.min(9,Math.max(1,Number(payload.stage)||1)),
+    stage:Math.min(40,Math.max(1,Number(payload.stage)||1)),
     streak:Number(payload.streak)||0,
     elapsed:Math.min(864000,Math.max(0,Number(payload.elapsed)||0)),
-    doneCount:Object.keys(done).filter(function(key){return done[key]===true}).length,
+    // sections of the open lesson that are done, out of how many, and the name of the current one
+    doneCount:PLAN.length?PLAN.filter(function(section){return section.id===1?(VOCAB.length>0&&getVocabCounts().learned===VOCAB.length)||Boolean(done[state.currentLessonId+'_1']):sectionDone(section,state.currentLessonId,done)}).length:Object.keys(done).filter(function(key){return done[key]===true}).length,
     lastUpdate:Date.now()
   };
+  if(PLAN.length){ summary.sectionCount=PLAN.length; const section=currentSection(); if(section)summary.stageLabel=String(section.label).slice(0,80); }
   fbDb.ref('sessionSummary/'+studentContext.code).update(summary).catch(function(error){console.error('Unable to update session summary',error)});
 }
 function broadcast(type,payload){ if(teacherMode && !sessionRef)return; if(fbConnected&&sessionRef){try{if(type==='state'){sessionRef.child('state').set(Object.assign({},payload,{lastUpdate:Date.now()}));writeSessionSummary(payload)}else if(type==='action'){appendBoundedRealtimeRecord(activityRef,payload).catch(function(error){console.error('Unable to append lesson activity',error)});sessionRef.child('state').update({score:payload.score,stage:payload.stage,lastUpdate:Date.now()})}else if(type==='notes')sessionRef.child('state').update({notes:payload.text})}catch(e){console.error('Unable to broadcast lesson update',e)}} const msg={type:type,payload:payload,ts:Date.now()}; if(bc){try{bc.postMessage(msg)}catch(e){}} }
@@ -1143,15 +1157,16 @@ function checkLongAnswer(text,keywordGroups,minWords,minGroups){ const t=norm(te
 function checkS4(silent){ const total=READING_Q.length+CONTEXT_Q.length; const c=Object.keys(s4Answers).length; updateS3Progress(); if(c===total){ setScore(3,25); if(!silent) markDone(3); else { state.done[state.currentLessonId+"_3"] = true; renderSidebar(); } }else{ setScore(3,Math.floor(c*25/total)); } }
 function completeReading(){const key=state.currentLessonId+"_3";if(!state.done[key]){state.done[key]=true;renderSidebar();saveState();broadcastAction('stage_done','Reading complete')}goToStage(4)}
 
-function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
-  const main=document.getElementById('main');if(!main)return; clearElement(main);
-  const v=document.createElement('div');v.className='stage-view active';
-  setHtml(v, '<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
+function renderCompletingSentence(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead,host){
+  const main=document.getElementById('main');if(!main)return; if(!host)clearElement(main);
+  data={pos:data&&data.pos||[],neg:data&&data.neg||[],q:data&&data.q||[],shuffled:data&&data.shuffled||[]};
+  const v=document.createElement('div');v.className=host?'exercise-block':'stage-view active';
+  setHtml(v, (host?'':'<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
-  '<div class="lead">'+lead+'</div>'+
+  '<div class="lead">'+lead+'</div>')+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft)">Score: <span id="p'+stageId+'live" style="color:var(--accent);font-size:18px">0</span> / '+(data.pos.length+data.neg.length+data.q.length+data.shuffled.length)+'</div><button class="btn ghost small" data-action="reset-grammar-stage" data-stage="'+stageId+'">↻ Reset</button></div>'+
   '<div id="p'+stageId+'body"></div>');
-  main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
+  (host||main).appendChild(v); if(!host)main.appendChild(stageFooter(prevId,nextId));
   let score=0;const body=document.getElementById('p'+stageId+'body');
   
   function addSection(heading,items,startNum){
@@ -1195,112 +1210,17 @@ function resetGrammarStage(id){
   Object.keys(draftAnswers).forEach(k=>{ if(k.startsWith('g'+id+'_') || k.startsWith('sb'+id+'_')) delete draftAnswers[k]; });
   debouncedSaveDraft(); renderSidebar();renderStage();updateHUD();
 }
-function renderStage4(){
-    let title = '⏳ Completing Sentence — Present Perfect';
-    let formula = 'Subject + have/has + past participle (V3)';
-    let listHTML = '<li>Use <b>have</b> with I, you, we, they.</li><li>Use <b>has</b> with he, she, it.</li>';
-    let lead = 'Complete each sentence.';
-    
-    if (activeContentName === 'abay') {
-        title = '🎯 Completing Sentence — Gerunds vs. Infinitives';
-        formula = '<span style="color:var(--ds-color-danger); font-weight:800; font-size:24px;">Verb + [V-ing]</span> <span style="color:var(--ds-color-muted); margin:0 15px; font-size:20px;">OR</span> <span style="color:var(--ds-color-primary); font-weight:800; font-size:24px;">Verb + [to + V1]</span>';
-        listHTML = `
-            <li style="margin-bottom:18px; padding:18px; background:color-mix(in srgb, var(--ds-color-danger) 10%, transparent); border-left:6px solid var(--ds-color-danger); border-radius:8px;">
-                <span style="color:var(--ds-color-danger); font-weight:900; font-size:24px;">1. Gerund (V-ing)</span><br>
-                <span style="font-size:20px;">A gerund is a verb acting like a noun. We use it after specific verbs and prepositions.</span><br>
-                <b style="font-size:20px;">Verbs that take Gerunds:</b> <span style="font-size:20px;">enjoy, avoid, suggest, mind, finish, keep, practice, recommend.</span><br>
-                <b style="font-size:20px;">Prepositions:</b> <span style="font-size:20px;">good at, interested in, looking forward to, used to.</span><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 1: I enjoy <b>reading</b> books. (NOT: to read)</i><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 2: They avoided <b>making</b> a mistake.</i>
-            </li>
-            <li style="padding:18px; background:color-mix(in srgb, var(--ds-color-primary) 10%, transparent); border-left:6px solid var(--ds-color-primary); border-radius:8px;">
-                <span style="color:var(--ds-color-primary); font-weight:900; font-size:24px;">2. Infinitive (to + V1)</span><br>
-                <span style="font-size:20px;">An infinitive is the base form of a verb with "to". We use it after specific verbs, adjectives, and to show purpose.</span><br>
-                <b style="font-size:20px;">Verbs that take Infinitives:</b> <span style="font-size:20px;">decide, hope, want, refuse, plan, manage, agree, promise.</span><br>
-                <b style="font-size:20px;">Adjectives:</b> <span style="font-size:20px;">important, happy, difficult, easy.</span><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 1: She decided <b>to apply</b> for the job. (NOT: applying)</i><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 2: We hope <b>to finish</b> the project.</i>
-            </li>
-        `;
-        lead = 'Read the sentence carefully. Look at the verb BEFORE the gap. If it is a Gerund verb, use V-ing. If it is an Infinitive verb, use "to + V1".';
-    } else if (activeContentName.includes('araylim_1')) {
-        title = '⏳ Completing Sentence — Simple Present';
-        formula = 'Subject + V1 (or V-s / V-es for he, she, it)';
-        listHTML = '<li>Use for facts, habits, and routines.</li><li>Add -s or -es for he/she/it.</li>';
-        lead = 'Complete each sentence using the Simple Present.';
-    } else if (activeContentName.includes('araylim_3')) {
-        title = '🚀 Completing Sentence — Future I (Plans & Decisions)';
-        formula = 'Present Continuous · Going to · Will';
-        listHTML = '<li><b>Present Continuous</b>: fixed arrangements (I am meeting him tomorrow).</li><li><b>Going to</b>: plans/intentions (I am going to start a business).</li><li><b>Will</b>: spontaneous decisions/promises (I will help you).</li>';
-        lead = 'Complete each sentence using the correct future form. Look for time expressions and context clues.';
-    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
-        title = '⏳ Completing Sentence — Present Tenses';
-        formula = 'Present Simple vs Present Continuous';
-        listHTML = '<li>Present Simple: facts and routines.</li><li>Present Continuous: happening right now.</li>';
-        lead = 'Complete each sentence using the correct present tense.';
-    }
-    renderCompletingSentence(G6,4,3,5,title,'Stage 4 — Grammar',formula,listHTML,lead);
-}
-
-function renderStage5(){
-    let title = '🛡️ Completing Sentence — Passive Voice';
-    let formula = 'Subject + was/were + past participle (V3)';
-    let listHTML = '<li>Past passive.</li>';
-    let lead = 'Complete each sentence using the passive voice.';
-    
-    if (activeContentName === 'abay') {
-        title = '🕵️ Completing Sentence — Modals of Deduction';
-        formula = 'Subject + Modal + [be / have + V3]';
-        listHTML = `
-            <li style="margin-bottom:18px; padding:18px; background:color-mix(in srgb, var(--ds-color-success) 10%, transparent); border-left:6px solid var(--ds-color-success); border-radius:8px;">
-                <span style="color:var(--ds-color-success); font-weight:900; font-size:24px;">1. Strong Deduction (Sure)</span><br>
-                <span style="font-size:20px;">When you are almost 100% certain about something.</span><br>
-                <b style="font-size:20px;">Present:</b> <span style="font-size:20px;">must be (She is not answering. She <b>must be</b> asleep.)</span><br>
-                <b style="font-size:20px;">Past:</b> <span style="font-size:20px;">must have + V3 (He <b>must have</b> missed the train.)</span>
-            </li>
-            <li style="margin-bottom:18px; padding:18px; background:color-mix(in srgb, var(--ds-color-warning) 10%, transparent); border-left:6px solid var(--ds-color-warning); border-radius:8px;">
-                <span style="color:var(--ds-color-warning); font-weight:900; font-size:24px;">2. Possibility (Maybe)</span><br>
-                <span style="font-size:20px;">When you think something is possible, but you are not sure.</span><br>
-                <b style="font-size:20px;">Present:</b> <span style="font-size:20px;">might / may / could be (He <b>might be</b> busy right now.)</span><br>
-                <b style="font-size:20px;">Past:</b> <span style="font-size:20px;">might / may / could have + V3 (They <b>may have</b> made a mistake.)</span>
-            </li>
-            <li style="padding:18px; background:color-mix(in srgb, var(--ds-color-danger) 10%, transparent); border-left:6px solid var(--ds-color-danger); border-radius:8px;">
-                <span style="color:var(--ds-color-danger); font-weight:900; font-size:24px;">3. Impossibility (No way)</span><br>
-                <span style="font-size:20px;">When you are certain something is NOT true.</span><br>
-                <b style="font-size:20px;">Present:</b> <span style="font-size:20px;">cannot be (That <b>cannot be</b> the truth.)</span><br>
-                <b style="font-size:20px;">Past:</b> <span style="font-size:20px;">cannot have + V3 (He <b>cannot have</b> done it. He was with me.)</span>
-            </li>
-        `;
-        lead = 'Look at the context and evidence. How certain is the speaker? Choose must, might/may/could, or cannot. Remember to use "have + V3" for past actions.';
-    } else if (activeContentName.includes('araylim_1')) {
-        title = '⏳ Completing Sentence — Present Continuous';
-        formula = 'Subject + am/is/are + V-ing';
-        listHTML = '<li>Use for actions happening right now.</li><li>Use for temporary situations.</li>';
-        lead = 'Complete each sentence using the Present Continuous.';
-    } else if (activeContentName.includes('araylim_3')) {
-        title = '⏳ Completing Sentence — Future II (Continuous & Perfect)';
-        formula = 'Will be doing · Will have done';
-        listHTML = '<li><b>Future Continuous</b>: in the middle of an action in the future (This time tomorrow, I will be working).</li><li><b>Future Perfect</b>: completed before a time in the future (By 2030, machines will have replaced many jobs).</li>';
-        lead = 'Complete each sentence using the Future Continuous or Future Perfect. Watch out for "by" and "this time tomorrow".';
-    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
-        title = '⏳ Completing Sentence — Past Tenses';
-        formula = 'Past Simple vs Past Continuous';
-        listHTML = '<li>Past Simple: finished actions.</li><li>Past Continuous: actions in progress in the past.</li>';
-        lead = 'Complete each sentence using the correct past tense.';
-    }
-    renderCompletingSentence(G7,5,4,6,title,'Stage 5 — Grammar',formula,listHTML,lead);
-}
-
 const SB_STATE={}; const SB_DATA={};
-function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead){
-  const main=document.getElementById('main');if(!main)return; clearElement(main);
-  const v=document.createElement('div');v.className='stage-view active';
-  setHtml(v, '<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
+function renderSentenceBuilder(data,stageId,prevId,nextId,title,eyebrow,formula,listHTML,lead,host){
+  const main=document.getElementById('main');if(!main)return; if(!host)clearElement(main);
+  data={pos:data&&data.pos||[],neg:data&&data.neg||[],q:data&&data.q||[],shuffled:data&&data.shuffled||[]};
+  const v=document.createElement('div');v.className=host?'exercise-block':'stage-view active';
+  setHtml(v, (host?'':'<div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2>'+
   '<div class="g-box"><h3>Reminder</h3><div class="g-formula">'+formula+'</div><ul>'+listHTML+'</ul></div>'+
-  '<div class="lead">'+lead+'</div>'+
+  '<div class="lead">'+lead+'</div>')+
   '<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;color:var(--ink-soft);">Score: <span id="sb'+stageId+'live" style="color:var(--accent);font-size:18px">0</span> / '+(data.pos.length+data.neg.length+data.q.length+data.shuffled.length)+'</div><button class="btn ghost small" data-action="reset-grammar-stage" data-stage="'+stageId+'">↻ Reset</button></div>'+
   '<div id="sb'+stageId+'body"></div>');
-  main.appendChild(v);main.appendChild(stageFooter(prevId,nextId));
+  (host||main).appendChild(v); if(!host)main.appendChild(stageFooter(prevId,nextId));
   const body=document.getElementById('sb'+stageId+'body'); const total=data.pos.length+data.neg.length+data.q.length+data.shuffled.length; SB_DATA[stageId]={pos:data.pos,neg:data.neg,q:data.q,shuffled:data.shuffled};
   let score = 0;
   
@@ -1376,124 +1296,72 @@ function checkSBItem(stageId,idx){
     if(!window['sbDone_'+stageId+'_'+idx]){ window['sbDone_'+stageId+'_'+idx]=true; const el=document.getElementById('sb'+stageId+'live'); let cur=Number(el.textContent)||0;cur++;el.textContent=cur; const tot=(SB_DATA[stageId].pos.length+SB_DATA[stageId].neg.length+SB_DATA[stageId].q.length+SB_DATA[stageId].shuffled.length); setScore(stageId,Math.floor(cur*10/tot)); if(cur===tot){setScore(stageId,10);markDone(stageId)} }
   }else{fb.className='q-feedback wrong';setHtml(fb, '✗ Not quite. Check the word order.');sWrong()}
 }
-function renderStage6(){
-    let title = '🧩 Sentence Builder — Present Perfect';
-    let formula = 'have/has + past participle (V3)';
-    let listHTML = '<li>Build sentences word by word.</li>';
-    let lead = 'Build each sentence.';
-    
-    if (activeContentName === 'abay') {
-        title = '🧩 Sentence Builder — Gerunds vs. Infinitives';
-        formula = '<span style="color:var(--ds-color-danger); font-weight:800; font-size:24px;">Verb + [V-ing]</span> <span style="color:var(--ds-color-muted); margin:0 15px; font-size:20px;">OR</span> <span style="color:var(--ds-color-primary); font-weight:800; font-size:24px;">Verb + [to + V1]</span>';
-        listHTML = `
-            <li style="margin-bottom:18px; padding:18px; background:color-mix(in srgb, var(--ds-color-danger) 10%, transparent); border-left:6px solid var(--ds-color-danger); border-radius:8px;">
-                <span style="color:var(--ds-color-danger); font-weight:900; font-size:24px;">1. Gerund (V-ing)</span><br>
-                <span style="font-size:20px;">A gerund is a verb acting like a noun. We use it after specific verbs and prepositions.</span><br>
-                <b style="font-size:20px;">Verbs that take Gerunds:</b> <span style="font-size:20px;">enjoy, avoid, suggest, mind, finish, keep, practice, recommend.</span><br>
-                <b style="font-size:20px;">Prepositions:</b> <span style="font-size:20px;">good at, interested in, looking forward to, used to.</span><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 1: I enjoy <b>reading</b> books. (NOT: to read)</i><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 2: They avoided <b>making</b> a mistake.</i>
-            </li>
-            <li style="padding:18px; background:color-mix(in srgb, var(--ds-color-primary) 10%, transparent); border-left:6px solid var(--ds-color-primary); border-radius:8px;">
-                <span style="color:var(--ds-color-primary); font-weight:900; font-size:24px;">2. Infinitive (to + V1)</span><br>
-                <span style="font-size:20px;">An infinitive is the base form of a verb with "to". We use it after specific verbs, adjectives, and to show purpose.</span><br>
-                <b style="font-size:20px;">Verbs that take Infinitives:</b> <span style="font-size:20px;">decide, hope, want, refuse, plan, manage, agree, promise.</span><br>
-                <b style="font-size:20px;">Adjectives:</b> <span style="font-size:20px;">important, happy, difficult, easy.</span><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 1: She decided <b>to apply</b> for the job. (NOT: applying)</i><br>
-                <i style="font-size:20px; color:var(--ds-color-muted);">Example 2: We hope <b>to finish</b> the project.</i>
-            </li>
-        `;
-        lead = 'Read the instruction in color above each question. Then click the words in the correct order to build the sentence.';
-    } else if (activeContentName.includes('araylim_1')) {
-        title = '🧩 Sentence Builder — Simple Past';
-        formula = 'Subject + V2 (or did not + V1)';
-        listHTML = '<li>Use for finished actions in the past.</li><li>Remember irregular verbs (e.g., go → went).</li>';
-        lead = 'Build each sentence using the Simple Past.';
-    } else if (activeContentName.includes('araylim_3')) {
-        title = '🧩 Sentence Builder — Future Plans & Promises';
-        formula = 'Subject + (is/are going to / will) + verb';
-        listHTML = '<li>Build sentences about future plans, arrangements, and promises.</li>';
-        lead = 'Build each sentence.';
-    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
-        title = '🧩 Sentence Builder — Present Tenses';
-        formula = 'Subject + V1 / am/is/are + V-ing';
-        listHTML = '<li>Build sentences about routines and actions happening now.</li>';
-        lead = 'Build each sentence.';
-    }
-    renderSentenceBuilder(SB_PP,6,5,7,title,'Stage 6 — Grammar',formula,listHTML,lead);
-}
-function renderStage7(){
-    let title = '🧱 Sentence Builder — Passive Voice';
-    let formula = 'was/were + past participle (V3)';
-    let listHTML = '<li>Build past passive sentences word by word.</li>';
-    let lead = 'Build each sentence.';
-    
-    if (activeContentName === 'abay') {
-        title = '🧱 Sentence Builder — Modals of Deduction';
-        formula = 'Subject + Modal + [be / have + V3]';
-        listHTML = `
-            <li style="margin-bottom:18px; padding:18px; background:color-mix(in srgb, var(--ds-color-success) 10%, transparent); border-left:6px solid var(--ds-color-success); border-radius:8px;">
-                <span style="color:var(--ds-color-success); font-weight:900; font-size:24px;">1. Strong Deduction (Sure)</span><br>
-                <span style="font-size:20px;">When you are almost 100% certain about something.</span><br>
-                <b style="font-size:20px;">Present:</b> <span style="font-size:20px;">must be (She is not answering. She <b>must be</b> asleep.)</span><br>
-                <b style="font-size:20px;">Past:</b> <span style="font-size:20px;">must have + V3 (He <b>must have</b> missed the train.)</span>
-            </li>
-            <li style="margin-bottom:18px; padding:18px; background:color-mix(in srgb, var(--ds-color-warning) 10%, transparent); border-left:6px solid var(--ds-color-warning); border-radius:8px;">
-                <span style="color:var(--ds-color-warning); font-weight:900; font-size:24px;">2. Possibility (Maybe)</span><br>
-                <span style="font-size:20px;">When you think something is possible, but you are not sure.</span><br>
-                <b style="font-size:20px;">Present:</b> <span style="font-size:20px;">might / may / could be (He <b>might be</b> busy right now.)</span><br>
-                <b style="font-size:20px;">Past:</b> <span style="font-size:20px;">might / may / could have + V3 (They <b>may have</b> made a mistake.)</span>
-            </li>
-            <li style="padding:18px; background:color-mix(in srgb, var(--ds-color-danger) 10%, transparent); border-left:6px solid var(--ds-color-danger); border-radius:8px;">
-                <span style="color:var(--ds-color-danger); font-weight:900; font-size:24px;">3. Impossibility (No way)</span><br>
-                <span style="font-size:20px;">When you are certain something is NOT true.</span><br>
-                <b style="font-size:20px;">Present:</b> <span style="font-size:20px;">cannot be (That <b>cannot be</b> the truth.)</span><br>
-                <b style="font-size:20px;">Past:</b> <span style="font-size:20px;">cannot have + V3 (He <b>cannot have</b> done it. He was with me.)</span>
-            </li>
-        `;
-        lead = 'Read the colored instruction above each question. Decide how certain the speaker is, then build the sentence.';
-    } else if (activeContentName.includes('araylim_1')) {
-        title = '🧱 Sentence Builder — Past Continuous';
-        formula = 'Subject + was/were + V-ing';
-        listHTML = '<li>Use for actions in progress in the past.</li><li>Often used with "when" or "while".</li>';
-        lead = 'Build each sentence using the Past Continuous.';
-    } else if (activeContentName.includes('araylim_3')) {
-        title = '🧱 Sentence Builder — Time Clauses (When/If)';
-        formula = 'When/If + Present Simple, Future';
-        listHTML = '<li>Use present simple after when/if for future events. (e.g. When I finish, I will call you).</li>';
-        lead = 'Build each sentence paying attention to the when/if clause.';
-    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
-        title = '🧱 Sentence Builder — Past Simple';
-        formula = 'Subject + V2 (or did not + V1)';
-        listHTML = '<li>Build past simple sentences.</li>';
-        lead = 'Build each sentence.';
-    }
-    renderSentenceBuilder(SB_PS,7,6,8,title,'Stage 7 — Grammar',formula,listHTML,lead);
+// A grammar section: the topic's rule once, then each of its exercises (complete the sentences, build the sentences).
+// Each exercise scores on its own id (section id × 10 + its position), up to 10 points.
+function renderGrammarSection(section){
+  const main=document.getElementById('main');if(!main)return; clearElement(main);
+  const topic=section.topic||{}; const rule=topic.rule||{};
+  const v=document.createElement('div');v.className='stage-view active grammar-section';
+  const points=(Array.isArray(rule.points)?rule.points:[]).map(function(point){return '<li>'+sanitizeRichHtml(point)+'</li>'}).join('');
+  setHtml(v,'<div class="eyebrow">'+escapeHtml(section.shortLabel||'Grammar')+'</div><h2>'+escapeHtml(topic.title||section.label)+'</h2>'+
+    '<div class="g-box"><h3>Rule</h3><div class="g-formula">'+escapeHtml(rule.formula||'')+'</div>'+(points?'<ul>'+points+'</ul>':'')+'</div>'+
+    (topic.lead?'<div class="lead">'+escapeHtml(topic.lead)+'</div>':''));
+  main.appendChild(v);
+  section.exercises.forEach(function(exercise,index){
+    const block=document.createElement('section'); block.className='grammar-exercise';
+    const heading=document.createElement('h3'); heading.className='grammar-exercise__title';
+    heading.textContent=(section.exercises.length>1?(index+1)+'. ':'')+(exercise.kind==='build'?'Build the sentences':'Complete the sentences');
+    block.appendChild(heading); v.appendChild(block);
+    const data=LESSON_CONTENT[exercise.key];
+    if(exercise.kind==='build')renderSentenceBuilder(data,exercise.scoreId,null,null,'','','','','',block);
+    else renderCompletingSentence(data,exercise.scoreId,null,null,'','','','','',block);
+  });
+  main.appendChild(stageFooter());
 }
 
-function renderStage8(){
-    let title = '🧭 Completing Sentence — Choose the Tense';
-    let formula = 'Present perfect (have/has + V3) · Past simple (V2) · Past passive (was/were + V3)';
-    let listHTML = '<li>Use past simple with finished times.</li><li>Use present perfect with: since, for, yet, ever.</li>';
-    let lead = 'Choose the correct tense for each sentence.';
-    if (activeContentName.includes('araylim_1')) {
-        title = '🧭 Completing Sentence — Present Perfect';
-        formula = 'Subject + have/has + past participle (V3)';
-        listHTML = '<li>Use for experiences (ever/never).</li><li>Use with "since", "for", "yet", "already", "just".</li>';
-        lead = 'Complete each sentence using the Present Perfect.';
-    } else if (activeContentName.includes('araylim_3')) {
-        title = '🧭 Completing Sentence — Mixed Future Forms';
-        formula = 'Future I (plans) · Future II (predictions/deadlines) · Time clauses';
-        listHTML = '<li>Choose the correct future form based on the context.</li><li>Remember: after when/if, use present simple.</li>';
-        lead = 'Complete the sentences with the correct future tense.';
-    } else if (activeContentName === 'george' || activeContentName.includes('araylim_2')) {
-        title = '🧭 Completing Sentence — Mixed Tenses';
-        formula = 'Present Simple/Continuous · Past Simple · Present Perfect';
-        listHTML = '<li>Look at the time words to identify the correct tense.</li>';
-        lead = 'Choose the correct tense for each sentence.';
-    }
-    renderCompletingSentence(G10,8,7,9,title,'Stage 8 — Grammar',formula,listHTML,lead);
+// Games and Listening Training run the practice and listening pages inside the lesson (?embed=1). In a teacher preview they
+// open read-only. A finished game or round tells the lesson (postMessage, same site only), which marks the section done.
+const EMBED_PAGES={
+  games:{page:'practice.html',eyebrow:'Games',lead:'Short games built from this lesson. Finish any game to complete this section.'},
+  listening:{page:'listening.html',eyebrow:'Listening Training',lead:'Listen to each sentence and type the missing words. Finish a round to complete this section.'}
+};
+function renderEmbeddedSection(section){
+  const main=document.getElementById('main');if(!main)return; clearElement(main);
+  const info=EMBED_PAGES[section.kind];
+  const v=document.createElement('div');v.className='stage-view active embed-section';
+  setHtml(v,'<div class="eyebrow">'+escapeHtml(info.eyebrow)+'</div><h2>'+escapeHtml(section.label)+'</h2><div class="lead">'+escapeHtml(info.lead)+'</div>');
+  main.appendChild(v);
+  const code=getSessionCode();
+  if(!code){ const note=document.createElement('p'); note.className='card'; note.textContent='Open the lesson with a student code to use this section.'; v.appendChild(note); main.appendChild(stageFooter()); return; }
+  const params=new URLSearchParams({embed:'1',lesson:state.currentLessonId,code:code}); if(teacherMode)params.set('teacher','1');
+  const frame=document.createElement('iframe'); frame.className='embed-frame'; frame.title=section.label;
+  frame.setAttribute('allow','microphone; autoplay; clipboard-write');
+  frame.src=info.page+'?'+params.toString();
+  frame.addEventListener('load',function(){
+    try{
+      const doc=frame.contentDocument; if(!doc)return;
+      // Measure the page's own content (its <main>), not the document, which is at least as tall as the frame itself.
+      const content=doc.querySelector('main')||doc.body;
+      const fit=function(){ const height=Math.max(560,Math.ceil(content.getBoundingClientRect().bottom+(doc.defaultView?doc.defaultView.scrollY:0))+24); if(Math.abs(height-frame.offsetHeight)>4)frame.style.height=height+'px'; };
+      // Re-measure when the frame's content changes, and on a light timer as a fallback (resize events pause in background
+      // tabs). Both stop once the section is left and the frame is gone.
+      const view=doc.defaultView; fit();
+      let pending=0; const schedule=function(){ if(!pending)pending=setTimeout(function(){ pending=0; if(frame.isConnected)fit(); },120); };
+      if(view&&view.MutationObserver)new view.MutationObserver(schedule).observe(content,{childList:true,subtree:true,attributes:true,characterData:true});
+      const timer=setInterval(function(){ if(!frame.isConnected){clearInterval(timer);return} fit(); },1500);
+    }catch(error){ console.error('The embedded section could not be sized',error); }
+  });
+  v.appendChild(frame); main.appendChild(stageFooter());
 }
+window.addEventListener('message',function(event){
+  const data=event.data;
+  if(event.origin!==location.origin||!data||data.source!=='learning-studio'||data.type!=='section-complete'||teacherMode)return;
+  const section=PLAN.find(function(item){return item.kind===data.section&&(item.kind==='games'||item.kind==='listening')}); if(!section)return;
+  const total=Math.max(1,Number(data.total)||1), score=Math.max(0,Math.min(total,Number(data.score)||0));
+  const earned=Math.round(section.points*score/total), key=state.currentLessonId+'_'+section.id;
+  if(earned>(state.scores[key]||0))setScore(section.id,earned);
+  markDone(section.id);
+});
 
 let testState={active:false,questions:[],idx:0,correct:0,total:0,timeLeft:0,timer:null};
 function getTestTimeLimit() { const totalQuestions = TEST_MCQ.length + TEST_SHORT.length + TEST_TFNG.length + TEST_COMPLETE.length; return Math.max(300, totalQuestions * 30); }
@@ -1545,9 +1413,9 @@ function endTest(timedOut,customReason){
   if(!customReason)afterStageDone(9);
 }
 
-function updateHUD(){ const maxEl=document.getElementById('scoreMax'); if(maxEl){const lesson=getCurrentLesson(); const max=lesson?resolveMaxScore(lesson):0; maxEl.textContent=max?String(max):'–'} const el=document.getElementById('scoreDisplay'); if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')} const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak; const lesson=getCurrentLesson();if(!lesson)return; const doneCount=lesson.stages.filter(function(s){return state.done[lesson.id+"_"+s.id]}).length; const pct=Math.round((doneCount/lesson.stages.length)*100); const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; }
+function updateHUD(){ const maxEl=document.getElementById('scoreMax'); if(maxEl){const lesson=getCurrentLesson(); const max=PLAN.length?planMaxScore(PLAN):(lesson?resolveMaxScore(lesson):0); maxEl.textContent=max?String(max):'–'} const el=document.getElementById('scoreDisplay'); if(el){el.textContent=totalScore();el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')} const sd=document.getElementById('streakDisplay');if(sd)sd.textContent=state.streak; const lesson=getCurrentLesson();if(!lesson)return; const doneCount=lesson.stages.filter(function(s){return state.done[lesson.id+"_"+s.id]}).length; const pct=Math.round((doneCount/lesson.stages.length)*100); const pp=document.getElementById('progressPct');if(pp)pp.textContent=pct+'%'; const pf=document.getElementById('progressFill');if(pf)pf.style.width=pct+'%'; }
 // ---- game layer (mission line, card map, extra games, stage XP). Never changes grading. ----
-function stagePoints(stageId){ const lesson=getCurrentLesson(); const stage=(lesson?stagesOf(lesson):DEFAULT_STAGES).find(function(x){return x.id===stageId}); return stage&&stage.points?stage.points:10; }
+function stagePoints(stageId){ const lesson=getCurrentLesson(); const stage=stagesOf(lesson).find(function(x){return x.id===stageId}); return stage&&stage.points?stage.points:10; }
 function afterStageDone(stageId){
   if(!modeAllows(gameMode,'mission')||teacherMode||!studentContext||!fbDb)return;
   import('../games/progress.js').then(function(mod){
@@ -1561,7 +1429,7 @@ function afterStageDone(stageId){
 }
 // A short video for this lesson, offered on the vocabulary and the first grammar stage. It opens in Clip Lab and comes back here.
 function decorateClipLink(stageId){
-  if(!lessonClipId||teacherMode||!studentContext||(stageId!==1&&stageId!==4))return;
+  const firstGrammarSection=grammarSections()[0]; if(!lessonClipId||teacherMode||!studentContext||(stageId!==1&&!(firstGrammarSection&&stageId===firstGrammarSection.id)))return;
   const view=document.querySelector('#main .stage-view'); if(!view||view.querySelector('.gl-clip'))return;
   const box=document.createElement('aside'); box.className='gl-clip'; box.setAttribute('aria-label','Video for this lesson');
   const text=document.createElement('p'); text.textContent=stageId===1?'🎬 Watch a short video that uses these words.':'🎬 Watch a short video with this grammar in use.';
@@ -1578,7 +1446,7 @@ function decorateGameLayer(stageId){
   }
   const mission=renderMission({stageId:stageId,mode:gameMode,deck:deck});
   if(mission)view.insertBefore(mission,view.children[1]||null);
-  if(modeAllows(gameMode,'extras')&&errorHuntContent&&(stageId===3||stageId===8)&&!teacherMode)appendErrorHunt(view);
+  const grammarAll=grammarSections(); if(modeAllows(gameMode,'extras')&&errorHuntContent&&(stageId===3||(grammarAll.length&&stageId===grammarAll[grammarAll.length-1].id))&&!teacherMode)appendErrorHunt(view);
 }
 function appendErrorHunt(view){
   view.append(renderExtra({
@@ -1623,16 +1491,13 @@ let expandedYears=["2026"],expandedMonths=["October"];
 
 function resetStageTeacher(stageId) {
   if(!teacherCanEdit) return; if(!confirm('Are you sure you want to reset progress for Stage ' + stageId + '?')) return;
-  const key = state.currentLessonId + "_" + stageId; state.scores[key] = 0; state.done[key] = false; if (stageId === 1) { vocabState = {}; saveVocabStateLocal(); }
+  clearSectionProgress(stageId); if (stageId === 1) { vocabState = {}; saveVocabStateLocal(); }
   saveState(); renderSidebar(); renderStage(); updateHUD(); broadcastAction('teacher_reset_stage', 'Teacher manually reset Stage ' + stageId); if (typeof showToast === 'function') showToast('Stage ' + stageId + ' reset');
 }
 
 // UPDATED: Collapsible sidebar logic
 function renderSidebar(){
-  const list=document.getElementById('stageList');if(!list)return;clearElement(list); const isAraylim1 = activeContentName.includes('araylim_1'); const isAraylim3 = activeContentName.includes('araylim_3');
-  let customLabels = null;
-  if (isAraylim1) { customLabels = [ 'Vocabulary', 'Word Match', 'Interactive Video & Questions', 'Simple Present', 'Present Continuous', 'Simple Past', 'Past Continuous', 'Present Perfect', 'Test Your Knowledge' ]; }
-  else if (isAraylim3) { customLabels = [ 'Vocabulary', 'Word Match', 'Interactive Video & Questions', 'Future I', 'Future II', 'Future Sentences', 'Time Clauses', 'Mixed Future', 'Test Your Knowledge' ]; }
+  const list=document.getElementById('stageList');if(!list)return;clearElement(list);
 
   CURRICULUM.forEach(function(yearObj){
     const isY=expandedYears.includes(yearObj.year); const yearEl=document.createElement('div');yearEl.className='year-item'+(isY?' open':'');
@@ -1672,13 +1537,13 @@ function renderSidebar(){
             }
           }
           const sub=document.createElement('div');sub.className='stage-sub-list';
-          stagesOf(lesson).forEach(function(st){
-            const key=lesson.id+"_"+st.id; const isA=st.id===state.currentStage; let isD = false;
-            if (vocabMode==='preLearned') { if (st.id === 1 || st.id === 2) isD = true; }
-            if (st.id === 1) { const counts = getVocabCounts(); if(counts.learned === VOCAB.length) isD = true; else isD = false; } else { isD = state.done[key]; }
-            const isMastered = Boolean(isD && st.points && (state.scores[key] || 0) >= st.points); let statusIcon = isMastered ? '⭐' : (isD ? '✅' : (isA ? '📍' : '🔒')); const stateWord = isMastered ? 'mastered' : (isD ? 'done' : (isA ? 'current stage' : 'not started'));
+          PLAN.forEach(function(st){
+            const isA=st.id===state.currentStage; let isD = false;
+            if (st.id === 1) { const counts = getVocabCounts(); isD = VOCAB.length>0 && counts.learned === VOCAB.length; } else { isD = sectionDone(st, lesson.id, state.done); }
+            if (vocabMode==='preLearned' && (st.id === 1 || st.id === 2)) isD = true;
+            const isMastered = Boolean(isD && st.points && sectionScore(st, lesson.id) >= st.points); let statusIcon = isMastered ? '⭐' : (isD ? '✅' : (isA ? '📍' : '🔒')); const stateWord = isMastered ? 'mastered' : (isD ? 'done' : (isA ? 'current stage' : 'not started'));
             const row = document.createElement('div'); row.style.display = 'flex'; row.style.alignItems = 'stretch'; row.style.gap = '4px';
-            const stEl=document.createElement('button'); stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':''); stEl.style.flex = '1'; const displayLabel = customLabels ? customLabels[st.id - 1] : st.label;
+            const stEl=document.createElement('button'); stEl.className='stage-sub-item'+(isA?' active':'')+(isD?' done':''); stEl.style.flex = '1'; const displayLabel = st.label;
             setHtml(stEl, '<span class="icon" style="font-size:14px; margin-right:8px;" aria-hidden="true">'+statusIcon+'</span> <span>'+escapeHtml(displayLabel)+'</span>'); stEl.setAttribute('aria-label', displayLabel+': '+stateWord); if(isA) stEl.setAttribute('aria-current','step'); stEl.dataset.state = isMastered ? 'mastered' : (isD ? 'done' : (isA ? 'current' : 'todo')); registerDelegatedClick(stEl,function(){goToStage(st.id)}); row.appendChild(stEl);
             if (teacherCanEdit) { const resetBtn = document.createElement('button'); resetBtn.textContent = '🔄'; resetBtn.title = 'Reset this stage (Teacher only)'; resetBtn.style.cssText = 'background:var(--panel-2); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:14px; padding:0 8px; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; transition:all 0.15s;'; resetBtn.addEventListener('mouseover', () => { resetBtn.style.color = 'var(--error)'; resetBtn.style.borderColor = 'var(--error)'; }); resetBtn.addEventListener('mouseout', () => { resetBtn.style.color = 'var(--ink-soft)'; resetBtn.style.borderColor = 'var(--border)'; }); registerDelegatedClick(resetBtn, function(e) { e.stopPropagation(); resetStageTeacher(st.id); }); row.appendChild(resetBtn); }
             sub.appendChild(row);
@@ -1693,20 +1558,29 @@ function goToStage(n){
   if(testState.active){ if(!confirm('⚠️ You are in the middle of a timed test. Leaving this page will abandon your test and discard your progress. Are you sure you want to leave?')) return; endTest(true, 'Test aborted: you navigated away.'); }
   state.currentStage=n;renderSidebar();renderStage();const m=document.getElementById('main');if(m)m.scrollTo({top:0,behavior:'smooth'});broadcastAction('stage_open','Stage '+n);
 }
+const SECTION_ICONS={vocab:'🌪️',match:'🔗',reading:'📖',games:'🎮',listening:'🎧',grammar:'⏳',test:'⚡'};
 function renderStage(){
-  const main=document.getElementById('main');if(!main)return; clearElement(main); const lesson = getCurrentLesson(); const stages = DEFAULT_STAGES; const stageIndex = stages.findIndex(s => s.id === state.currentStage);
-  let fn = null; if (stageIndex === stages.length - 1) { fn = renderStage9; } else { switch(stageIndex) { case 0: fn = renderStage1; break; case 1: fn = renderStage2; break; case 2: fn = renderStage3; break; case 3: fn = renderStage4; break; case 4: fn = renderStage5; break; case 5: fn = renderStage6; break; case 6: fn = renderStage7; break; case 7: fn = renderStage8; break; default: fn = renderStage1; } }
+  const main=document.getElementById('main');if(!main)return;
+  if(!PLAN.length)return; // the content has not loaded yet: keep the loading placeholders
+  if(!PLAN.some(function(item){return item.id===state.currentStage}))state.currentStage=resolveSectionId(PLAN,state.currentStage);
+  clearElement(main);
+  const lesson=getCurrentLesson(); const section=currentSection();
+  const renderers={vocab:renderStage1,match:renderStage2,reading:renderStage3,test:renderStage9,
+    grammar:function(){renderGrammarSection(section)},games:function(){renderEmbeddedSection(section)},listening:function(){renderEmbeddedSection(section)}};
   try{
-    if(typeof fn === 'function') fn(); else setHtml(main, '<p>Error: Stage content not found.</p>');
-    const title = lesson ? lesson.title : 'Lesson'; const stageObj = stages.find(s => s.id === state.currentStage); const icon = (stageObj && stageObj.icon) ? stageObj.icon : '📘';
-    const header = document.createElement('div'); header.style.cssText = 'max-width:1000px; margin:0 auto 20px auto; padding-bottom:12px; border-bottom:2px solid var(--border); font-size:32px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:12px; animation: fadeSlide 0.4s ease;';
-    if(stageIndex === 2) header.style.maxWidth = '1400px'; setHtml(header, `<span style="font-size:36px;">${icon}</span> <span>${escapeHtml(title)}</span>`); main.insertBefore(header, main.firstChild);
+    renderers[section.kind]();
+    const title=lesson?lesson.title:'Lesson';
+    const header=document.createElement('div'); header.className='lesson-heading';
+    if(section.kind==='reading')header.classList.add('lesson-heading--wide');
+    setHtml(header,'<span class="lesson-heading__icon" aria-hidden="true">'+(SECTION_ICONS[section.kind]||'📘')+'</span> <span>'+escapeHtml(title)+'</span>');
+    main.insertBefore(header,main.firstChild);
     decorateGrammarStage(state.currentStage);
     decorateGameLayer(state.currentStage);
     decorateClipLink(state.currentStage);
-  }catch(e){ console.error(e); setHtml(main, '<p>Error loading stage.</p>'); }
+  }catch(e){ console.error(e); setHtml(main,'<p>Error loading this section.</p>'); }
 }
-function stageFooter(prevId,nextId,extraHTML){ const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
+
+function stageFooter(prevId,nextId,extraHTML){ if(PLAN.length){ const near=neighbours(PLAN,state.currentStage); prevId=near.previous?near.previous.id:null; nextId=near.next?near.next.id:null; } const f=document.createElement('div');f.className='stage-footer';let html=''; if(prevId)html+='<button class="btn ghost" data-action="go-to-stage" data-stage="'+prevId+'">← Previous</button>';else html+='<span></span>'; html+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+(extraHTML||'')+'</div>'; if(nextId)html+='<button class="btn" data-action="go-to-stage" data-stage="'+nextId+'">Next →</button>';else html+='<span></span>'; setHtml(f, html);return f; }
 function toggleSound(){soundOn=!soundOn;const st=document.getElementById('soundToggle');if(st){st.classList.toggle('active',soundOn);st.textContent=soundOn?'🔊':'🔇'}saveState()}
 function toggleDark(){ document.documentElement.classList.toggle('dark'); const dark = document.documentElement.classList.contains('dark'); try{safeLocal.setItem('nd_lesson_theme', dark ? 'dark' : 'light')}catch(e){} const dt=document.getElementById('darkToggle'); if(dt)dt.classList.toggle('active',dark); saveState(); }
 function closeWhiteboard(){const drawer=document.getElementById('wbDrawer'),toggle=document.getElementById('wbToggle'); if(drawer)drawer.hidden=true; document.body.classList.remove('wb-open'); if(toggle){toggle.setAttribute('aria-expanded','false');toggle.focus()}}
@@ -1752,6 +1626,9 @@ async function applyLessonContent(c,sourceFile) {
   VOCAB         = c.vocab; MATCH_DATA    = c.matchData; READING_HTML  = c.readingHtml; READING_Q     = c.readingQ; CONTEXT_Q     = c.contextQ;
   G6            = c.g6; G7            = c.g7; SB_PP         = c.sbPp; SB_PS         = c.sbPs; G10           = c.g10;
   TEST_MCQ      = c.testMcq; TEST_SHORT    = c.testShort; TEST_TFNG     = c.testTfng; TEST_COMPLETE = c.testComplete;
+  LESSON_CONTENT = c; PLAN = buildLessonPlan(c);
+  state.currentStage = resolveSectionId(PLAN, state.currentStage);
+  if(lessonClock)lessonClock.refreshSections();
 }
 
 async function loadContent() {
@@ -1872,27 +1749,26 @@ installDelegatedActions({
     }
   }),
   "reset-grammar-stage": clickAction(element => {
-    const stage = readActionInteger(element, "stage", 4, 8);
+    const stage = readActionInteger(element, "stage", 210, 299);
     if (stage) resetGrammarStage(stage);
   }),
   "check-sentence-builder-item": clickAction(element => {
-    const stage = readActionInteger(element, "stage", 1, 9);
+    const stage = readActionInteger(element, "stage", 210, 299);
     const data = stage === null ? null : SB_DATA[stage];
     const total = data && data.pos.length + data.neg.length + data.q.length + data.shuffled.length;
     const index = total ? readActionInteger(element, "questionIndex", 1, total) : null;
     if (stage && index !== null) checkSBItem(stage, index);
   }),
   "reset-sentence-builder-item": clickAction(element => {
-    const stage = readActionInteger(element, "stage", 1, 9);
+    const stage = readActionInteger(element, "stage", 210, 299);
     const data = stage === null ? null : SB_DATA[stage];
     const total = data && data.pos.length + data.neg.length + data.q.length + data.shuffled.length;
     const index = total ? readActionInteger(element, "questionIndex", 1, total) : null;
     if (stage && index !== null) resetSBItem(stage, index);
   }),
   "go-to-stage": clickAction(element => {
-    const stage = readActionInteger(element, "stage", 1, 9);
-    const currentLesson = getCurrentLesson();
-    if (stage && currentLesson?.stages?.some(item => item.id === stage)) goToStage(stage);
+    const stage = readActionInteger(element, "stage", 1, 40);
+    if (stage && PLAN.some(item => item.id === stage)) goToStage(stage);
   }),
   "start-test": clickAction(startTest),
   "start-boss": clickAction(startBoss),
@@ -2076,15 +1952,10 @@ if (typeof completeReading === "function") globalThis["completeReading"] = compl
 if (typeof renderCompletingSentence === "function") globalThis["renderCompletingSentence"] = renderCompletingSentence;
 if (typeof addSection === "function") globalThis["addSection"] = addSection;
 if (typeof resetGrammarStage === "function") globalThis["resetGrammarStage"] = resetGrammarStage;
-if (typeof renderStage4 === "function") globalThis["renderStage4"] = renderStage4;
-if (typeof renderStage5 === "function") globalThis["renderStage5"] = renderStage5;
 if (typeof renderSentenceBuilder === "function") globalThis["renderSentenceBuilder"] = renderSentenceBuilder;
 if (typeof moveChip === "function") globalThis["moveChip"] = moveChip;
 if (typeof resetSBItem === "function") globalThis["resetSBItem"] = resetSBItem;
 if (typeof checkSBItem === "function") globalThis["checkSBItem"] = checkSBItem;
-if (typeof renderStage6 === "function") globalThis["renderStage6"] = renderStage6;
-if (typeof renderStage7 === "function") globalThis["renderStage7"] = renderStage7;
-if (typeof renderStage8 === "function") globalThis["renderStage8"] = renderStage8;
 if (typeof getTestTimeLimit === "function") globalThis["getTestTimeLimit"] = getTestTimeLimit;
 if (typeof buildTestQuestions === "function") globalThis["buildTestQuestions"] = buildTestQuestions;
 if (typeof renderStage9 === "function") globalThis["renderStage9"] = renderStage9;

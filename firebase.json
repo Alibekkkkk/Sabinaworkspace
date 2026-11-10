@@ -9,6 +9,7 @@
       "**/.*",
       "**/node_modules/**",
       "tests/**",
+      "content/_snapshots/**",
       "scripts/**",
       "docs/**",
       "*.log",

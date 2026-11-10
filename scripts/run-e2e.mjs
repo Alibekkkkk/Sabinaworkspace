@@ -14,6 +14,7 @@ const SCRIPT_TIMEOUT_MS = Number(process.env.E2E_TIMEOUT_MS || 8 * 60 * 1000);
 // One entry per user journey the acceptance review needs (see docs/ACCEPTANCE.md).
 export const SUITE = Object.freeze([
   ["sign in with a code, lesson clock start/pause/stop/adjust, dashboard commands, summary total", "scripts/clock-e2e.mjs"],
+  ["lesson sections: order, grammar topics, games and listening inside the lesson, teacher preview, dashboard frame", "scripts/lesson-sections-e2e.mjs"],
   ["grammar ladder, word families, reading questions", "scripts/ladder-e2e.mjs"],
   ["word family helper", "scripts/word-family-e2e.mjs"],
   ["reading questions", "scripts/reading-tasks-e2e.mjs"],

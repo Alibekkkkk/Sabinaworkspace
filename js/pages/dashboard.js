@@ -44,17 +44,20 @@ const UNDO_STORAGE_KEY = 'teacherDashboardUndoV2';
 let undoStack = [];
 
 const STAGE_NAMES = ['Vocabulary','Word Match','Reading & Questions','Completing Sent 1','Completing Sent 2','Sentence Builder 1','Sentence Builder 2','Choose the Tense','Test Your Knowledge'];
+// Lesson sections (js/lesson-plan.js). Grammar sections are 21 and up, one per grammar topic of the student's lesson;
+// a lesson with fewer topics sends a higher grammar number to its first grammar section.
 const STAGE_LIST = [
   {id:1,label:'Vocabulary'},
   {id:2,label:'Word Match'},
-  {id:3,label:'Reading & Questions'},
-  {id:4,label:'Completing Sent 1'},
-  {id:5,label:'Completing Sent 2'},
-  {id:6,label:'Sentence Builder 1'},
-  {id:7,label:'Sentence Builder 2'},
-  {id:8,label:'Choose the Tense'},
+  {id:3,label:'Reading Comprehension'},
+  {id:10,label:'Games'},
+  {id:11,label:'Listening Training'},
+  {id:21,label:'Grammar I'},
+  {id:22,label:'Grammar II'},
+  {id:23,label:'Grammar III'},
   {id:9,label:'Test Your Knowledge'}
 ];
+const isListedStage = stage => STAGE_LIST.some(item => item.id === stage);
 
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme') || 'light';
@@ -172,7 +175,7 @@ function initTeacherData() {
     Object.keys(data).forEach(function(code) {
       const summary = data[code] || {};
       studentMeta[code] = {
-        score: summary.score || 0, stage: summary.stage || 0, doneCount: summary.doneCount || 0,
+        score: summary.score || 0, stage: summary.stage || 0, doneCount: summary.doneCount || 0, sectionCount: summary.sectionCount || 0, stageLabel: typeof summary.stageLabel === 'string' ? summary.stageLabel : '',
         elapsed: summary.elapsed || 0, streak: summary.streak || 0,
         lastSeen: summary.lastUpdate || 0, homework: summary.homework || {},
         notes: (previous[code] && previous[code].notes) || ''
@@ -327,7 +330,7 @@ function renderStudentsList() {
     const linked = s.uid ? '🔗' : '⚠️';
     
     const doneCount = Number(meta.doneCount) || 0;
-    const totalStages = 9; 
+    const totalStages = Math.max(1, Number(meta.sectionCount) || STAGE_LIST.length);
     const pct = Math.round((doneCount / totalStages) * 100);
     const barColor = pct === 100 ? 'var(--success)' : (pct > 50 ? 'var(--warn)' : 'var(--accent)');
     const progressBar = `<div style="width:100%; height:6px; background:var(--border); border-radius:6px; margin-top:8px;"><div style="width:${pct}%; height:100%; background:${barColor}; border-radius:6px; transition:width 0.3s;"></div></div>`;
@@ -340,7 +343,7 @@ function renderStudentsList() {
     return '<div class="student-item ' + (code === activeCode ? 'active' : '') + '" data-action="select-student" data-code="' + escapeHtml(code) + '">' +
       '<div class="top-row"><div class="name">' + escapeHtml(s.name || code) + '</div><div class="status-chip"><span class="dot ' + dotClass + '" aria-hidden="true"></span><span class="status-text">' + STATUS_LABELS[status] + '</span></div></div>' +
       '<div class="code">' + linked + ' ' + escapeHtml(code) + '</div>' +
-      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + escapeHtml(meta.score || 0) + '</b></span><span>📍 Stage ' + escapeHtml(meta.stage || '—') + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
+      '<div class="stats" style="margin-bottom:4px;"><span>🏆 <b>' + escapeHtml(meta.score || 0) + '</b></span><span>📍 ' + escapeHtml(meta.stageLabel || ('Stage ' + (meta.stage || '—'))) + '</span><span>✅ ' + doneCount + '/' + totalStages + '</span>' + hwText + '</div>' +
       progressBar +
       '</div>';
   }).join(''));
@@ -402,11 +405,11 @@ function renderSelectedView() {
   document.getElementById('selectedAdded').textContent = s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—';
 
   setHtml(document.getElementById('controlGrid'), '<button class="btn" data-action="send-goto" data-stage="' + (Number(meta.stage) || 1) + '" style="grid-column: 1 / -1; background:var(--success); color:var(--ds-color-on-primary); border:none; margin-bottom:8px; font-size:15px;">' +
-      '🎯 Tell Student to Resume at Stage ' + escapeHtml(meta.stage || 1) +
+      '🎯 Tell Student to Resume at ' + escapeHtml(meta.stageLabel || ('Stage ' + (meta.stage || 1))) +
     '</button>' +
     STAGE_LIST.map(function(st) {
       const isCurrent = (meta.stage || 1) === st.id;
-      return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" data-action="send-goto" data-stage="' + st.id + '"><span class="num">' + st.id + '</span>' + st.label + '</button>';
+      return '<button class="ctrl-btn' + (isCurrent ? ' current' : '') + '" data-action="send-goto" data-stage="' + st.id + '"><span class="num">' + (STAGE_LIST.indexOf(st) + 1) + '</span>' + st.label + '</button>';
     }).join(''));
 
   document.getElementById('notesView').textContent = meta.notes || '— No notes yet —';
@@ -1548,11 +1551,11 @@ installDelegatedActions({
     if (code && studentsMap[code]) selectStudent(code);
   }),
   "send-goto": clickAction(element => {
-    const stage = readActionInteger(element, "stage", 1, STAGE_LIST.length);
-    if (stage) sendGoto(stage);
+    const stage = readActionInteger(element, "stage", 1, 40);
+    if (stage && isListedStage(stage)) sendGoto(stage);
   }),
   "reset-stage": clickAction(element => {
-    const stage = readActionInteger(element, "stage", 1, STAGE_LIST.length);
+    const stage = readActionInteger(element, "stage", 1, 40);
     if (stage) resetStage(stage);
   }),
   "undo-teacher-action": clickAction(element => {

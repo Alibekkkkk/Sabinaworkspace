@@ -2,14 +2,21 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { lintContent } from "../scripts/lint-content.mjs";
+import { lintContent, patternForTopic } from "../scripts/lint-content.mjs";
 import { classworkFiles, migrateText } from "../scripts/migrate-sections.mjs";
 import {
-  applySectionOverrides, buildSections, countWords, readingMinutes, roundToFive, sectionForStage, suggestedEstimates, validateSections
+  SCHEMA_VERSION, applySectionOverrides, buildSections, countWords, readingMinutes, roundToFive, sectionForKey, suggestedEstimates, validateSections
 } from "../js/sections.js";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFileSync(fileURLToPath(new URL(path, root)), "utf8");
+
+const complete = prefix => ({ pos: [{ id: `${prefix}.1`, p: "They ___ (save) many.", a: "have saved" }], neg: [], q: [], shuffled: [] });
+const build = prefix => ({ pos: [{ id: `${prefix}.1`, prompt: "Build it.", correct: ["They", "have", "helped."] }], neg: [], q: [], shuffled: [] });
+const TOPICS = [
+  { id: "present-perfect", title: "Present Perfect", exercises: ["g6", "sbPp"], rule: { formula: "have/has + V3", points: ["Use it for results."] } },
+  { id: "past-passive", title: "Past Passive", exercises: ["g7"], rule: { formula: "was/were + V3" } }
+];
 
 function fixture(extra = {}) {
   return {
@@ -18,71 +25,73 @@ function fixture(extra = {}) {
     readingHtml: "<h1>Flood</h1><p>The flood rose. Rescuers rescue families. The flood ended. They have saved many. They have helped others. We have learned much.</p>",
     readingQ: [{ id: "q1", type: "short", prompt: "What rose?", answers: ["the flood"] }],
     contextQ: [{ id: "c1", prompt: "x", options: ["a", "b"], correct: "a" }],
-    g6: {}, g7: {}, sbPp: {}, sbPs: {}, g10: {},
+    g6: complete("g6"), g7: complete("g7"), sbPp: build("sbPp"), sbPs: build("sbPs"), g10: complete("g10"),
     testMcq: [], testShort: [], testTfng: [], testComplete: [],
     ...extra
   };
 }
+const migrated = (extra, topics = TOPICS) => JSON.parse(migrateText(JSON.stringify(fixture(extra)), "fixture.json", { topics: { "fixture.json": topics } }).text);
 
-test("every shipped classwork file is on schema v2 with valid sections and stays migrated (idempotent)", () => {
+test("every shipped classwork file is on schema v3 with valid sections and grammar topics, and stays migrated", () => {
   const files = classworkFiles();
   assert.ok(files.length >= 7);
   for (const name of files) {
     const text = read(`content/${name}`);
     const content = JSON.parse(text);
     assert.deepEqual(validateSections(content), [], name);
-    assert.equal(content.schemaVersion, 2, name);
-    const again = migrateText(text);
+    assert.equal(content.schemaVersion, SCHEMA_VERSION, name);
+    assert.ok(content.grammar.length >= 1, `${name} has grammar topics`);
+    const again = migrateText(text, name);
     assert.equal(again.changed, false, `${name} should already be migrated`);
-    assert.equal(again.text, text);
   }
 });
 
-test("migration adds only schemaVersion and sections, keeps every other key byte-for-byte equal in value, and is idempotent", () => {
-  const original = JSON.stringify(fixture(), null, 2);
-  const first = migrateText(original);
+test("migration adds schemaVersion 3, the six sections and the grammar topics, keeps every other key, and is idempotent", () => {
+  const original = fixture();
+  const first = migrateText(JSON.stringify(original, null, 2), "fixture.json", { topics: { "fixture.json": TOPICS } });
   assert.equal(first.changed, true);
-  const migrated = JSON.parse(first.text);
-  assert.equal(migrated.schemaVersion, 2);
-  assert.equal(migrated.sections.length, 3);
-  for (const key of Object.keys(JSON.parse(original))) assert.deepEqual(migrated[key], JSON.parse(original)[key], key);
-  assert.deepEqual(validateSections(migrated), []);
-  const second = migrateText(first.text);
-  assert.equal(second.changed, false);
-  assert.equal(second.text, first.text);
+  const content = JSON.parse(first.text);
+  assert.equal(content.schemaVersion, 3);
+  assert.deepEqual(content.sections.map(section => section.id), ["vocabulary", "reading", "games", "listening", "grammar", "test"]);
+  assert.deepEqual(content.grammar, TOPICS);
+  for (const key of Object.keys(original)) assert.deepEqual(content[key], original[key], key);
+  assert.deepEqual(validateSections(content), []);
+  assert.equal(migrateText(first.text, "fixture.json").changed, false);
 });
 
-test("migration keeps CRLF line endings and refuses half-migrated files", () => {
-  const crlf = JSON.stringify(fixture(), null, 2).replace(/\n/g, "\r\n");
-  const result = migrateText(crlf);
-  assert.ok(result.text.includes('"schemaVersion": 2,\r\n'));
-  assert.ok(!/[^\r]\n/.test(result.text.slice(0, 200)), "no bare LF introduced");
-  assert.throws(() => migrateText(JSON.stringify({ ...fixture(), sections: [] })), /partial schema v2/);
+test("migration keeps CRLF line endings, keeps a file's own grammar list, and refuses files without topics", () => {
+  const crlf = JSON.stringify(fixture({ schemaVersion: 2, sections: [] }), null, 2).replace(/\n/g, "\r\n");
+  const result = migrateText(crlf, "fixture.json", { topics: { "fixture.json": TOPICS } });
+  assert.ok(result.text.includes('"schemaVersion": 3,\r\n'));
+  assert.ok(!/[^\r]\n/.test(result.text), "no bare LF");
+  const own = migrateText(JSON.stringify(fixture({ grammar: [TOPICS[1]] })), "other.json", { topics: {} });
+  assert.equal(JSON.parse(own.text).grammar.length, 1);
+  assert.throws(() => migrateText(JSON.stringify(fixture()), "missing.json", { topics: {} }), /no grammar topics/);
 });
 
 test("section validator reports precise errors", () => {
-  const good = migrateText(JSON.stringify(fixture())).text;
-  const content = JSON.parse(good);
+  const content = migrated();
   const broken = structuredClone(content);
   broken.sections[0].estimatedMinutes = 0;
-  broken.sections[1].id = "Bad Id";
+  broken.sections[1].id = "close-reading";
   broken.sections[2].stages = ["vocab"];
   const errors = validateSections(broken).join(" | ");
   assert.match(errors, /estimatedMinutes must be a number from 1 to 120/);
-  assert.match(errors, /id must be/);
-  assert.match(errors, /already in another section/);
-  assert.match(errors, /is not part of any section/);
-  assert.match(validateSections({ ...content, schemaVersion: 1 }).join(" "), /schemaVersion must be 2/);
-  assert.match(validateSections({ schemaVersion: 2 }).join(" "), /sections must be an array/);
-  const withTest = structuredClone(content);
-  withTest.sections[0].stages.push("testMcq");
-  assert.match(validateSections(withTest).join(" "), /unknown or reserved stage key "testMcq"/);
-  const missing = structuredClone(content);
-  missing.sections.pop();
-  assert.match(validateSections(missing).join(" "), /standard section "reading" is missing/);
+  assert.match(errors, /id must be one of/);
+  assert.match(errors, /stages must be \["games"\]/);
+  assert.match(errors, /standard section "reading" is missing/);
+  assert.match(validateSections({ ...content, schemaVersion: 2 }).join(" "), /schemaVersion must be 3/);
+  assert.match(validateSections({ schemaVersion: 3 }).join(" "), /sections must be an array/);
+  const badGrammar = structuredClone(content);
+  badGrammar.grammar[1].exercises = ["g6"];
+  assert.match(validateSections(badGrammar).join(" "), /"g6" is already used by another topic/);
+  badGrammar.grammar[1].exercises = ["readingQ"];
+  assert.match(validateSections(badGrammar).join(" "), /"readingQ" is not a complete-the-sentence or sentence-builder exercise/);
+  delete badGrammar.grammar;
+  assert.match(validateSections(badGrammar).join(" "), /grammar: the list of grammar topics is missing/);
 });
 
-test("estimates: rounding, reading maths (words / 120 + 1.5 min per question) and vocabulary scaling", () => {
+test("estimates: rounding, reading maths (words / 120 + 1.5 min per question), vocabulary and grammar scaling", () => {
   assert.equal(roundToFive(2), 5);
   assert.equal(roundToFive(22.4), 20);
   assert.equal(roundToFive(23), 25);
@@ -91,52 +100,44 @@ test("estimates: rounding, reading maths (words / 120 + 1.5 min per question) an
   assert.equal(readingMinutes(content), 2 + 9);
   assert.equal(suggestedEstimates({ ...content, vocab: new Array(20).fill({}) }).vocabulary, 25);
   assert.equal(suggestedEstimates({ ...content, vocab: [] }).vocabulary, 10);
-  assert.equal(suggestedEstimates(content).grammar, 20);
-  assert.equal(buildSections(fixture()).map(section => section.id).join(), "vocabulary,grammar,reading");
+  assert.equal(suggestedEstimates(fixture({ grammar: TOPICS })).grammar, 20, "10 minutes per grammar topic");
+  assert.equal(buildSections(fixture()).map(section => section.id).join(), "vocabulary,reading,games,listening,grammar,test");
 });
 
-test("stages map to sections; the final test belongs to none", () => {
+test("lesson sections map to clock sections", () => {
   const sections = buildSections(fixture());
-  const names = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(stage => (sectionForStage(sections, stage) || {}).id || null);
-  assert.deepEqual(names, ["vocabulary", "vocabulary", "reading", "grammar", "grammar", "grammar", "grammar", "grammar", null]);
-  assert.equal(sectionForStage(undefined, 1), null);
+  const names = ["vocab", "match", "reading", "games", "listening", "grammar-1", "grammar-3", "test"].map(key => (sectionForKey(sections, key) || {}).id || null);
+  assert.deepEqual(names, ["vocabulary", "vocabulary", "reading", "games", "listening", "grammar", "grammar", "test"]);
+  assert.equal(sectionForKey(undefined, "vocab"), null);
 });
 
 test("teacher overrides change minutes and order without touching the source sections", () => {
-  const sections = buildSections(fixture());
+  const sections = buildSections(fixture({ grammar: TOPICS }));
   const result = applySectionOverrides(sections, { estimatedMinutes: { grammar: 35, reading: 9999, vocabulary: "x" }, order: ["reading", "vocabulary"] });
-  assert.deepEqual(result.map(section => section.id), ["reading", "vocabulary", "grammar"]);
+  assert.deepEqual(result.slice(0, 3).map(section => section.id), ["reading", "vocabulary", "games"]);
   assert.equal(result.find(section => section.id === "grammar").estimatedMinutes, 35);
   assert.equal(result.find(section => section.id === "reading").estimatedMinutes, sections.find(section => section.id === "reading").estimatedMinutes, "out-of-range values are ignored");
   assert.equal(sections.find(section => section.id === "grammar").estimatedMinutes, 20, "source is not mutated");
-  assert.deepEqual(applySectionOverrides(sections, null).map(section => section.id), ["vocabulary", "grammar", "reading"]);
 });
 
-function migrated(extra) { return JSON.parse(migrateText(JSON.stringify(fixture(extra))).text); }
-
-test("lint: a clean fixture passes; a missing grammar topic is a warning, not an error", () => {
-  const content = migrated();
-  content.sections[1].topic = "present perfect";
-  const result = lintContent("fixture.json", content);
+test("lint: a clean fixture passes; the first grammar topic with a known pattern is checked in the passage", () => {
+  const result = lintContent("fixture.json", migrated());
   assert.deepEqual(result.errors, []);
-  assert.deepEqual(result.warnings.filter(message => /target word/.test(message)), []);
-  assert.deepEqual(result.warnings.filter(message => /grammar structure|expected/.test(message)), []);
-  const noTopic = lintContent("fixture.json", migrated());
-  assert.ok(noTopic.warnings.some(message => /no "topic"/.test(message)));
+  assert.deepEqual(result.warnings.filter(message => /target word|structure|No pattern/.test(message)), []);
+  assert.equal(patternForTopic({ title: "Past Passive" }), "passive voice");
+  assert.equal(patternForTopic({ id: "present-perfect", title: "Anything" }), "present perfect");
+  const unknown = lintContent("x", migrated({}, [{ id: "third-conditional", title: "Third Conditional", exercises: ["g6"], rule: { formula: "If + had + V3" } }]));
+  assert.match(unknown.warnings.join(), /No pattern is defined for the grammar topics \(Third Conditional\)/);
 });
 
 test("lint: failing fixtures produce actionable warnings", () => {
   const content = migrated({ readingHtml: "<p>It was calm. Nothing else happened here today.</p>" });
-  content.sections[1].topic = "present perfect";
-  content.sections[2].estimatedMinutes = 90;
+  content.sections[1].estimatedMinutes = 90;
   const result = lintContent("fixture.json", content);
   assert.match(result.warnings.join("\n"), /target word\(s\) never appear in the reading passage: flood, to rescue/);
-  assert.match(result.warnings.join("\n"), /structure 0 time\(s\); at least 3/);
+  assert.match(result.warnings.join("\n"), /"Present Perfect" structure 0 time\(s\); at least 3/);
   assert.match(result.warnings.join("\n"), /Reading estimate is 90 min/);
   assert.match(result.warnings.join("\n"), /short-answer question\(s\) have no accepted answer/);
-  const unknownTopic = migrated();
-  unknownTopic.sections[1].topic = "third conditional";
-  assert.match(lintContent("x", unknownTopic).warnings.join(), /No pattern is defined/);
 });
 
 test("lint: invalid schema is an error, and an openly licensed word list can flag hard words", () => {

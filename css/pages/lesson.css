@@ -421,3 +421,14 @@ button.section-segment:focus-visible { outline: 3px solid var(--ds-color-focus, 
 
 /* tablet widths: the header holds the clock, score and tools, so let it wrap instead of overlapping */
 @media (min-width: 641px) and (max-width: 1100px) { .topbar { height: auto; min-height: 60px; padding: 8px 14px; flex-wrap: wrap; row-gap: 6px; } .topbar .spacer { display: none; } }
+
+/* Lesson sections v3 */
+.lesson-heading { max-width: 1000px; margin: 0 auto 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); font-size: 32px; font-weight: 800; color: var(--ink); display: flex; align-items: center; gap: 12px; animation: fadeSlide 0.4s ease; }
+.lesson-heading--wide { max-width: 1400px; }
+.lesson-heading__icon { font-size: 36px; }
+.grammar-exercise { margin-top: var(--ds-space-6, 32px); }
+.grammar-exercise__title { font-size: 22px; margin: 0 0 var(--ds-space-3, 12px); padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.embed-section .embed-frame { display: block; width: 100%; min-height: 560px; border: 0; border-radius: var(--ds-radius-md, 12px); background: var(--ds-color-surface); }
+@media (max-width: 640px) { .lesson-heading { font-size: 24px; } .lesson-heading__icon { font-size: 28px; } }
+.icon-btn.wb-toggle { width: auto; padding: 0 14px; gap: 6px; display: inline-flex; align-items: center; font-weight: 700; }
+@media (max-width: 640px) { .wb-toggle__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } .icon-btn.wb-toggle { padding: 0; width: 44px; justify-content: center; } }

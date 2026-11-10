@@ -8,7 +8,7 @@
 // so they are never stored here; see docs/SECURITY.md ("Offline and protected content").
 // The precache list below is generated: run `node scripts/build-sw-manifest.mjs` after adding or removing files.
 // BEGIN GENERATED (scripts/build-sw-manifest.mjs)
-const CACHE_VERSION = "25b975ea6e";
+const CACHE_VERSION = "9c1c5e9e62";
 const SHELL_URLS = [
   "clip.html",
   "clips.html",
@@ -43,6 +43,7 @@ const SHELL_URLS = [
   "assets/pwa/icon.svg",
   "content/manifest.json",
   "css/components/controls.css",
+  "css/components/embed.css",
   "css/components/feedback.css",
   "css/components/page-aliases.css",
   "css/components/progress.css",
@@ -86,6 +87,7 @@ const SHELL_URLS = [
   "js/delegated-actions.js",
   "js/diagnostic.js",
   "js/dom.js",
+  "js/embed.js",
   "js/error-card.js",
   "js/error-log.js",
   "js/feature-gate.js",
@@ -122,6 +124,7 @@ const SHELL_URLS = [
   "js/lesson-clock-ui.js",
   "js/lesson-clock.js",
   "js/lesson-meta.js",
+  "js/lesson-plan.js",
   "js/listening-card.js",
   "js/listening-summary.js",
   "js/listening/answers.js",

@@ -1,6 +1,6 @@
 
     import { firebaseConfig } from "../config.js";
-    import { resolveStudentContext } from "../student-context.js";
+    import { EMBEDDED, notifyLesson, resolvePageContext } from "../embed.js";
     import { loadProtectedContent } from "../protected-content.js";
     import { createPracticeGames, createReviewGame } from "../games/engine.js";
     import { progressPath, saveGameProgress, shopAction } from "../games/progress.js";
@@ -8,7 +8,7 @@
     import { mountPanels } from "../games/panels.js";
     import { applyCalm, createServices, loadSettings, saveSettings } from "../games/settings.js";
     import { mountOfflineBanner, watchConnection } from "../shell.js";
-    mountOfflineBanner();
+    mountOfflineBanner({ languageSwitch: !EMBEDDED });
 
     const status = document.getElementById("status");
     const list = document.getElementById("gameList");
@@ -51,6 +51,12 @@
         container: arena, game, settings,
         onFinish: async result => {
           summary.replaceChildren(element("p", `You got ${result.score} of ${result.total} correct.`, "result"));
+          if (context.preview) {
+            summary.append(element("p", "Teacher preview: nothing is saved.", "gm-reward"));
+            const replay = element("button", "Play again", "button"); replay.type = "button"; replay.addEventListener("click", () => renderGame(game)); summary.append(replay);
+            return;
+          }
+          notifyLesson("section-complete", { section: "games", score: result.score, total: result.total });
           try {
             const saved = await saveGameProgress({ db: database, code: context.code, game, result });
             const info = saved._info || {};
@@ -95,14 +101,14 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         database = firebase.database(); watchConnection(database);
         const query = new URLSearchParams(location.search);
-        context = await resolveStudentContext({
+        context = await resolvePageContext({
           auth: firebase.auth(),
           db: database,
           lessonId: query.get("lesson")
         });
         const [record, progressSnapshot] = await Promise.all([
           loadProtectedContent(database, context.lessonId, "classwork"),
-          database.ref(progressPath(context.code)).once("value")
+          database.ref(progressPath(context.code)).once("value").catch(error => { if (context.preview) return { val: () => null }; throw error; })
         ]);
         document.getElementById("pageTitle").textContent = `Practice · ${record.content.title || "Your lesson"}`;
         const progress = progressSnapshot.val() || {};
@@ -111,6 +117,7 @@
           progress, settings,
           onSettings: next => { settings = next; saveSettings(settings); applyCalm(settings); },
           onShop: async (itemId, action) => {
+            if (context.preview) { status.textContent = "Teacher preview: the shop is read-only."; return; }
             const outcome = await shopAction({ db: database, code: context.code, itemId, action });
             status.textContent = outcome.ok ? (action === "buy" ? "Bought! It is yours to keep." : "Updated your look.") : outcome.reason === "gems" ? "You need more gems for that." : "That could not be done.";
             if (outcome.ok) { showRewards(outcome.state); panels.update(outcome.state); }

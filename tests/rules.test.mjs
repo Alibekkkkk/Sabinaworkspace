@@ -480,7 +480,8 @@ test("teacher commands use one versioned schema with a server timestamp", async 
   await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-clock"), { type: "goto", payload: { stage: 3 }, createdAt: Date.now() }));
   // unknown types, out-of-range stages, extra fields and the legacy shape are rejected
   await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-bad-type"), { type: "eval", createdAt: serverNow }));
-  await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-bad-stage"), { type: "goto", payload: { stage: 10 }, createdAt: serverNow }));
+  await assertSucceeds(set(ref(teacher, "sessions/A111111/commands/cmd-grammar"), { type: "goto", payload: { stage: 23 }, createdAt: serverNow }), "grammar sections are 21 to 29");
+  await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-bad-stage"), { type: "goto", payload: { stage: 41 }, createdAt: serverNow }));
   await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-extra"), { type: "goto", payload: { stage: 1, html: "<b>" }, createdAt: serverNow }));
   await assertFails(set(ref(teacher, "sessions/A111111/commands/cmd-legacy"), { action: "goto", stage: 1, ts: Date.now() }));
   await assertFails(set(ref(teacher, "sessions/A111111/command"), { action: "goto", stage: 1, ts: Date.now() }));
@@ -532,7 +533,10 @@ test("students write only a bounded compact summary of their own session, and on
   await assertFails(get(ref(dbA, "sessionSummary/B222222")));
   await assertFails(get(ref(dbA, "sessionSummary")));
   await assertFails(update(ref(dbA, "sessionSummary/A111111"), { score: 1e9 }));
-  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { stage: 12 }));
+  await assertSucceeds(update(ref(dbA, "sessionSummary/A111111"), { stage: 22, sectionCount: 10, stageLabel: "Grammar II: Past Passive" }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { stage: 41 }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { sectionCount: 0 }));
+  await assertFails(update(ref(dbA, "sessionSummary/A111111"), { stageLabel: "x".repeat(81) }));
   await assertFails(update(ref(dbA, "sessionSummary/A111111"), { doneCount: -1 }));
   await assertFails(update(ref(dbA, "sessionSummary/A111111"), { name: "<img src=x onerror=alert(1)>" }));
   await assertFails(update(ref(dbA, "sessionSummary/A111111"), { notes: "free text does not belong in the summary" }));

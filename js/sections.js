@@ -1,19 +1,19 @@
-// Standard lesson sections (content schema v2): Vocabulary, Grammar, Reading Comprehension, plus the
-// final test as its own closing stage. Pure helpers shared by the migration script, the content linter
-// and the lesson UI.
-export const SECTION_IDS = Object.freeze(["vocabulary", "grammar", "reading"]);
+// Lesson clock sections (content schema v3): the timer cards at the top of a lesson. Each groups one or more lesson sections
+// (see js/lesson-plan.js): Vocabulary (Vocabulary and Word Match), Reading Comprehension, Games, Listening Training,
+// Grammar (all grammar topics) and the final test. Pure helpers shared by the migration script, the content linter,
+// the lesson clock and the dashboard.
+import { CLOCK_SECTION, grammarTopics, validateGrammar } from "./lesson-plan.js";
 
-// Which content keys belong to which lesson stage (stage ids are the nine DEFAULT_STAGES).
-export const STAGE_CONTENT_KEYS = Object.freeze({
-  1: ["vocab"], 2: ["matchData"], 3: ["readingHtml", "readingQ", "contextQ"],
-  4: ["g6"], 5: ["g7"], 6: ["sbPp"], 7: ["sbPs"], 8: ["g10"],
-  9: ["testMcq", "testShort", "testTfng", "testComplete"]
-});
+export const SCHEMA_VERSION = 3;
+export const SECTION_IDS = Object.freeze(["vocabulary", "reading", "games", "listening", "grammar", "test"]);
 
 export const DEFAULT_SECTIONS = Object.freeze([
-  { id: "vocabulary", title: "Vocabulary", stages: ["vocab", "matchData"] },
-  { id: "grammar", title: "Grammar", stages: ["g6", "g7", "sbPp", "sbPs", "g10"] },
-  { id: "reading", title: "Reading Comprehension", stages: ["readingHtml", "readingQ", "contextQ"] }
+  { id: "vocabulary", title: "Vocabulary", stages: ["vocab", "match"] },
+  { id: "reading", title: "Reading Comprehension", stages: ["reading"] },
+  { id: "games", title: "Games", stages: ["games"] },
+  { id: "listening", title: "Listening Training", stages: ["listening"] },
+  { id: "grammar", title: "Grammar", stages: ["grammar"] },
+  { id: "test", title: "Test Your Knowledge", stages: ["test"] }
 ]);
 
 const WORDS_PER_MINUTE = 120;
@@ -35,57 +35,50 @@ export function readingMinutes(content) {
 
 export function suggestedEstimates(content) {
   const words = Array.isArray(content.vocab) ? content.vocab.length : 0;
+  const topics = grammarTopics(content).length || 1;
   return {
     vocabulary: Math.min(25, Math.max(10, roundToFive(5 + words))),
-    grammar: 20,
-    reading: roundToFive(readingMinutes(content))
+    reading: roundToFive(readingMinutes(content)),
+    games: 10,
+    listening: 10,
+    grammar: Math.min(45, roundToFive(10 * topics)),
+    test: 10
   };
 }
 
 export function buildSections(content) {
-  const estimates = suggestedEstimates(content);
-  return DEFAULT_SECTIONS.map(section => ({
-    id: section.id,
-    title: section.title,
-    estimatedMinutes: estimates[section.id],
-    stages: [...section.stages]
-  }));
+  const estimates = suggestedEstimates(content || {});
+  return DEFAULT_SECTIONS.map(section => ({ id: section.id, title: section.title, estimatedMinutes: estimates[section.id], stages: [...section.stages] }));
 }
 
 export function validateSections(content) {
   const errors = [];
-  if (content.schemaVersion !== 2) errors.push("schemaVersion must be 2.");
-  const sections = content.sections;
+  if (!content || content.schemaVersion !== SCHEMA_VERSION) errors.push(`schemaVersion must be ${SCHEMA_VERSION}.`);
+  const sections = content && content.sections;
   if (!Array.isArray(sections)) return [...errors, "sections must be an array."];
   const seen = new Set();
-  const covered = new Set();
   sections.forEach((section, index) => {
     const where = `sections[${index}]`;
     if (!section || typeof section !== "object") { errors.push(`${where}: must be an object.`); return; }
-    if (typeof section.id !== "string" || !/^[a-z0-9_-]{1,32}$/.test(section.id)) errors.push(`${where}: id must be 1-32 characters of a-z, 0-9, - and _.`);
+    if (!SECTION_IDS.includes(section.id)) errors.push(`${where}: id must be one of ${SECTION_IDS.join(", ")}.`);
     else if (seen.has(section.id)) errors.push(`${where}: duplicate id "${section.id}".`);
     else seen.add(section.id);
     if (typeof section.title !== "string" || !section.title.trim()) errors.push(`${where}: title is required.`);
     if (!Number.isFinite(section.estimatedMinutes) || section.estimatedMinutes < 1 || section.estimatedMinutes > 120) errors.push(`${where}: estimatedMinutes must be a number from 1 to 120.`);
-    if (!Array.isArray(section.stages) || !section.stages.length) errors.push(`${where}: stages must list at least one content key.`);
-    else for (const key of section.stages) {
-      if (!Object.values(STAGE_CONTENT_KEYS).flat().includes(key) || key.startsWith("test")) errors.push(`${where}: unknown or reserved stage key "${key}".`);
-      else if (!(key in content)) errors.push(`${where}: content has no "${key}".`);
-      else if (covered.has(key)) errors.push(`${where}: "${key}" is already in another section.`);
-      else covered.add(key);
-    }
+    const standard = DEFAULT_SECTIONS.find(item => item.id === section.id);
+    if (standard && JSON.stringify(section.stages) !== JSON.stringify(standard.stages)) errors.push(`${where}: stages must be ${JSON.stringify(standard.stages)}.`);
     if (section.goals !== undefined && (!Array.isArray(section.goals) || section.goals.some(goal => typeof goal !== "string"))) errors.push(`${where}: goals must be a list of strings.`);
   });
   for (const id of SECTION_IDS) if (!seen.has(id)) errors.push(`The standard section "${id}" is missing.`);
-  for (const key of DEFAULT_SECTIONS.flatMap(section => section.stages)) if (key in content && !covered.has(key)) errors.push(`Content "${key}" is not part of any section.`);
+  errors.push(...validateGrammar(content || {}));
   return errors;
 }
 
-// Which section a lesson stage (1-9) belongs to; the final test (9) belongs to none.
-export function sectionForStage(sections, stageId) {
-  const keys = STAGE_CONTENT_KEYS[stageId] || [];
-  if (stageId === 9) return null;
-  return (sections || []).find(section => section.stages.some(key => keys.includes(key))) || null;
+// Which clock section a lesson section belongs to (by its key: vocab, match, reading, games, listening, grammar-N, test).
+export function sectionForKey(sections, key) {
+  const base = String(key || "").startsWith("grammar") ? "grammar" : key;
+  const id = CLOCK_SECTION[base];
+  return (sections || []).find(section => section.id === id) || null;
 }
 
 // Teacher overrides (estimated minutes and order) live in the student's curriculum, not in protected content.

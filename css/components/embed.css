@@ -1,0 +1,14 @@
+/* A page shown inside a lesson section (?embed=1): the lesson already has the header, tab bar and settings. */
+.is-embedded .ds-bottom-nav,
+.is-embedded [data-theme-toggle],
+.is-embedded #languageCorner,
+.is-embedded .ds-language-switch,
+.is-embedded .practice-header > a,
+.is-embedded .ls-header > a { display: none !important; }
+.is-embedded, .is-embedded body { min-height: 0; height: auto; }
+.is-embedded body { padding-bottom: 0; background: transparent; }
+.is-embedded .practice-shell,
+.is-embedded .ls-shell { margin: 0; max-width: none; padding: 0; }
+.is-embedded .practice-header,
+.is-embedded .ls-header { padding-top: 0; }
+.ds-preview-note { margin: 0 0 var(--ds-space-3); }

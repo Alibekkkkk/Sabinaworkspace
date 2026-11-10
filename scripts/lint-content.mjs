@@ -1,8 +1,8 @@
 // Checks classwork content against the Phase 2 rules.   npm run lint:content
-//   errors   (exit 1): invalid schema v2 / sections
+//   errors   (exit 1): invalid schema v3 / sections / grammar topics
 //   warnings (exit 0): things a teacher should look at; lesson text is never edited by this tool
 // Checks: target vocabulary appears in the reading passage; target grammar pattern appears >= 3 times
-// (needs sections[grammar].topic, see GRAMMAR_PATTERNS); estimated reading time matches the text
+// (for the first grammar topic whose id or title names a pattern in GRAMMAR_PATTERNS); estimated reading time matches the text
 // (words / 120 wpm + 1.5 min per question, warn if > 25% off); short answers can be found in the passage;
 // optional CEFR word-list check when content/wordlists/ngsl.txt exists (NGSL is CC BY-SA 4.0; not bundled).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
@@ -15,13 +15,23 @@ import { countWords, readingMinutes, validateSections } from "../js/sections.js"
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 
-// Add a topic here (and set `topic` on the grammar section) to enable the structure-count check for it.
+// Add a pattern here to enable the structure-count check for grammar topics that name it (id or title).
 export const GRAMMAR_PATTERNS = Object.freeze({
   "present perfect": /\b(has|have|had)\s+(not\s+|never\s+|already\s+|just\s+|also\s+)?[a-z]+(ed|en|wn|ne|t)\b/gi,
   "past simple": /\b[a-z]+ed\b/gi,
   "gerund and infinitive": /\b(enjoy|avoid|suggest|finish|mind|keep|decide|want|hope|plan|agree|refuse)\s+(to\s+)?[a-z]+(ing)?\b/gi,
   "passive voice": /\b(is|are|was|were|been|be)\s+[a-z]+(ed|en)\b/gi
 });
+// Topic wording that names a pattern above.
+const PATTERN_ALIASES = Object.freeze({ "past passive": "passive voice", "gerunds and infinitives": "gerund and infinitive" });
+export function patternForTopic(topic) {
+  for (const text of [topic && topic.title, topic && topic.id]) {
+    const name = String(text || "").toLowerCase().replace(/-/g, " ").trim();
+    if (GRAMMAR_PATTERNS[name]) return name;
+    if (PATTERN_ALIASES[name]) return PATTERN_ALIASES[name];
+  }
+  return "";
+}
 
 const plain = html => String(html || "").replace(/<[^>]*>/g, " ").replace(/&[a-z]+;/gi, " ");
 const normalise = text => plain(text).toLowerCase();
@@ -57,14 +67,15 @@ export function lintContent(name, content, { wordlist = null, derivations = new 
   }
   if (missing.length) warnings.push(`${missing.length} target word(s) never appear in the reading passage: ${missing.join(", ")}.`);
 
-  // 2. grammar structure
-  const grammar = (content.sections || []).find(section => section.id === "grammar");
-  const topic = grammar && typeof grammar.topic === "string" ? grammar.topic.toLowerCase() : "";
-  if (!topic) warnings.push('The grammar section has no "topic", so the reading passage cannot be checked for the target structure. Add a topic such as "present perfect".');
-  else if (!GRAMMAR_PATTERNS[topic]) warnings.push(`No pattern is defined for the grammar topic "${grammar.topic}". Add one to GRAMMAR_PATTERNS in scripts/lint-content.mjs.`);
+  // 2. grammar structure: the passage should use the structure of the lesson's main (first) grammar topic
+  const topics = Array.isArray(content.grammar) ? content.grammar : [];
+  const main = topics.find(topic => patternForTopic(topic));
+  if (!topics.length) warnings.push('The lesson has no "grammar" topics, so the reading passage cannot be checked for the target structure.');
+  else if (!main) warnings.push(`No pattern is defined for the grammar topics (${topics.map(topic => topic.title).join(", ")}). Add one to GRAMMAR_PATTERNS in scripts/lint-content.mjs.`);
   else {
-    const hits = (passage.match(GRAMMAR_PATTERNS[topic]) || []).length;
-    if (hits < 3) warnings.push(`The passage contains the "${grammar.topic}" structure ${hits} time(s); at least 3 are expected.`);
+    const name = patternForTopic(main);
+    const hits = (passage.match(GRAMMAR_PATTERNS[name]) || []).length;
+    if (hits < 3) warnings.push(`The passage contains the "${main.title}" structure ${hits} time(s); at least 3 are expected.`);
   }
 
   // 3. reading time estimate
