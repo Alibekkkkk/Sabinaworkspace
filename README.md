@@ -53,6 +53,16 @@ Tokens live in `css/design-system.css` (the only file with raw colours) and comp
 
 With `npm run dev` running, `npm run check:visual` screenshots lesson, homework and dashboard in both themes at 320/390/768/1440 px and fails on horizontal scroll, clipped text or overlapping controls; `npm run audit:signed-in` runs Lighthouse and axe on those pages while signed in as the demo users.
 
+## Look and themes
+
+The site has two themes:
+- **Lime Night** (dark), the default: deep navy with electric-lime highlights and violet accents.
+- **Lime Light**: the same design on a light page.
+
+One theme button anywhere switches the whole site and is remembered (`js/theme.js`). All colours come from `css/design-system.css`; run `npm run tokens:contrast` after changing them.
+
+Interface icons are original line drawings in `assets/icons.svg`: write the emoji in a label and `js/icons.js` shows the matching icon. Section illustrations are in `assets/illustrations/`.
+
 ## Lesson clock and sections
 
 Every classwork lesson has the same sections, in this order: **Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N, Test Your Knowledge** (content schema v3, `js/lesson-plan.js`). The grammar sections come from the lesson's `grammar` list: one per topic, named after it ("Grammar II: Past Passive"), with its rule and the exercises it uses, so the number of grammar sections varies by student. Games and Listening Training run inside the lesson; the whiteboard is a button on every section; the Manga reader stays off until the teacher switches it on for a student.

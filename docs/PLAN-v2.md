@@ -60,6 +60,26 @@ After a deploy, an open site keeps the old version until the **"New version avai
   - Servers that cannot seek play from the start.
   - Transcripts of unclear speech need correcting by hand.
 
+## Phase 12: done (2026-11-10)
+- **Design chosen:** D · Lime Night as the default and E · Lime Light as the light theme, from the design canvas (https://claude.ai/artifact/TWNWJcitsQvE4F3y1yv9z2).
+- **Tokens** (`css/design-system.css`):
+  - Lime Night is the base palette, and Lime Light applies with `html[data-theme="light"]`.
+  - New `highlight` / `on-highlight` (the lime fills that always carry dark text) and `glow` tokens.
+  - All 56 contrast pairs pass in both themes (`docs/DESIGN_TOKENS.md`); the checker now reads both themes correctly.
+- **Theme:** one script for every page (`js/theme.js`, loaded in `<head>`). Dark by default, one saved choice for the whole site, and the older per-page choices carry over.
+- **Icons:** about 70 original line icons in `assets/icons.svg`, placed by `js/icons.js` instead of the interface emojis on every page. Icon-only buttons get their tooltip as an accessible name. Lesson content keeps its pictures (flashcard emojis, passages, manga).
+- **Illustrations:** original section illustrations (`assets/illustrations/<section>.svg`) beside each lesson title.
+- **Neon details:** lime current section, glowing timer, progress bars, tabs and buttons, and bold headings.
+- **Pages moved onto the tokens:** portal (and its older redesign layer), clip, practice and offline. The Google sign-in button keeps Google's colours.
+- **Language menu:** it sits inside the lesson and homework top bars, and beside the portal's theme button.
+- **Fonts:** no web fonts are downloaded. Sora and Inter are used where the device has them, with Segoe UI or the system font otherwise.
+- **Checked:**
+  - unit tests and the contrast table;
+  - the browser suite: 18 of 19 in one run, with the whiteboard script passing alone, axe checks included;
+  - `npm run check:visual` (lesson, homework, dashboard at 320 to 1440 px in both themes);
+  - screenshots of the lesson, dashboard and portal.
+- **Not done:** vocabulary flashcards still use each word's emoji as its picture. Real images per word can be set with **Set image**.
+
 ## Phases
 **Phase 9: lesson structure (requests 3 and 6).**
 - Fixed section order in every classwork: Vocabulary, Word Match, Reading Comprehension, Games, Listening Training, Grammar I…N, Test Your Knowledge. Close Reading is removed.

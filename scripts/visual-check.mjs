@@ -118,12 +118,13 @@ try {
         for (const theme of THEMES) {
           await page.setViewport({ width, height });
           await page.evaluateOnNewDocument(mode => {
-            try { localStorage.setItem("nd_homework_theme_v2", mode); localStorage.setItem("nd_lesson_theme", mode); } catch (error) { /* ignore */ }
+            try { localStorage.setItem("ls-theme", mode); localStorage.setItem("nd_homework_theme_v2", mode); localStorage.setItem("nd_lesson_theme", mode); } catch (error) { /* ignore */ }
           }, theme);
           await page.goto(BASE + target.url, { waitUntil: "networkidle2", timeout: 45000 });
           await page.waitForSelector(target.ready, { timeout: 25000 });
           await page.evaluate(mode => {
             document.documentElement.classList.toggle("dark", mode === "dark");
+            document.documentElement.classList.toggle("light", mode === "light");
             document.documentElement.dataset.theme = mode;
           }, theme);
           await new Promise(resolveTimer => setTimeout(resolveTimer, 400));
